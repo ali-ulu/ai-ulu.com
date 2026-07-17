@@ -1,0 +1,632 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HUQAN — Govern AI Agents. Earn Real Trust.</title>
+  <meta name="description" content="HUQAN is a deterministic control plane for AI agents. Govern actions, enforce policy, require approval, and produce auditable Trust Receipts." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#020809;
+      --bg-2:#071011;
+      --panel:#0a1315;
+      --panel-2:#0d181a;
+      --text:#f4f7f4;
+      --muted:#a9b3ae;
+      --line:#243133;
+      --line-2:#344547;
+      --lime:#c9ff7b;
+      --lime-2:#94d948;
+      --lime-dim:#182812;
+      --cyan:#66e8d8;
+      --orange:#ff8a43;
+      --red:#ff655e;
+      --shadow:0 30px 80px rgba(0,0,0,.45);
+      --radius:18px;
+      --max:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 72% 18%, rgba(112,255,180,.07), transparent 55%),
+        radial-gradient(900px 500px at 10% 95%, rgba(104,240,218,.05), transparent 55%),
+        linear-gradient(180deg,var(--bg),#010506 70%,#020708);
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      overflow-x:hidden;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    .container{width:min(var(--max),calc(100% - 40px));margin:auto}
+    .grid-noise{
+      position:fixed;inset:0;pointer-events:none;opacity:.17;z-index:-1;
+      background-image:
+        linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+      background-size:48px 48px;
+      mask-image:linear-gradient(to bottom,rgba(0,0,0,.8),transparent 85%);
+    }
+
+    header{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter:blur(16px);
+      background:rgba(1,7,8,.74);
+      border-bottom:1px solid rgba(255,255,255,.07);
+    }
+    .nav{
+      height:74px;display:flex;align-items:center;justify-content:space-between;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:.16em}
+    .brand-mark{
+      width:34px;height:34px;display:grid;place-items:center;
+      border:1px solid #d8eee4;border-radius:9px;transform:rotate(30deg);
+      position:relative;
+    }
+    .brand-mark::before,.brand-mark::after{
+      content:"";position:absolute;width:14px;height:3px;background:#d8eee4;border-radius:3px;
+    }
+    .brand-mark::before{transform:rotate(60deg)}
+    .brand-mark::after{transform:rotate(-60deg)}
+    .brand-mark span{
+      width:8px;height:8px;border:2px solid #d8eee4;border-radius:2px;transform:rotate(-30deg)
+    }
+    nav{display:flex;gap:34px;color:#d8dfdc;font-size:14px}
+    nav a{opacity:.84;transition:.2s}
+    nav a:hover{opacity:1;color:var(--lime)}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      min-height:44px;padding:0 20px;border-radius:8px;border:1px solid var(--line-2);
+      background:transparent;color:var(--text);font-weight:600;cursor:pointer;transition:.25s;
+    }
+    .btn:hover{transform:translateY(-1px);border-color:#6f846b}
+    .btn-primary{
+      color:#071006;border-color:#d8ff98;
+      background:linear-gradient(135deg,#dcff9a,#b6f36f 58%,#d8ff9a);
+      box-shadow:0 0 30px rgba(190,255,115,.12);
+    }
+    .btn-primary:hover{box-shadow:0 0 42px rgba(190,255,115,.24)}
+    .nav-cta{min-height:40px;padding:0 18px;font-size:13px}
+
+    .hero{
+      padding:72px 0 42px;
+      display:grid;grid-template-columns:1.03fr 1.05fr;gap:48px;align-items:center;
+    }
+    .label{
+      display:inline-flex;align-items:center;min-height:28px;padding:0 12px;border-radius:99px;
+      background:#0b2311;color:var(--lime);font-size:12px;font-weight:700;letter-spacing:.04em;
+      border:1px solid rgba(153,255,104,.12);
+    }
+    h1,h2,h3{font-family:"Space Grotesk",sans-serif;margin:0}
+    h1{font-size:clamp(48px,6vw,78px);line-height:1.02;letter-spacing:-.04em;margin-top:22px}
+    .accent{color:var(--lime)}
+    .hero p{max-width:610px;color:#b7c0bc;font-size:18px;line-height:1.7;margin:24px 0 32px}
+    .hero-actions{display:flex;gap:14px;flex-wrap:wrap}
+
+    .hero-visual{position:relative;min-height:500px}
+    .stack{
+      position:absolute;right:0;top:10px;width:92%;height:294px;
+      border:1px solid #739b4b;border-radius:18px;background:rgba(6,13,14,.9);
+      box-shadow:var(--shadow),0 0 40px rgba(169,255,88,.08);
+    }
+    .stack::before,.stack::after{
+      content:"";position:absolute;inset:14px -16px -14px 16px;border:1px solid rgba(157,223,82,.22);
+      border-radius:18px;z-index:-1
+    }
+    .stack::after{inset:28px -30px -28px 30px;opacity:.45}
+    .action-card{
+      position:absolute;left:18px;top:18px;width:48%;bottom:18px;padding:18px;
+      border:1px solid #2d3d3f;border-radius:12px;background:linear-gradient(180deg,#0a1416,#071012);
+    }
+    .action-head{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:22px}
+    .status{font-size:10px;color:#f5d487;background:#352915;padding:6px 9px;border-radius:99px;border:1px solid #5a4320}
+    .rows{display:grid;gap:14px;font-size:12px;color:#bec8c3}
+    .row{display:grid;grid-template-columns:60px 1fr;gap:10px}
+    .row b{color:#f0f4f1;font-weight:500}
+    .risk{display:inline-flex;align-items:center;gap:7px}
+    .risk i{width:8px;height:8px;background:var(--orange);border-radius:50%}
+    .action-buttons{position:absolute;left:18px;right:18px;bottom:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .mini-btn{height:39px;border-radius:7px;border:1px solid #405044;background:#0a1211;color:#dbe4df}
+    .mini-btn.approve{background:linear-gradient(135deg,#d9ff95,#aee85f);color:#071006;border-color:#d8ff98}
+    .side-cards{position:absolute;right:16px;top:18px;width:43%;display:grid;gap:12px}
+    .side-card{padding:16px;border:1px solid #2d4531;border-radius:11px;background:#08110e;min-height:70px}
+    .side-card .t{font-size:12px;margin-bottom:10px}
+    .side-card .s{font-size:11px;color:#d1d9d5;display:flex;align-items:center;gap:8px}
+    .dot-check{width:15px;height:15px;border:1px solid var(--lime-2);border-radius:50%;display:grid;place-items:center;color:var(--lime);font-size:9px}
+
+    .platform{
+      position:absolute;right:5%;left:8%;bottom:12px;height:180px;
+      transform:perspective(900px) rotateX(58deg) rotateZ(-2deg);
+      border:1px solid #596a64;border-radius:36px;
+      background:
+        linear-gradient(180deg,rgba(25,40,39,.95),rgba(7,13,14,.98)),
+        linear-gradient(90deg,transparent,rgba(202,255,123,.2),transparent);
+      box-shadow:0 40px 70px #000,0 12px 0 #07100b,0 20px 50px rgba(170,255,90,.16);
+    }
+    .platform::after{
+      content:"";position:absolute;left:4%;right:4%;bottom:8px;height:2px;background:linear-gradient(90deg,transparent,var(--lime),transparent);
+      box-shadow:0 0 18px var(--lime)
+    }
+    .node{
+      position:absolute;width:68px;height:68px;border-radius:50%;display:grid;place-items:center;
+      background:linear-gradient(180deg,#172325,#081012);border:1px solid #5f7472;color:#dfffe8;font-weight:700;
+      box-shadow:0 12px 30px rgba(0,0,0,.55);
+      transform:rotateZ(2deg) rotateX(-58deg);
+    }
+    .node.main{width:92px;height:92px;left:46%;top:38px;color:var(--cyan);border-color:#7bc4b9}
+    .node.n1{left:12%;top:56px}.node.n2{right:14%;top:54px}.node.n3{right:34%;top:90px}
+    .line{
+      position:absolute;height:2px;background:linear-gradient(90deg,#7cc7bb,#e5fff8);opacity:.85;transform-origin:left center
+    }
+    .l1{left:21%;top:84px;width:30%;transform:rotate(-5deg)}
+    .l2{left:57%;top:83px;width:28%;transform:rotate(3deg)}
+    .l3{left:57%;top:100px;width:16%;transform:rotate(20deg)}
+
+    .problem-strip{
+      margin:8px auto 44px;display:grid;grid-template-columns:1fr 1px 1fr;gap:30px;
+      border:1px solid var(--line);border-radius:16px;padding:26px 30px;background:rgba(8,16,17,.74)
+    }
+    .split{background:var(--line)}
+    .problem-item{display:grid;grid-template-columns:70px 1fr;gap:18px;align-items:center}
+    .problem-icon{width:64px;height:64px;border-radius:14px;display:grid;place-items:center;font-size:26px}
+    .problem-icon.orange{background:#19100c;color:var(--orange);border:1px solid #392115}
+    .problem-icon.green{background:#0e1d0b;color:var(--lime);border:1px solid #233d1b}
+    .problem-item h3{font-size:18px;margin-bottom:8px}
+    .problem-item p{margin:0;color:#aeb8b3;font-size:14px;line-height:1.55}
+
+    .control{
+      padding:30px 0 54px;display:grid;grid-template-columns:.75fr 1.45fr;gap:48px;align-items:center
+    }
+    .control h2{font-size:46px;line-height:1.08;letter-spacing:-.035em;margin:18px 0}
+    .control-copy>p{color:#b7c0bc;line-height:1.7}
+    .features{display:grid;gap:22px;margin-top:28px}
+    .feature{display:grid;grid-template-columns:42px 1fr;gap:14px}
+    .feature-icon{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:#112211;border:1px solid #294529;color:var(--lime)}
+    .feature b{display:block;font-size:14px;margin-bottom:4px}
+    .feature span{color:#aeb8b3;font-size:13px;line-height:1.45}
+
+    .dashboard{
+      border:1px solid #334043;border-radius:16px;background:#071012;overflow:hidden;box-shadow:var(--shadow)
+    }
+    .dash-top{height:54px;border-bottom:1px solid #243032;display:flex;align-items:center;gap:38px;padding:0 18px;font-size:13px}
+    .dash-brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:.12em}
+    .dash-body{display:grid;grid-template-columns:150px 1fr;min-height:390px}
+    .dash-side{border-right:1px solid #243032;padding:18px 10px;display:grid;align-content:start;gap:8px}
+    .dash-item{height:38px;border-radius:7px;padding:0 12px;display:flex;align-items:center;font-size:12px;color:#aeb8b3}
+    .dash-item.active{background:#172a16;color:#e8ffe1}
+    .dash-main{padding:22px}
+    .dash-title{font-size:14px;margin-bottom:18px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .stat{border:1px solid #172528;border-radius:8px;background:#0a1416;padding:15px}
+    .stat small{font-size:10px;color:#91a09a}
+    .stat strong{display:block;font-size:22px;margin-top:7px}
+    .stat.ok strong{color:var(--lime)}
+    .stat.no strong{color:#ff807a}
+    .table{margin-top:18px;border:1px solid #172528;border-radius:8px;overflow:hidden}
+    .tr{display:grid;grid-template-columns:1.25fr .8fr 1.4fr .65fr .8fr .65fr;gap:10px;padding:11px 12px;font-size:10px;border-bottom:1px solid #152124;color:#b4beba}
+    .tr.head{color:#7d8c87;background:#081113}.tr:last-child{border-bottom:0}
+    .badge{display:inline-block;padding:3px 7px;border-radius:99px;font-size:9px}
+    .badge.ok{background:#173316;color:#b8ff82}.badge.pending{background:#382b14;color:#f5d487}
+    .risk-dot{display:inline-flex;align-items:center;gap:5px}.risk-dot i{width:6px;height:6px;border-radius:50%;background:#57d35b}.risk-dot.high i{background:var(--orange)}.risk-dot.medium i{background:#d9c63d}
+
+    .enterprise{
+      margin:0 auto 42px;border:1px solid var(--line);border-radius:16px;padding:30px;background:rgba(7,15,16,.8)
+    }
+    .enterprise h3{text-align:center;font-size:20px;margin-bottom:24px}
+    .enterprise-row{display:grid;grid-template-columns:repeat(4,1fr)}
+    .enterprise-item{display:flex;align-items:center;justify-content:center;gap:12px;padding:0 18px;border-right:1px solid var(--line);font-size:13px;color:#d7dedb}
+    .enterprise-item:last-child{border-right:0}
+    .enterprise-item span{color:var(--lime);font-size:18px}
+
+    .trusted{padding:18px 0 54px;text-align:center}
+    .trusted h3{font-size:19px;margin-bottom:28px}
+    .logos{display:grid;grid-template-columns:repeat(6,1fr);gap:24px;align-items:center;color:#7f8a85}
+    .logo-word{font-size:18px;font-weight:600;opacity:.74}
+
+    footer{border-top:1px solid var(--line);padding:34px 0;color:#83908a;font-size:12px}
+    .foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+    .reveal{opacity:0;transform:translateY(16px);transition:.7s ease}
+    .reveal.visible{opacity:1;transform:none}
+
+
+    .contact-actions{display:flex;align-items:center;gap:10px}
+    .demo-section{padding:34px 0 64px;display:grid;grid-template-columns:.85fr 1.4fr;gap:48px;align-items:start}
+    .demo-copy h2{font-size:46px;line-height:1.08;letter-spacing:-.035em;margin:18px 0}
+    .demo-copy p{color:#b7c0bc;line-height:1.7;margin:0 0 24px}
+    .demo-points{display:grid;gap:14px;margin-top:22px}
+    .demo-point{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start;color:#cbd4cf;font-size:14px}
+    .demo-point i{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:#122411;border:1px solid #2b4825;color:var(--lime);font-style:normal;font-weight:700}
+    .demo-console{border:1px solid #334043;border-radius:16px;background:linear-gradient(180deg,#071012,#040a0b);overflow:hidden;box-shadow:var(--shadow)}
+    .demo-console-head{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #243032;background:#081113}
+    .demo-console-title{font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:.04em}
+    .demo-live{display:inline-flex;align-items:center;gap:8px;color:#bafc86;font-size:12px}
+    .demo-live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 14px var(--lime)}
+    .demo-console-body{padding:22px;display:grid;gap:18px}
+    .demo-field{display:grid;gap:8px}
+    .demo-field label{font-size:12px;color:#91a09a;text-transform:uppercase;letter-spacing:.08em}
+    .demo-field input,.demo-field select{width:100%;height:48px;border:1px solid #2b3a3c;border-radius:9px;background:#0a1416;color:var(--text);padding:0 14px;outline:none}
+    .demo-field input:focus,.demo-field select:focus{border-color:#718f62;box-shadow:0 0 0 3px rgba(185,255,116,.08)}
+    .demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .demo-run{width:100%;min-height:48px}
+    .demo-result{border:1px solid #263638;border-radius:12px;background:#071011;padding:18px;display:none}
+    .demo-result.visible{display:block}
+    .verdict-line{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+    .verdict-name{font-family:"Space Grotesk",sans-serif;font-size:22px;font-weight:700;color:var(--lime)}
+    .verdict-name.review{color:#f3d56e}.verdict-name.block{color:#ff857e}
+    .receipt{font-family:monospace;color:#7f8d87;font-size:12px}
+    .reason-list{display:grid;gap:8px;color:#c3cec8;font-size:13px;line-height:1.5}
+    .reason-list div::before{content:"•";color:var(--lime);margin-right:8px}
+    .floating-contact{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;gap:10px}
+    .floating-contact a{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;border:1px solid #415054;background:#0a1416;box-shadow:0 14px 40px rgba(0,0,0,.45);transition:.2s;font-weight:700}
+    .floating-contact a:hover{transform:translateY(-2px);border-color:var(--lime)}
+    .floating-contact .wa{background:linear-gradient(135deg,#d9ff95,#aee85f);color:#071006;border-color:#d8ff98}
+
+    @media(max-width:980px){
+      nav{display:none}
+      .hero{grid-template-columns:1fr;padding-top:54px}
+      .demo-section{grid-template-columns:1fr}
+      .hero-visual{min-height:520px}
+      .control{grid-template-columns:1fr}
+      .enterprise-row{grid-template-columns:1fr 1fr;gap:20px}
+      .enterprise-item{border-right:0;justify-content:flex-start}
+      .logos{grid-template-columns:repeat(3,1fr)}
+    }
+
+    @media(max-width:700px){
+      .container{width:min(100% - 24px,var(--max))}
+      .contact-actions{display:none}
+      .nav-cta{display:none}
+      .hero{padding-top:40px}
+      h1{font-size:46px}
+      .hero p{font-size:16px}
+      .hero-visual{min-height:610px}
+      .stack{width:100%;height:390px}
+      .action-card{width:calc(100% - 36px);height:205px;bottom:auto}
+      .side-cards{left:18px;right:18px;top:236px;width:auto;grid-template-columns:repeat(3,1fr)}
+      .side-card{min-height:105px;padding:12px}
+      .platform{left:2%;right:2%;bottom:0}
+      .problem-strip{grid-template-columns:1fr;gap:20px}
+      .split{height:1px}
+      .control h2{font-size:38px}
+      .dash-body{grid-template-columns:1fr}
+      .dash-side{display:none}
+      .stats{grid-template-columns:1fr 1fr}
+      .tr{grid-template-columns:1fr 1fr 1fr}
+      .tr span:nth-child(n+4){display:none}
+      .enterprise-row{grid-template-columns:1fr}
+      .logos{grid-template-columns:repeat(2,1fr)}
+      .demo-grid{grid-template-columns:1fr}
+      .demo-copy h2{font-size:38px}
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-noise"></div>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="HUQAN home">
+        <span class="brand-mark"><span></span></span>
+        <span>HUQAN</span>
+      </a>
+
+      <nav aria-label="Primary navigation">
+        <a href="#product">Product</a>
+        <a href="#solutions">Solutions</a>
+        <a href="#demo">Demo</a>
+        <a href="#why">Why HUQAN</a>
+        <a href="#docs">Docs</a>
+        <a href="#company">Company</a>
+      </nav>
+
+      <div class="contact-actions">
+        <a class="btn nav-cta" href="mailto:aliulu@ai-ulu.com?subject=HUQAN%20Contact">Email</a>
+        <a class="btn btn-primary nav-cta" href="https://wa.me/905079581642?text=Merhaba%20Ali%20Bey%2C%20HUQAN%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="container hero">
+      <div class="hero-copy reveal">
+        <span class="label">AI GOVERNANCE LAYER</span>
+        <h1>Govern AI Agents.<br><span class="accent">Earn Real Trust.</span></h1>
+        <p>HUQAN is the deterministic control plane for AI agents. We govern actions, enforce policy, require human approval and produce auditable Trust Receipts.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="mailto:aliulu@ai-ulu.com?subject=HUQAN%20Access%20Request">Request Access →</a>
+          <a class="btn" href="mailto:aliulu@ai-ulu.com?subject=HUQAN%20Demo">Book a Demo</a>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal" aria-label="HUQAN control plane product preview">
+        <div class="stack">
+          <div class="action-card">
+            <div class="action-head">
+              <strong>Action Request</strong>
+              <span class="status">Pending Approval</span>
+            </div>
+            <div class="rows">
+              <div class="row"><span>Agent</span><b>DataAnalyst-Agent</b></div>
+              <div class="row"><span>Action</span><b>write_file</b></div>
+              <div class="row"><span>Target</span><b>/financials/summary.xlsx</b></div>
+              <div class="row"><span>Risk Level</span><b class="risk"><i></i>High</b></div>
+            </div>
+            <div class="action-buttons">
+              <button class="mini-btn approve" id="approveBtn">Approve</button>
+              <button class="mini-btn" id="denyBtn">Deny</button>
+            </div>
+          </div>
+
+          <div class="side-cards">
+            <div class="side-card">
+              <div class="t">Policy Check</div>
+              <div class="s"><span class="dot-check">✓</span>All policies passed</div>
+            </div>
+            <div class="side-card">
+              <div class="t">Provenance</div>
+              <div class="s"><span class="dot-check">✓</span>3 sources verified</div>
+            </div>
+            <div class="side-card">
+              <div class="t">Trust Receipt</div>
+              <div class="s">TR-8f3a7c2e</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="platform">
+          <div class="line l1"></div><div class="line l2"></div><div class="line l3"></div>
+          <div class="node n1">AI</div>
+          <div class="node main">HUQAN</div>
+          <div class="node n2">DB</div>
+          <div class="node n3">&lt;/&gt;</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container problem-strip reveal" id="why">
+      <div class="problem-item">
+        <div class="problem-icon orange">!</div>
+        <div>
+          <h3>The Problem</h3>
+          <p>AI agents act with too much autonomy. Organizations lack visibility, control and auditability.</p>
+        </div>
+      </div>
+      <div class="split"></div>
+      <div class="problem-item">
+        <div class="problem-icon green">✓</div>
+        <div>
+          <h3>The Solution</h3>
+          <p>HUQAN sits in front of every action. Policy enforcement, human approval, provenance and auditable receipts.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="container control" id="product">
+      <div class="control-copy reveal">
+        <span class="label">THE HUQAN CONTROL PLANE</span>
+        <h2>Control. Govern.<br>Verify. <span class="accent">Audit.</span></h2>
+        <p>HUQAN brings deterministic governance to every agent action and tool call.</p>
+
+        <div class="features">
+          <div class="feature">
+            <div class="feature-icon">◇</div>
+            <div><b>Policy Enforcement</b><span>Guardrails that are applied, not bypassed.</span></div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">◉</div>
+            <div><b>Human-in-the-Loop</b><span>Right person, right context, right time.</span></div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">≡</div>
+            <div><b>Provenance & Memory Controls</b><span>Know where data comes from and how it is used.</span></div>
+          </div>
+          <div class="feature">
+            <div class="feature-icon">▣</div>
+            <div><b>Trust Receipts</b><span>Cryptographically verifiable audit records.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard reveal" id="solutions">
+        <div class="dash-top">
+          <div class="dash-brand">◈ HUQAN</div>
+          <div>Dashboard</div>
+        </div>
+        <div class="dash-body">
+          <aside class="dash-side">
+            <div class="dash-item active">▣ Overview</div>
+            <div class="dash-item">≡ Actions</div>
+            <div class="dash-item">▤ Policies</div>
+            <div class="dash-item">◉ Approvals</div>
+            <div class="dash-item">▧ Receipts</div>
+            <div class="dash-item">⌘ Agents</div>
+            <div class="dash-item">⚙ Settings</div>
+          </aside>
+
+          <div class="dash-main">
+            <div class="dash-title">Overview</div>
+            <div class="stats">
+              <div class="stat"><small>Total Actions</small><strong>1,248</strong></div>
+              <div class="stat ok"><small>Approved</small><strong>964</strong></div>
+              <div class="stat no"><small>Denied</small><strong>112</strong></div>
+              <div class="stat"><small>Receipts Issued</small><strong>1,136</strong></div>
+            </div>
+
+            <div class="table">
+              <div class="tr head"><span>Agent</span><span>Action</span><span>Target</span><span>Risk</span><span>Status</span><span>Time</span></div>
+              <div class="tr"><span>DataAnalyst-Agent</span><span>write_file</span><span>/reports/Q2.xlsx</span><span class="risk-dot high"><i></i>High</span><span><span class="badge ok">Approved</span></span><span>2m ago</span></div>
+              <div class="tr"><span>Research-Agent</span><span>web_search</span><span>market research</span><span class="risk-dot"><i></i>Low</span><span><span class="badge ok">Approved</span></span><span>5m ago</span></div>
+              <div class="tr"><span>Ops-Agent</span><span>execute_command</span><span>deploy.sh</span><span class="risk-dot high"><i></i>High</span><span><span class="badge pending">Pending</span></span><span>8m ago</span></div>
+              <div class="tr"><span>DataAnalyst-Agent</span><span>read_database</span><span>customers</span><span class="risk-dot medium"><i></i>Medium</span><span><span class="badge ok">Approved</span></span><span>12m ago</span></div>
+              <div class="tr"><span>Finance-Agent</span><span>send_email</span><span>invoice@client.com</span><span class="risk-dot"><i></i>Low</span><span><span class="badge ok">Approved</span></span><span>15m ago</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="container demo-section" id="demo">
+      <div class="demo-copy reveal">
+        <span class="label">INTERACTIVE DEMO</span>
+        <h2>See the verdict<br><span class="accent">before execution.</span></h2>
+        <p>Test a sample agent action and see how HUQAN evaluates policy scope, risk, approval requirements and audit evidence.</p>
+        <div class="demo-points">
+          <div class="demo-point"><i>1</i><span>Select an agent action and target.</span></div>
+          <div class="demo-point"><i>2</i><span>HUQAN applies deterministic policy rules.</span></div>
+          <div class="demo-point"><i>3</i><span>Receive an ALLOW, REVIEW or BLOCK verdict with a Trust Receipt.</span></div>
+        </div>
+        <div class="hero-actions" style="margin-top:28px">
+          <a class="btn btn-primary" href="mailto:aliulu@ai-ulu.com?subject=HUQAN%20Live%20Demo">Request Live Demo</a>
+          <a class="btn" href="https://wa.me/905079581642?text=Merhaba%20Ali%20Bey%2C%20HUQAN%20demo%20talep%20ediyorum." target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="demo-console reveal">
+        <div class="demo-console-head">
+          <div class="demo-console-title">HUQAN Policy Simulator</div>
+          <div class="demo-live">Live simulation</div>
+        </div>
+        <div class="demo-console-body">
+          <div class="demo-grid">
+            <div class="demo-field">
+              <label for="demoAgent">Agent</label>
+              <select id="demoAgent">
+                <option>DataAnalyst-Agent</option><option>Ops-Agent</option><option>Research-Agent</option><option>Finance-Agent</option>
+              </select>
+            </div>
+            <div class="demo-field">
+              <label for="demoAction">Action</label>
+              <select id="demoAction">
+                <option value="read">read_database</option><option value="write">write_file</option><option value="command">execute_command</option><option value="delete">delete_database</option>
+              </select>
+            </div>
+          </div>
+          <div class="demo-field">
+            <label for="demoTarget">Target</label>
+            <input id="demoTarget" value="/production/customer-data" />
+          </div>
+          <button class="btn btn-primary demo-run" id="runDemo">Run HUQAN Judgment</button>
+          <div class="demo-result" id="demoResult">
+            <div class="verdict-line">
+              <div class="verdict-name" id="demoVerdict">ALLOW</div>
+              <div class="receipt" id="demoReceipt">TR-00000000</div>
+            </div>
+            <div class="reason-list" id="demoReasons"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container enterprise reveal" id="company">
+      <h3>Built for enterprises that can’t afford to lose control.</h3>
+      <div class="enterprise-row">
+        <div class="enterprise-item"><span>◇</span>Deterministic Governance</div>
+        <div class="enterprise-item"><span>◇</span>Regulatory Compliance</div>
+        <div class="enterprise-item"><span>♙</span>Enterprise Security</div>
+        <div class="enterprise-item"><span>▣</span>Operational Auditability</div>
+      </div>
+    </section>
+
+    <section class="container trusted reveal" id="docs">
+      <h3>Trusted by builders. Designed for scale.</h3>
+      <div class="logos">
+        <div class="logo-word">aws</div>
+        <div class="logo-word">Microsoft Azure</div>
+        <div class="logo-word">Google Cloud</div>
+        <div class="logo-word">docker</div>
+        <div class="logo-word">Kubernetes</div>
+        <div class="logo-word">PostgreSQL</div>
+      </div>
+    </section>
+  </main>
+
+
+  <div class="floating-contact" aria-label="Contact options">
+    <a href="mailto:aliulu@ai-ulu.com?subject=HUQAN%20Contact" title="Send email">✉</a>
+    <a class="wa" href="https://wa.me/905079581642?text=Merhaba%20Ali%20Bey%2C%20HUQAN%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." target="_blank" rel="noopener" title="Contact on WhatsApp">W</a>
+  </div>
+
+  <footer>
+    <div class="container foot">
+      <span>© 2026 HUQAN. All rights reserved.</span>
+      <span>Models generate. Agents act. Memory stores. HUQAN judges.</span>
+    </div>
+  </footer>
+
+  <script>
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    },{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+    const approve = document.getElementById('approveBtn');
+    const deny = document.getElementById('denyBtn');
+    const status = document.querySelector('.status');
+
+    approve.addEventListener('click',()=>{
+      status.textContent='Approved';
+      status.style.color='#c9ff7b';
+      status.style.background='#173316';
+      status.style.borderColor='#31552d';
+    });
+
+    deny.addEventListener('click',()=>{
+      status.textContent='Denied';
+      status.style.color='#ffb0aa';
+      status.style.background='#321516';
+      status.style.borderColor='#5c282b';
+    });
+
+    const runDemo = document.getElementById('runDemo');
+    const demoAction = document.getElementById('demoAction');
+    const demoTarget = document.getElementById('demoTarget');
+    const demoResult = document.getElementById('demoResult');
+    const demoVerdict = document.getElementById('demoVerdict');
+    const demoReceipt = document.getElementById('demoReceipt');
+    const demoReasons = document.getElementById('demoReasons');
+
+    function receiptId(){ return 'TR-' + Math.random().toString(16).slice(2,10).toUpperCase(); }
+
+    runDemo.addEventListener('click',()=>{
+      const action = demoAction.value;
+      const target = demoTarget.value.toLowerCase();
+      let verdict='ALLOW', verdictClass='', reasons=[
+        'Identity and policy scope verified',
+        'No destructive operation detected',
+        'Audit receipt generated'
+      ];
+
+      if(action==='write'){
+        verdict='REVIEW'; verdictClass='review';
+        reasons=['Write operation requires explicit policy scope','Human approval requested before execution','Provenance and target context recorded'];
+      }
+      if(action==='command'){
+        verdict='REVIEW'; verdictClass='review';
+        reasons=['Command execution classified as elevated risk','Dry-run or human approval required','Execution context preserved in Trust Receipt'];
+      }
+      if(action==='delete' || target.includes('production')){
+        verdict='BLOCK'; verdictClass='block';
+        reasons=['Destructive action detected','Production target is outside approved action boundary','Execution prevented and incident evidence recorded'];
+      }
+
+      demoVerdict.textContent=verdict;
+      demoVerdict.className='verdict-name '+verdictClass;
+      demoReceipt.textContent=receiptId();
+      demoReasons.innerHTML=reasons.map(r=>`<div>${r}</div>`).join('');
+      demoResult.classList.add('visible');
+    });
+
+  </script>
+</body>
+</html>
