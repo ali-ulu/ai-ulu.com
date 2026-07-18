@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AI-ULU builds deterministic, local-first and auditable infrastructure for trustworthy AI systems." />
+  <title>AI-ULU — Trust Infrastructure for AI Systems</title>
+<link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --paper:#f3f0e9;--ink:#111411;--muted:#656b64;--line:rgba(17,20,17,.14);
+      --acid:#c8ff67;--cyan:#63e6e2;--violet:#b89cff;--blue:#78adff;
+      --panel:rgba(255,255,255,.58);--shadow:0 28px 90px rgba(34,39,34,.12);
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif;overflow-x:hidden}
+    a{color:inherit;text-decoration:none} button{font:inherit}
+    .grain{position:fixed;inset:0;pointer-events:none;opacity:.16;z-index:20;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E")}
+    .shell{width:min(1440px,calc(100% - 42px));margin:20px auto 42px;border:1px solid var(--line);border-radius:28px;overflow:hidden;background:rgba(247,244,238,.84);backdrop-filter:blur(20px);box-shadow:var(--shadow)}
+    header{height:78px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;background:rgba(243,240,233,.82);backdrop-filter:blur(18px)}
+    .brand{display:flex;gap:12px;align-items:center;font-weight:700;letter-spacing:-.02em}.mark{width:34px;height:34px;border:1px solid var(--ink);border-radius:10px;display:grid;place-items:center;transform:rotate(8deg)}
+    .mark span{display:block;width:14px;height:14px;border:3px solid var(--ink);border-left-color:transparent;transform:rotate(-45deg)}
+    nav{display:flex;gap:28px;font-size:14px;color:#333a33}.nav-cta{padding:11px 16px;border:1px solid var(--ink);border-radius:999px}
+    .hero{display:grid;grid-template-columns:1.06fr .94fr;min-height:650px;border-bottom:1px solid var(--line)}
+    .hero-copy{padding:74px 48px 58px;display:flex;flex-direction:column;justify-content:space-between}
+    .kicker{display:inline-flex;align-items:center;gap:8px;width:max-content;padding:8px 11px;border:1px solid var(--line);border-radius:999px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.45)}
+    .dot{width:7px;height:7px;background:var(--acid);border-radius:50%;box-shadow:0 0 0 6px rgba(200,255,103,.18)}
+    h1{font-family:"Bodoni Moda",serif;font-size:clamp(58px,7.5vw,118px);font-weight:500;line-height:.83;letter-spacing:-.06em;margin:34px 0 30px;max-width:900px}
+    h1 em{font-style:italic;color:#29463a}.lead{font-size:19px;line-height:1.55;max-width:650px;color:#4f584f}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}.btn{display:inline-flex;align-items:center;gap:14px;padding:15px 20px;border-radius:999px;border:1px solid var(--ink);font-size:14px}.btn.primary{background:var(--ink);color:#fff}.btn:hover{transform:translateY(-2px)}
+    .hero-art{position:relative;min-height:650px;background:#131713;overflow:hidden}.hero-art:before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 40% 40%,rgba(99,230,226,.48),transparent 24%),radial-gradient(circle at 65% 55%,rgba(184,156,255,.45),transparent 28%),radial-gradient(circle at 40% 72%,rgba(200,255,103,.32),transparent 23%);filter:blur(18px);animation:drift 10s ease-in-out infinite alternate}
+    @keyframes drift{to{transform:translate3d(4%,-3%,0) scale(1.06)}}
+    .orb{position:absolute;left:50%;top:48%;width:min(410px,70%);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:34% 66% 58% 42%/44% 36% 64% 56%;background:linear-gradient(135deg,#e9fff6 0%,#6fded4 28%,#6f74ff 58%,#c9ff71 100%);filter:saturate(.9);box-shadow:inset 0 0 70px rgba(255,255,255,.5),0 50px 120px rgba(0,0,0,.45);animation:morph 9s ease-in-out infinite alternate}
+    @keyframes morph{to{border-radius:63% 37% 42% 58%/35% 60% 40% 65%;transform:translate(-50%,-50%) rotate(9deg)}}
+    .wire{position:absolute;inset:8%;border:1px solid rgba(255,255,255,.2);border-radius:50%;transform:rotate(-18deg)}.wire.w2{inset:16%;transform:rotate(22deg)}.wire.w3{inset:27%;transform:rotate(70deg)}
+    .signal{position:absolute;color:#ecf7f2;font-size:11px;letter-spacing:.08em;text-transform:uppercase}.s1{left:8%;top:18%}.s2{right:8%;top:30%}.s3{left:11%;bottom:18%}.s4{right:10%;bottom:12%}
+    .signal:before{content:"";display:inline-block;width:18px;height:1px;background:var(--acid);vertical-align:middle;margin-right:8px}
+    .section{padding:68px 48px}.section-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:34px}.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#4f5e51}.section h2{font-family:"Bodoni Moda",serif;font-size:clamp(42px,5vw,72px);line-height:.95;letter-spacing:-.04em;margin:8px 0 0;font-weight:500}.section-note{max-width:430px;color:var(--muted);line-height:1.55}
+    .projects{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.card{position:relative;min-height:340px;padding:25px;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--panel);display:flex;flex-direction:column;justify-content:space-between;transition:.35s ease}.card:hover{transform:translateY(-6px);box-shadow:0 22px 50px rgba(31,39,32,.12)}
+    .card.large{grid-column:span 7}.card.small{grid-column:span 5}
+    .card-top{display:flex;justify-content:space-between;gap:16px}.num{font-size:12px;color:var(--muted)}.project-name{font-family:"Bodoni Moda",serif;font-size:46px;letter-spacing:-.04em;margin:18px 0 2px}.project-role{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:#526256}.project-desc{max-width:560px;color:#4f584f;line-height:1.55;font-size:15px;margin-top:18px}
+    .project-visual{height:120px;border-radius:16px;border:1px solid var(--line);position:relative;overflow:hidden;background:#171b18;margin-top:24px}.project-visual:before,.project-visual:after{content:"";position:absolute;border-radius:50%;filter:blur(2px)}.huqan:before{width:190px;height:190px;background:radial-gradient(circle,#c8ff67 0 4%,transparent 5% 22%,rgba(200,255,103,.35) 23% 25%,transparent 26% 39%,rgba(99,230,226,.35) 40% 42%,transparent 43%);left:45%;top:50%;transform:translate(-50%,-50%)}.levh{background:linear-gradient(120deg,#101c19,#17302a)}.levh:before{inset:20px;background:repeating-linear-gradient(90deg,transparent 0 28px,rgba(99,230,226,.35) 29px 30px),repeating-linear-gradient(0deg,transparent 0 28px,rgba(99,230,226,.22) 29px 30px);border-radius:14px}.agon{background:radial-gradient(circle at center,#5e3cab 0,transparent 22%),#17131f}.agon:before{width:240px;height:90px;border:1px solid rgba(184,156,255,.65);left:50%;top:50%;transform:translate(-50%,-50%) rotate(-7deg)}.agon:after{width:150px;height:150px;border:1px solid rgba(184,156,255,.35);left:50%;top:50%;transform:translate(-50%,-50%);box-shadow:0 0 40px rgba(184,156,255,.28)}.mirage{background:linear-gradient(135deg,#101616,#0f2421)}.mirage:before{width:260px;height:160px;left:45%;top:0;background:repeating-radial-gradient(ellipse at center,rgba(99,230,226,.5) 0 1px,transparent 2px 12px);transform:skewX(-20deg)}
+    .link{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:600;margin-top:18px}.link span{transition:.25s}.card:hover .link span{transform:translateX(5px)}
+    .principles{display:grid;grid-template-columns:1.1fr 1.9fr;border-top:1px solid var(--line);background:#151916;color:#eff4ef}.principles-copy{padding:70px 48px;border-right:1px solid rgba(255,255,255,.12)}.principles h2{color:white}.principles-copy p{color:#aab5ad;line-height:1.6}.principle-grid{display:grid;grid-template-columns:repeat(2,1fr)}.principle{padding:34px;border-bottom:1px solid rgba(255,255,255,.12);border-right:1px solid rgba(255,255,255,.12)}.principle h3{font-family:"Bodoni Moda",serif;font-size:28px;margin:18px 0 8px}.principle p{color:#aab5ad;line-height:1.5;font-size:14px}.icon{width:42px;height:42px;border:1px solid rgba(255,255,255,.25);border-radius:12px;display:grid;place-items:center;color:var(--acid)}
+    footer{padding:32px 48px;display:flex;justify-content:space-between;gap:20px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+    .reveal{opacity:0;transform:translateY(18px);transition:.7s ease}.reveal.on{opacity:1;transform:none}
+    @media(max-width:950px){nav{display:none}.hero{grid-template-columns:1fr}.hero-copy{padding:58px 26px}.hero-art{min-height:480px}.section{padding:56px 26px}.section-head{display:block}.projects{display:block}.card{margin-bottom:14px}.principles{grid-template-columns:1fr}.principles-copy{border-right:0}.principle-grid{grid-template-columns:1fr}.shell{width:calc(100% - 18px);margin:9px auto}.hero h1{font-size:64px}.section-note{margin-top:18px}footer{padding:28px 26px;display:block}footer div+div{margin-top:10px}}
+  .contact{display:grid;grid-template-columns:1.4fr .6fr;gap:30px;align-items:end;padding:70px 48px;border-top:1px solid var(--line);background:linear-gradient(120deg,rgba(200,255,103,.22),rgba(99,230,226,.15),rgba(184,156,255,.16))}.contact h2{font-family:"Bodoni Moda",serif;font-size:clamp(46px,6vw,86px);line-height:.9;letter-spacing:-.05em;margin:10px 0}.contact p{color:#4f584f;line-height:1.6;max-width:680px}.contact-actions{display:flex;justify-content:flex-end}.contact .btn{background:var(--ink);color:#fff}.cursor-glow{position:fixed;width:320px;height:320px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(200,255,103,.16),transparent 65%);transform:translate(-50%,-50%)}@media(max-width:950px){.contact{grid-template-columns:1fr;padding:56px 26px}.contact-actions{justify-content:flex-start}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.cursor-glow{display:none}}</style>
+</head>
+<body><div class="cursor-glow" aria-hidden="true"></div>
+<div class="grain"></div>
+<main class="shell">
+  <header>
+    <a class="brand" href="#top"><span class="mark"><span></span></span><strong>ai-ulu</strong></a>
+    <nav><a href="#work">Systems</a><a href="#principles">Principles</a><a href="mailto:aliulu@ai-ulu.com">Contact</a></nav><a class="nav-cta" href="mailto:aliulu@ai-ulu.com?subject=AI-ULU%20conversation">Start a conversation</a>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="hero-copy">
+      <div>
+        <span class="kicker"><span class="dot"></span> AI infrastructure studio</span>
+        <h1>Trust is not a feature.<br><em>It is the system.</em></h1>
+        <p class="lead">AI-ULU builds deterministic, local-first and auditable infrastructure for AI systems that must operate under explicit human control.</p>
+        <div class="actions"><a class="btn primary" href="#work">Explore the systems <span>View</span></a><a class="btn" href="mailto:aliulu@ai-ulu.com?subject=AI-ULU%20partnership">Discuss a partnership</a></div>
+      </div>
+      <p class="eyebrow">Governance · Memory · Incident control · Deception evidence</p>
+    </div>
+    <div class="hero-art" aria-label="Abstract trust infrastructure visual">
+      <div class="wire"></div><div class="wire w2"></div><div class="wire w3"></div><div class="orb"></div>
+      <span class="signal s1">Control</span><span class="signal s2">Evidence</span><span class="signal s3">Memory</span><span class="signal s4">Accountability</span>
+    </div>
+  </section>
+
+  <section class="section" id="work">
+    <div class="section-head reveal"><div><span class="eyebrow">Selected systems</span><h2>Two foundations for<br>trustworthy autonomy.</h2></div><p class="section-note">Huqan governs what an AI system may trust and do. levh preserves the context that lets people and AI systems continue without losing control.</p></div><div class="projects">
+      <article class="card large reveal"><div><div class="card-top"><span class="num">01 / Governance</span><span>LINK</span></div><h3 class="project-name">Huqan</h3><div class="project-role">Deterministic judgment and verification</div><p class="project-desc">A local-first trust layer for AI claims, memory and actions. It judges claims against graph-backed evidence, gates risky actions, and produces auditable trust receipts.</p></div><div><div class="project-visual huqan"></div><a class="link" href="https://huqan.ai-ulu.com">Open Huqan <span>OPEN</span></a></div></article>
+      <article class="card small reveal"><div><div class="card-top"><span class="num">02 / Context</span><span>LINK</span></div><h3 class="project-name">levh</h3><div class="project-role">Human / AI context infrastructure</div><p class="project-desc">A local-first context layer that keeps decisions, sources and relationships connected across people, projects and AI workflows.</p></div><div><div class="project-visual levh"></div><a class="link" href="https://levh.ai-ulu.com">Open levh <span>OPEN</span></a></div></article>
+    </div>
+  </section>
+
+  <section class="principles" id="principles">
+    <div class="principles-copy reveal"><span class="eyebrow" style="color:#8ea396">Operating principles</span><h2>Designed for systems that cannot rely on hope.</h2><p>Probabilistic models need deterministic boundaries. The product work is organized around explicit policy, local ownership, human authority and evidence that survives scrutiny.</p></div>
+    <div class="principle-grid">
+      <article class="principle reveal"><div class="icon">◇</div><h3>Deterministic control</h3><p>Critical decisions are governed by rules and contracts—not model confidence alone.</p></article>
+      <article class="principle reveal"><div class="icon">◎</div><h3>Local ownership</h3><p>Data, context and operational state remain under the operator’s control.</p></article>
+      <article class="principle reveal"><div class="icon">⌁</div><h3>Human authority</h3><p>High-impact actions can be stopped, reviewed or approved in context.</p></article>
+      <article class="principle reveal"><div class="icon">▣</div><h3>Verifiable evidence</h3><p>Decisions and incidents leave inspectable records rather than unverifiable claims.</p></article>
+    </div>
+  </section>
+
+  <footer><div>(c) 2026 AI-ULU. Built around verifiable trust.</div><div><a href="https://github.com/ali-ulu" target="_blank" rel="noreferrer">GitHub ↗</a></div></footer>
+</main>
+<script>
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));const glow=document.querySelector('.cursor-glow');addEventListener('pointermove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px'});
+</script>
+</body>
+</html>
