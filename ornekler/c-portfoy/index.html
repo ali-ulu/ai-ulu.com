@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Ali Ulu · Paket C portföy örneği</title>
-<meta name="description" content="AI-ULU Paket C örneği: teknoloji portföyü kalıbı, gerçek çalışmalarla. HUQAN ve LEVH açık kaynak projeleri; problem, yaklaşım ve doğrulanabilir sonuç.">
+<title>Ali Ulu · Portföy</title>
+<meta name="description" content="Ali Ulu: HUQAN ve LEVH, yerel çalışan ve denetlenebilir açık kaynak yapay zekâ altyapısı.">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,13 +99,12 @@ footer{padding:28px 0 40px;color:var(--ink-3);font-size:.85rem}
   <header class="hero" aria-labelledby="baslik">
     <canvas id="alan-hero" aria-hidden="true"></canvas>
     <div class="hero-ic">
-      <p class="mono">Paket C örneği · gerçek çalışmalar</p>
+      <p class="mono">Ali Ulu · AI-ULU</p>
       <h1 id="baslik">Yapay zekâya kanıtla güvenen yazılımlar.</h1>
-      <p class="lead">Ali Ulu, AI-ULU. Yerel çalışan, denetlenebilir, açık kaynak altyapı. Aşağıdaki işler gerçek; her iddianın yanında kaynağı var.</p>
+      <p class="lead">Yerel çalışan, denetlenebilir, açık kaynak yapay zekâ altyapısı.</p>
       <a class="btn primary" href="#isler">Seçili işler</a>
       <a class="btn" href="mailto:aliulu@ai-ulu.com?subject=Paket%20C%20portf%C3%B6y">Yazın</a>
     </div>
-    <p class="seed mono">Arka plan: tohumlu üretken desen · <span id="tohum" style="text-transform:none"></span></p>
   </header>
 
   <section id="isler" aria-labelledby="isler-baslik" tabindex="-1">
@@ -153,7 +152,7 @@ footer{padding:28px 0 40px;color:var(--ink-3);font-size:.85rem}
     <canvas id="alan-kanit" aria-hidden="true"></canvas>
     <div class="wrap">
       <p class="mono">Kanıt</p>
-      <h2 id="kanit-baslik">Rakamlar kaynağıyla birlikte.</h2>
+      <h2 id="kanit-baslik">Açık kaynakta.</h2>
       <div class="bento">
         <div class="tile genis">
           <p class="mono">HUQAN · birleştirilmiş PR</p>
@@ -185,22 +184,6 @@ footer{padding:28px 0 40px;color:var(--ink-3);font-size:.85rem}
           <div class="yigin"><span>Node.js</span><span>Python</span><span>Rust</span><span>SQLite</span><span>MCP</span><span>Playwright</span><span>GitHub Actions</span></div>
         </div>
       </div>
-      <p class="mono tarih">Rakamlar 24.09.2026 tarihinde GitHub ve npm'den alındı; güncel değerler bağlantılardadır.</p>
-    </div>
-  </section>
-
-  <section class="hizmet" aria-labelledby="hizmet-baslik">
-    <div class="wrap satir">
-      <div>
-        <p class="mono">Hizmetler</p>
-        <h2 id="hizmet-baslik">Aynı özen, sizin projeniz için.</h2>
-      </div>
-      <nav class="paketler" aria-label="Paket örnekleri">
-        <a href="../a-sinematik/"><span class="harf">A</span><span class="ad">Sinematik landing</span><span class="not">Örneği gör</span></a>
-        <a href="../b-urun/"><span class="harf">B</span><span class="ad">Ürün / marka sayfası</span><span class="not">Örneği gör</span></a>
-        <a href="./"><span class="harf">C</span><span class="ad">Teknoloji portföyü</span><span class="not">Bu sayfa</span></a>
-        <a href="../d-imza/"><span class="harf">D</span><span class="ad">Tam marka deneyimi</span><span class="not">Örneği gör</span></a>
-      </nav>
     </div>
   </section>
 
@@ -212,19 +195,13 @@ footer{padding:28px 0 40px;color:var(--ink-3);font-size:.85rem}
     </div>
   </section>
 </main>
-<footer class="wrap">Bu sayfa AI-ULU Paket C örneğidir. İçerikteki projeler ve rakamlar gerçektir.</footer>
+<footer class="wrap">© 2026 Ali Ulu · AI-ULU</footer>
 
 <script src="eser/eser.js"></script>
 <script>
 (() => {
   // one fixed hash: the hero always shows the same composition; eser/ shows others
   const HASH = "0x5a17c0de9e3779b1d2b8f0a4c64e1f07b3ad9c21e8f65b40a7d3c9e1f2b6a8c4";
-  const tohum = document.getElementById("tohum");
-  tohum.textContent = HASH.slice(0, 10) + "…";
-  const link = document.createElement("a");
-  link.href = "eser/?hash=" + HASH + "&width=1600&height=1000";
-  link.textContent = "eseri aç ↗"; link.style.marginLeft = ".6em";
-  tohum.after(link);
 
   const paint = () => {
     const dpr = Math.min(devicePixelRatio || 1, 2);
