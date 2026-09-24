@@ -3,7 +3,7 @@
   const course = (window.ACADEMY_CATALOG || []).find(item => item.id === id);
   if (!course) {
     document.getElementById('program-title').textContent = 'Program bulunamadı.';
-    document.getElementById('program-subtitle').textContent = 'Katalogdan bir program seç.';
+    document.getElementById('program-subtitle').textContent = 'Katalogdan bir program seçin.';
     return;
   }
   const codes = {foundations:'SE',frontend:'FE',backend:'BE',devops:'DO',devsecops:'DS','system-design':'SD'};
@@ -15,12 +15,12 @@
   document.getElementById('program-code').textContent = codes[course.id] || 'SA';
   const cover = document.querySelector('.track-cover');
   cover.dataset.course = course.id;
-  cover.querySelector('span:last-child').textContent = course.title.replace(/^Senior /, '').toUpperCase() + ' / ALI ULU';
+  cover.querySelector('span:last-child').textContent = course.title.replace(/^Senior /, '').toLocaleUpperCase('tr-TR') + ' / ALI ULU';
   const days = document.getElementById('program-days');
   for (const day of course.days) {
     const item = document.createElement('li');
     const label = document.createElement('span');
-    label.textContent = 'GÜN ' + String(day.day).padStart(2, '0');
+    label.textContent = 'DERS ' + String(day.day).padStart(2, '0');
     const title = document.createElement('strong');
     title.textContent = day.title;
     item.append(label, title);
@@ -33,23 +33,23 @@
     stack.append(item);
   }
   const bundleId = ['foundations', 'frontend', 'backend'].includes(course.id) ? 'web' : 'production';
-  const bundleName = bundleId === 'web' ? 'Web üretim yolu' : 'Production yolu';
+  const bundleName = bundleId === 'web' ? 'Web üretim yolu' : 'Yayına hazırlık yolu';
   document.getElementById('related-bundle-title').textContent = course.title + ', ' + bundleName + ' içinde.';
   document.getElementById('related-bundle-copy').textContent = bundleId === 'web'
-    ? 'Foundations, Frontend ve Backend aynı MiniShop örneğinde temelden ürüne ilerlemek için birlikte tasarlanıyor.'
-    : 'System Design, DevOps ve DevSecOps aynı MiniShop senaryosunda mimari, yayın ve güvenlik kararlarını bağlamak için birlikte tasarlanıyor.';
+    ? 'Yazılım temelleri, arayüz ve sunucu geliştirme programları aynı MiniShop örneğinde birlikte ilerlemek için hazırlanıyor.'
+    : 'Sistem tasarımı, altyapı ve güvenli teslim programları aynı MiniShop senaryosunda mimari, yayın ve güvenlik kararlarını ele alıyor.';
   document.getElementById('related-bundle-link').href = 'paket.html?paket=' + bundleId;
   const purchaseUrl = window.ACADEMY_STORE_LINKS?.courses?.[course.id];
   if (purchaseUrl) {
     try {
       const url = new URL(purchaseUrl);
       if (url.protocol === 'https:') {
-        document.getElementById('purchase-title').textContent = 'ikas mağazasında incele.';
+        document.getElementById('purchase-title').textContent = 'ikas mağazasında inceleyin.';
         document.getElementById('purchase-copy').textContent = 'Güncel fiyat, erişim süresi, içerik ve destek kapsamı ürün sayfasında yer alır. Satın alma ikas mağazasında tamamlanır.';
         const button = document.createElement('a');
         button.className = 'btn dark';
         button.href = url.href;
-        button.textContent = 'ikas ürün sayfasına git ↗';
+        button.textContent = 'ikas ürün sayfasını açın ↗';
         document.getElementById('purchase-actions').prepend(button);
       }
     } catch {

@@ -43,6 +43,7 @@ fs.mkdirSync(out, { recursive: true });
     await page.goto(new URL('academy.html', base).href, { waitUntil: 'networkidle' });
     assert.equal(await page.locator('.track').count(), 6);
     assert.equal(await page.locator('.track li').count(), 90);
+    assert.doesNotMatch(await page.locator('main').innerText(), /\b(Foundations|Frontend|Backend|Production|Blueprint|Engineering System|bundle)\b/);
     const coverColors = await page.locator('.track-cover').evaluateAll(covers => covers.map(cover => getComputedStyle(cover).color));
     assert.equal(new Set(coverColors).size, 6, 'each subject must have its own readable cover accent');
     await page.locator('.track:first-child .track-cover').scrollIntoViewIfNeeded();
@@ -51,7 +52,7 @@ fs.mkdirSync(out, { recursive: true });
     assert.equal(await page.locator('.track:visible').count(), 2);
     await page.screenshot({ path: path.join(out, 'academy.png') });
     assert.equal(await page.locator('.bundle-detail-link').count(), 2);
-    for (const [bundle, expected] of [['web', 'Web üretim yolu'], ['production', 'Production yolu']]) {
+    for (const [bundle, expected] of [['web', 'Web üretim yolu'], ['production', 'Yayına hazırlık yolu']]) {
       const response = await page.goto(new URL('paket.html?paket=' + bundle, base).href, { waitUntil: 'networkidle' });
       assert.equal(response.status(), 200);
       assert.equal(await page.locator('#bundle-title').textContent(), expected);
@@ -79,11 +80,12 @@ fs.mkdirSync(out, { recursive: true });
       const response = await page.goto(new URL(route, base).href, { waitUntil: 'networkidle' });
       assert.equal(response.status(), 200);
       assert.ok(await page.locator('h1').count() >= 1);
+      assert.doesNotMatch(await page.locator('main').innerText(), /\b(Blueprint|Cinematic|Engineering System|LEARNING)\b/);
       if (route === 'danismanlik.html') {
         await page.screenshot({ path: path.join(out, 'consulting-1440.png') });
       }
       if (route === 'portfolyo.html') {
-        assert.equal(await page.locator('.case').count(), 4);
+        assert.equal(await page.locator('.case').count(), 3);
         assert.deepEqual(await page.locator('.portfolio-shot img').evaluateAll(images => images.map(image => image.complete && image.naturalWidth > 0)), [true]);
         assert.match(await page.locator('.portfolio-shot figcaption').textContent(), /Örnek veriler/);
         assert.equal(await page.locator('a[href="https://github.com/ali-ulu/levh"]').count(), 1);
@@ -115,18 +117,17 @@ fs.mkdirSync(out, { recursive: true });
     assert.deepEqual(practicePosts, [], 'practice must not submit answers to the site');
     await page.goto(new URL('danismanlik.html', base).href, { waitUntil: 'networkidle' });
     assert.equal(await page.locator('.package-action').count(), 4);
-    assert.equal(await page.locator('.route-action').count(), 3);
-    await page.locator('.package').filter({ has: page.locator('h3', { hasText: 'Bağımsız kontrol' }) }).locator('.package-action').click();
-    assert.equal(await page.locator('select[name=service]').inputValue(), 'Bağımsız proje incelemesi');
-    await page.goto(new URL('danismanlik.html', base).href, { waitUntil: 'networkidle' });
-    await page.locator('.package').filter({ has: page.locator('h3', { hasText: 'Uygulama' }) }).locator('.package-action').click();
-    assert.equal(await page.locator('select[name=service]').inputValue(), 'Mevcut plana göre uygulama');
-    await page.goto(new URL('index.html?service=blueprint-verify#iletisim', base).href, { waitUntil: 'networkidle' });
-    assert.equal(await page.locator('select[name=service]').inputValue(), 'Proje hazırlama + bağımsız inceleme');
+    for (const service of ['blueprint', 'blueprint-verify', 'blueprint-build', 'verify']) {
+      await page.goto(new URL('danismanlik.html', base).href, { waitUntil: 'networkidle' });
+      await page.locator('.package[data-service="' + service + '"] .package-action').click();
+      assert.equal(await page.locator('select[name=service]').inputValue(), service);
+    }
+    await page.goto(new URL('index.html?service=unknown#iletisim', base).href, { waitUntil: 'networkidle' });
+    assert.equal(await page.locator('select[name=service]').inputValue(), '');
     await page.goto(new URL('web-gelistirme.html', base).href, { waitUntil: 'networkidle' });
     assert.equal(await page.locator('.package-action').count(), 4);
     await page.locator('.package-action').first().click();
-    assert.equal(await page.locator('select[name=service]').inputValue(), 'Web sitesi geliştirme');
+    assert.equal(await page.locator('select[name=service]').inputValue(), 'website');
     await page.setViewportSize({ width: 390, height: 844 });
     for (const route of ['danismanlik.html', 'web-gelistirme.html']) {
       await page.goto(new URL(route, base).href, { waitUntil: 'networkidle' });
@@ -145,7 +146,30 @@ fs.mkdirSync(out, { recursive: true });
     assert.equal(await page.locator('#project-form').evaluate(form => form.checkValidity()), true);
     await page.locator('#project-form button').click();
     assert.match(await page.locator('.form-status').textContent(), /e-posta uygulaman/i);
+    assert.match(await page.locator('.form-status').textContent(), /henüz gönderilmedi/);
     await context.close();
+    for (const width of [390, 1440]) {
+      const moving = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'no-preference' });
+      const animated = await moving.newPage();
+      const motionErrors = [];
+      animated.on('pageerror', error => motionErrors.push(error.message));
+      for (const route of ['index.html', 'danismanlik.html']) {
+        await animated.goto(new URL(route, base).href, { waitUntil: 'networkidle' });
+        await animated.screenshot({ path: path.join(out, route.replace('.html','') + '-motion-start-' + width + '.png') });
+        await animated.locator(route === 'index.html' ? '.paper-stack' : '#paketler').scrollIntoViewIfNeeded();
+        await animated.waitForTimeout(450);
+        assert.equal(await animated.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true);
+        await animated.screenshot({ path: path.join(out, route.replace('.html','') + '-motion-middle-' + width + '.png') });
+      }
+      assert.deepEqual(motionErrors, []);
+      await moving.close();
+    }
+    const noJs = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+    const staticPage = await noJs.newPage();
+    await staticPage.goto(new URL('danismanlik.html', base).href);
+    assert.equal(await staticPage.locator('.package-action').count(), 4);
+    assert.equal(await staticPage.locator('.consult-delivery').isVisible(), true);
+    await noJs.close();
     console.log('academy: 6 tracks / 90 lessons, filter works; routes and form checked');
   } finally {
     await browser.close();

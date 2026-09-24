@@ -29,11 +29,11 @@
     const coverCode = document.createElement('strong');
     coverCode.textContent = codes[course.id] || 'SA';
     const coverFoot = document.createElement('span');
-    coverFoot.textContent = course.title.replace(/^Senior /, '').toUpperCase() + ' / ALI ULU';
+    coverFoot.textContent = course.title.replace(/^Senior /, '').toLocaleUpperCase('tr-TR') + ' / ALI ULU';
     cover.append(coverBrand, coverCode, coverFoot);
     const status = document.createElement('span');
     status.className = 'track-status';
-    status.textContent = 'Mevcut içerik · Kalite incelemesinde';
+    status.textContent = 'Hazırlanıyor · Satışa açık değil';
     identity.append(cover, status);
     const body = document.createElement('div');
     const title = document.createElement('h3');
@@ -42,7 +42,7 @@
     description.textContent = descriptions[course.id] || '';
     const details = document.createElement('details');
     const summary = document.createElement('summary');
-    summary.textContent = course.days.length + ' ders başlığını gör';
+    summary.textContent = course.days.length + ' ders başlığını inceleyin';
     const list = document.createElement('ol');
     for (const day of course.days) {
       const item = document.createElement('li');
@@ -53,7 +53,7 @@
     const link = document.createElement('a');
     link.className = 'line-link';
     link.href = 'egitim.html?program=' + encodeURIComponent(course.id);
-    link.textContent = 'Programı ve hedeflenen kazanımı incele ↗';
+    link.textContent = 'Programı inceleyin ↗';
     body.append(title, description, details, link);
     section.append(identity, body);
     mount.append(section);

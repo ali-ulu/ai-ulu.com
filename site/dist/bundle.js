@@ -5,21 +5,21 @@
       subtitle: 'Yazılımın büyük resminden erişilebilir arayüze ve güvenilir API’ye uzanan üç program.',
       code: 'WEB',
       audience: 'Bir web ürününü baştan sona anlamak isteyenler.',
-      prerequisite: 'Başlangıç için temel bilgisayar kullanımı yeterli olabilir. Frontend ve Backend bölümlerinde programlama, web ve Git kavramları gerekir; yeni başlayanlar Foundations ile ilerlemelidir.',
+      prerequisite: 'Yazılım temelleri programı başlangıç noktasıdır. Arayüz ve sunucu geliştirme programlarında temel programlama, web ve Git bilgisi gerekir.',
       courses: ['foundations', 'frontend', 'backend'],
       output: 'Hedef: MiniShop’un mühendislik haritası, arayüzü ve API’si.',
-      outputCopy: 'Programlar aynı örnek ürüne bakacak şekilde tasarlanıyor: ihtiyaç ve sınırlar, tarayıcı deneyimi, veri ve API sözleşmesi. Ortak çalışan proje, testler ve değerlendirme rubriği henüz doğrulanmadı.',
+      outputCopy: 'Üç program; ihtiyaç ve sınırlar, tarayıcı deneyimi, veri ve API sözleşmesini aynı örnek ürün üzerinden ele alacak şekilde hazırlanıyor. Ortak uygulama henüz erişime açık değil.',
       steps: ['Sistemin parçalarını ve kararlarını haritala', 'Erişilebilir, test edilebilir arayüzü tasarla', 'API ve veri bütünlüğü kararlarını bağla']
     },
     production: {
-      title: 'Production yolu',
+      title: 'Yayına hazırlık yolu',
       subtitle: 'Mimari karar, güvenilir yayın ve güvenli teslimi aynı ürün üzerinde birleştiren üç program.',
       code: 'PROD',
       audience: 'Çalışan bir yazılımın yayına ve işletime taşınmasını yöneten geliştiriciler.',
-      prerequisite: 'İstemci/sunucu, veri tabanı ve uygulama geliştirme temeli önerilir. DevOps ve DevSecOps için temel Linux, ağ ve güvenlik kavramları yararlı olacaktır; başlangıç düzeyi bir yol değildir.',
+      prerequisite: 'İstemci/sunucu, veri tabanı ve uygulama geliştirme temeli önerilir. Altyapı ve güvenli teslim programları için temel Linux, ağ ve güvenlik kavramları yararlı olacaktır; başlangıç düzeyi bir yol değildir.',
       courses: ['system-design', 'devops', 'devsecops'],
       output: 'Hedef: MiniShop için mimari, yayın ve güvenlik karar dosyası.',
-      outputCopy: 'Hedeflenen ortak çalışma; kapasite ve tutarlılık varsayımlarını, dağıtım ve geri alma adımlarını, tehdit ve kontrol kararlarını aynı senaryoda birleştirir. Çalışır laboratuvar ve ortak rubrik henüz tamamlanmadı.',
+      outputCopy: 'Hedeflenen ortak çalışma; kapasite ve tutarlılık varsayımlarını, dağıtım ve geri alma adımlarını, tehdit ve kontrol kararlarını aynı senaryoda birleştirir. Uygulama ortamı henüz erişime açık değil.',
       steps: ['Kısıtları, kapasiteyi ve mimari seçenekleri karşılaştır', 'Yayın, gözlem ve geri alma planını oluştur', 'Tehdit modelini ve güvenlik kontrollerini doğrula']
     }
   };
@@ -27,7 +27,7 @@
   const bundle = Object.hasOwn(bundles, id) ? bundles[id] : null;
   if (!bundle) {
     document.getElementById('bundle-title').textContent = 'Eğitim yolu bulunamadı.';
-    document.getElementById('bundle-subtitle').textContent = 'Katalogdan mevcut bir yolu seç.';
+    document.getElementById('bundle-subtitle').textContent = 'Katalogdan bir eğitim yolu seçin.';
     document.querySelectorAll('[data-bundle-section]').forEach(section => { section.hidden = true; });
     return;
   }
@@ -38,7 +38,7 @@
     'bundle-audience': bundle.audience,
     'bundle-prerequisite': bundle.prerequisite,
     'bundle-code': bundle.code,
-    'bundle-cover-name': bundle.title.toUpperCase(),
+    'bundle-cover-name': bundle.title.toLocaleUpperCase('tr-TR'),
     'bundle-output': bundle.output,
     'bundle-output-copy': bundle.outputCopy
   })) {
@@ -59,7 +59,7 @@
     outcome.textContent = course.outcome;
     const link = document.createElement('a');
     link.href = 'egitim.html?program=' + encodeURIComponent(course.id);
-    link.textContent = '15 ders başlığını incele ↗';
+    link.textContent = '15 ders başlığını inceleyin ↗';
     copy.append(title, outcome, link);
     article.append(number, copy);
     courseMount.append(article);
@@ -75,12 +75,12 @@
     try {
       const url = new URL(purchaseUrl);
       if (url.protocol === 'https:') {
-        document.getElementById('bundle-purchase-title').textContent = 'ikas mağazasında incele.';
+        document.getElementById('bundle-purchase-title').textContent = 'ikas mağazasında inceleyin.';
         document.getElementById('bundle-purchase-copy').textContent = 'Güncel fiyat, erişim süresi, içerik ve destek kapsamı ikas ürün sayfasında yer alır. Satın alma mağazada tamamlanır.';
         const link = document.createElement('a');
         link.className = 'btn dark';
         link.href = url.href;
-        link.textContent = 'ikas ürün sayfasına git ↗';
+        link.textContent = 'ikas ürün sayfasını açın ↗';
         document.getElementById('bundle-purchase-actions').prepend(link);
       }
     } catch {
