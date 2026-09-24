@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Kanıt zinciri · üretken eser</title>
+<style>html,body{margin:0;background:#0f1214}canvas{display:block;max-width:100%;height:auto}</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="eser.js"></script>
+<script>
+  const q = new URLSearchParams(location.search);
+  const W = +(q.get("width") ?? 1200), H = +(q.get("height") ?? 800);
+  const canvas = document.getElementById("c");
+  window.render = (hash) => {
+    window.rendered = undefined;
+    window.$features = GenEser.draw(canvas, hash, W, H);
+    window.rendered = canvas;
+    document.dispatchEvent(new CustomEvent("genart:done"));
+  };
+  let hash = q.get("hash");
+  if (!hash) { hash = "0x" + crypto.randomUUID().replace(/-/g, "").repeat(2); q.set("hash", hash); history.replaceState(null, "", "?" + q); }
+  window.render(hash);
+</script>
+</body>
+</html>

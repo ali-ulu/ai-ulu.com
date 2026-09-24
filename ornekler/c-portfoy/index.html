@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ali Ulu · Paket C portföy örneği</title>
+<meta name="description" content="AI-ULU Paket C örneği: teknoloji portföyü kalıbı, gerçek çalışmalarla. HUQAN ve LEVH açık kaynak projeleri; problem, yaklaşım ve doğrulanabilir sonuç.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#0f1214;--ground-2:#151a1d;--line:rgba(201,207,207,.12);
+  --ink:#e9ecea;--ink-2:rgba(233,236,234,.72);--ink-3:rgba(233,236,234,.5);
+  --accent:#e0a458;
+  --sans:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{background:var(--ground)}
+body{margin:0;color:var(--ink);font:400 1.0625rem/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(20px,5vw,56px)}
+.mono{font:500 .75rem/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.geri{position:fixed;z-index:30;top:max(16px,env(safe-area-inset-top));left:16px;font:500 .8125rem/1 var(--sans);text-decoration:none;padding:10px 14px;background:rgba(15,18,20,.7);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:2px}
+
+/* hero: generative field behind, focal copy on the φ line */
+.hero{position:relative;min-height:100svh;display:grid;grid-template-columns:1fr .618fr;align-items:end;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,18,20,.92) 0%,rgba(15,18,20,.7) 38%,rgba(15,18,20,.05) 70%)}
+.hero-ic{position:relative;z-index:1;padding:max(120px,18svh) clamp(20px,5vw,56px) calc(100svh * .146)}
+.hero h1{font:500 clamp(2.6rem,6vw,5.2rem)/1.02 var(--sans);letter-spacing:-.03em;margin:.4em 0 .35em;max-width:14ch}
+.hero p.lead{color:var(--ink-2);max-width:34rem;margin:0 0 2rem;font-size:1.125rem}
+.hero .seed{position:absolute;z-index:1;right:clamp(20px,5vw,56px);bottom:20px;text-align:right}
+.btn{display:inline-block;text-decoration:none;font:500 .95rem/1 var(--sans);padding:15px 22px;border-radius:2px;border:1px solid var(--line)}
+.btn.primary{background:var(--accent);color:#17130c;border-color:var(--accent)}
+.btn+.btn{margin-left:10px}
+
+/* cases */
+section{padding-block:clamp(88px,12vw,150px)}
+.case{display:grid;grid-template-columns:.618fr 1fr;gap:clamp(28px,5vw,72px);padding-block:clamp(48px,7vw,80px);border-top:1px solid var(--line)}
+.case h3{font:500 clamp(2rem,3.6vw,3rem)/1 var(--sans);letter-spacing:-.02em;margin:.4em 0 .5em}
+.case .ozet{color:var(--ink-2);margin:0 0 1.4rem}
+.case dl{margin:0;display:grid;gap:22px}
+.case dt{font:500 .75rem/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.case dd{margin:0;color:var(--ink-2);max-width:36rem}
+.case dd strong{color:var(--ink);font-weight:500}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.links a{font:500 .85rem/1 var(--mono);text-decoration:none;padding:10px 12px;border:1px solid var(--line);border-radius:2px}
+.links a:hover{border-color:var(--ink-3)}
+
+/* proof: glass tiles over a second render of the same field */
+.kanit{position:relative;overflow:hidden}
+.kanit canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
+.kanit .wrap{position:relative}
+.kanit h2,.hizmet h2{font:500 clamp(2rem,4vw,3.2rem)/1.05 var(--sans);letter-spacing:-.02em;margin:.4em 0 .6em;max-width:22ch}
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.tile{grid-column:span 2;padding:24px;background:rgba(21,26,29,.55);backdrop-filter:blur(14px) saturate(1.1);-webkit-backdrop-filter:blur(14px) saturate(1.1);border:1px solid rgba(233,236,234,.1);border-radius:4px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.tile.genis{grid-column:span 4}
+.tile .deger{font:500 clamp(1.8rem,3.4vw,2.6rem)/1.1 var(--sans);letter-spacing:-.02em;margin:.35em 0 .3em}
+.tile p{margin:0;color:var(--ink-2);font-size:.95rem}
+.tile a{color:var(--ink)}
+.yigin{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.yigin span{font:400 .8rem/1 var(--mono);padding:8px 10px;border:1px solid var(--line);border-radius:2px;color:var(--ink-2)}
+.tarih{margin-top:22px}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.tile{background:rgba(21,26,29,.92)}}
+@media (prefers-reduced-transparency:reduce){.tile{background:var(--ground-2);backdrop-filter:none}}
+
+/* services + contact */
+.hizmet .satir{display:grid;grid-template-columns:.618fr 1fr;gap:clamp(28px,5vw,72px);align-items:start}
+.paketler{display:grid;gap:0;border-top:1px solid var(--line)}
+.paketler a{display:grid;grid-template-columns:5ch 1fr auto;gap:16px;align-items:baseline;padding:20px 0;border-bottom:1px solid var(--line);text-decoration:none}
+.paketler a:hover .ad{color:var(--accent)}
+.paketler .harf{font:500 .9rem/1 var(--mono);color:var(--ink-3)}
+.paketler .ad{font:500 1.25rem/1.3 var(--sans)}
+.paketler .not{color:var(--ink-3);font-size:.9rem}
+.iletisim{border-top:1px solid var(--line)}
+.iletisim h2{font:500 clamp(2.2rem,5vw,4rem)/1 var(--sans);letter-spacing:-.03em;margin:.4em 0 .5em;max-width:16ch}
+footer{padding:28px 0 40px;color:var(--ink-3);font-size:.85rem}
+
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr}
+  .hero::after{background:linear-gradient(0deg,rgba(15,18,20,.95) 0%,rgba(15,18,20,.75) 45%,rgba(15,18,20,.2) 100%)}
+  .hero .seed{position:relative;right:auto;bottom:auto;text-align:left;padding:0 20px 24px}
+  .case,.hizmet .satir{grid-template-columns:1fr}
+  .bento{grid-template-columns:1fr}
+  .tile,.tile.genis{grid-column:auto}
+  .paketler a{grid-template-columns:4ch 1fr}
+  .paketler .not{grid-column:2}
+  .btn+.btn{margin-left:0;margin-top:10px}
+}
+</style>
+</head>
+<body>
+<a class="geri" href="../">← Örnekler</a>
+<main>
+  <header class="hero" aria-labelledby="baslik">
+    <canvas id="alan-hero" aria-hidden="true"></canvas>
+    <div class="hero-ic">
+      <p class="mono">Paket C örneği · gerçek çalışmalar</p>
+      <h1 id="baslik">Yapay zekâya kanıtla güvenen yazılımlar.</h1>
+      <p class="lead">Ali Ulu, AI-ULU. Yerel çalışan, denetlenebilir, açık kaynak altyapı. Aşağıdaki işler gerçek; her iddianın yanında kaynağı var.</p>
+      <a class="btn primary" href="#isler">Seçili işler</a>
+      <a class="btn" href="mailto:aliulu@ai-ulu.com?subject=Paket%20C%20portf%C3%B6y">Yazın</a>
+    </div>
+    <p class="seed mono">Arka plan: tohumlu üretken desen · <span id="tohum" style="text-transform:none"></span></p>
+  </header>
+
+  <section id="isler" aria-labelledby="isler-baslik" tabindex="-1">
+    <div class="wrap">
+      <p class="mono">Seçili işler</p>
+      <h2 id="isler-baslik" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Seçili işler</h2>
+
+      <article class="case" aria-labelledby="huqan">
+        <div>
+          <p class="mono">Açık kaynak · JavaScript, Rust</p>
+          <h3 id="huqan">HUQAN</h3>
+          <p class="ozet">Yapay zekâ ajanları için yerel doğrulama katmanı.</p>
+          <div class="links">
+            <a href="https://github.com/ali-ulu/huqan">GitHub ↗</a>
+            <a href="https://www.npmjs.com/package/huqan">npm ↗</a>
+          </div>
+        </div>
+        <dl>
+          <div><dt>Problem</dt><dd>Bir ajanın “yaptım” demesi ile işin yapıldığının kanıtı aynı şey değil. Hafızaya yazılan bir iddia ya da çalıştırılan bir komut, kaynağı sorulmadan güvenilir sayılıyor.</dd></div>
+          <div><dt>Yaklaşım</dt><dd>Kanıt ve kaynak kaydı, politika kapıları, insan onayı ve denetlenebilir <strong>Trust Receipt</strong>. Bir iddia, hafıza yazımı ya da eylem güvenilmeden önce bu zincirden geçer.</dd></div>
+          <div><dt>Sonuç</dt><dd>npm'de <strong>0.12.0</strong> olarak yayında, AGPL-3.0 lisanslı. Geliştirme açık: <strong>1.646</strong> birleştirilmiş PR.</dd></div>
+        </dl>
+      </article>
+
+      <article class="case" aria-labelledby="levh">
+        <div>
+          <p class="mono">Açık kaynak · Python, MCP</p>
+          <h3 id="levh">LEVH</h3>
+          <p class="ozet">Yapay zekâ kodlama araçları için ortak hafıza katmanı.</p>
+          <div class="links">
+            <a href="https://github.com/ali-ulu/levh">GitHub ↗</a>
+            <a href="https://github.com/ali-ulu/levh/releases">Sürümler ↗</a>
+          </div>
+        </div>
+        <dl>
+          <div><dt>Problem</dt><dd>Farklı yapay zekâ araçları ve her yeni oturum, aynı proje kararlarını kullanıcıya yeniden soruyor. Bir aracın öğrendiği, diğerine geçmiyor.</dd></div>
+          <div><dt>Yaklaşım</dt><dd>SQLite üzerinde yerel ortak hafıza, MCP üzerinden erişim ve çelişen kayıtlar için inceleme akışı. Veri makineden çıkmaz.</dd></div>
+          <div><dt>Sonuç</dt><dd><strong>v2.31.0</strong> sürümünde, AGPL-3.0 lisanslı, <strong>158</strong> birleştirilmiş PR. Geliştiricinin kendi makinesinde birden çok kodlama ajanı aynı hafızayı paylaşıyor.</dd></div>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section class="kanit" aria-labelledby="kanit-baslik">
+    <canvas id="alan-kanit" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <p class="mono">Kanıt</p>
+      <h2 id="kanit-baslik">Rakamlar kaynağıyla birlikte.</h2>
+      <div class="bento">
+        <div class="tile genis">
+          <p class="mono">HUQAN · birleştirilmiş PR</p>
+          <p class="deger">1.646</p>
+          <p><a href="https://github.com/ali-ulu/huqan/pulls?q=is%3Apr+is%3Amerged">GitHub'daki sorgu ↗</a></p>
+        </div>
+        <div class="tile">
+          <p class="mono">HUQAN · npm</p>
+          <p class="deger">0.12.0</p>
+          <p><a href="https://www.npmjs.com/package/huqan">Paket sayfası ↗</a></p>
+        </div>
+        <div class="tile">
+          <p class="mono">LEVH · sürüm</p>
+          <p class="deger">v2.31.0</p>
+          <p><a href="https://github.com/ali-ulu/levh/releases">Sürüm notları ↗</a></p>
+        </div>
+        <div class="tile">
+          <p class="mono">LEVH · birleştirilmiş PR</p>
+          <p class="deger">158</p>
+          <p><a href="https://github.com/ali-ulu/levh/pulls?q=is%3Apr+is%3Amerged">GitHub'daki sorgu ↗</a></p>
+        </div>
+        <div class="tile">
+          <p class="mono">Lisans</p>
+          <p class="deger">AGPL-3.0</p>
+          <p>İki proje de açık kaynak.</p>
+        </div>
+        <div class="tile genis">
+          <p class="mono">Kullanılan teknolojiler</p>
+          <div class="yigin"><span>Node.js</span><span>Python</span><span>Rust</span><span>SQLite</span><span>MCP</span><span>Playwright</span><span>GitHub Actions</span></div>
+        </div>
+      </div>
+      <p class="mono tarih">Rakamlar 24.09.2026 tarihinde GitHub ve npm'den alındı; güncel değerler bağlantılardadır.</p>
+    </div>
+  </section>
+
+  <section class="hizmet" aria-labelledby="hizmet-baslik">
+    <div class="wrap satir">
+      <div>
+        <p class="mono">Hizmetler</p>
+        <h2 id="hizmet-baslik">Aynı özen, sizin projeniz için.</h2>
+      </div>
+      <nav class="paketler" aria-label="Paket örnekleri">
+        <a href="../a-sinematik/"><span class="harf">A</span><span class="ad">Sinematik landing</span><span class="not">Örneği gör</span></a>
+        <a href="../b-urun/"><span class="harf">B</span><span class="ad">Ürün / marka sayfası</span><span class="not">Örneği gör</span></a>
+        <a href="./"><span class="harf">C</span><span class="ad">Teknoloji portföyü</span><span class="not">Bu sayfa</span></a>
+        <a href="../d-imza/"><span class="harf">D</span><span class="ad">Tam marka deneyimi</span><span class="not">Örneği gör</span></a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="iletisim" aria-labelledby="iletisim-baslik">
+    <div class="wrap">
+      <p class="mono">İletişim</p>
+      <h2 id="iletisim-baslik">Projenizi anlatın.</h2>
+      <a class="btn primary" href="mailto:aliulu@ai-ulu.com?subject=Paket%20C%20portf%C3%B6y">aliulu@ai-ulu.com</a>
+    </div>
+  </section>
+</main>
+<footer class="wrap">Bu sayfa AI-ULU Paket C örneğidir. İçerikteki projeler ve rakamlar gerçektir.</footer>
+
+<script src="eser/eser.js"></script>
+<script>
+(() => {
+  // one fixed hash: the hero always shows the same composition; eser/ shows others
+  const HASH = "0x5a17c0de9e3779b1d2b8f0a4c64e1f07b3ad9c21e8f65b40a7d3c9e1f2b6a8c4";
+  const tohum = document.getElementById("tohum");
+  tohum.textContent = HASH.slice(0, 10) + "…";
+  const link = document.createElement("a");
+  link.href = "eser/?hash=" + HASH + "&width=1600&height=1000";
+  link.textContent = "eseri aç ↗"; link.style.marginLeft = ".6em";
+  tohum.after(link);
+
+  const paint = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    for (const id of ["alan-hero", "alan-kanit"]) {
+      const c = document.getElementById(id);
+      const r = c.getBoundingClientRect();
+      if (r.width && r.height) GenEser.draw(c, id === "alan-hero" ? HASH : HASH.replace(/.$/, "5"), Math.round(r.width * dpr), Math.round(r.height * dpr));
+    }
+  };
+  let t = 0;
+  addEventListener("resize", () => { clearTimeout(t); t = setTimeout(paint, 150); });
+  paint();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 560" role="img" aria-label="Zeyra zeytinyağı şişesi çizimi">
+  <defs>
+    <linearGradient id="cam" x1="0" x2="1">
+      <stop offset="0" stop-color="#1b2109"/>
+      <stop offset=".32" stop-color="#4a5716"/>
+      <stop offset=".5" stop-color="#8a8a2a"/>
+      <stop offset=".68" stop-color="#4a5716"/>
+      <stop offset="1" stop-color="#141905"/>
+    </linearGradient>
+    <linearGradient id="yag" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9a63a" stop-opacity=".0"/>
+      <stop offset=".18" stop-color="#c9a63a" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#8f6f16" stop-opacity=".75"/>
+    </linearGradient>
+    <linearGradient id="parlama" x1="0" x2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="100" y="8" width="40" height="46" rx="4" fill="#2a2416"/>
+  <rect x="96" y="50" width="48" height="10" rx="3" fill="#b8962f"/>
+  <path d="M104 60 h32 v54 c0 26 64 42 64 96 v300 c0 22 -14 34 -34 34 h-92 c-20 0 -34 -12 -34 -34 v-300 c0 -54 64 -70 64 -96 z" fill="url(#cam)"/>
+  <path d="M46 250 c0 -30 30 -50 74 -50 s74 20 74 50 v250 c0 18 -10 28 -28 28 h-92 c-18 0 -28 -10 -28 -28 z" fill="url(#yag)"/>
+  <rect x="64" y="130" width="10" height="380" rx="5" fill="url(#parlama)"/>
+  <rect x="58" y="300" width="124" height="150" rx="2" fill="#efe6cf"/>
+  <rect x="66" y="308" width="108" height="134" rx="1" fill="none" stroke="#8f6f16" stroke-width="1"/>
+  <text x="120" y="360" text-anchor="middle" font-family="Georgia, serif" font-size="24" letter-spacing="4" fill="#23290c">ZEYRA</text>
+  <text x="120" y="388" text-anchor="middle" font-family="Georgia, serif" font-size="11" letter-spacing="2" fill="#5b4a16">SOĞUK SIKIM</text>
+  <text x="120" y="422" text-anchor="middle" font-family="Georgia, serif" font-size="10" fill="#5b4a16">500 ml</text>
+</svg>
