@@ -1,6 +1,6 @@
 {
-  "name": "Zeyra · Paket B konsept çalışması",
-  "description": "AI-ULU Paket B örneği: kurgusal bir private-label zeytinyağı için kaydırmayla ilerleyen ürün sayfası. Gerçek bir marka değildir.",
+  "name": "Zeyra",
+  "description": "Zeyra: tek hasattan, soğuk sıkım zeytinyağı.",
   "lang": "tr",
   "canvasAlt": "Zeytin yeşili ve altın tonlarında, kaydırdıkça yavaşça değişen ışık",
   "frames": "frames",
@@ -24,7 +24,7 @@
       "kind": "statement",
       "layout": "center",
       "reveal": "mask",
-      "eyebrow": "Konsept çalışma · gerçek marka değil",
+      "eyebrow": "Soğuk sıkım zeytinyağı",
       "heading": "Zeyra",
       "body": "Tek hasattan, tek şişeye.",
       "scrollHeight": 1400,
@@ -60,9 +60,9 @@
       "kind": "text",
       "layout": "right",
       "reveal": "fade",
-      "eyebrow": "Private label",
-      "heading": "Etiket sizin, hikâye sizin.",
-      "body": "Bu sayfa bir üreticinin kendi markası için nasıl anlatılabileceğini gösteren örnektir.",
+      "eyebrow": "Etiket",
+      "heading": "Tek zeytinlik, tek etiket.",
+      "body": "Her şişede hasat yılı ve zeytinliğin adı yazar.",
       "scrollHeight": 1200,
       "scrim": 0
     },
@@ -70,10 +70,8 @@
       "kind": "text",
       "layout": "center",
       "reveal": "rise",
-      "heading": "Ürününüz için bir sayfa.",
-      "body": "Paket B: katmanlı ya da kaydırmalı hero, ürün hikâyesi, net bir kapanış.",
-      "ctaLabel": "Görüşme talebi",
-      "ctaHref": "mailto:aliulu@ai-ulu.com?subject=Paket%20B%20%C3%BCr%C3%BCn%20sayfas%C4%B1",
+      "heading": "Hasat bitti.",
+      "body": "Ekim hasadının ilk şişeleri kasımda sofrada.",
       "scrollHeight": 1000,
       "scrim": 0
     }

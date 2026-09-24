@@ -43,6 +43,7 @@ a:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
 .not{border-top:1px solid var(--line);padding-block:clamp(48px,7vw,80px);display:grid;grid-template-columns:1fr .618fr;gap:40px;align-items:end}
 .not p{margin:0;color:var(--muted);max-width:40rem}
 .btn{display:inline-block;background:var(--ink);color:#fff;text-decoration:none;padding:15px 20px;border-radius:999px;font-size:.9rem;font-weight:500}
+.son{border-top:1px solid var(--line);padding-block:clamp(48px,7vw,80px);margin:0}
 footer{border-top:1px solid var(--line);padding-block:26px;color:var(--muted);font-size:.85rem}
 @media (max-width:820px){
   .giris,.satir,.satir:nth-child(even),.not{grid-template-columns:1fr}
@@ -62,7 +63,7 @@ footer{border-top:1px solid var(--line);padding-block:26px;color:var(--muted);fo
       <p class="eyebrow">Web sitesi paketleri · örnek çalışmalar</p>
       <h1 id="baslik">Dört paket, dört ayrı el.</h1>
     </div>
-    <p>Her paket için bir örnek. A, B ve D kurgusal markalar üzerine konsept çalışmalardır; C gerçek işlerimizle hazırlandı. Hiçbirinde stok fotoğraf, uydurma müşteri ya da uydurma rakam yok.</p>
+    <p>Sinematik bir landing sayfasından marka deneyimine, dört farklı yaklaşım.</p>
   </section>
 
   <nav aria-label="Örnekler">
@@ -70,10 +71,9 @@ footer{border-top:1px solid var(--line);padding-block:26px;color:var(--muted);fo
       <div class="gorsel"><img src="gorsel/a.webp" width="960" height="600" alt="Sisin kalktığı dağ sırtları ve penceresi yanan bir yayla evi" loading="lazy"></div>
       <div>
         <span class="harf" aria-hidden="true">A</span>
-        <span class="durum">Konsept · kurgusal marka</span>
+        <span class="durum">Konsept</span>
         <h2>Sinematik landing</h2>
-        <p>Kırağı Yayla Evi. Kaydırdıkça sis kalkar, sırtlar açılır ve evin penceresi yanar. Tek sayfa, tek zirve, net bir kapanış.</p>
-        <p class="teknik">Prosedürel sis · katmanlı SVG manzara · kaydırmaya bağlı sahne</p>
+        <p>Kırağı Yayla Evi. Kaydırdıkça sis kalkar, sırtlar açılır ve evin penceresi yanar.</p>
         <span class="ac">Örneği aç <span>→</span></span>
       </div>
     </a>
@@ -81,10 +81,9 @@ footer{border-top:1px solid var(--line);padding-block:26px;color:var(--muted);fo
       <div class="gorsel"><img src="gorsel/b.webp" width="960" height="600" alt="Koyu zeytin tonlarında zemin önünde Zeyra zeytinyağı şişesi" loading="lazy"></div>
       <div>
         <span class="harf" aria-hidden="true">B</span>
-        <span class="durum">Konsept · kurgusal marka</span>
+        <span class="durum">Konsept</span>
         <h2>Ürün / marka sayfası</h2>
-        <p>Zeyra. Private label bir zeytinyağı için ürün hikâyesi: hasat, şişe, etiket. Arka plan kaydırmayla ilerleyen bir görüntü dizisi.</p>
-        <p class="teknik">Kaydırmalı kare dizisi · mobil için ayrı kare seti · otomatik kontrast ölçümü</p>
+        <p>Zeyra. Soğuk sıkım bir zeytinyağı için ürün sayfası: hasat, şişe, etiket.</p>
         <span class="ac">Örneği aç <span>→</span></span>
       </div>
     </a>
@@ -92,10 +91,9 @@ footer{border-top:1px solid var(--line);padding-block:26px;color:var(--muted);fo
       <div class="gorsel"><img src="gorsel/c.webp" width="960" height="600" alt="Koyu zeminde kanıt zinciri üretken deseni ve portföy başlığı" loading="lazy"></div>
       <div>
         <span class="harf" aria-hidden="true">C</span>
-        <span class="durum gercek">Gerçek çalışmalar</span>
+        <span class="durum gercek">Gerçek proje</span>
         <h2>Teknoloji portföyü</h2>
-        <p>HUQAN ve LEVH: problem, yaklaşım ve sonuç. Her rakamın yanında GitHub ya da npm kaynağı var.</p>
-        <p class="teknik">Tohumlu üretken desen · kanıt blokları · buzlu cam katmanlar</p>
+        <p>HUQAN ve LEVH: açık kaynak projelerimiz.</p>
         <span class="ac">Örneği aç <span>→</span></span>
       </div>
     </a>
@@ -103,24 +101,15 @@ footer{border-top:1px solid var(--line);padding-block:26px;color:var(--muted);fo
       <div class="gorsel"><img src="gorsel/d.webp" width="960" height="600" alt="Mürekkep ve suluboya ile çizilmiş, çömlekçi çarkında sırlı bir kase ve kırmızı mühür" loading="lazy"></div>
       <div>
         <span class="harf" aria-hidden="true">D</span>
-        <span class="durum">Konsept · kurgusal marka</span>
+        <span class="durum">Konsept</span>
         <h2>Tam marka deneyimi</h2>
-        <p>Kil &amp; Kül. Tek bir imza hareket: kaydırdıkça bir kase elle çizilir, geri kaydırınca aynı sırayla silinir.</p>
-        <p class="teknik">Kodla çizilen mürekkep ve suluboya · arka planda çizim (Web Worker)</p>
+        <p>Kil &amp; Kül. Kaydırdıkça bir kase elle çizilir.</p>
         <span class="ac">Örneği aç <span>→</span></span>
       </div>
     </a>
   </nav>
-
-  <section class="not" aria-labelledby="not-baslik">
-    <div>
-      <p class="eyebrow">Ortak zemin</p>
-      <h2 id="not-baslik" style="font:500 clamp(1.8rem,3.4vw,2.8rem)/1.05 var(--serif);letter-spacing:-.03em;margin:.3em 0 .5em">Her örnekte aynı kontroller.</h2>
-      <p>Masaüstü ve mobil görünüm, hareketi azaltma tercihi, JavaScript kapalıyken okunabilir içerik ve yatay taşma yokluğu her sayfada tarayıcıda denetlendi.</p>
-    </div>
-    <div><a class="btn" href="mailto:aliulu@ai-ulu.com?subject=Web%20sitesi%20paketi">Projenizi konuşalım</a></div>
-  </section>
+  <p class="son"><a class="btn" href="mailto:aliulu@ai-ulu.com?subject=Web%20sitesi">Projenizi konuşalım</a></p>
 </main>
-<footer class="wrap">© 2026 AI-ULU. Kurgusal markalar yalnızca örnek amaçlıdır.</footer>
+<footer class="wrap">© 2026 AI-ULU</footer>
 </body>
 </html>
