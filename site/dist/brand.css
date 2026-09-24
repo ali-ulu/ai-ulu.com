@@ -173,6 +173,21 @@ body{background:var(--paper);color:var(--ink)}
 @media(prefers-reduced-motion:reduce){.paper-stack,.consult-delivery{transform:none!important}}
 
 /* A separate mobile composition keeps the person, offer and action together. */
+.web-intro{background:var(--night);color:var(--cream);padding-block:clamp(55px,7vw,105px)}
+.web-intro-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(30px,5vw,75px);align-items:center}
+.web-intro h1{font-size:clamp(2.8rem,4.5vw,4.8rem);line-height:1.08;letter-spacing:-.055em;margin:0 0 25px;font-weight:650}
+.web-intro h1 em{font-style:normal;color:var(--lime)}
+.web-intro-copy>p:not(.kicker){font-size:1rem;line-height:1.7;color:#cbd6cf;max-width:52ch}
+.web-proof{margin:0;min-width:0;background:#233532;border:1px solid #658075;padding:clamp(14px,2vw,25px);box-shadow:0 25px 60px #0003}
+.web-proof-label{display:flex;justify-content:space-between;gap:20px;font-size:.65rem;letter-spacing:.12em;margin-bottom:25px;color:#cbd6cf}
+.web-proof img{width:100%;height:auto;box-shadow:0 12px 30px #0004}
+.web-proof figcaption{display:flex;justify-content:space-between;align-items:end;gap:25px;padding-top:25px;font-size:.73rem;line-height:1.6}
+.web-proof strong{display:block;font-size:1.25rem}.web-proof figcaption span{color:#cbd6cf}.web-proof figcaption a{flex-shrink:0;text-underline-offset:5px}
+.web-package.package{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);column-gap:35px;padding-block:32px}
+.web-package h3{margin:0 0 12px}.web-package ul{line-height:1.8}.web-package .package-action{margin-top:10px}
+#secenekler,#uygulama{scroll-margin-top:25px}
+@media(max-width:1000px){.web-intro-grid{grid-template-columns:1fr}.web-intro h1{max-width:18ch}.web-proof{max-width:780px}.web-package.package{grid-template-columns:1fr 1fr}.web-package ul{grid-column:2;grid-row:1/3}}
+@media(max-width:560px){.web-intro{padding-block:38px}.web-intro-grid{gap:40px}.web-intro h1{font-size:clamp(2rem,8.7vw,3rem)}.web-intro .row-actions{gap:22px}.web-proof figcaption{flex-direction:column;align-items:start;gap:15px}.web-package.package{grid-template-columns:1fr;gap:15px}.web-package ul{grid-column:auto;grid-row:auto}.web-package p{margin:0}.web-proof-label{font-size:.58rem}}
 @media(max-width:560px){
   .revised-hero{display:grid;grid-template-columns:minmax(0,1fr) clamp(100px,32vw,125px);gap:22px 8px;padding:30px var(--gutter) 36px;align-items:center}
   .revised-hero .hero-copy{display:contents}

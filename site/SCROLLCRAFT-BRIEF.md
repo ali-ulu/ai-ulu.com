@@ -10,7 +10,7 @@ Ali Ulu'nun kişisel markasını üç ayrı ziyaretçi ihtiyacıyla tanıtmak:
 2. Bir web sitesi ya da web uygulaması yaptırmak isteyen kişi.
 3. Senior Academy'de yazılım öğrenmek isteyen kişi.
 
-Son inanış: “Burada yalnızca kod değil, kapsamı belli, doğrulanabilir bir çalışma satın alabilirim.” Ana hizmet eylemi: “Projemi anlat.” Eğitimde ayrı eylem: “Kataloğu keşfet.”
+Son inanış: “Burada yalnızca kod değil, kapsamı belli, doğrulanabilir bir çalışma satın alabilirim.” Ana hizmet eylemi: “Görüşme talebi.” Eğitimde ayrı eylem: “Kataloğu keşfet.”
 
 ## Kaynak sınırları
 
