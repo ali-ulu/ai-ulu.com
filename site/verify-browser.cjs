@@ -85,7 +85,9 @@ fs.mkdirSync(out, { recursive: true });
         await page.screenshot({ path: path.join(out, 'consulting-1440.png') });
       }
       if (route === 'portfolyo.html') {
-        assert.equal(await page.locator('.case').count(), 3);
+        assert.equal(await page.locator('.case').count(), 4);
+        const webRoutes = await page.locator('#web .route').evaluateAll(links => links.map(link => link.getAttribute('href')));
+        assert.deepEqual(webRoutes, ['a-sinematik/', 'b-urun/', 'c-portfoy/', 'd-imza/'].map(slug => 'https://ai-ulu.com/ornekler/' + slug));
         assert.deepEqual(await page.locator('.portfolio-shot img').evaluateAll(images => images.map(image => image.complete && image.naturalWidth > 0)), [true]);
         assert.match(await page.locator('.portfolio-shot figcaption').textContent(), /Örnek veriler/);
         assert.equal(await page.locator('a[href="https://github.com/ali-ulu/levh"]').count(), 1);
