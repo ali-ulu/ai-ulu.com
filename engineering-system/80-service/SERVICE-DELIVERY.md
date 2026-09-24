@@ -147,6 +147,7 @@ Use before calling Build done.
 - CTA consistent wording site-wide  
 
 ### C — Tech / Web3 portfolio
+- Full section order, proof rules and builder checklist: [TECH-PORTFOLIO-PATH.md](TECH-PORTFOLIO-PATH.md)  
 - Case study minimum: problem → approach → outcome  
 - Proof blocks: GitHub, live URLs, on-chain links — **only if real**  
 - Dark or calm default; avoid matrix-neon cliché  
