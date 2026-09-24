@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<!-- Built with the ScrollCraft engine, Copyright (c) 2026 ScrollCraft, MIT License. See LICENSE-scrollcraft.txt. -->
+<link rel="icon" href="data:,">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeyra · Paket B konsept çalışması</title>
+  <meta name="description" content="AI-ULU Paket B örneği: kurgusal bir private-label zeytinyağı için kaydırmayla ilerleyen ürün sayfası. Gerçek bir marka değildir." />
+  <meta property="og:title" content="Zeyra · Paket B konsept çalışması" />
+  <meta property="og:description" content="AI-ULU Paket B örneği: kurgusal bir private-label zeytinyağı için kaydırmayla ilerleyen ürün sayfası. Gerçek bir marka değildir." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" />
+  <style>
+:root {
+  --sc-font-display: 'Fraunces', system-ui, sans-serif;
+  --sc-font-body: 'Inter', system-ui, sans-serif;
+  --sc-display-weight: 500;
+  --sc-display-tracking: -0.02em;
+  --sc-ink: #f4efe1;
+  --sc-ground: #0a0b06;
+  --sc-muted: rgba(244,239,225,0.74);
+  --sc-accent: #4b5714;
+  --sc-accent-text: #e6d89c;
+  --sc-radius: 2px;
+  --sc-heading-size: clamp(2rem,min(5vw,6vh),4rem);
+  --sc-body-size: 1.125rem;
+  --sc-measure: 600px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: auto; }
+body {
+  background: var(--sc-ground, #000);
+  color: var(--sc-ink, #fff);
+  font-family: var(--sc-font-body, system-ui, sans-serif);
+  overflow-x: hidden;
+}
+#scroll-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+#scroll-container { position: relative; z-index: 1; pointer-events: none; }
+.scroll-section { pointer-events: none; }
+.section-sticky { pointer-events: none; }
+.section-content { pointer-events: auto; }
+.section-content.visible { opacity: 1 !important; transform: translateY(0) !important; }
+#scroll-hint {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  color: rgba(255,255,255,0.4); font-size: 0.75rem; letter-spacing: 0.1em;
+  text-transform: uppercase; z-index: 20; transition: opacity 0.5s;
+}
+.sc-display { font-family: var(--sc-font-display, var(--sc-font-body, system-ui, sans-serif)); }
+#scroll-hint .arrow { width: 1px; height: 40px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.4)); }
+#audio-mute {
+  position: fixed; top: 1rem; right: 1rem; z-index: 30;
+  background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15);
+  color: #fff; border-radius: 50%; width: 2rem; height: 2rem;
+  cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+#audio-mute:hover { background: rgba(255,255,255,0.1); }
+@media (prefers-reduced-motion: reduce) {
+  .section-content { transition: none !important; }
+  #scroll-hint { display: none; }
+}
+
+.section-content[data-reveal] { opacity: 0; will-change: opacity, transform; }
+.section-content[data-reveal="rise"] { transform: translateY(32px); }
+.section-content[data-reveal="fade"] { transform: none; }
+.section-content[data-reveal="scale"] { transform: scale(0.94); }
+.section-content[data-reveal="mask"] { clip-path: inset(0 0 100% 0); transform: none; }
+.section-content[data-reveal="none"] { opacity: 1; transform: none; }
+.section-content[data-reveal].visible {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 0 0);
+}
+.section-content[data-reveal="stagger"] > * {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.section-content[data-reveal="stagger"].visible > * { opacity: 1; transform: none; }
+.section-content[data-reveal="stagger"].visible > *:nth-child(1) { transition-delay: 0ms; }
+.section-content[data-reveal="stagger"].visible > *:nth-child(2) { transition-delay: 90ms; }
+.section-content[data-reveal="stagger"].visible > *:nth-child(3) { transition-delay: 180ms; }
+.section-content[data-reveal="stagger"].visible > *:nth-child(4) { transition-delay: 270ms; }
+.section-content[data-reveal="stagger"].visible > *:nth-child(n+5) { transition-delay: 360ms; }
+
+.sc-statement {
+  font-size: calc(clamp(2.75rem, min(11vw, 13.2vh), 9rem) * var(--sc-fit, 1));
+  font-weight: var(--sc-display-weight, 800);
+  line-height: 0.92;
+  letter-spacing: var(--sc-display-tracking, -0.045em);
+  text-transform: var(--sc-display-case, none);
+  margin: 0;
+}
+
+.sc-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sc-signup input::placeholder { color: rgba(255,255,255,0.72); }
+@media (max-width: 480px) { .sc-signup button { flex: 1 1 100% !important; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .section-content[data-reveal],
+  .section-content[data-reveal="stagger"] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+}
+
+  </style>
+  <style>
+#scroll-canvas{filter:brightness(.62) saturate(1.05)}#scroll-hint{display:none}.section-content{text-shadow:0 1px 18px rgba(10,11,6,.55)}.geri{position:fixed;top:max(16px,env(safe-area-inset-top));left:16px;z-index:50;font:500 13px/1 Inter,system-ui,sans-serif;letter-spacing:.02em;color:#e6d89c;text-decoration:none;padding:10px 14px;background:rgba(10,11,6,.55);border-radius:2px}.geri:hover{background:rgba(10,11,6,.8)}.geri:focus-visible{outline:2px solid #e6d89c;outline-offset:2px}
+  </style>
+</head>
+<body>
+  <a class="geri" href="../">← Örnekler</a>
+  <canvas id="scroll-canvas" role="img" aria-label="Zeytin yeşili ve altın tonlarında, kaydırdıkça yavaşça değişen ışık"></canvas>
+  <div id="scroll-container" style="height:8600px;">
+    <div style="height:100vh;"></div>
+    <section class="scroll-section" style="height:1400px; position:relative; z-index:10;">
+      <div class="section-sticky" style="position:sticky; top:0; height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+        <div class="section-content" data-reveal="mask" style="text-align:center; padding:2rem; max-width:800px; box-sizing:content-box; transition:opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94),clip-path 0.7s cubic-bezier(0.25,0.46,0.45,0.94);">
+          <p class="eyebrow" style="font-size:0.875rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--sc-accent-text, #ede9fe); margin-bottom:0.75rem;">Konsept çalışma · gerçek marka değil</p>
+          <h2 class="sc-display sc-statement" style="color:var(--sc-ink, #ffffff); margin-bottom:1rem;">Zeyra</h2>
+          <p style="font-size:var(--sc-body-size, 1.125rem); line-height:1.7; color:var(--sc-muted, rgba(255,255,255,0.72)); max-width:var(--sc-measure, 600px); margin:0 auto 1.5rem;">Tek hasattan, tek şişeye.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scroll-section" aria-hidden="true" style="height:700px; position:relative; z-index:10;"></section>
+    <section class="scroll-section" style="height:1500px; position:relative; z-index:10;">
+      <div class="section-sticky" style="position:sticky; top:0; height:100vh; display:flex; align-items:center; justify-content:flex-start; overflow:hidden;">
+        <div class="section-content" data-reveal="stagger" style="text-align:left; padding:2rem clamp(2rem, 8vw, 8rem); max-width:620px; box-sizing:content-box; transition:opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94),clip-path 0.7s cubic-bezier(0.25,0.46,0.45,0.94);">
+          <p class="eyebrow" style="font-size:0.875rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--sc-accent-text, #ede9fe); margin-bottom:0.75rem;">Hasat</p>
+          <h2 class="sc-display" style="font-size:calc(var(--sc-heading-size, clamp(2rem,min(5vw,6vh),4rem)) * var(--sc-fit, 1)); font-weight:var(--sc-display-weight, 900); line-height:1; letter-spacing:var(--sc-display-tracking, -0.03em); text-transform:var(--sc-display-case, none); color:var(--sc-ink, #ffffff); margin-bottom:1rem;">Ekim sonunda, yeşilken.</h2>
+          <p style="font-size:var(--sc-body-size, 1.125rem); line-height:1.7; color:var(--sc-muted, rgba(255,255,255,0.72)); max-width:var(--sc-measure, 600px); margin:0 0 1.5rem;">Zeytin tam olgunlaşmadan toplanır. Verim düşer, tat keskinleşir.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scroll-section" style="height:1800px; position:relative; z-index:10;">
+      <div class="section-sticky" style="position:sticky; top:0; height:100vh; display:flex; align-items:flex-end; justify-content:flex-start; overflow:hidden;">
+        <div class="section-content" data-reveal="scale" style="text-align:left; padding:0 clamp(2rem, 8vw, 8rem) clamp(3rem, 10vh, 7rem); max-width:900px; box-sizing:content-box; transition:opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94),clip-path 0.7s cubic-bezier(0.25,0.46,0.45,0.94);">
+          <img src="assets/img_03.svg" alt="Zeyra etiketli, zeytin yeşili cam şişe çizimi" style="display:block; max-width:min(100%, 150px); height:auto; margin:0 0 1.5rem;" />
+          <h2 class="sc-display sc-statement" style="color:var(--sc-ink, #ffffff); margin-bottom:1rem;">Soğuk sıkım.</h2>
+          <p style="font-size:var(--sc-body-size, 1.125rem); line-height:1.7; color:var(--sc-muted, rgba(255,255,255,0.72)); max-width:var(--sc-measure, 600px); margin:0 0 1.5rem;">500 ml, ışık geçirmeyen koyu cam.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scroll-section" style="height:1200px; position:relative; z-index:10;">
+      <div class="section-sticky" style="position:sticky; top:0; height:100vh; display:flex; align-items:center; justify-content:flex-end; overflow:hidden;">
+        <div class="section-content" data-reveal="fade" style="text-align:left; padding:2rem clamp(2rem, 8vw, 8rem); max-width:620px; box-sizing:content-box; transition:opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94),clip-path 0.7s cubic-bezier(0.25,0.46,0.45,0.94);">
+          <p class="eyebrow" style="font-size:0.875rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--sc-accent-text, #ede9fe); margin-bottom:0.75rem;">Private label</p>
+          <h2 class="sc-display" style="font-size:calc(var(--sc-heading-size, clamp(2rem,min(5vw,6vh),4rem)) * var(--sc-fit, 1)); font-weight:var(--sc-display-weight, 900); line-height:1; letter-spacing:var(--sc-display-tracking, -0.03em); text-transform:var(--sc-display-case, none); color:var(--sc-ink, #ffffff); margin-bottom:1rem;">Etiket sizin, hikâye sizin.</h2>
+          <p style="font-size:var(--sc-body-size, 1.125rem); line-height:1.7; color:var(--sc-muted, rgba(255,255,255,0.72)); max-width:var(--sc-measure, 600px); margin:0 0 1.5rem;">Bu sayfa bir üreticinin kendi markası için nasıl anlatılabileceğini gösteren örnektir.</p>
+        </div>
+      </div>
+    </section>
+    <section class="scroll-section" style="height:1000px; position:relative; z-index:10;">
+      <div class="section-sticky" style="position:sticky; top:0; height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+        <div class="section-content" data-reveal="rise" style="text-align:center; padding:2rem; max-width:800px; box-sizing:content-box; transition:opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94),transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94),clip-path 0.7s cubic-bezier(0.25,0.46,0.45,0.94);">
+          <h2 class="sc-display" style="font-size:calc(var(--sc-heading-size, clamp(2rem,min(5vw,6vh),4rem)) * var(--sc-fit, 1)); font-weight:var(--sc-display-weight, 900); line-height:1; letter-spacing:var(--sc-display-tracking, -0.03em); text-transform:var(--sc-display-case, none); color:var(--sc-ink, #ffffff); margin-bottom:1rem;">Ürününüz için bir sayfa.</h2>
+          <p style="font-size:var(--sc-body-size, 1.125rem); line-height:1.7; color:var(--sc-muted, rgba(255,255,255,0.72)); max-width:var(--sc-measure, 600px); margin:0 auto 1.5rem;">Paket B: katmanlı ya da kaydırmalı hero, ürün hikâyesi, net bir kapanış.</p>
+          <a href="mailto:aliulu@ai-ulu.com?subject=Paket%20B%20%C3%BCr%C3%BCn%20sayfas%C4%B1" style="display:inline-block; background:var(--sc-accent, #7c3aed); color:#fff; padding:0.875rem 2rem; border-radius:var(--sc-radius, 0.5rem); font-weight:600; text-decoration:none; font-size:1rem;">Görüşme talebi</a>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div id="scroll-hint" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="arrow"></div>
+  </div>
+  <noscript>
+    <div style="position:relative; z-index:40; padding:2rem; text-align:center;">
+      Bu sayfa kaydırdıkça ilerleyen bir görüntü dizisi kullanır; JavaScript açık olmalı.
+    </div>
+  </noscript>
+  <script>
+(function () {
+  var canvas = document.getElementById('scroll-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var desktopCount = 150;
+  var mobileCount = 150;
+  var hasMobile = true;
+  var totalScrollHeight = 8600;
+  var framesDir = 'frames';
+  var framesMobileDir = 'frames-mobile';
+
+  var mq = window.matchMedia('(max-width: 767px)');
+  var isMobile = hasMobile && mq.matches;
+  var frameCount = isMobile ? mobileCount : desktopCount;
+  var desktopImages = new Array(desktopCount);
+  var mobileImages = hasMobile ? new Array(mobileCount) : null;
+  var currentFrame = 0;
+  var dpr = 1;
+
+  function getImages() {
+    return (isMobile && mobileImages) ? mobileImages : desktopImages;
+  }
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var cssW = window.innerWidth;
+    var cssH = window.innerHeight;
+    canvas.width = Math.max(1, Math.round(cssW * dpr));
+    canvas.height = Math.max(1, Math.round(cssH * dpr));
+    canvas.style.width = cssW + 'px';
+    canvas.style.height = cssH + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawFrame(currentFrame);
+  }
+
+  function drawFrame(index) {
+    var images = getImages();
+    var img = images[index];
+    if (!img || !img.complete) return;
+    if (!img.naturalWidth || !img.naturalHeight) return;
+    var cssW = window.innerWidth;
+    var cssH = window.innerHeight;
+    var scale = Math.max(cssW / img.naturalWidth, cssH / img.naturalHeight);
+    var w = img.naturalWidth * scale;
+    var h = img.naturalHeight * scale;
+    ctx.clearRect(0, 0, cssW, cssH);
+    ctx.drawImage(img, (cssW - w) / 2, (cssH - h) / 2, w, h);
+  }
+
+  function framePath(dir, idx) {
+    var s = String(idx);
+    while (s.length < 4) s = '0' + s;
+    return dir + '/frame_' + s + '.jpg';
+  }
+
+  function preloadSet(count, dir, target) {
+    if (!count) return;
+    var STEP = 5;
+    var keyframes = [];
+    for (var i = 0; i < count; i += STEP) keyframes.push(i);
+    var settled = 0;
+
+    function loadOne(idx) {
+      var img = new Image();
+      img.src = framePath(dir, idx);
+      img.onload = function () {
+        target[idx] = img;
+        if (idx === currentFrame) drawFrame(idx);
+      };
+    }
+
+    keyframes.forEach(function (i) {
+      var img = new Image();
+      img.src = framePath(dir, i);
+      function advance() {
+        settled++;
+        if (settled === keyframes.length) {
+          for (var j = 0; j < count; j++) {
+            if (j % STEP !== 0) loadOne(j);
+          }
+        }
+      }
+      img.onload = function () {
+        target[i] = img;
+        if (i === currentFrame) drawFrame(i);
+        advance();
+      };
+      img.onerror = advance;
+    });
+  }
+
+  var mobileLoaded = false;
+  var desktopLoaded = false;
+
+  function preload() {
+    if (hasMobile && isMobile) {
+      preloadSet(mobileCount, framesMobileDir, mobileImages);
+      mobileLoaded = true;
+    } else {
+      preloadSet(desktopCount, framesDir, desktopImages);
+      desktopLoaded = true;
+    }
+  }
+
+  var rafId = 0;
+
+  function onScroll() {
+    if (rafId) return;
+    rafId = window.requestAnimationFrame(function () {
+      rafId = 0;
+      var track = totalScrollHeight - window.innerHeight;
+      var progress = track > 0 ? window.scrollY / track : 0;
+      if (progress < 0) progress = 0;
+      if (progress > 1) progress = 1;
+      var last = frameCount - 1;
+      var index = last > 0 ? Math.round(progress * last) : 0;
+      if (index !== currentFrame) {
+        currentFrame = index;
+        drawFrame(index);
+      }
+      var hint = document.getElementById('scroll-hint');
+      if (hint) hint.style.opacity = window.scrollY > 80 ? '0' : '1';
+    });
+  }
+
+  if (hasMobile) {
+    mq.addEventListener('change', function (e) {
+      isMobile = e.matches;
+      frameCount = isMobile ? mobileCount : desktopCount;
+      if (isMobile && !mobileLoaded) {
+        preloadSet(mobileCount, framesMobileDir, mobileImages);
+        mobileLoaded = true;
+      }
+      if (!isMobile && !desktopLoaded) {
+        preloadSet(desktopCount, framesDir, desktopImages);
+        desktopLoaded = true;
+      }
+      currentFrame = -1;
+      onScroll();
+    });
+  }
+
+  var reveal = document.querySelectorAll('.section-content');
+  // A mask reveal starts clipped to nothing, and an observer never reports a zero-area
+  // target as intersecting, so watch its sticky wrapper instead.
+  function watched(el) {
+    return el.getAttribute('data-reveal') === 'mask' && el.parentElement ? el.parentElement : el;
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        Array.prototype.forEach.call(reveal, function (el) {
+          if (watched(el) === entry.target) el.classList.add('visible');
+        });
+      });
+    }, { threshold: 0.25 });
+    Array.prototype.forEach.call(reveal, function (el) { io.observe(watched(el)); });
+  } else {
+    Array.prototype.forEach.call(reveal, function (el) { el.classList.add('visible'); });
+  }
+
+  // A single word wider than its column runs past the box, and a mask reveal clips it
+  // there. Shrink that heading until it fits.
+  function fitHeadings() {
+    Array.prototype.forEach.call(document.querySelectorAll('.section-content h1, .section-content h2'), function (h) {
+      h.style.setProperty('--sc-fit', '1');
+      var over = h.clientWidth ? h.scrollWidth / h.clientWidth : 1;
+      if (over > 1.005) h.style.setProperty('--sc-fit', Math.max(0.5, 0.98 / over).toFixed(3));
+    });
+  }
+  var fitFrame = 0;
+  function scheduleFit() { cancelAnimationFrame(fitFrame); fitFrame = requestAnimationFrame(fitHeadings); }
+  scheduleFit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleFit);
+  window.addEventListener('resize', scheduleFit);
+
+  if (false) {
+    var audio = new Audio('');
+    audio.loop = true;
+    audio.volume = 0.5;
+    var muted = true;
+    audio.muted = true;
+    var btn = document.getElementById('audio-mute');
+    function start() {
+      var p = audio.play();
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+      window.removeEventListener('scroll', start);
+      window.removeEventListener('pointerdown', start);
+    }
+    window.addEventListener('scroll', start, { once: true, passive: true });
+    window.addEventListener('pointerdown', start, { once: true });
+    if (btn) {
+      btn.addEventListener('click', function () {
+        muted = !muted;
+        audio.muted = muted;
+        btn.textContent = muted ? '🔇' : '🔊';
+        btn.setAttribute('aria-label', muted ? 'Unmute background audio' : 'Mute background audio');
+        if (!muted) start();
+      });
+    }
+  }
+
+  window.addEventListener('resize', resize, { passive: true });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  resize();
+  preload();
+  onScroll();
+})();
+
+  </script>
+</body>
+</html>

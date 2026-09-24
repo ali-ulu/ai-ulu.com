@@ -1,0 +1,82 @@
+{
+  "name": "Zeyra · Paket B konsept çalışması",
+  "description": "AI-ULU Paket B örneği: kurgusal bir private-label zeytinyağı için kaydırmayla ilerleyen ürün sayfası. Gerçek bir marka değildir.",
+  "lang": "tr",
+  "canvasAlt": "Zeytin yeşili ve altın tonlarında, kaydırdıkça yavaşça değişen ışık",
+  "frames": "frames",
+  "framesMobile": "frames-mobile",
+  "theme": {
+    "fontDisplay": "Fraunces",
+    "fontBody": "Inter",
+    "scale": "editorial",
+    "displayWeight": 500,
+    "displayCase": "none",
+    "displayTracking": -0.02,
+    "ink": "#f4efe1",
+    "muted": "rgba(244,239,225,0.74)",
+    "accent": "#4b5714",
+    "accentText": "#e6d89c",
+    "ground": "#0a0b06",
+    "radius": 2
+  },
+  "sections": [
+    {
+      "kind": "statement",
+      "layout": "center",
+      "reveal": "mask",
+      "eyebrow": "Konsept çalışma · gerçek marka değil",
+      "heading": "Zeyra",
+      "body": "Tek hasattan, tek şişeye.",
+      "scrollHeight": 1400,
+      "scrim": 0
+    },
+    {
+      "kind": "spacer",
+      "scrollHeight": 700
+    },
+    {
+      "kind": "text",
+      "layout": "left",
+      "reveal": "stagger",
+      "eyebrow": "Hasat",
+      "heading": "Ekim sonunda, yeşilken.",
+      "body": "Zeytin tam olgunlaşmadan toplanır. Verim düşer, tat keskinleşir.",
+      "scrollHeight": 1500,
+      "scrim": 0
+    },
+    {
+      "kind": "statement",
+      "layout": "lower-third",
+      "reveal": "scale",
+      "heading": "Soğuk sıkım.",
+      "image": "zeyra-sise.svg",
+      "imageAlt": "Zeyra etiketli, zeytin yeşili cam şişe çizimi",
+      "imageWidth": 150,
+      "scrollHeight": 1800,
+      "scrim": 0,
+      "body": "500 ml, ışık geçirmeyen koyu cam."
+    },
+    {
+      "kind": "text",
+      "layout": "right",
+      "reveal": "fade",
+      "eyebrow": "Private label",
+      "heading": "Etiket sizin, hikâye sizin.",
+      "body": "Bu sayfa bir üreticinin kendi markası için nasıl anlatılabileceğini gösteren örnektir.",
+      "scrollHeight": 1200,
+      "scrim": 0
+    },
+    {
+      "kind": "text",
+      "layout": "center",
+      "reveal": "rise",
+      "heading": "Ürününüz için bir sayfa.",
+      "body": "Paket B: katmanlı ya da kaydırmalı hero, ürün hikâyesi, net bir kapanış.",
+      "ctaLabel": "Görüşme talebi",
+      "ctaHref": "mailto:aliulu@ai-ulu.com?subject=Paket%20B%20%C3%BCr%C3%BCn%20sayfas%C4%B1",
+      "scrollHeight": 1000,
+      "scrim": 0
+    }
+  ],
+  "customCss": "#scroll-canvas{filter:brightness(.62) saturate(1.05)}#scroll-hint{display:none}.section-content{text-shadow:0 1px 18px rgba(10,11,6,.55)}.geri{position:fixed;top:max(16px,env(safe-area-inset-top));left:16px;z-index:50;font:500 13px/1 Inter,system-ui,sans-serif;letter-spacing:.02em;color:#e6d89c;text-decoration:none;padding:10px 14px;background:rgba(10,11,6,.55);border-radius:2px}.geri:hover{background:rgba(10,11,6,.8)}.geri:focus-visible{outline:2px solid #e6d89c;outline-offset:2px}"
+}

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="tr" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kil & Kül · Paket D konsept çalışması</title>
+<meta name="description" content="AI-ULU Paket D örneği: kurgusal bir seramik atölyesi için imza hareketli marka sayfası. Kaydırdıkça bir kase elle çizilir. Gerçek bir işletme değildir.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.replace('no-js','js')</script>
+<style>
+:root{
+  --paper:#ece9e1;--paper-2:#e3ded3;--ink:#1c1712;--ink-2:#5a5046;--rule:rgba(28,23,18,.14);
+  --seal:#b8412e;--seal-ink:#9c3423;
+  --serif:Newsreader,Georgia,"Times New Roman",serif;
+  --sans:"Work Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{background:var(--paper)}
+body{margin:0;color:var(--ink);font:400 1.0625rem/1.7 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+a:focus-visible{outline:2px solid var(--seal);outline-offset:3px}
+.geri{position:fixed;z-index:30;top:max(16px,env(safe-area-inset-top));left:16px;font:500 .8125rem/1 var(--sans);text-decoration:none;padding:10px 14px;background:rgba(236,233,225,.88);border:1px solid var(--rule);border-radius:2px}
+.kucuk{font:500 .75rem/1.4 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(20px,5vw,64px)}
+
+.acilis{min-height:88svh;display:grid;grid-template-columns:1fr .618fr;align-items:end;padding-block:max(120px,16svh) 8svh}
+.acilis h1{font:400 clamp(3.6rem,10vw,8.4rem)/.92 var(--serif);letter-spacing:-.025em;margin:.2em 0 .25em}
+.acilis h1 em{font-style:italic;color:var(--ink-2)}
+.acilis p{max-width:30rem;color:var(--ink-2);font-size:1.15rem;margin:0}
+
+/* the signature: a sticky drawing, the copy scrolling past it */
+.imza{position:relative;display:grid;grid-template-columns:.618fr 1fr;gap:clamp(24px,4vw,64px)}
+.sahne{position:sticky;top:0;height:100svh;display:grid;place-items:center;grid-column:2;grid-row:1}
+.sahne canvas,.sahne img{width:min(100%,82svh);aspect-ratio:1;height:auto;display:block;-webkit-mask-image:radial-gradient(closest-side,#000 78%,transparent);mask-image:radial-gradient(closest-side,#000 78%,transparent)}
+.js .sahne img{display:none}
+.no-js .sahne canvas{display:none}
+.adimlar{grid-column:1;grid-row:1;padding-block:30svh 40svh}
+.adim{min-height:70svh;display:flex;flex-direction:column;justify-content:center;max-width:24rem}
+.adim h2{font:400 clamp(2rem,3.6vw,3rem)/1.05 var(--serif);margin:.3em 0 .35em}
+.adim p{margin:0;color:var(--ink-2)}
+
+.gramer{border-top:1px solid var(--rule);padding-block:clamp(80px,11vw,140px)}
+.gramer-ic{display:grid;grid-template-columns:.618fr 1fr;gap:clamp(24px,5vw,72px)}
+.gramer h2{font:400 clamp(2rem,4vw,3.2rem)/1.05 var(--serif);margin:.3em 0 0}
+.kurallar{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,3vw,40px)}
+.kurallar h3{font:500 .8rem/1.4 var(--sans);letter-spacing:.12em;text-transform:uppercase;margin:0 0 .8rem;color:var(--ink-2)}
+.kurallar ul{margin:0;padding:0;list-style:none}
+.kurallar li{padding:.55rem 0;border-top:1px solid var(--rule)}
+.imza-not{grid-column:1/-1;font:italic 400 1.35rem/1.45 var(--serif);max-width:40rem;margin:clamp(24px,4vw,48px) 0 0}
+
+.kapanis{background:var(--ink);color:var(--paper);padding-block:clamp(88px,13vw,170px)}
+.kapanis h2{font:400 clamp(2.4rem,6vw,5rem)/1 var(--serif);margin:.3em 0 .35em;max-width:14ch}
+.kapanis p{color:rgba(247,243,234,.72);max-width:32rem;margin:0 0 2rem}
+.kapanis .kucuk{color:#e3a391}
+.btn{display:inline-block;background:var(--seal);color:#fff;text-decoration:none;font:500 .95rem/1 var(--sans);padding:15px 22px;border-radius:2px}
+.btn:hover{background:var(--seal-ink)}
+footer{background:#15110d;color:rgba(247,243,234,.6);font-size:.85rem;padding:26px 0}
+
+@media (max-width:820px){
+  .acilis{grid-template-columns:1fr;min-height:auto;padding-bottom:4svh}
+  .imza{grid-template-columns:1fr}
+  .sahne{grid-column:1;height:58svh;top:0;z-index:1;background:linear-gradient(var(--paper) 88%,rgba(236,233,225,0))}
+  .sahne canvas,.sahne img{width:min(92vw,54svh)}
+  .adimlar{grid-row:2;padding-block:4svh 30svh}
+  .adim{min-height:48svh;max-width:none}
+  .gramer-ic,.kurallar{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .sahne{position:relative;height:auto;padding-block:24px}
+  .adimlar{padding-block:24px}
+  .adim{min-height:0;padding-block:18px}
+}
+</style>
+</head>
+<body>
+<a class="geri" href="../">← Örnekler</a>
+<main>
+  <header class="acilis wrap">
+    <div>
+      <p class="kucuk">Konsept çalışma · gerçek işletme değil</p>
+      <h1>Kil <em>&amp;</em> Kül</h1>
+      <p>Elde çekilen, odun fırınında pişen kaseler. Bir kasenin nasıl yapıldığını aşağıda, çizilirken izleyin.</p>
+    </div>
+  </header>
+
+  <section class="imza wrap" id="imza" aria-labelledby="imza-baslik">
+    <h2 id="imza-baslik" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Bir kase nasıl yapılır</h2>
+    <div class="sahne">
+      <canvas id="kase" width="1080" height="1080" role="img" aria-label="Çömlekçi çarkında, iç yüzü yeşil sırlı, dışı yarıya kadar sırlı ve altı çıplak pişmiş kil bir kasenin mürekkep ve suluboya çizimi"></canvas>
+      <img src="kase-son.webp" width="900" height="900" alt="Çömlekçi çarkında, iç yüzü yeşil sırlı, dışı yarıya kadar sırlı ve altı çıplak pişmiş kil bir kasenin mürekkep ve suluboya çizimi">
+    </div>
+    <div class="adimlar">
+      <article class="adim">
+        <p class="kucuk">Çark</p>
+        <h2>Önce çark ıslanır.</h2>
+        <p>Çamur sıçrar, tezgâh kirlenir. Temiz bir kase kirli bir çarkta çekilir.</p>
+      </article>
+      <article class="adim">
+        <p class="kucuk">Kil ve sır</p>
+        <h2>Dışı üçte bire kadar daldırılır.</h2>
+        <p>İç yüz külden yapılmış yeşil bir sırla kaplanır. Dışarıda sır akar, damlalar olduğu gibi kalır.</p>
+      </article>
+      <article class="adim">
+        <p class="kucuk">Çizgi</p>
+        <h2>El, halkaları izler.</h2>
+        <p>Çarkın parmakla bıraktığı her halka kasenin üstünde görünür. Onları silmeyiz.</p>
+      </article>
+      <article class="adim">
+        <p class="kucuk">Mühür</p>
+        <h2>En son mühür.</h2>
+        <p>Her kasenin altında atölyenin kırmızı mührü vardır. İki kase birbirinin aynısı olmaz.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="gramer" aria-labelledby="gramer-baslik">
+    <div class="wrap gramer-ic">
+      <div>
+        <p class="kucuk">Paket D · sayfa grameri</p>
+        <h2 id="gramer-baslik">Bu sayfa neyi ister, neyi reddeder.</h2>
+      </div>
+      <div class="kurallar">
+        <div>
+          <h3>İster</h3>
+          <ul><li>Tek bir el: mürekkep ve suluboya</li><li>Kâğıt zemin, iki yazı ailesi</li><li>Tek kırmızı: mühür ve eylem</li><li>Adım adım okunan bir yapım hikâyesi</li></ul>
+        </div>
+        <div>
+          <h3>Reddeder</h3>
+          <ul><li>Stok fotoğraf ve hazır ikon</li><li>Parlayan buton, mor gradyan</li><li>Eş kart ızgarası</li><li>Uydurma rakam ve yorum</li></ul>
+        </div>
+        <p class="imza-not">İmza hareket: kaydırdıkça kase elle çizilir. Geri kaydırınca aynı sırayla silinir. Çizim tamamen kodla üretilir; fotoğraf ya da video kullanılmaz.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="kapanis" aria-labelledby="kapanis-baslik">
+    <div class="wrap">
+      <p class="kucuk">Paket D · tam marka deneyimi</p>
+      <h2 id="kapanis-baslik">Markanızın kendi hareketi.</h2>
+      <p>Kil &amp; Kül kurgusaldır; sipariş alınmaz. Markanız için tek bir imza hareket etrafında kurulan bir sayfa isterseniz yazın.</p>
+      <a class="btn" href="mailto:aliulu@ai-ulu.com?subject=Paket%20D%20marka%20deneyimi">aliulu@ai-ulu.com</a>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">Çizim: anidoodle motoruyla kodda üretildi. Sayfa, <a href="https://ai-ulu.com">AI-ULU</a> Paket D örneğidir.</div></footer>
+
+<script>
+(() => {
+  const canvas = document.getElementById('kase');
+  const poster = canvas.nextElementSibling;
+  const steps = [...document.querySelectorAll('.adim')];
+  const RANGES = [[0, 30], [30, 70], [70, 135], [135, 149]];   // cue table in kase.ts
+  const mq = matchMedia('(prefers-reduced-motion: reduce)');
+  const FRAMES = 150;
+  const scale = Math.min(1, (canvas.getBoundingClientRect().width * Math.min(devicePixelRatio || 1, 2)) / 1080) || 0.75;
+  let seek = null;
+
+  // failure fallback: if nothing ever paints, show the finished drawing instead
+  const failed = () => { canvas.style.display = 'none'; poster.style.display = 'block'; };
+
+  try {
+    if (canvas.transferControlToOffscreen && window.Worker && location.protocol !== 'file:') {
+      const off = canvas.transferControlToOffscreen();
+      const w = new Worker('kase.js');
+      w.onerror = failed;
+      w.postMessage({ canvas: off, scale, frame: 0 }, [off]);
+      seek = (f) => w.postMessage({ frame: f });
+    } else {
+      const s = document.createElement('script');
+      s.src = 'kase.js';
+      s.onload = () => { const r = window.KASE.mount(canvas, scale); seek = r.seek; update(); };
+      s.onerror = failed;
+      document.head.appendChild(s);
+    }
+  } catch (e) { failed(); }
+
+  let last = -1, raf = 0;
+  function update() {
+    raf = 0;
+    if (!seek) return;
+    if (mq.matches) { if (last !== FRAMES - 1) seek(last = FRAMES - 1); return; }
+    // each chapter owns the frames of the step it describes; inside a chapter the
+    // drawing advances as the chapter crosses the middle of the viewport
+    const mid = innerHeight * 0.4;
+    let f = 0;
+    steps.forEach((el, i) => {
+      const r = el.getBoundingClientRect(), t = Math.min(1, Math.max(0, (mid - r.top) / r.height));
+      if (mid >= r.top) f = RANGES[i][0] + t * (RANGES[i][1] - RANGES[i][0]);
+    });
+    f = Math.round(f);
+    if (f !== last) seek(last = f);
+  }
+  const kick = () => { if (!raf) raf = requestAnimationFrame(update); };
+  addEventListener('scroll', kick, { passive: true });
+  addEventListener('resize', kick);
+  mq.addEventListener('change', kick);
+  kick();
+})();
+</script>
+</body>
+</html>
