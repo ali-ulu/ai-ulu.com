@@ -1,0 +1,105 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>System Design örnek ders — Senior Academy</title><meta name="description" content="Gereksinim, kısıt, varsayım ve kabul ölçütlerini ayırt et. Senior Academy ücretsiz örnek ders."><link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="stylesheet" href="brand.css"></head><body><a class="skip" href="#icerik">İçeriğe geç</a><header class="topbar shell"><a class="mark" href="index.html">ali<b>·</b>ulu</a><nav aria-label="Ana menü"><a href="danismanlik.html">Proje hazırlama</a><a href="web-gelistirme.html">Web geliştirme</a><a href="academy.html">Senior Academy</a><a href="portfolyo.html">Portföy</a><a class="contact-link" href="index.html#iletisim">Görüşme isteyin ↗</a></nav></header><main id="icerik" class="document wrap"><a class="back-link" href="academy.html">← Senior Academy'ye dön</a><p class="eyebrow">SENIOR ACADEMY / ÜCRETSİZ ÖRNEK DERS</p><h1>Teknolojiden önce,<br>doğru sorular.</h1><p class="callout">Bu okuma dersi geliştirilmekte olan System Design eğitiminin bir örneğidir. Temel istemci/sunucu ve veri tabanı bilgisi varsayar. Kurulum gerektirmez; alıştırma yanıtları yalnız bu tarayıcıda saklanır.</p><h2>Senaryo</h2>
+<p>MiniShop küçük bir çevrimiçi mağaza. Ürün sahibi şöyle diyor: “Site hızlı olsun, sipariş kaybolmasın, kampanyada da çalışsın.” Sana verilen kesin bilgi: ürün listeleme ve sipariş oluşturma gerekiyor. Trafik, bütçe, ödeme sağlayıcısı ve kabul edilebilir kesinti henüz bilinmiyor.</p>
+<p>İlk görev teknoloji seçmek değil, karar vermeyi mümkün kılacak soruları bulmak. Redis, mikroservis veya bir bulut sağlayıcısı söylemek bu bilinmeyenleri çözmez.</p>
+<h2>1. İşlevsel gereksinim: sistemin davranışı</h2>
+<p>“Sipariş oluşturulabilsin” bir başlangıçtır, uygulama sözleşmesi değildir. Hangi koşulda, hangi sonuçla ve başarısızlıkta ne olacağını açıklamalısın.</p>
+<p>Daha açık ifade: “Geçerli sepet ve teslimat bilgisi gönderildiğinde sistem siparişi kaydeder ve sipariş referansı döndürür. Zorunlu bilgi eksikse hangi alanın eksik olduğunu gösterir ve sipariş oluşturmaz.”</p>
+<p>Bu ifade hâlâ stok, ödeme ve tekrar gönderim kararlarını açık bırakır. Bunları sessizce varsaymak yerine soru listesine ekle: Stok ne zaman ayrılır? Ödeme başarısızsa siparişin durumu ne olur? Kullanıcı yanıt alamayıp tekrar gönderirse ne olmalı?</p>
+<p>Karşı örnek: “Ödeme başarılıysa her şey tamamdır.” Sağlayıcı bildirimi gecikebilir veya aynı bildirim yeniden gelebilir. Sistem davranışı yalnız mutlu akıştan oluşmaz.</p>
+<p>Mini alıştırma: “Kullanıcı ürün arayabilir” cümlesine boş arama, sonuç bulunamaması ve servis hatası için beklenen davranışları ekle. Örnek çözüm: boş sorguda varsayılan liste; sonuç yoksa açık mesaj; servis hatasında başarısızlığı gizlemeyen yeniden deneme seçeneği. Bunlar tek doğru ürün kararı değildir; tutarlılık ve açıklık değerlendirilir.</p>
+<h2>2. Kalite hedefi: ölçümün sınırını çizmek</h2>
+<p>“Hızlı” ölçülemez. “İki saniye” de neyin, hangi yük altında ölçüldüğü bilinmeden yeterli değildir.</p>
+<p>Örnek hedef: “Test ortamında, tanımlı ürün verisi ve saniyede 20 ürün listeleme isteği altında, 10 dakikalık ölçüm penceresinde başarılı yanıtların yüzde 95&#39;i sunucu sınırında 500 ms içinde dönecek; hata oranı ayrıca yüzde 1&#39;in altında olacak.” Bu rakamlar eğitim varsayımıdır, her mağaza için öneri değildir.</p>
+<p>Yüzde 95 sınırı, isteklerin yüzde 5&#39;inin daha yavaş olabileceğini ifade eder. Başarısız istekleri süre hesabından çıkarmak sistemi iyi gösterebilir; bu yüzden hata oranı ayrıca ölçülür. Sunucu süresi, öğrencinin telefonunda gördüğü toplam sayfa açılma süresi değildir. Ağ ve tarayıcı işleme süresinin dahil olup olmadığı açık yazılmalı.</p>
+<p>Karşı örnek: ortalama 200 ms iyi görünebilir, ancak az sayıdaki çok yavaş isteği gizleyebilir. Tek ortalama ölçümü yerine dağılımın ilgili noktalarını ve hataları birlikte değerlendir.</p>
+<p>Mini alıştırma: “Sistem hiç kapanmamalı” yerine önce üç soru yaz. Örnek: Hangi işlev için? Hangi zaman penceresinde? Kesinti nasıl ölçülecek ve hangi olaylar dahil olacak? Bir hedefi sözleşmeye yazmadan önce maliyet ve işletim kapasitesiyle karşılaştır.</p>
+<h2>3. Kısıt, varsayım ve karar farklı kayıtlardır</h2>
+<p>Kısıt: değiştirme yetkinin olmadığı veya ayrıca müzakere gerektiren sınır. Örnek: müşteri mevcut kimlik sağlayıcısını kullanmayı şart koşuyor.</p>
+<p>Varsayım: doğru olduğunu henüz göstermediğin çalışma kabulü. Örnek: kampanyada trafik normalin beş katı olacak. Kaynak, doğrulama yöntemi ve yanlış çıkarsa etki yazılmalı.</p>
+<p>Karar: alternatifleri değerlendirip belirli gerekçeyle seçtiğin yol. Örnek: ekip kapasitesi ve kapsam nedeniyle ilk sürümü modüler tek uygulama olarak geliştirmek. Gerekçe değişirse karar yeniden incelenebilir.</p>
+<p>Karşı örnek: “Trafik yüksek olacak, bu yüzden mikroservis zorunlu.” Hem trafik iddiası belirsiz hem çözüm zorunluluğu gerekçesiz. Önce trafik varsayımını, sonra seçeneklerin işletim maliyetini ve sınırlarını incele.</p>
+<p>Mini alıştırma: “İki geliştiricimiz var; günde 50 bin kullanıcı bekliyoruz; PostgreSQL kullanacağız” cümlesini üç kayda ayır. Ekip sayısı doğrulanmışsa kısıt; trafik kanıtsızsa varsayım; veri tabanı seçimi gerekçesi yazılması gereken karardır.</p>
+<h2>4. Öncelik: çelişen hedeflerde davranışı seçmek</h2>
+<p>Her hedefi aynı anda en yükseğe çıkarmak mümkün değildir. Ürün listesinin kısa süre eski görünmesi tolere edilebilirken sipariş tutarının yanlış hesaplanması tolere edilmeyebilir. “Her yerde aynı tutarlılık” demek yerine iş akışını değerlendir.</p>
+<p>Örnek karar: ürün listelemede kısa süreli eski veri kabul edilebilir; sipariş onayında fiyat ve stok sunucuda yeniden doğrulanır. Bu karar, stok rezervasyonunun nasıl yapılacağını tek başına çözmez; ayrı davranış tanımı gerekir.</p>
+<p>Mini alıştırma: kampanya sırasında stok servisi yanıt vermiyor. Kullanıcıya kesin sipariş onayı vermek, beklemede durumuna almak veya işlemi durdurmak seçeneklerini karşılaştır. Doğru cevap bağlama bağlıdır; kabul edilebilecek riski ve kullanıcıya gösterilecek durumu açıkla. Stok doğrulanmadan kesin satış sözü vermenin sonucunu tartışmadan karar verme.</p>
+<h2>Açıklamalı değerlendirme</h2>
+<h3>Soru 1</h3>
+<p>“Ürün listesi hızlı açılmalı” ifadesini hangi ek bilgi ölçülebilir hale getirir?</p>
+<p>A. Kullanılacak CSS kütüphanesi. B. Ölçüm sınırı, yük, zaman penceresi, gecikme yüzdeliği ve hata hedefi. C. Sunucunun popüler olması. D. Geliştiricinin deneyim yılı.</p>
+<p>Doğru: B. Diğer seçenekler sonucu ölçen kabul koşulu değildir. Teknoloji seçimi tek başına hız kanıtı olmaz.</p>
+<h3>Soru 2</h3>
+<p>Kampanyada 50 bin eşzamanlı kullanıcı olacağı söyleniyor; geçmiş veri yok. İlk uygun kayıt hangisi?</p>
+<p>A. Doğrulanmış NFR. B. Başarılı yük testi. C. Kesin mimari karar. D. Kaynağı ve doğrulama planı yazılmış varsayım.</p>
+<p>Doğru: D. Tahmin kullanılabilir; fakat gözlenmiş trafik veya tamamlanmış test gibi sunulamaz.</p>
+<h3>Soru 3</h3>
+<p>Hangisi işlevsel davranıştır?</p>
+<p>A. Eksik teslimat bilgisinde alan hatası gösterip sipariş oluşturmamak. B. Aylık barındırma bütçesi. C. Sunucu yanıtının yüzde 95 sınırı. D. İki kişilik ekip.</p>
+<p>Doğru: A. B ve D kısıt, C kalite hedefinin bir parçasıdır.</p>
+<h3>Soru 4</h3>
+<p>Ortalama yanıt süresi hedefi geçiyor; bazı müşteriler uzun süre bekliyor. En uygun sonraki inceleme?</p>
+<p>A. Ortalama iyi olduğu için şikâyeti kapatmak. B. Hemen mikroservise geçmek. C. Gecikme dağılımını ve hata oranını aynı ölçüm bağlamında incelemek. D. Testten yavaş istekleri çıkarmak.</p>
+<p>Doğru: C. A ve D sorunu gizler; B neden görülmeden çözüm seçer.</p>
+<h3>Soru 5</h3>
+<p>AI ajanı “Bu proje Redis gerektiriyor” diyor. En yararlı soru hangisi?</p>
+<p>A. Kaç dosya oluşturacaksın? B. Hangi gereksinimi, hangi ölçüm veya kısıt nedeniyle karşılıyor; daha basit alternatif ne? C. Logosu nasıl görünecek? D. En yeni sürümünü kullanabilir misin?</p>
+<p>Doğru: B. Bu soru teknolojiyi iş ihtiyacına ve kanıta bağlar. Diğerleri gerekliliği doğrulamaz.</p>
+<h3>Soru 6</h3>
+<p>Test planı yazıldı ama hiç çalıştırılmadı. Rapora ne yazılmalı?</p>
+<p>A. Doğrulandı. B. Büyük olasılıkla geçti. C. Üretime hazır. D. NOT RUN; plan mevcut, yürütme kanıtı yok.</p>
+<p>Doğru: D. Plan ile sonuç farklı teslimlerdir.</p>
+<p>Seçenek dizilişi bu metinde sabittir. Uygulamada karıştırma yapılırsa cevaplar sıra numarası yerine sabit seçenek kimliğiyle eşlenmeli; açıklama da seçilen seçenekle doğru kalmalı. Bu özellik henüz uygulanmadı.</p>
+<h2>Proje görevi: MiniShop gereksinim dosyası</h2>
+<p>Kendi notlarına şu teslimleri yaz: üç işlevsel gereksinim; ölçüm bağlamı tam iki kalite hedefi; iki kısıt; doğrulama planlı iki varsayım; bir öncelik/ödünleşim kararı; her gereksinim için bir kabul senaryosu. Trafik ve bütçe verilmediyse kendi sayılarını açıkça varsayım olarak etiketle.</p>
+<p>Güçlü teslim örneği: “REQ-01 geçerli sipariş kaydeder; TEST-01 geçerli gönderimden sonra referansla yeniden okuma. ASM-01 saniyede 20 listeleme isteği, müşteri trafik verisiyle doğrulanacak. NFR-01 tanımlı veri ve yük altında belirtilmiş süre/hata hedefi.”</p>
+<p>Zayıf teslim: “Site hızlı, güvenli ve ölçeklenebilir olacak; ajan en iyi teknolojiyi seçsin.” Ne başarının ölçüsü ne ajanın sınırı bellidir.</p>
+<section class="practice-card" aria-labelledby="practice-title">
+<p class="eyebrow">KURULUMSUZ UYGULAMA</p><h2 id="practice-title">Bir karar dosyası taslağı yaz.</h2>
+<p>MiniShop senaryosunu kullan; kişisel veya gizli veri yazma. Yanıtların bu tarayıcıda saklanır, siteye gönderilmez ve öğretmen tarafından incelenmez. Başka cihazda görünmez.</p>
+<form id="practice-form">
+<label for="practice-requirement">1. Sipariş oluşturma için başarı ve hata davranışını yaz.</label><textarea id="practice-requirement" name="requirement" maxlength="1500" rows="4" placeholder="Geçerli istek geldiğinde... Eksik bilgi varsa..."></textarea>
+<label for="practice-quality">2. “Hızlı” yerine ölçülebilir bir hedef kur.</label><textarea id="practice-quality" name="quality" maxlength="1500" rows="4" placeholder="Hangi işlem, yük, süre, ölçüm sınırı ve hata oranı?"></textarea>
+<label for="practice-assumption">3. Bilmediğin bir şeyi varsayım olarak yaz ve nasıl doğrulayacağını belirt.</label><textarea id="practice-assumption" name="assumption" maxlength="1500" rows="4" placeholder="ASM-01: ... Kaynak: ... Doğrulama: ..."></textarea>
+<div class="practice-actions"><button type="button" id="practice-review">Kendimi kontrol et ↗</button><button type="button" id="practice-clear">Bu cihazdaki yanıtları sil</button></div>
+<p id="practice-status" role="status" aria-live="polite">Tarayıcıda kaydetme hazırlanıyor.</p>
+<div id="practice-rubric" hidden><h3>Kontrol noktaları</h3><ul><li>İşlevsel gereksinim başarıyı, hatayı ve kayıt etkisini ayrı ayrı söylüyor mu?</li><li>Kalite hedefinde işlem, yük, ölçüm penceresi, süre yüzdeliği ve hata sınırı var mı?</li><li>Varsayım gerçek bilgi gibi görünmeden kaynağı ve doğrulama yöntemiyle yazılmış mı?</li></ul><p>Bu kontrol otomatik puan değildir. Eksikleri yukarıdaki yanıtında düzelt ve aşağıdaki tam rubrikle karşılaştır.</p></div>
+</form><noscript><p>Otomatik yerel kayıt için JavaScript gerekir; dersin tamamı ve yazı alanları yine okunabilir.</p></noscript>
+</section>
+<h2>Rubrik ve geri bildirim</h2>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Değerlendirme tablosu"><table>
+<thead>
+<tr>
+<th>Boyut</th>
+<th>Puan</th>
+<th>Tam puan koşulu</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Davranış açıklığı</td>
+<td>25</td>
+<td>Başarı ve hata davranışları, kayıt etkisi açık</td>
+</tr>
+<tr>
+<td>Ölçülebilirlik</td>
+<td>25</td>
+<td>Yük, sınır, pencere, gecikme/hata ölçüsü açık</td>
+</tr>
+<tr>
+<td>Bilgi dürüstlüğü</td>
+<td>20</td>
+<td>Varsayım ve kanıt ayrılmış, doğrulama yöntemi var</td>
+</tr>
+<tr>
+<td>İzlenebilirlik</td>
+<td>20</td>
+<td>Her gereksinim kabul senaryosuna bağlı</td>
+</tr>
+<tr>
+<td>Karar gerekçesi</td>
+<td>10</td>
+<td>Öncelik ve vazgeçilen özellik gerekçelendirilmiş</td>
+</tr>
+</tbody></table></div>
+<p>Önerilen pilot geçişi: en az 80/100, ayrıca hiçbir gereksinim testsiz değil ve çalıştırılmayan test başarılı gösterilmiyor. Eşik pedagojik olarak pilotta sınanacak; kesin yeterlilik sertifikası değildir. Quiz başarı oranı ayrı gösterilir; quiz tek başına proje yeterliliği sağlamaz.</p>
+<p>Geri bildirim “yanlış” demekle bitmez: eksik alan, neden önemli olduğu ve yeniden denemede istenen düzeltme yazılır. Örnek: “500 ms hedefinde ölçüm sınırı yok. Sunucu süresi mi, kullanıcının gördüğü toplam süre mi olduğunu ekle.”</p>
+<a class="button primary" href="index.html#iletisim">Geri bildirim paylaş ↗</a></main><footer class="bottom shell"><a class="mark" href="index.html">ali<b>·</b>ulu</a><span>Ali Ulu · Proje danışmanlığı ve Senior Academy</span><a href="mailto:aliulu@ai-ulu.com">aliulu@ai-ulu.com</a></footer><script src="lesson-practice.js"></script></body></html>
