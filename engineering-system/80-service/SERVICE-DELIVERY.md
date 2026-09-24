@@ -41,6 +41,18 @@ Use for capacity planning, not as public price list until sales locks numbers.
 - C: 5–10 day cycle depending on case depth  
 - D: scoped only after Blueprint  
 
+### Default page grammar (internal)
+Starting point for the scroll-craft grammar choice (`references/uniqueness.md` in scroll-craft). The build still states why the chosen grammar fits; a default is not a reason.
+
+| Package | Default grammar | Switch when |
+|---------|-----------------|-------------|
+| A | Filmic one-shot | The brand's real asset is one sentence: Typographic poster |
+| B | Filmic one-shot with a scrub or layered hero | The product is a comparison: Split stage. The product has variants: Gallery / catalog |
+| C | Gallery / catalog (case studies) | The client's work is software whose demo is the argument: Live surface |
+| D | Chosen in Blueprint: Continuous world, Chaptered editorial, Rhythmic cutlist or a new grammar with written forbids | Always. D must differ from earlier client pages on the uniqueness dimensions |
+
+Published example for each package: `ornekler/` on ai-ulu.com. Public copy for the package menu lives in `index.html` (`pkgA…pkgD`, `pkgAll`); it carries no prices and no effort bands.
+
 ---
 
 ## 2. Design floor (always on)
