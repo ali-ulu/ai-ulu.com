@@ -14,7 +14,9 @@ project/
 - scope.md
 - product-model.md
 - flows.md
+- invariants.md
 - specifications.md
+- contracts.md
 - data-model.md
 - architecture.md
 - deployment.md

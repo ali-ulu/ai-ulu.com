@@ -20,5 +20,7 @@ BASE-### baseline
 REC-### recovery event
 REV-### verification/review
 LEARN-### learning candidate
+INV-### invariant
+CTR-### contract
 
 Statuses: DRAFT, REVIEW-REQUIRED, APPROVED, BLOCKED, SUPERSEDED, REJECTED, DONE.
