@@ -29,7 +29,7 @@ Use these names in proposals. Scope may shrink with client budget; do not invent
 ### Package rules
 - Every package includes: mobile pass, reduced-motion respect, contrast-conscious type, no invented statistics.
 - **A/B** default to scroll-craft taste floor + φ composition where it helps hierarchy.
-- **C** prefers case study structure over thumbnail-only galleries.
+- **C** prefers case study structure over thumbnail-only galleries. Full path: [TECH-PORTFOLIO-PATH.md](TECH-PORTFOLIO-PATH.md) (wireframes, 3D optional, checklist).
 - **D** requires a written “signature move” (one bespoke interaction that is not a recoloured spotlight).
 - HUQAN is **not** a package.
 
@@ -38,7 +38,7 @@ Use for capacity planning, not as public price list until sales locks numbers.
 
 - A: focused 1–3 day craft cycle after brief is clear  
 - B: 3–7 day cycle  
-- C: 5–10 day cycle depending on case depth  
+- C: 5–10 day cycle depending on case depth; single 3D/scrub peak is C+addon or D-level effort  
 - D: scoped only after Blueprint  
 
 ### Default page grammar (internal)
@@ -147,11 +147,12 @@ Use before calling Build done.
 - CTA consistent wording site-wide  
 
 ### C — Tech / Web3 portfolio
-- Full section order, proof rules and builder checklist: [TECH-PORTFOLIO-PATH.md](TECH-PORTFOLIO-PATH.md)  
+- Full path (section order, wireframes A/B, 3D rules, proof, checklist): [TECH-PORTFOLIO-PATH.md](TECH-PORTFOLIO-PATH.md)  
 - Case study minimum: problem → approach → outcome  
 - Proof blocks: GitHub, live URLs, on-chain links — **only if real**  
 - Dark or calm default; avoid matrix-neon cliché  
 - Bento allowed for skills/stack; not as lazy feature-card wallpaper  
+- 3D scrollytelling optional: **one** peak max; default is wireframe A (no 3D)  
 
 ### D — Full brand experience
 - Written grammar choice (what this page forbids vs requires)  
@@ -187,7 +188,7 @@ LeadScout finds and scores businesses; this standard defines what we sell them.
 | Multi-property or high-stakes brand | **D** after Blueprint |
 
 ### Outreach discipline
-- Cite **inspectable** audit observations (e.g. missing title, no HTTPS, thin content) — not “you will rank #1”.  
+- Cite **inspectable** audit observations (e.g. missing title, no HTTPS, thin content) — not “you will rank #1”.”.  
 - Scores are readiness heuristics, not traffic predictions.  
 - CRM states stay in LeadScout; delivery tasks stay in ai-ulu.com project board.  
 
