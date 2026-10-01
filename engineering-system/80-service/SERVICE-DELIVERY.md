@@ -188,7 +188,7 @@ LeadScout finds and scores businesses; this standard defines what we sell them.
 | Multi-property or high-stakes brand | **D** after Blueprint |
 
 ### Outreach discipline
-- Cite **inspectable** audit observations (e.g. missing title, no HTTPS, thin content) — not “you will rank #1”.”.  
+- Cite **inspectable** audit observations (e.g. missing title, no HTTPS, thin content) — not “you will rank #1”.  
 - Scores are readiness heuristics, not traffic predictions.  
 - CRM states stay in LeadScout; delivery tasks stay in ai-ulu.com project board.  
 
