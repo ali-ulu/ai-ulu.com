@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proje ön görüşme formu · AI-ULU</title>
+<meta name="description" content="Fikrinizi anlatın, ücretsiz. Mühendislik seviyesinde proje planı hazırlayabilmemiz için gereken bilgiyi toplayan ön görüşme formu.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f3f0e9;--ink:#111411;--muted:#5b625b;--line:rgba(17,20,17,.14);--acid:#c8ff67;--panel:rgba(255,255,255,.5);
+ --serif:"Bodoni Moda",Georgia,serif;--sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+*{box-sizing:border-box}
+html{background:var(--paper);scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font:400 1rem/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
+.wrap{max-width:880px;margin:0 auto;padding:0 clamp(18px,5vw,40px) 90px}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:rgba(243,240,233,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top-in{max-width:880px;margin:0 auto;padding:14px clamp(18px,5vw,40px);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;text-decoration:none;letter-spacing:-.02em}
+.mark{width:28px;height:28px;border:1px solid var(--ink);border-radius:8px;display:grid;place-items:center;transform:rotate(8deg)}
+.mark i{display:block;width:11px;height:11px;border:2.5px solid var(--ink);border-left-color:transparent;transform:rotate(-45deg)}
+.tools{display:flex;align-items:center;gap:10px}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:rgba(255,255,255,.5)}
+.lang button{border:0;background:transparent;border-radius:999px;padding:5px 9px;font:500 10px var(--mono);cursor:pointer;color:inherit}
+.lang button[aria-pressed=true]{background:var(--ink);color:#fff}
+.back{font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:8px 13px}
+.back:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pbar{height:3px;background:var(--line)}
+.pbar i{display:block;height:100%;width:0;background:var(--ink);transition:width .3s ease}
+
+/* hero */
+.hero{padding:clamp(40px,7vw,72px) 0 26px}
+.kick{display:inline-block;font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:7px 11px;background:rgba(255,255,255,.5)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(38px,6.4vw,64px);line-height:1.0;letter-spacing:-.045em;margin:22px 0 18px}
+h1 em{font-style:italic;color:#29463a}
+.lead{font-size:17px;line-height:1.65;color:#4f584f;max-width:660px}
+.notes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+.note{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--panel)}
+.note b{display:block;font-size:13px;margin-bottom:5px}
+.note span{font-size:13px;line-height:1.55;color:var(--muted)}
+
+/* sections */
+section{margin-top:34px;border:1px solid var(--line);border-radius:20px;background:var(--panel);overflow:hidden}
+.shead{display:flex;gap:16px;align-items:baseline;padding:22px 24px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.32)}
+.shead .no{font:500 11px var(--mono);letter-spacing:.12em;color:#526256}
+.shead h2{font-family:var(--serif);font-weight:500;font-size:clamp(23px,3.4vw,30px);letter-spacing:-.03em;margin:0}
+.shead p{margin:6px 0 0;font-size:13.5px;color:var(--muted);line-height:1.55}
+.sbody{padding:8px 24px 24px}
+.q{padding:20px 0;border-bottom:1px solid var(--line)}
+.q:last-child{border-bottom:0;padding-bottom:6px}
+.q>label,.q .qlabel{display:block;font-weight:600;font-size:15px;line-height:1.5;margin-bottom:4px}
+.q .hint{display:block;font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:11px;font-weight:400}
+.req{font:500 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#526256;border:1px solid var(--line);border-radius:999px;padding:3px 7px;margin-left:7px;vertical-align:middle}
+input[type=text],input[type=email],input[type=tel],textarea,select{width:100%;font:400 15px var(--sans);color:var(--ink);background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:12px;padding:12px 13px;transition:border-color .2s,box-shadow .2s}
+textarea{min-height:92px;resize:vertical;line-height:1.6}
+input:focus,textarea:focus,select:focus{outline:0;border-color:var(--ink);box-shadow:0 0 0 3px rgba(17,20,17,.07)}
+.opts{display:grid;gap:8px}
+.opts.two{grid-template-columns:1fr 1fr}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:rgba(255,255,255,.5);cursor:pointer;transition:.18s;font-size:14.5px;line-height:1.45}
+.opt:hover{border-color:rgba(17,20,17,.34)}
+.opt input{margin:2px 0 0;accent-color:#111411;flex:none;width:16px;height:16px}
+.opt:has(input:checked){background:rgba(200,255,103,.3);border-color:var(--ink)}
+.opt em{font-style:normal;color:var(--muted);font-size:12.5px;display:block;margin-top:2px}
+
+/* footer actions */
+.actions{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:999px;padding:14px 22px;font:600 14.5px var(--sans);cursor:pointer;text-decoration:none;transition:.2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(17,20,17,.16)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.small{padding:10px 16px;font-size:13.5px}
+.err{color:#a3271f;font-size:13.5px;font-weight:600;min-height:20px}
+.privacy{margin-top:26px;border:1px solid var(--line);border-radius:16px;padding:16px 18px;background:rgba(255,255,255,.42);font-size:13px;line-height:1.6;color:var(--muted)}
+.privacy b{color:var(--ink)}
+
+/* result */
+#result{display:none;margin-top:34px;border:1px solid var(--ink);border-radius:20px;overflow:hidden;background:#fff}
+#result.on{display:block}
+.rhead{padding:22px 24px;border-bottom:1px solid var(--line);background:rgba(200,255,103,.32)}
+.rhead h2{font-family:var(--serif);font-weight:500;font-size:clamp(23px,3.4vw,30px);letter-spacing:-.03em;margin:0 0 6px}
+.rhead p{margin:0;font-size:13.5px;color:#3c453c;line-height:1.55}
+.rbody{padding:20px 24px}
+#out{width:100%;min-height:280px;font:400 13px/1.6 var(--mono);border:1px solid var(--line);border-radius:12px;padding:14px;background:rgba(243,240,233,.6);white-space:pre-wrap;resize:vertical}
+.rok{font-size:13px;color:#2f6b3f;font-weight:600;margin-left:6px}
+footer{margin-top:40px;padding-top:22px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+@media(max-width:720px){
+ .notes{grid-template-columns:1fr}
+ .opts.two{grid-template-columns:1fr}
+ .sbody{padding:6px 16px 20px}
+ .shead{padding:18px 16px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+@media print{.top,.actions,.privacy,footer,.back,.lang{display:none}#result{display:block!important;border:0}body{background:#fff}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-in">
+    <a class="brand" href="../"><span class="mark" aria-hidden="true"><i></i></span>ai-ulu</a>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="Dil / Language">
+        <button type="button" data-lang="tr" aria-pressed="true">TR</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="back" href="../" data-i18n="back">← Siteye dön</a>
+    </div>
+  </div>
+  <div class="pbar" aria-hidden="true"><i id="pbar"></i></div>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <span class="kick" data-i18n="kick">Ücretsiz ön görüşme formu</span>
+    <h1 data-i18n-html="h1">Fikrinizi anlatın,<br><em>planını biz hazırlayalım.</em></h1>
+    <p class="lead" data-i18n="lead">Bu formun amacı fikrinizi anlamak. Cevaplarınıza göre projeniz için mühendislik seviyesinde bir plan hazırlıyoruz: ne yapılacak, hangi sırayla, hangi teknolojiyle, ne kadara mal olur, nerede risk var. Sonucu size teslim ediyoruz, siz de onu yapay zekâ aracınıza verip uygulatıyorsunuz.</p>
+    <div class="notes">
+      <div class="note"><b data-i18n="n1t">Yaklaşık 10 dakika</b><span data-i18n="n1b">Soruların çoğu isteğe bağlı. Emin olmadığınız her yerde "bilmiyorum" diyebilirsiniz, bu geçerli bir cevaptır.</span></div>
+      <div class="note"><b data-i18n="n2t">Teknik bilgi gerekmez</b><span data-i18n="n2b">Kod bilmenize gerek yok. Sorular günlük dille yazıldı.</span></div>
+      <div class="note"><b data-i18n="n3t">Veriniz sizde kalır</b><span data-i18n="n3b">Form hiçbir yere veri göndermez. Sonunda size bir özet üretilir, onu bize kendiniz gönderirsiniz.</span></div>
+    </div>
+  </div>
+
+  <form id="form" novalidate>
+
+    <section>
+      <div class="shead"><span class="no">01</span><div><h2 data-i18n="s1t">Siz kimsiniz?</h2><p data-i18n="s1b">Size nasıl ulaşacağımızı bilmemiz için.</p></div></div>
+      <div class="sbody">
+        <div class="q"><label for="name" data-i18n="q_name">Adınız<span class="req" data-i18n="req">Zorunlu</span></label>
+          <span class="hint" data-i18n="q_name_h">Görüşmede size nasıl hitap edelim.</span>
+          <input type="text" id="name" name="name" autocomplete="name"></div>
+        <div class="q"><label for="email" data-i18n="q_email">E-posta<span class="req" data-i18n="req">Zorunlu</span></label>
+          <span class="hint" data-i18n="q_email_h">Planı ve sorularımızı bu adrese göndereceğiz.</span>
+          <input type="email" id="email" name="email" autocomplete="email"></div>
+        <div class="q"><label for="phone" data-i18n="q_phone">Telefon veya WhatsApp</label>
+          <span class="hint" data-i18n="q_phone_h">İsteğe bağlı. Yazışmak isterseniz.</span>
+          <input type="tel" id="phone" name="phone" autocomplete="tel"></div>
+        <div class="q"><label for="where" data-i18n="q_where">Nerede yaşıyorsunuz?</label>
+          <span class="hint" data-i18n="q_where_h">Şehir ve ülke. Saat farkı ve yasal gereklilikler için soruyoruz.</span>
+          <input type="text" id="where" name="where"></div>
+        <div class="q"><label for="job" data-i18n="q_job">Şu an ne iş yapıyorsunuz?</label>
+          <span class="hint" data-i18n="q_job_h">Mesleğiniz veya işiniz. Bu projeyi nereden tanıdığınızı anlamamıza yardım eder.</span>
+          <input type="text" id="job" name="job"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shead"><span class="no">02</span><div><h2 data-i18n="s2t">Fikriniz</h2><p data-i18n="s2b">Ne yapmak istediğinizi kendi cümlelerinizle anlatın. Teknik terim kullanmayın, gerek yok.</p></div></div>
+      <div class="sbody">
+        <div class="q"><label for="oneliner" data-i18n="q_one">Projenizi tek cümleyle anlatın<span class="req" data-i18n="req">Zorunlu</span></label>
+          <span class="hint" data-i18n="q_one_h">Örnek: "Küçük kuaförlerin randevularını WhatsApp yerine tek yerden yönettiği bir uygulama."</span>
+          <textarea id="oneliner" name="oneliner"></textarea></div>
+        <div class="q"><label for="problem" data-i18n="q_prob">Bu sorun bugün nasıl çözülüyor?</label>
+          <span class="hint" data-i18n="q_prob_h">İnsanlar şu an ne yapıyor? Elle mi, Excel'le mi, başka bir uygulamayla mı, hiç çözmüyorlar mı?</span>
+          <textarea id="problem" name="problem"></textarea></div>
+        <div class="q"><label for="why" data-i18n="q_why">Bu konuyu neden siz biliyorsunuz?</label>
+          <span class="hint" data-i18n="q_why_h">Bu alanda çalıştınız mı, müşterisi miydiniz, yoksa kendiniz mi yaşadınız? Bu, fikrin en değerli kısmı.</span>
+          <textarea id="why" name="why"></textarea></div>
+        <div class="q"><label for="tried" data-i18n="q_tried">Daha önce bunu denediniz mi? Ne oldu?</label>
+          <span class="hint" data-i18n="q_tried_h">Bir aracı denediniz mi, birine yaptırdınız mı, yarım mı kaldı? Başarısızlıklar da çok değerli bilgi.</span>
+          <textarea id="tried" name="tried"></textarea></div>
+        <div class="q"><label for="when" data-i18n="q_when">Bu fikri ne zamandır düşünüyorsunuz?</label>
+          <input type="text" id="when" name="when"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shead"><span class="no">03</span><div><h2 data-i18n="s3t">Kim kullanacak?</h2><p data-i18n="s3b">Ürünü kullanan kişiyi tanımak, ürünün kendisinden daha önemli.</p></div></div>
+      <div class="sbody">
+        <div class="q"><label for="who" data-i18n="q_who">Kim kullanacak?</label>
+          <span class="hint" data-i18n="q_who_h">Yaş grubu, meslek, durum. Örnek: "20-40 yaş arası bağımsız kuaförler".</span>
+          <textarea id="who" name="who"></textarea></div>
+        <div class="q"><label for="first5" data-i18n="q_first5">Bir kullanıcı uygulamayı ilk açtığında ne yapacak?</label>
+          <span class="hint" data-i18n="q_first5_h">İlk 5 dakikada ne oluyor? Kayıt mı, bir şey mi arıyor, bir işlem mi yapıyor?</span>
+          <textarea id="first5" name="first5"></textarea></div>
+        <div class="q"><span class="qlabel" data-i18n="q_money">Kullanıcıdan para alınacak mı?</span>
+          <div class="opts two">
+            <label class="opt"><input type="radio" name="money" value="Evet, aylık abonelik"><span data-i18n="m1">Evet, aylık abonelik</span></label>
+            <label class="opt"><input type="radio" name="money" value="Evet, tek seferlik ödeme"><span data-i18n="m2">Evet, tek seferlik</span></label>
+            <label class="opt"><input type="radio" name="money" value="Evet, komisyon"><span data-i18n="m3">Evet, komisyon</span></label>
+            <label class="opt"><input type="radio" name="money" value="Hayır, ücretsiz"><span data-i18n="m4">Hayır, ücretsiz</span></label>
+            <label class="opt"><input type="radio" name="money" value="Henüz bilmiyorum"><span data-i18n="m5">Henüz bilmiyorum</span></label>
+            <label class="opt"><input type="radio" name="money" value="Sadece kendim kullanacağım"><span data-i18n="m6">Sadece kendim kullanacağım</span></label>
+          </div></div>
+        <div class="q"><label for="others" data-i18n="q_others">Sizin dışınızda bu ürünü kullanacak veya yönetecek başka biri var mı?</label>
+          <span class="hint" data-i18n="q_others_h">Ortak, ekip, çalışan, müşteri. Yoksa "yok" yazın.</span>
+          <textarea id="others" name="others"></textarea></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shead"><span class="no">04</span><div><h2 data-i18n="s4t">Ne, ne kadar, ne zaman?</h2><p data-i18n="s4b">Kapsamı netleştirmek, projenin kontrolden çıkmasını engelleyen tek şeydir.</p></div></div>
+      <div class="sbody">
+        <div class="q"><label for="must" data-i18n="q_must">İlk sürümde mutlaka olması gereken en fazla 3 şey</label>
+          <span class="hint" data-i18n="q_must_h">Satır satır yazın. Bunlar olmadan ürün işe yaramaz dediğiniz şeyler.</span>
+          <textarea id="must" name="must" placeholder="1.&#10;2.&#10;3."></textarea></div>
+        <div class="q"><label for="later" data-i18n="q_later">Olsa güzel olur ama sonra olabilir</label>
+          <span class="hint" data-i18n="q_later_h">Bunlar plana "sonraki aşama" olarak yazılır, ilk sürüme girmez.</span>
+          <textarea id="later" name="later"></textarea></div>
+        <div class="q"><label for="never" data-i18n="q_never">Kesinlikle istemediğiniz şeyler</label>
+          <span class="hint" data-i18n="q_never_h">Bazen en net cevap budur. Planın dışında tutulacak.</span>
+          <textarea id="never" name="never"></textarea></div>
+        <div class="q"><label for="success" data-i18n="q_success">6 ay sonra bu ürün başarılıysa ne olmuş olur?</label>
+          <span class="hint" data-i18n="q_success_h">Ölçülebilir olsun. Örnek: "50 kuaför aktif kullanıyor ve ayda 200 randevu giriyor."</span>
+          <textarea id="success" name="success"></textarea></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shead"><span class="no">05</span><div><h2 data-i18n="s5t">Bugüne kadar nereye geldiniz?</h2><p data-i18n="s5b">Sıfırdan mı başlıyoruz, yoksa elde bir şey var mı? İkisi çok farklı iş.</p></div></div>
+      <div class="sbody">
+        <div class="q"><span class="qlabel" data-i18n="q_have">Şu an elinizde ne var?</span>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="have" value="Hiçbir şey, sadece fikir"><span data-i18n="h1">Hiçbir şey, sadece fikir</span></label>
+            <label class="opt"><input type="radio" name="have" value="Kağıt üstünde notlar veya çizimler"><span data-i18n="h2">Notlar veya çizimler var</span></label>
+            <label class="opt"><input type="radio" name="have" value="Tasarım hazır"><span data-i18n="h3">Tasarım hazır</span></label>
+            <label class="opt"><input type="radio" name="have" value="Yarım kalmış kod var"><span data-i18n="h4">Yarım kalmış kod var</span></label>
+            <label class="opt"><input type="radio" name="have" value="Çalışıyor ama sorunları var"><span data-i18n="h5">Çalışıyor ama sorunları var</span></label>
+            <label class="opt"><input type="radio" name="have" value="Canlıda ve kullanıcısı var"><span data-i18n="h6">Canlıda, kullanıcısı var</span></label>
+          </div></div>
+        <div class="q"><span class="qlabel" data-i18n="q_tools">Hangi araçları denediniz?</span>
+          <span class="hint" data-i18n="q_tools_h">Birden fazla seçebilirsiniz.</span>
+          <div class="opts two">
+            <label class="opt"><input type="checkbox" name="tools" value="Lovable"><span>Lovable</span></label>
+            <label class="opt"><input type="checkbox" name="tools" value="v0"><span>v0</span></label>
+            <label class="opt"><input type="checkbox" name="tools" value="Bolt"><span>Bolt</span></label>
+            <label class="opt"><input type="checkbox" name="tools" value="Replit"><span>Replit</span></label>
+            <label class="opt"><input type="checkbox" name="tools" value="Cursor"><span>Cursor</span></label>
+            <label class="opt"><input type="checkbox" name="tools" value="Claude / ChatGPT"><span data-i18n="t7">Claude / ChatGPT</span></label>
+            <label class="opt"><input type="checkbox" name="tools" value="Hiçbiri"><span data-i18n="t8">Hiçbirini denemedim</span></label>
+            <label class="opt"><input type="checkbox" name="tools" value="Bir geliştirici denedi"><span data-i18n="t9">Bir geliştirici denedi</span></label>
+          </div></div>
+        <div class="q"><span class="qlabel" data-i18n="q_code">Kod yazabiliyor musunuz?</span>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="code" value="Hiç"><span data-i18n="c1">Hiç, kod bilmiyorum</span></label>
+            <label class="opt"><input type="radio" name="code" value="Biraz"><span data-i18n="c2">Biraz, basit şeyler yapabiliyorum</span></label>
+            <label class="opt"><input type="radio" name="code" value="İyi"><span data-i18n="c3">İyi, kendim geliştirebilirim</span></label>
+          </div></div>
+        <div class="q"><label for="who_decides" data-i18n="q_decide">Teknik kararları kim verecek?</label>
+          <span class="hint" data-i18n="q_decide_h">Hangi teknoloji, nerede barındırılacak, hangi veritabanı gibi kararlar. "Bilmiyorum, siz önerin" de diyebilirsiniz.</span>
+          <textarea id="who_decides" name="who_decides"></textarea></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shead"><span class="no">06</span><div><h2 data-i18n="s6t">Ölçek ve bütçe</h2><p data-i18n="s6b">Buradaki rakamlar sizi bağlamaz. Doğru planı yapabilmemiz için gerçekçi olması yeterli.</p></div></div>
+      <div class="sbody">
+        <div class="q"><span class="qlabel" data-i18n="q_users">İlk 6 ayda kaç kullanıcı bekliyorsunuz?</span>
+          <div class="opts two">
+            <label class="opt"><input type="radio" name="users" value="1-10"><span data-i18n="u1">1 ile 10 arası</span></label>
+            <label class="opt"><input type="radio" name="users" value="10-100"><span data-i18n="u2">10 ile 100 arası</span></label>
+            <label class="opt"><input type="radio" name="users" value="100-1000"><span data-i18n="u3">100 ile 1.000 arası</span></label>
+            <label class="opt"><input type="radio" name="users" value="1000+"><span data-i18n="u4">1.000'den fazla</span></label>
+            <label class="opt"><input type="radio" name="users" value="Bilmiyorum"><span data-i18n="u5">Bilmiyorum</span></label>
+          </div></div>
+        <div class="q"><label for="deadline" data-i18n="q_deadline">Ne zaman yayında olması gerekiyor?</label>
+          <span class="hint" data-i18n="q_deadline_h">Bir tarih, bir olay, ya da "acelesi yok".</span>
+          <input type="text" id="deadline" name="deadline"></div>
+        <div class="q"><span class="qlabel" data-i18n="q_infra">Aylık altyapı gideri için bütçeniz?</span>
+          <span class="hint" data-i18n="q_infra_h">Sunucu, veritabanı, yapay zekâ kullanımı gibi sürekli giderler. Bu, teknoloji seçimini doğrudan belirler.</span>
+          <div class="opts two">
+            <label class="opt"><input type="radio" name="infra" value="Ayda 0-20 dolar"><span data-i18n="i1">Ayda 0 ile 20 dolar</span></label>
+            <label class="opt"><input type="radio" name="infra" value="Ayda 20-50 dolar"><span data-i18n="i2">Ayda 20 ile 50 dolar</span></label>
+            <label class="opt"><input type="radio" name="infra" value="Ayda 50-150 dolar"><span data-i18n="i3">Ayda 50 ile 150 dolar</span></label>
+            <label class="opt"><input type="radio" name="infra" value="Ayda 150 dolar ve üzeri"><span data-i18n="i4">Ayda 150 dolar ve üzeri</span></label>
+            <label class="opt"><input type="radio" name="infra" value="Bilmiyorum, öneri bekliyorum"><span data-i18n="i5">Bilmiyorum, siz önerin</span></label>
+          </div></div>
+        <div class="q"><span class="qlabel" data-i18n="q_stage">Bu proje sizin için ne?</span>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="stage" value="Hobi / deneme"><span data-i18n="g1">Hobi veya deneme</span></label>
+            <label class="opt"><input type="radio" name="stage" value="Gelir elde etmek istiyorum"><span data-i18n="g2">Bu işten gelir elde etmek istiyorum</span></label>
+            <label class="opt"><input type="radio" name="stage" value="Mevcut işimi büyütmek"><span data-i18n="g3">Mevcut işimi büyütmek için</span></label>
+            <label class="opt"><input type="radio" name="stage" value="Yatırım alacak"><span data-i18n="g4">Yatırım almayı planlıyorum</span></label>
+          </div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shead"><span class="no">07</span><div><h2 data-i18n="s7t">Hassas konular ve riskler</h2><p data-i18n="s7b">Bunları baştan konuşmak, sonradan baş ağrısını engeller.</p></div></div>
+      <div class="sbody">
+        <div class="q"><span class="qlabel" data-i18n="q_data">Uygulama hassas veri tutacak mı?</span>
+          <span class="hint" data-i18n="q_data_h">Sağlık bilgisi, kimlik, ödeme kartı, çocuk verisi, konum gibi. Emin değilseniz "bilmiyorum" işaretleyin.</span>
+          <div class="opts two">
+            <label class="opt"><input type="radio" name="data" value="Hayır"><span data-i18n="d1">Hayır, hassas veri yok</span></label>
+            <label class="opt"><input type="radio" name="data" value="Kişisel veri (isim, e-posta, telefon)"><span data-i18n="d2">İsim, e-posta, telefon gibi bilgiler</span></label>
+            <label class="opt"><input type="radio" name="data" value="Ödeme bilgisi"><span data-i18n="d3">Ödeme bilgisi</span></label>
+            <label class="opt"><input type="radio" name="data" value="Sağlık veya kimlik verisi"><span data-i18n="d4">Sağlık veya kimlik verisi</span></label>
+            <label class="opt"><input type="radio" name="data" value="Bilmiyorum"><span data-i18n="d5">Bilmiyorum</span></label>
+          </div></div>
+        <div class="q"><label for="risk" data-i18n="q_risk">Sizin için en büyük risk ne?</label>
+          <span class="hint" data-i18n="q_risk_h">Parayı boşa harcamak, zaman kaybetmek, kullanıcı bulamamak, kodun çalışmaması, güvenlik. En çok neyden çekiniyorsunuz?</span>
+          <textarea id="risk" name="risk"></textarea></div>
+        <div class="q"><label for="constraint" data-i18n="q_constraint">Bilmemiz gereken başka bir kısıt var mı?</label>
+          <span class="hint" data-i18n="q_constraint_h">Kurumsal bir şart, erişilebilirlik gereksinimi, kamu işi, yurt dışı kullanıcı, belirli bir cihaz zorunluluğu gibi.</span>
+          <textarea id="constraint" name="constraint"></textarea></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shead"><span class="no">08</span><div><h2 data-i18n="s8t">Nasıl devam edelim?</h2><p data-i18n="s8b">Son birkaç soru.</p></div></div>
+      <div class="sbody">
+        <div class="q"><span class="qlabel" data-i18n="q_next">Nasıl devam etmek istersiniz?</span>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="next" value="Formu gönderdim, planımı hazırlayın"><span data-i18n="x1">Formu gönderdim, planımı hazırlayın</span><em data-i18n="x1h">İnceleyip size dönerim.</em></label>
+            <label class="opt"><input type="radio" name="next" value="Önce kısa bir görüşme yapalım"><span data-i18n="x2">Önce kısa bir görüşme yapalım</span><em data-i18n="x2h">Formu birlikte gözden geçiririz.</em></label>
+            <label class="opt"><input type="radio" name="next" value="Formu birlikte dolduralım"><span data-i18n="x3">Formu birlikte dolduralım</span><em data-i18n="x3h">Soruları ben sorarım, siz cevaplarsınız.</em></label>
+          </div></div>
+        <div class="q"><label for="expect" data-i18n="q_expect">Bu görüşmeden beklentiniz nedir?</label>
+          <textarea id="expect" name="expect"></textarea></div>
+        <div class="q"><label for="extra" data-i18n="q_extra">Eklemek istediğiniz bir şey</label>
+          <span class="hint" data-i18n="q_extra_h">Aklınızda kalan, sormadığımız ama önemli olduğunu düşündüğünüz bir şey varsa buraya yazın.</span>
+          <textarea id="extra" name="extra"></textarea></div>
+      </div>
+    </section>
+
+  </form>
+
+  <div class="actions">
+    <button class="btn" type="button" id="finish" data-i18n="finish">Formu bitir ve özeti oluştur</button>
+    <button class="btn ghost" type="button" id="print" data-i18n="print">Yazdır</button>
+    <span class="err" id="err" role="alert" aria-live="polite"></span>
+  </div>
+
+  <div class="privacy">
+    <b data-i18n="pv_t">Gizlilik.</b>
+    <span data-i18n="pv_b">Bu form internete hiçbir şey göndermez. Yazdıklarınız yalnızca sizin tarayıcınızda durur ve sayfayı kapattığınızda silinir. "Formu bitir" dediğinizde size bir metin özeti üretilir; o özeti kopyalayıp e-posta ile bize gönderirsiniz. İstediğiniz an vazgeçebilirsiniz.</span>
+  </div>
+
+  <div id="result">
+    <div class="rhead">
+      <h2 data-i18n="r_t">Özetiniz hazır</h2>
+      <p data-i18n="r_b">Aşağıdaki metni kopyalayıp e-posta ile gönderin. Ya da dosya olarak kaydedip bize iletin.</p>
+    </div>
+    <div class="rbody">
+      <textarea id="out" readonly aria-label="Form özeti"></textarea>
+      <div class="actions">
+        <button class="btn small" type="button" id="copy" data-i18n="copy">Özeti kopyala</button>
+        <span class="rok" id="copied" hidden data-i18n="copied">Kopyalandı</span>
+        <a class="btn small ghost" id="mail" href="#" data-i18n="send">E-posta ile gönder</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div data-i18n="f1">© 2026 AI-ULU · Mühendislik ve web stüdyosu</div>
+    <div><a href="../" data-i18n="f2">ai-ulu.com</a></div>
+  </footer>
+</div>
+
+<script>
+const T={
+ tr:{},
+ en:{
+  back:"← Back to site", kick:"Free discovery form",
+  h1:"Tell us the idea,<br><em>we will write the plan.</em>",
+  lead:"This form exists to understand your idea. Based on your answers we prepare an engineering-grade plan for your project: what gets built, in what order, with which technology, what it costs to run, and where the risks are. We hand you the result, and you give it to your AI tool to implement.",
+  n1t:"About 10 minutes", n1b:"Most questions are optional. Wherever you are unsure you can answer \"I do not know\", that is a valid answer.",
+  n2t:"No technical knowledge needed", n2b:"You do not need to know how to code. The questions are written in plain language.",
+  n3t:"Your data stays with you", n3b:"The form sends nothing anywhere. At the end it builds a summary for you, and you send it to us yourself.",
+  s1t:"Who are you?", s1b:"So we know how to reach you.",
+  q_name:"Your name", q_name_h:"How should we address you.", q_email:"Email", q_email_h:"We will send the plan and our questions here.",
+  q_phone:"Phone or WhatsApp", q_phone_h:"Optional. If you prefer to chat.",
+  q_where:"Where do you live?", q_where_h:"City and country. We ask for time zones and legal requirements.",
+  q_job:"What do you do for work?", q_job_h:"Your profession or business. It helps us understand where you know this project from.",
+  s2t:"Your idea", s2b:"Describe what you want to build in your own words. No technical terms needed.",
+  q_one:"Describe your project in one sentence", q_one_h:"Example: \"An app where small hair salons manage their appointments in one place instead of WhatsApp.\"",
+  q_prob:"How is this problem solved today?", q_prob_h:"What do people do now? Manually, in a spreadsheet, with another app, or not at all?",
+  q_why:"Why do you know this area?", q_why_h:"Did you work in it, were you a customer, or did you live it yourself? This is the most valuable part of the idea.",
+  q_tried:"Have you tried this before? What happened?", q_tried_h:"Did you try a tool, hire someone, or did it stall halfway? Failures are valuable information too.",
+  q_when:"How long have you been thinking about this idea?",
+  s3t:"Who will use it?", s3b:"Knowing the person who uses it matters more than the product itself.",
+  q_who:"Who will use it?", q_who_h:"Age group, profession, situation. Example: \"Independent hair salons, ages 20 to 40\".",
+  q_first5:"What does a user do when they first open the app?", q_first5_h:"What happens in the first five minutes? Do they sign up, search for something, run a transaction?",
+  q_money:"Will users pay?", m1:"Yes, monthly subscription", m2:"Yes, one-time payment", m3:"Yes, commission", m4:"No, it is free", m5:"I do not know yet", m6:"Only I will use it",
+  q_others:"Is there anyone besides you who will use or manage this product?", q_others_h:"Partner, team, employee, client. Write \"none\" if not.",
+  s4t:"What, how much, when?", s4b:"Defining scope is the one thing that keeps a project from spiralling.",
+  q_must:"At most 3 things that must exist in the first version", q_must_h:"Write them line by line. The things without which the product is useless.",
+  q_later:"Nice to have, but can come later", q_later_h:"These get written into the plan as a later phase and stay out of the first version.",
+  q_never:"Things you definitely do not want", q_never_h:"Sometimes the clearest answer. These stay out of the plan.",
+  q_success:"If the product succeeds in 6 months, what has happened?", q_success_h:"Make it measurable. Example: \"50 salons are active and 200 appointments are booked per month.\"",
+  s5t:"How far have you got?", s5b:"Are we starting from zero, or is something already there? Those are very different jobs.",
+  q_have:"What do you have right now?", h1:"Nothing, just the idea", h2:"Notes or sketches exist", h3:"Design is ready", h4:"Half-finished code exists", h5:"It works but has problems", h6:"It is live and has users",
+  q_tools:"Which tools have you tried?", q_tools_h:"You can select more than one.", t7:"Claude / ChatGPT", t8:"I have not tried any", t9:"A developer tried",
+  q_code:"Can you write code?", c1:"No, I do not know how to code", c2:"A little, I can do simple things", c3:"Yes, I can build it myself",
+  q_decide:"Who will make the technical decisions?", q_decide_h:"Which technology, where it is hosted, which database. You can also say \"I do not know, you suggest\".",
+  s6t:"Scale and budget", s6b:"These numbers do not commit you. They just need to be realistic so the plan is right.",
+  q_users:"How many users do you expect in the first 6 months?", u1:"1 to 10", u2:"10 to 100", u3:"100 to 1,000", u4:"More than 1,000", u5:"I do not know",
+  q_deadline:"When does it need to be live?", q_deadline_h:"A date, an event, or \"no rush\".",
+  q_infra:"Your budget for monthly running costs?", q_infra_h:"Server, database, AI usage and similar ongoing costs. This directly determines the technology choice.",
+  i1:"$0 to $20 per month", i2:"$20 to $50 per month", i3:"$50 to $150 per month", i4:"$150 per month and above", i5:"I do not know, please suggest",
+  q_stage:"What is this project for you?", g1:"A hobby or an experiment", g2:"I want to earn income from it", g3:"To grow my existing business", g4:"I plan to raise investment",
+  s7t:"Sensitive topics and risks", s7b:"Talking about these up front prevents headaches later.",
+  q_data:"Will the app hold sensitive data?", q_data_h:"Health information, identity, payment cards, children's data, location. Mark \"I do not know\" if unsure.",
+  d1:"No sensitive data", d2:"Name, email, phone and similar", d3:"Payment information", d4:"Health or identity data", d5:"I do not know",
+  q_risk:"What is the biggest risk for you?", q_risk_h:"Wasting money, losing time, not finding users, code not working, security. What worries you most?",
+  q_constraint:"Any other constraint we should know?", q_constraint_h:"A corporate requirement, accessibility need, public sector work, overseas users, a specific device requirement.",
+  s8t:"How shall we continue?", s8b:"Just a few final questions.",
+  q_next:"How would you like to continue?",
+  x1:"I sent the form, prepare my plan", x1h:"I will review and get back to you.",
+  x2:"Let us have a short call first", x2h:"We go through the form together.",
+  x3:"Let us fill the form together", x3h:"I ask the questions, you answer.",
+  q_expect:"What do you expect from this conversation?", q_extra:"Anything you would like to add",
+  q_extra_h:"If something is on your mind that we did not ask about but you think matters, write it here.",
+  finish:"Finish and build my summary", print:"Print",
+  pv_t:"Privacy.", pv_b:"This form sends nothing over the internet. What you type stays in your browser and is gone when you close the page. When you press \"Finish\", a text summary is built for you; you copy it and send it to us by email. You can stop at any time.",
+  r_t:"Your summary is ready", r_b:"Copy the text below and send it by email. Or save it as a file and pass it on.",
+  copy:"Copy summary", copied:"Copied", send:"Send by email",
+  f1:"© 2026 AI-ULU · Engineering and web studio", f2:"ai-ulu.com",
+  req:"Required"
+ }
+};
+function setLang(l){l=T[l]?l:'tr';document.documentElement.lang=l;
+ document.querySelectorAll('[data-i18n]').forEach(el=>{const v=T[l][el.dataset.i18n];if(v)el.textContent=v});
+ document.querySelectorAll('[data-i18n-html]').forEach(el=>{const v=T[l][el.dataset.i18nHtml];if(v)el.innerHTML=v});
+ document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lang===l));
+ try{localStorage.setItem('aiulu-form-lang',l)}catch(e){}}
+let L='tr';try{L=localStorage.getItem('aiulu-form-lang')||'tr'}catch(e){}
+document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
+setLang(L);
+
+const form=document.getElementById('form');
+const pbar=document.getElementById('pbar');
+function progress(){
+ const singles=[...form.querySelectorAll('input[type=text],input[type=email],input[type=tel],textarea')];
+ let count=singles.filter(el=>el.value.trim().length>0).length;
+ ['money','have','code','users','infra','stage','data','next'].forEach(n=>{if(form.querySelector(`[name="${n}"]:checked`))count++});
+ if(form.querySelectorAll('[name="tools"]:checked').length)count++;
+ const total=singles.length+9;
+ pbar.style.width=Math.min(100,Math.round(count/total*100))+'%';
+}
+form.addEventListener('input',progress);form.addEventListener('change',progress);progress();
+
+function val(name){const els=[...form.querySelectorAll(`[name="${name}"]`)];
+ if(!els.length)return '';
+ if(els[0].type==='radio'){const c=els.find(e=>e.checked);return c?c.value:''}
+ if(els[0].type==='checkbox'){return els.filter(e=>e.checked).map(e=>e.value).join(', ')}
+ return els[0].value.trim();}
+function txt(name){const el=form.querySelector(`[name="${name}"]`);return el?el.value.trim():''}
+
+document.getElementById('finish').addEventListener('click',()=>{
+ const err=document.getElementById('err');err.textContent='';
+ const missing=[];
+ if(!txt('name'))missing.push(L==='tr'?'adınız':'your name');
+ if(!txt('email'))missing.push(L==='tr'?'e-posta adresiniz':'your email');
+ if(!txt('oneliner'))missing.push(L==='tr'?'tek cümlelik proje özeti':'the one-sentence project summary');
+ if(missing.length){err.textContent=(L==='tr'?'Lütfen şunları doldurun: ':'Please fill in: ')+missing.join(', ');return}
+ if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(txt('email'))){err.textContent=L==='tr'?'E-posta adresi geçerli görünmüyor.':'That email does not look valid.';return}
+
+ const rows=[];
+ const H=(s)=>rows.push('\n## '+s);
+ const A=(k,v)=>{if(v)rows.push('- **'+k+':** '+v.replace(/\n/g,'\n  '))};
+ rows.push('# AI-ULU · Proje ön görüşme formu');
+ rows.push('_Doldurulma: '+new Date().toISOString().slice(0,10)+'_');
+ H('1. İletişim');
+ A('Ad',txt('name'));A('E-posta',txt('email'));A('Telefon',txt('phone'));A('Konum',txt('where'));A('Meslek',txt('job'));
+ H('2. Fikir');
+ A('Tek cümle',txt('oneliner'));A('Bugün nasıl çözülüyor',txt('problem'));A('Neden bu kişi',txt('why'));A('Daha önce denendi mi',txt('tried'));A('Ne zamandır düşünülüyor',txt('when'));
+ H('3. Kullanıcı');
+ A('Kim kullanacak',txt('who'));A('İlk 5 dakika',txt('first5'));A('Ödeme',val('money'));A('Diğer ilgililer',txt('others'));
+ H('4. Kapsam');
+ A('İlk sürümde mutlaka',txt('must'));A('Sonra olabilir',txt('later'));A('İstenmeyen',txt('never'));A('6 ay başarı tanımı',txt('success'));
+ H('5. Mevcut durum');
+ A('Elde olan',val('have'));A('Denenen araçlar',val('tools'));A('Kod bilgisi',val('code'));A('Teknik karar',txt('who_decides'));
+ H('6. Ölçek ve bütçe');
+ A('Kullanıcı beklentisi',val('users'));A('Zaman',txt('deadline'));A('Aylık altyapı bütçesi',val('infra'));A('Proje amacı',val('stage'));
+ H('7. Risk ve kısıtlar');
+ A('Hassas veri',val('data'));A('En büyük risk',txt('risk'));A('Diğer kısıtlar',txt('constraint'));
+ H('8. Devam');
+ A('Tercih',val('next'));A('Beklenti',txt('expect'));A('Ek not',txt('extra'));
+ const out=rows.join('\n');
+ document.getElementById('out').value=out;
+ const subject=encodeURIComponent('AI-ULU ön görüşme formu · '+(txt('name')||''));
+ document.getElementById('mail').href='mailto:aliulu@ai-ulu.com?subject='+subject+'&body='+encodeURIComponent(out);
+ const r=document.getElementById('result');r.classList.add('on');r.scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+document.getElementById('copy').addEventListener('click',async()=>{
+ const ta=document.getElementById('out');
+ try{await navigator.clipboard.writeText(ta.value)}catch(e){ta.select();document.execCommand('copy')}
+ const c=document.getElementById('copied');c.hidden=false;setTimeout(()=>c.hidden=true,2200);
+});
+document.getElementById('print').addEventListener('click',()=>window.print());
+</script>
+</body>
+</html>
