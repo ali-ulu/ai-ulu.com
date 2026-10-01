@@ -1,0 +1,12 @@
+{
+  "projectId": "complete-workspace",
+  "projectType": "WEB_SAAS",
+  "complexity": "STANDARD",
+  "riskClass": "LOW",
+  "currentPhase": "BUILD",
+  "goStatus": "GO",
+  "primaryApprover": "founder",
+  "currentBaseline": "BASE-001",
+  "verificationMode": "AI",
+  "openStopConditions": []
+}
