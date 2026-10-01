@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ai-ulu.com/engineering-system/schema/project-manifest.schema.json",
+  "title": "AI-ULU Engineering System project manifest",
+  "description": "Machine-readable companion to 90-templates/PROJECT-MANIFEST.md. The Markdown manifest stays the human-readable record; this file is what tooling reads.",
+  "type": "object",
+  "required": ["projectId", "projectType", "complexity", "currentPhase"],
+  "additionalProperties": false,
+  "properties": {
+    "projectId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable project identifier."
+    },
+    "customer": {
+      "type": "string",
+      "description": "Customer or owner."
+    },
+    "projectType": {
+      "type": "string",
+      "enum": [
+        "WEB_SAAS",
+        "MOBILE",
+        "DESKTOP",
+        "API_SERVICE",
+        "DATA_PIPELINE",
+        "AI_LLM_APP",
+        "INTERNAL_TOOL",
+        "INTEGRATION",
+        "LIBRARY_SDK",
+        "INFRA_PLATFORM",
+        "OTHER"
+      ]
+    },
+    "complexity": {
+      "type": "string",
+      "enum": ["LEAN", "STANDARD", "EXTENDED", "CRITICAL"],
+      "description": "Scales which artifacts are REQUIRED. See 00-core/PROJECT-PROFILE-AND-PROCESS.md."
+    },
+    "riskClass": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL", "UNKNOWN"]
+    },
+    "processSelection": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Method emphases, e.g. specification-driven, BDD, TDD, continuous delivery."
+    },
+    "currentPhase": {
+      "type": "string",
+      "enum": ["DISCOVERY", "PLANNING", "BUILD", "VERIFY", "LAUNCH", "LEARN", "STOPPED"]
+    },
+    "goStatus": {
+      "type": "string",
+      "enum": ["GO", "CONDITIONAL-GO", "POC-FIRST", "NO-GO", "UNKNOWN", "BLOCKED"]
+    },
+    "primaryApprover": {
+      "type": "string"
+    },
+    "repository": {
+      "type": "string",
+      "description": "Repository URL or ref the baseline pins."
+    },
+    "currentBaseline": {
+      "type": ["string", "null"],
+      "pattern": "^BASE-\\d{3}$",
+      "description": "ID of the approved baseline that is canonical project truth."
+    },
+    "deploymentTarget": {
+      "type": "string"
+    },
+    "verificationMode": {
+      "type": "string",
+      "enum": ["AI", "HUMAN", "HYBRID"]
+    },
+    "requiredArtifacts": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "conditionalArtifacts": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notRequiredArtifacts": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "openStopConditions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Must be empty before a baseline can be approved (30-governance/36-STOP-CONDITIONS.md)."
+    }
+  }
+}
