@@ -14,7 +14,7 @@
 12. Human approval is mandatory for protected decision classes.
 13. Agents stop when a stop condition triggers.
 14. Deviations are recorded before implementation continues.
-15. Only an approved baseline represents project truth.
+15. Only an approved baseline represents project truth. Baseline approval requires a passing validator gate (tools/engineering-validator).
 16. Research claims require provenance.
 17. Process weight scales with complexity and risk.
 18. A project may terminate with NO-GO.

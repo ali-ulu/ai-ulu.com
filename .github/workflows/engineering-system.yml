@@ -1,0 +1,36 @@
+name: engineering-system
+
+on:
+  push:
+    paths:
+      - 'engineering-system/**'
+      - '.github/workflows/engineering-system.yml'
+  pull_request:
+    paths:
+      - 'engineering-system/**'
+      - '.github/workflows/engineering-system.yml'
+
+jobs:
+  validator:
+    name: validator (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['18', '20', '22']
+    defaults:
+      run:
+        working-directory: engineering-system/tools/engineering-validator
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Syntax check
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Validate the golden fixture (must be fully clean)
+        run: node bin/engineering-validate.js tests/fixtures/complete-workspace --strict
+      - name: Scaffold a workspace without crashing
+        run: node bin/engineering-init.js "$RUNNER_TEMP/ws" --complexity=STANDARD

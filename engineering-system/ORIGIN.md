@@ -21,6 +21,8 @@ The system must not silently lose these capabilities:
 - explicit DO-NOT-BUILD / NO-GO decisions;
 - Blueprint, Build, Verify and optional Launch service packaging;
 - AI, human and hybrid verification;
-- future standardized reviewer marketplace and review receipts.
+- future standardized reviewer marketplace and review receipts;
+- mechanical enforcement of the ID/status/field/approval/traceability rules and
+  the baseline gate (tools/engineering-validator).
 
 Files may be merged, but capabilities require an explicit ADR + approval before removal.

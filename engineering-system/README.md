@@ -23,4 +23,18 @@ Need → Discovery → Research → Validation → Requirements → Specificatio
 - Verification is independent from implementation where practical.
 - Deployment target is part of planning even when deployment itself is optional.
 
+## Tooling
+
+`tools/engineering-validator` enforces the parts of this system that can be
+checked mechanically: the ID and status standard, required fields per artifact
+type, protected-approval rules and bidirectional traceability. It also prints
+the baseline gate from 90-templates/FINAL-PLAN-AUDIT.md.
+
+```bash
+node engineering-system/tools/engineering-validator/bin/engineering-init.js my-project --complexity=STANDARD
+node engineering-system/tools/engineering-validator/bin/engineering-validate.js my-project
+```
+
+Zero dependencies, Node 18+. See tools/engineering-validator/README.md.
+
 Start with START-HERE.md and 00-core/ENGINEERING-CONSTITUTION.md.
