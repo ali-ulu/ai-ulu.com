@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aura Aesthetic Clinic — template</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap">
+<style>
+:root{--c:#f5ece4;--ink:#3a2622;--rose:#c98f7e;--deep:#7b4a3f}*{box-sizing:border-box}body{margin:0;background:var(--c);color:var(--ink);font:300 17px/1.6 Jost,sans-serif;overflow-x:hidden}
+.bg{position:fixed;inset:0;background:radial-gradient(60% 50% at 80% 20%,#f2c9b8aa,transparent 70%),radial-gradient(50% 50% at 10% 90%,#e9d2c1,transparent 70%);z-index:-1}
+nav{display:flex;justify-content:space-between;align-items:center;padding:28px 6vw}nav b{font:400 28px "Cormorant Garamond",serif;letter-spacing:.04em}nav span{font-size:13px;letter-spacing:.18em;text-transform:uppercase;display:flex;gap:34px}nav a.b{border:1px solid var(--deep);border-radius:99px;padding:11px 22px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--deep);text-decoration:none}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:4vw;align-items:center;padding:3vw 6vw 6vw;min-height:78vh}
+.eyebrow{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--rose);margin-bottom:24px}
+h1{font:300 clamp(54px,8vw,124px)/.92 "Cormorant Garamond",serif;letter-spacing:-.02em;margin:0 0 28px}h1 em{font-style:italic;color:var(--rose)}
+p.l{max-width:44ch;font-size:18px;opacity:.8}.cta{display:inline-flex;gap:10px;margin-top:24px;background:var(--deep);color:#fff;padding:16px 28px;border-radius:99px;text-decoration:none;font-size:14px;letter-spacing:.1em;text-transform:uppercase}
+.arch{position:relative;height:min(62vh,560px);border-radius:999px 999px 28px 28px;background:linear-gradient(180deg,#f7d9cb,#d9a090 60%,#a96a5b);overflow:hidden;box-shadow:0 50px 90px -40px #7b4a3f99}
+.arch::before{content:"";position:absolute;width:70%;aspect-ratio:1;left:15%;top:18%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff7ee,#f1c8b6 45%,#c98f7e);box-shadow:0 30px 60px -20px #7b4a3f}
+.arch::after{content:"";position:absolute;left:-10%;right:-10%;bottom:-8%;height:38%;background:radial-gradient(70% 100% at 50% 100%,#8f574a,transparent 70%)}
+.card{position:absolute;left:6%;bottom:10%;background:#fffaf5ee;border-radius:20px;padding:16px 20px;box-shadow:0 30px 50px -24px #7b4a3f66;z-index:2;font-size:14px}.card b{display:block;font:400 22px "Cormorant Garamond",serif}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:0 6vw 90px}.row div{border:1px solid #c98f7e55;border-radius:26px;padding:30px;background:#ffffff55}.row h3{font:400 30px "Cormorant Garamond",serif;margin:0 0 8px}
+@media(max-width:800px){.hero,.row{grid-template-columns:1fr}nav span{display:none}}
+</style></head><body><div class="bg"></div>
+<nav><b>Aura</b><span><a>Treatments</a><a>Doctors</a><a>Journal</a></span><a class="b" href="#">Book consultation</a></nav>
+<section class="hero"><div><p class="eyebrow">Aesthetic clinic · Istanbul</p><h1>Radiance,<br><em>refined.</em></h1><p class="l">Medical-grade skin and contour treatments, delivered with a gentle hand and an honest consultation.</p><a class="cta" href="#">Book consultation →</a></div>
+<div class="arch"><div class="card"><b>Skin Renewal</b>Next available · Tomorrow 10:30</div></div></section>
+<section class="row"><div><h3>Skin &amp; Glow</h3>Peels, mesotherapy and light-based renewal.</div><div><h3>Contour</h3>Natural-looking fillers and sculpting.</div><div><h3>Laser</h3>Hair removal and pigment correction.</div></section></body></html>
