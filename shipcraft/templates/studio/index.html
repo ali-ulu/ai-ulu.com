@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Atelier Nord — template</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Space+Mono&display=swap">
+<style>
+:root{--p:#ecebe6;--k:#111;--o:#ff4d1c}*{box-sizing:border-box}body{margin:0;background:var(--p);color:var(--k);font:400 16px/1.5 "Space Mono",monospace;overflow-x:hidden}
+nav{display:flex;justify-content:space-between;padding:26px 4vw;font-size:12px;text-transform:uppercase;letter-spacing:.12em;border-bottom:1px solid var(--k)}nav b{font:800 22px Syne,sans-serif;letter-spacing:-.03em;text-transform:none}
+.hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);min-height:76vh}
+.t{padding:4vw;border-right:1px solid var(--k);display:flex;flex-direction:column;justify-content:space-between;gap:30px}
+h1{font:800 clamp(44px,7.2vw,116px)/.86 Syne,sans-serif;letter-spacing:-.06em;margin:0}h1 span{color:var(--o)}
+.meta{display:flex;justify-content:space-between;gap:20px;font-size:12px;text-transform:uppercase}
+.art{position:relative;background:#d9d7cf;overflow:hidden}
+.art i{position:absolute;display:block;background:var(--k)}.art i:nth-child(1){left:12%;bottom:0;width:30%;height:62%}.art i:nth-child(2){left:42%;bottom:0;width:26%;height:84%;background:var(--o)}.art i:nth-child(3){left:68%;bottom:0;width:22%;height:46%;background:#3b3b38}.art i:nth-child(4){left:0;bottom:0;width:100%;height:8%}
+.art::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 23px,#00000014 23px 24px),repeating-linear-gradient(90deg,transparent 0 23px,#00000014 23px 24px)}
+.list{border-top:1px solid var(--k)}.list div{display:flex;justify-content:space-between;padding:18px 4vw;border-bottom:1px solid var(--k);font:700 26px Syne,sans-serif;letter-spacing:-.03em}.list span{font:400 12px "Space Mono",monospace}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.art{min-height:260px}}
+</style></head><body>
+<nav><b>Atelier Nord</b><span>Projects / Studio / Journal</span><span>Start a project ↗</span></nav>
+<section class="hero"><div class="t"><h1>Quiet<br>buildings,<br><span>loud</span> ideas.</h1><div class="meta"><span>Architecture + interiors</span><span>Est. 2014 · Izmir</span></div></div><div class="art"><i></i><i></i><i></i><i></i></div></section>
+<section class="list"><div>Casa Tuz <span>Residential · 2025</span></div><div>Liman Hall <span>Public · 2024</span></div><div>Kule Offices <span>Workplace · 2023</span></div></section></body></html>

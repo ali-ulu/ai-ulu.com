@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Maison Olive — template</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=DM+Sans:wght@400;500&display=swap">
+<style>
+:root{--g:#0f1a14;--cream:#f1e8d4;--ol:#a9b46a;--fire:#ff8a3d}*{box-sizing:border-box}body{margin:0;background:var(--g);color:var(--cream);font:400 17px/1.6 "DM Sans",sans-serif;overflow-x:hidden}
+.bg{position:fixed;inset:0;background:radial-gradient(50% 60% at 75% 50%,#2c4a2f,transparent 70%),radial-gradient(40% 40% at 10% 100%,#5a2e12aa,transparent 70%);z-index:-1}
+nav{display:flex;justify-content:space-between;align-items:center;padding:28px 6vw;font-size:13px;letter-spacing:.2em;text-transform:uppercase}nav b{font:italic 300 30px Fraunces,serif;letter-spacing:0;text-transform:none}nav a.b{border:1px solid var(--ol);padding:11px 22px;border-radius:99px;color:var(--ol);text-decoration:none}
+.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:4vw;padding:2vw 6vw;min-height:80vh}
+h1{font:300 clamp(54px,8vw,120px)/.95 Fraunces,serif;margin:0 0 24px}h1 em{color:var(--fire)}.l{max-width:44ch;opacity:.75}
+.plate{position:relative;width:min(100%,540px);aspect-ratio:1;margin:auto;border-radius:50%;background:radial-gradient(circle,#f6efdf 0 38%,#e2d4b4 39% 41%,#f6efdf 42% 58%,#d9c9a3 59% 61%,#f6efdf 62%);box-shadow:0 60px 100px -30px #000,0 0 120px #ff8a3d33;animation:spin 60s linear infinite}
+.plate::before{content:"";position:absolute;inset:26%;border-radius:50%;background:conic-gradient(from 30deg,#a9b46a,#6f7f3a,#d8a23a,#ff8a3d,#a9b46a);opacity:.92}
+.plate::after{content:"";position:absolute;inset:40%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3,#0005)}@keyframes spin{to{transform:rotate(360deg)}}
+.cta{display:inline-block;margin-top:22px;background:var(--fire);color:#1a0d02;padding:16px 28px;border-radius:99px;font-weight:500;text-decoration:none}
+.menu{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:20px 6vw 80px}.menu div{border-top:1px solid #f1e8d433;padding-top:18px}.menu h3{font:italic 300 28px Fraunces,serif;margin:0}
+@media(max-width:800px){.hero,.menu{grid-template-columns:1fr}}
+</style></head><body><div class="bg"></div>
+<nav><b>Maison Olive</b><span>Menu · Wine · Events</span><a class="b" href="#">Reserve</a></nav>
+<section class="hero"><div><p style="letter-spacing:.3em;font-size:12px;text-transform:uppercase;color:var(--ol)">Mediterranean kitchen · Bodrum</p><h1>Fire, salt<br>&amp; <em>olive oil.</em></h1><p class="l">A wood-fired kitchen built around one idea: great ingredients, handled with restraint.</p><a class="cta" href="#">Reserve a table →</a></div><div class="plate"></div></section>
+<section class="menu"><div><h3>To start</h3>Burrata, charred figs, thyme honey</div><div><h3>From the fire</h3>Sea bream, lemon, wild greens</div><div><h3>To finish</h3>Olive oil cake, labneh cream</div></section></body></html>

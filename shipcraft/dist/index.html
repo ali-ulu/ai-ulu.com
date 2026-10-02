@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Shipcraft by ai-ulu — Websites and apps built to win clients</title>
+<meta name="description" content="Shipcraft designs, builds and launches cinematic websites and custom apps. One team from first call to live. Start with a free intro call.">
+<link rel="canonical" href="https://ai-ulu.com/">
+<link rel="alternate" hreflang="en" href="https://ai-ulu.com/"><link rel="alternate" hreflang="tr" href="https://ai-ulu.com/tr/"><link rel="alternate" hreflang="x-default" href="https://ai-ulu.com/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="ai-ulu">
+<meta property="og:title" content="Shipcraft by ai-ulu — Websites and apps built to win clients"><meta property="og:description" content="Shipcraft designs, builds and launches cinematic websites and custom apps. One team from first call to live. Start with a free intro call.">
+<meta property="og:url" content="https://ai-ulu.com/"><meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ai-ulu.com/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#090401">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<script>try{var s=localStorage.getItem("theme");if(s)document.documentElement.setAttribute("data-theme",s)}catch(e){}document.documentElement.classList.add("js")</script>
+<style>/* Vibe: Ethereal Glass x Editorial Luxury. DNA: ClipCut (sıcak siyah, turuncu) + yüksek kontrast serif. Cam kartlar saydam, zemin canlı aurora. */
+:root,[data-theme="dark"]{--bg:#070302;--ink:#fff6ee;--ink2:rgba(255,242,232,.84);--mute:rgba(255,236,224,.62);--line:rgba(255,255,255,.11);--acc:#ff5f12;--amber:#ffb23d;--hot:#ff2e63;--accsoft:rgba(255,95,18,.42);--shell:rgba(255,255,255,.045);--core-a:rgba(255,255,255,.07);--core-b:rgba(255,255,255,.015);--hi:rgba(255,255,255,.16);--navbg:rgba(14,8,5,.55);--star:rgba(255,255,255,.75);--btnw-bg:#fff6ee;--btnw-ink:#1a0b04;--field:rgba(255,255,255,.05);--a1:#ff5a00;--a2:#ffb23d;--a3:#ff2e63;--a4:#7a1d00;--aop:.62;--grain:.06;color-scheme:dark}
+[data-theme="light"]{--bg:#fff5ec;--ink:#2a1208;--ink2:rgba(42,18,8,.86);--mute:rgba(42,18,8,.62);--line:rgba(42,18,8,.12);--shell:rgba(255,255,255,.5);--core-a:rgba(255,255,255,.85);--core-b:rgba(255,255,255,.5);--hi:#fff;--navbg:rgba(255,248,242,.65);--star:rgba(255,95,18,.6);--btnw-bg:#2a1208;--btnw-ink:#fff6ee;--field:rgba(255,255,255,.8);--a1:#ff7a2a;--a2:#ffc46b;--a3:#ff6a8d;--a4:#ffb287;--aop:.55;--grain:.035;color-scheme:light}
+:root{--e:cubic-bezier(.32,.72,0,1)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:110px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 "Instrument Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}a{color:inherit}
+.wrap{width:min(1310px,100% - 40px);margin-inline:auto}
+/* canlı zemin: sabit aurora (yalnız transform animasyonu) + tane */
+.aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.aurora i{position:absolute;border-radius:50%;filter:blur(110px);opacity:var(--aop);will-change:transform}
+.aurora i:nth-child(1){left:-18vw;top:-22vh;width:62vw;height:62vw;background:var(--a1);animation:d1 30s var(--e) infinite alternate}
+.aurora i:nth-child(2){right:-20vw;top:22vh;width:50vw;height:50vw;background:var(--a2);opacity:calc(var(--aop) * .55);animation:d2 36s var(--e) infinite alternate}
+.aurora i:nth-child(3){left:20vw;bottom:-30vh;width:56vw;height:56vw;background:var(--a3);opacity:calc(var(--aop) * .5);animation:d3 40s var(--e) infinite alternate}
+.aurora i:nth-child(4){right:-10vw;bottom:-18vh;width:42vw;height:42vw;background:var(--a4);animation:d1 44s var(--e) infinite alternate-reverse}
+@keyframes d1{to{transform:translate(12vw,10vh) scale(1.15)}}@keyframes d2{to{transform:translate(-14vw,12vh) scale(.9)}}@keyframes d3{to{transform:translate(10vw,-12vh) scale(1.1)}}
+.grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:var(--grain);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");mix-blend-mode:overlay}
+/* tipografi */
+h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;line-height:.95;letter-spacing:-.025em;margin:0 0 .4em}
+h1{font-size:clamp(58px,9.4vw,140px)}h2{font-size:clamp(44px,6.4vw,96px)}h3{font-size:clamp(28px,2.6vw,38px);font-weight:400;line-height:1.05;letter-spacing:-.015em}
+h1 em,h2 em{font-style:italic;font-weight:300;background:linear-gradient(100deg,var(--amber),var(--acc) 55%,var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.06em}
+p{margin:0 0 1em}.lead{font-size:clamp(17px,1.5vw,20px);color:var(--mute);max-width:60ch}
+.center{text-align:center}.center .lead{margin-inline:auto}.left{text-align:left}
+.sec{padding-block:clamp(90px,12vw,170px);position:relative}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:8px 16px;border-radius:999px;background:var(--shell);border:1px solid var(--line);font:500 11px/1 "DM Mono",monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);margin-bottom:28px}
+.badge{font-family:"Instrument Sans",sans-serif;letter-spacing:0;text-transform:none;font-size:14px}
+.eyebrow i{width:10px;height:1px;background:var(--acc)}.badge .spark{color:var(--acc)}
+.skip{position:absolute;left:-999px;top:8px;background:var(--acc);color:#fff;padding:8px 14px;border-radius:8px;z-index:100}.skip:focus{left:8px}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:10px}
+/* düğme içinde düğme */
+.btn{display:inline-flex;align-items:center;gap:14px;font:500 15px/1 "Instrument Sans",sans-serif;padding:8px 8px 8px 24px;min-height:50px;border-radius:999px;border:1px solid transparent;text-decoration:none;cursor:pointer;transition:transform .6s var(--e),box-shadow .6s var(--e),background .6s var(--e),filter .6s var(--e);white-space:nowrap}
+.btn:not(:has(.ic)){padding:8px 24px}
+.btn .ic{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;transition:transform .6s var(--e)}
+.btn:hover .ic{transform:translate(2px,-1px) scale(1.08)}.btn:active{transform:scale(.98)}.btn:hover{transform:translateY(-2px)}
+.btn.acc{color:#fff;background:linear-gradient(180deg,#ff8a3d 0%,#ff5f12 52%,#d94a08 100%);border-color:rgba(255,206,170,.6);box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 14px 40px -10px var(--acc),0 0 0 6px rgba(255,95,18,.08)}
+.btn.acc .ic{background:rgba(255,255,255,.22)}.btn.acc:hover{filter:brightness(1.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 22px 56px -10px var(--acc),0 0 0 8px rgba(255,95,18,.12)}
+.btn.ghost{color:var(--ink);background:var(--shell);border-color:rgba(255,95,18,.6)}.btn.ghost .ic{background:rgba(255,95,18,.18)}.btn.ghost:hover{background:var(--accsoft)}
+.btn.white{background:var(--btnw-bg);color:var(--btnw-ink)}.btn.white .ic{background:rgba(127,127,127,.22)}
+/* uçan ada nav */
+.navwrap{position:sticky;top:0;z-index:50;padding:16px 20px 0;padding-top:calc(16px + env(safe-area-inset-top,0px));display:flex;justify-content:center;pointer-events:none;height:0;overflow:visible}
+.nav{pointer-events:auto;width:min(1310px,100%);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 12px 12px 20px;border-radius:999px;background:var(--navbg);border:1px solid var(--line);box-shadow:inset 0 1px 0 var(--hi),0 30px 70px -30px rgba(0,0,0,.6);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);height:72px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:500 28px/1 "Cormorant Garamond",serif;letter-spacing:-.01em}
+.mark{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:linear-gradient(160deg,#ffb23d,#ff5f12);color:#1a0b04}
+nav[aria-label="Primary"]{display:flex;gap:32px;position:absolute;left:50%;transform:translateX(-50%)}nav[aria-label="Primary"] a{text-decoration:none;color:var(--mute);font-weight:500;font-size:15px;transition:color .4s var(--e)}nav[aria-label="Primary"] a:hover{color:var(--ink)}
+.tools{display:flex;align-items:center;gap:8px}
+.lang,.theme{display:grid;place-items:center;min-width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--ink);font:500 12px/1 "DM Mono",monospace;text-decoration:none;cursor:pointer;transition:border-color .4s var(--e),transform .4s var(--e)}
+.lang:hover,.theme:hover{border-color:var(--acc);transform:scale(1.06)}
+/* hero */
+.hero{position:relative;overflow:hidden;padding-top:clamp(150px,16vw,200px);text-align:center;isolation:isolate}
+.orb{position:absolute;left:-12%;top:-26%;width:min(980px,86vw);aspect-ratio:1;pointer-events:none;z-index:-1}
+.orb i{position:absolute;border-radius:50%;inset:0;background:radial-gradient(circle at 42% 42%,#ffd08a 0%,#ff7a00 22%,#e8470a 44%,rgba(140,34,6,.55) 64%,transparent 74%);filter:blur(4px)}
+.orb i:nth-child(2){inset:14%;opacity:.7;filter:blur(22px);background:radial-gradient(circle,#ffc15e,transparent 65%)}.orb i:nth-child(3){inset:-8%;opacity:.5;filter:blur(70px);background:radial-gradient(circle,#ff3d00,transparent 66%)}
+.stars{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.star{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--star);opacity:.6;animation:tw 5s ease-in-out infinite}
+.plus{position:absolute;width:12px;height:12px;opacity:.8;animation:tw 6s ease-in-out infinite}.plus::before,.plus::after{content:"";position:absolute;background:var(--amber);left:50%;top:50%;transform:translate(-50%,-50%)}.plus::before{width:12px;height:1px}.plus::after{width:1px;height:12px}
+@keyframes tw{50%{opacity:.15}}
+.hero-copy{display:flex;flex-direction:column;align-items:center}.hero-copy h1{max-width:15ch}.hero-copy .lead{max-width:56ch;margin-bottom:36px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.chips{list-style:none;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:0;margin:36px 0 0}.chips li{padding:9px 18px;border-radius:999px;border:1px solid var(--line);background:var(--shell);font-size:14px;color:var(--mute)}
+.hero-card{position:absolute;top:128px;right:clamp(16px,3.4vw,56px);width:clamp(190px,17vw,270px);margin:0;padding:6px;border-radius:26px;background:var(--shell);border:1px solid var(--line);transform:rotate(3deg);animation:bob 7s var(--e) infinite;z-index:3;box-shadow:0 40px 70px -30px rgba(0,0,0,.7),0 0 60px -10px rgba(255,95,18,.35)}
+.hero-card img{border-radius:20px;aspect-ratio:16/10;object-fit:cover}.hero-card figcaption{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 10px 6px;font:500 15px "Cormorant Garamond",serif}.hero-card em{font:500 10px "DM Mono",monospace;font-style:normal;color:var(--amber);letter-spacing:.12em;text-transform:uppercase}
+@keyframes bob{50%{transform:rotate(3deg) translateY(-12px)}}
+/* panoramik coverflow */
+.flow{position:relative;height:clamp(320px,36vw,500px);margin-top:clamp(40px,5vw,70px);perspective:1500px;perspective-origin:50% 38%;overflow:hidden;touch-action:pan-y;cursor:grab;user-select:none}
+.flow.drag{cursor:grabbing}
+.flow-stage{position:absolute;inset:0;transform-style:preserve-3d}
+.tile{position:absolute;left:50%;top:5%;width:clamp(270px,36vw,520px);aspect-ratio:1440/836;margin-left:calc(clamp(270px,36vw,520px)/-2);border-radius:26px;padding:6px;background:var(--shell);border:1px solid var(--line);display:block;text-decoration:none;color:#fff;box-shadow:0 40px 70px -26px rgba(0,0,0,.75),0 0 80px -20px rgba(255,95,18,.4);transition:transform 1s var(--e),opacity 1s var(--e),filter 1s var(--e);-webkit-user-drag:none}
+.tile img{width:100%;height:100%;object-fit:cover;border-radius:20px;pointer-events:none}
+.tile-meta{position:absolute;left:18px;bottom:18px;display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:999px;background:rgba(9,4,1,.7);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(10px);font-size:13px;font-weight:500}
+.tile-meta em{font:500 10px "DM Mono",monospace;font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
+.flow-ctl{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;gap:10px;z-index:30}
+.fb{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--navbg);color:var(--ink);cursor:pointer;backdrop-filter:blur(12px);transition:transform .5s var(--e),border-color .5s var(--e),background .5s var(--e)}
+.fb:hover{border-color:var(--acc);background:var(--accsoft);transform:scale(1.08)}
+/* marquee */
+.marquee{overflow:hidden;border-block:1px solid var(--line);padding-block:clamp(18px,2.4vw,30px);margin-top:clamp(20px,4vw,50px)}
+.mq-track{display:flex;width:max-content;animation:mq 48s linear infinite}.mq-track span{display:flex;align-items:center;gap:clamp(22px,3vw,48px);padding-right:clamp(22px,3vw,48px)}
+.mq-track b{font:italic 300 clamp(44px,6.4vw,92px)/1 "Cormorant Garamond",serif;letter-spacing:-.02em;color:var(--ink);white-space:nowrap}.mq-track b:nth-of-type(even){color:transparent;-webkit-text-stroke:1px var(--ink2)}
+.mq-track i{font-style:normal;color:var(--acc);font-size:clamp(18px,2vw,28px)}
+@keyframes mq{to{transform:translateX(-50%)}}
+/* çift çerçeveli (double-bezel) kartlar */
+.bz{position:relative;padding:6px;border-radius:34px;background:var(--shell);border:1px solid var(--line);transition:transform .8s var(--e),border-color .8s var(--e),box-shadow .8s var(--e);list-style:none}
+.core{position:relative;overflow:hidden;height:100%;border-radius:28px;padding:clamp(22px,2.4vw,32px);background:linear-gradient(180deg,var(--core-a),var(--core-b));box-shadow:inset 0 1px 1px var(--hi);display:flex;flex-direction:column}
+.core::before{content:"";position:absolute;inset:0;background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(255,110,30,.22),transparent 62%);opacity:0;transition:opacity .6s var(--e);pointer-events:none}
+.bz:hover{transform:translateY(-6px);border-color:rgba(255,95,18,.55);box-shadow:0 40px 80px -40px rgba(255,95,18,.45)}.bz:hover .core::before{opacity:1}
+.core>*{position:relative}.core p{color:var(--mute);margin:0}.core h3{margin-top:auto;margin-bottom:10px}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:56px;padding:0;list-style:none}
+.viz{height:130px;display:grid;place-items:center;margin-bottom:34px;border-radius:20px;background:radial-gradient(120% 120% at 50% 100%,rgba(255,95,18,.28),transparent 70%)}
+.viz svg{width:150px;stroke:var(--amber);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.viz svg rect{fill:rgba(255,95,18,.1)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:56px 0 44px}
+.stat{align-items:center;text-align:center;padding-block:clamp(26px,3vw,40px)}.stat strong{display:block;font:300 clamp(54px,6.6vw,96px)/.9 "Cormorant Garamond",serif;letter-spacing:-.03em;margin-bottom:14px;background:linear-gradient(180deg,#fff,var(--amber) 45%,var(--acc) 85%);-webkit-background-clip:text;background-clip:text;color:transparent}
+[data-theme="light"] .stat strong{background:linear-gradient(180deg,#ff9a3d,#e0480a);-webkit-background-clip:text;background-clip:text}
+.stat span{color:var(--mute);font-size:15px}
+.svc-card{align-items:center;text-align:center;background:linear-gradient(180deg,var(--core-a),rgba(255,95,18,.16))}.svc-card h3{margin:0 0 4px;font-size:clamp(34px,3.2vw,46px)}.svc-card .ico{height:200px;display:grid;place-items:center}.ico svg{width:150px;filter:drop-shadow(0 24px 30px rgba(255,95,18,.45))}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px);padding:clamp(28px,5vw,64px);align-items:center;flex-direction:initial}.featwrap{margin-top:16px}
+.feat-h{font-size:clamp(44px,5.4vw,78px);margin-bottom:20px}.feat p{margin-bottom:28px}
+.feat ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}.feat li{display:grid;gap:4px;padding:18px 20px;border-radius:20px;border:1px solid var(--line);background:var(--shell)}.feat li b{font:400 24px "Cormorant Garamond",serif}.feat li span{color:var(--mute);font-size:15px}
+.work-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:54px}.work-head h2{max-width:14ch;margin-bottom:.25em}.work-head .lead{margin:0}
+.work-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.work-card{text-decoration:none;color:inherit}.w0,.w3,.w4{grid-column:span 7}.w1,.w2,.w5{grid-column:span 5}.w4{grid-column:span 5}.w5{grid-column:span 7}
+.work-card .core{padding:12px}.shot{border-radius:20px;overflow:hidden;border:1px solid var(--line);aspect-ratio:1440/820}.shot img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform 1.2s var(--e)}.bz:hover .shot img{transform:scale(1.05)}
+.work-body{padding:20px 14px 12px;display:grid;gap:4px}.kind{font:500 10.5px/1 "DM Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}.work-body h3{margin:10px 0 2px;font-size:clamp(32px,3vw,44px)}.work-body p{color:var(--mute);margin:0}
+.open{display:inline-flex;align-items:center;gap:10px;margin-top:12px;font-weight:500;font-size:15px;color:var(--ink2)}.open .ic{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,95,18,.2);transition:transform .6s var(--e)}.bz:hover .open .ic{transform:translate(2px,-1px) scale(1.08)}
+.num{font:500 12px "DM Mono",monospace;letter-spacing:.14em;color:var(--acc);margin-bottom:70px;display:block}.steps .core h3{margin-top:0}
+.pack{gap:14px}.pack h3{margin:0;font-size:clamp(34px,3vw,46px)}.pack .quote{color:var(--amber);font:500 11px "DM Mono",monospace;letter-spacing:.14em;text-transform:uppercase}
+.pack ul{list-style:none;padding:0;margin:8px 0 18px;display:grid;gap:12px;flex:1}.pack li{color:var(--ink2);padding-left:28px;position:relative}.pack li::before{content:"";position:absolute;left:0;top:.5em;width:13px;height:7px;border-left:1.5px solid var(--acc);border-bottom:1.5px solid var(--acc);transform:rotate(-45deg)}
+.pack .btn{align-self:flex-start}
+.feat-pack{border-color:rgba(255,95,18,.75);background:linear-gradient(180deg,rgba(255,95,18,.18),var(--shell))}.feat-pack .core{background:linear-gradient(180deg,rgba(255,95,18,.16),var(--core-b))}
+.badge-top{position:absolute;top:18px;right:18px;padding:6px 12px;border-radius:999px;background:var(--acc);color:#fff;font:500 10px/1 "DM Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
+.narrow{max-width:920px}.faq{display:grid;gap:12px;margin-top:56px}
+details{border-radius:26px;padding:4px 26px;background:var(--shell);border:1px solid var(--line);transition:border-color .6s var(--e),background .6s var(--e)}details[open]{border-color:rgba(255,95,18,.55);background:linear-gradient(180deg,rgba(255,95,18,.1),var(--shell))}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;font:400 clamp(24px,2.4vw,32px)/1.1 "Cormorant Garamond",serif;letter-spacing:-.01em}
+summary::-webkit-details-marker{display:none}summary::after{content:"+";color:var(--acc);font:300 34px/1 "Cormorant Garamond",serif;transition:transform .6s var(--e)}details[open] summary::after{transform:rotate(45deg)}details p{color:var(--mute);padding-bottom:20px;max-width:64ch;margin:0}
+.cta-card{position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px);padding:clamp(28px,5vw,72px);align-items:start;border-radius:40px;border:1px solid rgba(255,95,18,.45);background:linear-gradient(135deg,rgba(255,95,18,.24),rgba(255,255,255,.03) 55%);box-shadow:inset 0 1px 1px var(--hi)}
+.cta-glow{position:absolute;right:-12%;top:-40%;width:60%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(255,150,40,.6),transparent 65%);filter:blur(30px);pointer-events:none}
+.contact-copy,.form{position:relative}.contact-copy .pill{margin-bottom:24px}.or{margin:36px 0 14px;font-weight:500}
+.form{display:grid;gap:14px;background:var(--shell);border:1px solid var(--line);border-radius:28px;padding:clamp(20px,3vw,32px)}
+label{display:grid;gap:8px;font:500 11px "DM Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}input,select,textarea{font:400 16px/1.4 "Instrument Sans",sans-serif;letter-spacing:0;text-transform:none;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:14px;padding:14px;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);border-color:transparent}.hp{position:absolute;left:-9999px;height:0;opacity:0}
+.status{margin:0;min-height:1.4em;font-size:15px;color:var(--mute)}.status a{color:var(--acc);font-weight:600}
+.foot{padding-block:44px 120px;color:var(--mute);font-size:14px;border-top:1px solid var(--line)}.foot p{margin:0 0 6px}.foot a{color:var(--ink)}
+.wa-float{position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:55;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#25d366;color:#fff;box-shadow:0 14px 34px -8px rgba(37,211,102,.7);transition:transform .5s var(--e)}.wa-float:hover{transform:scale(1.1)}
+/* kaydırma girişi: ağır, bulanıktan netleşen */
+.js .reveal{opacity:0;transform:translateY(44px);filter:blur(10px);transition:opacity 1s var(--e),transform 1s var(--e),filter 1s var(--e);transition-delay:var(--d,0s)}.js .reveal.in{opacity:1;transform:none;filter:none}
+.js .bz.reveal.in{transition:opacity 1s var(--e) var(--d,0s),transform .8s var(--e),filter 1s var(--e) var(--d,0s),border-color .8s var(--e),box-shadow .8s var(--e)}
+@media (max-width:1100px){.hero-card{display:none}}
+@media (max-width:920px){nav[aria-label="Primary"]{display:none}.cards3,.cta-card,.feat{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.work-grid{grid-template-columns:1fr}.work-grid>*{grid-column:auto!important}.nav{height:64px}.lang{display:none}.bz{border-radius:28px}.core{border-radius:22px}}
+@media (max-width:420px){.brand span:last-child{display:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.aurora i,.star,.plus,.hero-card,.mq-track{animation:none!important}.js .reveal{opacity:1;transform:none;filter:none;transition:none}.marquee{overflow-x:auto}}
+.cards3+.bz{margin-top:16px}
+h1,h2,.lead{text-wrap:balance}.work-head h2{max-width:20ch}
+[data-theme="dark"] .lead,[data-theme="dark"] .core p{color:rgba(255,240,230,.76)}
+[data-theme="light"] h1 em,[data-theme="light"] h2 em{background:linear-gradient(100deg,#e8590c,#d63a1a 55%,#c0224f);-webkit-background-clip:text;background-clip:text}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://ai-ulu.com/#org","name":"ai-ulu","url":"https://ai-ulu.com/","description":"ai-ulu builds websites and apps through its studio Shipcraft.","founder":{"@id":"https://ai-ulu.com/#ali"},"sameAs":["https://github.com/ali-ulu"]},{"@type":"WebSite","@id":"https://ai-ulu.com/#site","url":"https://ai-ulu.com/","name":"ai-ulu","inLanguage":["en","tr"],"publisher":{"@id":"https://ai-ulu.com/#org"}},{"@type":"ProfessionalService","@id":"https://ai-ulu.com/#shipcraft","name":"Shipcraft","description":"Shipcraft designs, builds and launches cinematic websites and custom apps. One team from first call to live. Start with a free intro call.","url":"https://ai-ulu.com/","parentOrganization":{"@id":"https://ai-ulu.com/#org"},"serviceType":["Website development","Web application development","Web design"],"areaServed":"Worldwide","availableLanguage":["English","Turkish"]},{"@type":"Person","@id":"https://ai-ulu.com/#ali","name":"Ali Ulu","jobTitle":"Founder","worksFor":{"@id":"https://ai-ulu.com/#org"},"url":"https://ai-ulu.com/","sameAs":["https://github.com/ali-ulu"]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How long does a website take?","acceptedAnswer":{"@type":"Answer","text":"A focused marketing site usually takes two to four weeks from the first call to launch. Larger sites and apps take longer, and the timeline is in the quote."}},{"@type":"Question","name":"What does the free call include?","acceptedAnswer":{"@type":"Answer","text":"A 30-minute conversation about your goal, audience and timing. You leave with a rough scope and an honest view of fit. It costs nothing and commits you to nothing."}},{"@type":"Question","name":"Do I own the site and the code?","acceptedAnswer":{"@type":"Answer","text":"Yes. Design, code and content are yours, and everything is handed over at launch."}},{"@type":"Question","name":"Do you keep working after launch?","acceptedAnswer":{"@type":"Answer","text":"Yes. We fix issues, handle changes and can maintain the site on an ongoing basis."}},{"@type":"Question","name":"Can you build apps, not just websites?","acceptedAnswer":{"@type":"Answer","text":"Yes. Custom web apps, dashboards and internal tools are part of Shipcraft."}},{"@type":"Question","name":"Which languages do you work in?","acceptedAnswer":{"@type":"Answer","text":"English and Turkish, for the site and for communication."}}]}]}</script>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<header class="navwrap"><div class="nav glass">
+  <a class="brand" href="/" aria-label="ai-ulu Shipcraft"><span class="mark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3 3 9v11h18V9z" fill="currentColor"/><path d="M12 8v8M8.5 11.5 12 8l3.5 3.5" stroke="#090401" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Shipcraft</span></a>
+  <nav aria-label="Primary"><a href="#services">Services</a><a href="#work">Work</a><a href="#pricing">Pricing</a><a href="#contact">Contact</a></nav>
+  <div class="tools">
+    <a class="lang" href="/tr/" hreflang="tr" data-cta="lang">TR</a>
+    <button class="theme" id="theme" type="button" aria-label="Switch between dark and light theme"><svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"/></svg></button>
+    <a class="btn white" href="#contact" data-cta="nav-start">Start a Project<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+  </div></div></header>
+<main id="main">
+<section class="hero" aria-labelledby="h1">
+  <div class="orb" aria-hidden="true"><i></i><i></i><i></i></div><div class="stars" aria-hidden="true"></div>
+  <figure class="hero-card glass" aria-label="Attalia"><img src="assets/work-attalia.webp" alt="Attalia website" width="1440" height="836"><figcaption><b>Attalia</b><em>Client site</em></figcaption></figure>
+  <div class="wrap hero-copy">
+    <p class="pill badge"><span class="spark">✦</span>Trusted by Attalia, Hercules and Hydrelon</p>
+    <h1 id="h1">Websites and apps built to <em>win clients</em></h1>
+    <p class="lead">Shipcraft designs, builds and launches cinematic websites and custom apps for brands that need more than a template. One team, from first call to live.</p>
+    <div class="cta-row"><a class="btn acc" href="#contact" data-cta="hero-start">Start a Project<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><a class="btn ghost" href="#work" data-cta="hero-works">See Our Works</a></div>
+    <ul class="chips"><li>Web Design</li><li>App Development</li><li>Launch &amp; Support</li></ul>
+  </div>
+  <div class="flow" id="flow" aria-roledescription="carousel" aria-label="We don't just make it look good. <em>We make it work.</em>"><div class="flow-stage"><div class="tile" data-i="0"><img src="assets/work-attalia.webp" alt="Attalia" width="1440" height="836"><span class="tile-meta"><b>Attalia</b><em>Client site</em></span></div><a class="tile" data-i="1" href="templates/clinic/" target="_blank" rel="noopener" data-cta="pano-clinic"><img src="assets/tpl-clinic.webp" alt="Aura Aesthetic Clinic" width="1440" height="836"><span class="tile-meta"><b>Aura Aesthetic Clinic</b><em>Template</em></span></a><a class="tile" data-i="2" href="https://hydrelon.com" target="_blank" rel="noopener" data-cta="pano-hydrelon"><img src="assets/work-hydrelon.webp" alt="Hydrelon" width="1440" height="836"><span class="tile-meta"><b>Hydrelon</b><em>Client site</em></span></a><a class="tile" data-i="3" href="templates/restaurant/" target="_blank" rel="noopener" data-cta="pano-restaurant"><img src="assets/tpl-restaurant.webp" alt="Maison Olive" width="1440" height="836"><span class="tile-meta"><b>Maison Olive</b><em>Template</em></span></a><a class="tile" data-i="4" href="https://herculesinvestmentsllc.com" target="_blank" rel="noopener" data-cta="pano-hercules"><img src="assets/work-hercules.webp" alt="Hercules Investments" width="1440" height="836"><span class="tile-meta"><b>Hercules Investments</b><em>Client site</em></span></a><a class="tile" data-i="5" href="templates/law/" target="_blank" rel="noopener" data-cta="pano-law"><img src="assets/tpl-law.webp" alt="Hale &amp; Rowe" width="1440" height="836"><span class="tile-meta"><b>Hale &amp; Rowe</b><em>Template</em></span></a><a class="tile" data-i="6" href="templates/studio/" target="_blank" rel="noopener" data-cta="pano-studio"><img src="assets/tpl-studio.webp" alt="Atelier Nord" width="1440" height="836"><span class="tile-meta"><b>Atelier Nord</b><em>Template</em></span></a><a class="tile" data-i="7" href="templates/fitness/" target="_blank" rel="noopener" data-cta="pano-fitness"><img src="assets/tpl-fitness.webp" alt="Pulse Studio" width="1440" height="836"><span class="tile-meta"><b>Pulse Studio</b><em>Template</em></span></a><a class="tile" data-i="8" href="https://ai-ulu.com/ornekler/a-sinematik/" target="_blank" rel="noopener" data-cta="pano-tpl-a"><img src="assets/tpl-a.webp" alt="Kırağı Yayla Evi" width="1440" height="836"><span class="tile-meta"><b>Kırağı Yayla Evi</b><em>Template</em></span></a><a class="tile" data-i="9" href="https://ai-ulu.com/ornekler/d-imza/" target="_blank" rel="noopener" data-cta="pano-tpl-d"><img src="assets/tpl-d.webp" alt="Kil &amp; Kül" width="1440" height="836"><span class="tile-meta"><b>Kil &amp; Kül</b><em>Template</em></span></a></div><div class="flow-ctl"><button type="button" class="fb" data-d="-1" aria-label="Previous"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="fb" data-d="1" aria-label="Next"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+</section>
+<div class="marquee" aria-hidden="true"><div class="mq-track"><span><b>Websites</b><i>✦</i><b>Apps</b><i>✦</i><b>Booking sites</b><i>✦</i><b>Brand identity</b><i>✦</i><b>Launch</b><i>✦</i><b>Support</b><i>✦</i></span><span><b>Websites</b><i>✦</i><b>Apps</b><i>✦</i><b>Booking sites</b><i>✦</i><b>Brand identity</b><i>✦</i><b>Launch</b><i>✦</i><b>Support</b><i>✦</i></span></div></div>
+
+<section class="sec wrap center" aria-labelledby="hp"><span class="pill eyebrow"><i></i>The Problem<i></i></span><h2 id="hp">A strong brand, but a site that <em>doesn't sell?</em></h2><p class="lead">Most websites lose visitors in the first scroll. The brand isn't the issue. The build is.</p>
+  <div class="cards3"><article class="bz"><div class="core left"><div class="viz"><svg viewBox="0 0 160 90" aria-hidden="true"><rect x="8" y="10" width="44" height="70" rx="8"/><rect x="58" y="10" width="44" height="70" rx="8"/><rect x="108" y="10" width="44" height="70" rx="8"/><path d="M16 28h28M16 40h20M66 28h28M66 40h20M116 28h28M116 40h20"/></svg></div><h3>Looks like everyone else</h3><p>Same template, same layout as every competitor. Visitors can't tell you apart, so they leave.</p></div></article><article class="bz"><div class="core left"><div class="viz"><svg viewBox="0 0 160 90" aria-hidden="true"><rect x="30" y="26" width="100" height="32" rx="16"/><path d="M62 42h36"/><path d="m122 64 14 14"/></svg></div><h3>No path to action</h3><p>Without a clear next step there are no calls, no leads and no sales.</p></div></article><article class="bz"><div class="core left"><div class="viz"><svg viewBox="0 0 160 90" aria-hidden="true"><path d="M14 74V40M44 74V24M74 74V32M104 74V54M134 74V68"/><path d="M14 74h132" opacity=".5"/></svg></div><h3>Gone after launch</h3><p>The agency disappears at go-live and every fix becomes your problem.</p></div></article></div></section>
+
+<section class="sec wrap center" aria-labelledby="hso"><span class="pill eyebrow"><i></i>How We Fix It<i></i></span><h2 id="hso">A done-for-you build system <em>that ships</em></h2><p class="lead">You bring the goal. We handle design, development, launch and support.</p>
+  <div class="stats"><div class="bz"><div class="core stat"><strong>EN · TR</strong><span>Two languages, one team</span></div></div><div class="bz"><div class="core stat"><strong>24h</strong><span>First reply, every time</span></div></div><div class="bz"><div class="core stat"><strong>Yours</strong><span>Design, code and content</span></div></div><div class="bz"><div class="core stat"><strong>Live</strong><span>Clickable preview from day one</span></div></div></div>
+  <a class="btn acc" href="#work" data-cta="solution-works">See Our Works<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></section>
+
+<section id="services" class="sec wrap center" aria-labelledby="hs"><span class="pill eyebrow"><i></i>What We Do<i></i></span><h2 id="hs">Websites and apps, from first sketch <em>to live</em></h2><p class="lead">Launching a brand or upgrading a product, you get the design and engineering to do it properly.</p>
+  <div class="cards3 svc"><article class="bz"><div class="core svc-card"><h3>Websites</h3><div class="ico"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb27a"/><stop offset="1" stop-color="#fa6114"/></linearGradient></defs><rect x="14" y="26" width="92" height="68" rx="14" fill="#140b06" stroke="url(#g1)" stroke-width="3"/><path d="M14 46h92" stroke="url(#g1)" stroke-width="3"/><circle cx="28" cy="36" r="3.5" fill="#fa6114"/><circle cx="40" cy="36" r="3.5" fill="#ffb27a"/><path d="M30 64h34M30 76h54" stroke="#fa6114" stroke-width="5" stroke-linecap="round" opacity=".85"/></svg></div><p>Art-directed brand and marketing sites. Fast, searchable and built to convert.</p></div></article><article class="bz"><div class="core svc-card"><h3>Apps</h3><div class="ico"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb27a"/><stop offset="1" stop-color="#fa6114"/></linearGradient></defs><rect x="34" y="12" width="52" height="96" rx="14" fill="#140b06" stroke="url(#g2)" stroke-width="3"/><rect x="44" y="28" width="32" height="20" rx="6" fill="#fa6114" opacity=".9"/><rect x="44" y="56" width="14" height="14" rx="4" fill="#ffb27a" opacity=".8"/><rect x="62" y="56" width="14" height="14" rx="4" fill="#fa6114" opacity=".6"/><rect x="44" y="76" width="32" height="8" rx="4" fill="#fa6114" opacity=".5"/></svg></div><p>Custom web apps and internal tools: dashboards, portals and automations.</p></div></article><article class="bz"><div class="core svc-card"><h3>Site + App</h3><div class="ico"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb27a"/><stop offset="1" stop-color="#fa6114"/></linearGradient></defs><rect x="8" y="24" width="72" height="54" rx="12" fill="#140b06" stroke="url(#g3)" stroke-width="3"/><rect x="62" y="42" width="48" height="66" rx="12" fill="#1c0f08" stroke="url(#g3)" stroke-width="3"/><path d="M20 44h30M20 56h46" stroke="#fa6114" stroke-width="5" stroke-linecap="round" opacity=".8"/><circle cx="86" cy="74" r="10" fill="#fa6114" opacity=".9"/></svg></div><p>One design system across both, so your whole company feels like one product.</p></div></article></div>
+  <div class="bz"><div class="core feat left"><div><h3 class="feat-h">More launches,<br>less chaos</h3><p>Hand off the build. We deliver a polished, production-ready result while you focus on running the business.</p><a class="btn acc" href="#contact" data-cta="feat-start">Start a Project<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+  <ul><li><b>Fast delivery</b><span>Clear scope and a live preview from week one.</span></li><li><b>Built to perform</b><span>Every page is engineered for speed, search and conversion.</span></li><li><b>Direct access</b><span>You work with the people building it. No account layers.</span></li></ul></div></div></section>
+
+<section id="work" class="sec wrap" aria-labelledby="hw"><div class="work-head"><div><span class="pill eyebrow"><i></i>Our Works<i></i></span><h2 id="hw">We don't just make it look good. <em>We make it work.</em></h2><p class="lead">Client sites and ready-to-launch templates for clinics, restaurants, studios and more.</p></div><a class="btn acc" href="#contact" data-cta="work-start">Start a Project<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+  <div class="work-grid"><div class="bz work-card w0"><div class="core">
+      <div class="shot"><img src="assets/work-attalia.webp" alt="Attalia" loading="lazy" width="1440" height="836"></div>
+      <div class="work-body"><span class="kind">Client site</span><h3>Attalia</h3><p>Group site for a global commerce holding.</p>
+      <span class="open">Not public yet</span></div></div></div><a class="bz work-card w1" href="templates/clinic/" target="_blank" rel="noopener" data-cta="work-clinic"><div class="core">
+      <div class="shot"><img src="assets/tpl-clinic.webp" alt="Aura Aesthetic Clinic" loading="lazy" width="1440" height="836"></div>
+      <div class="work-body"><span class="kind">Template</span><h3>Aura Aesthetic Clinic</h3><p>Booking-led site for an aesthetic clinic.</p>
+      <span class="open">Open<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span></div></div></a><a class="bz work-card w2" href="https://hydrelon.com" target="_blank" rel="noopener" data-cta="work-hydrelon"><div class="core">
+      <div class="shot"><img src="assets/work-hydrelon.webp" alt="Hydrelon" loading="lazy" width="1440" height="836"></div>
+      <div class="work-body"><span class="kind">Client site</span><h3>Hydrelon</h3><p>Product site for a water-filtration brand.</p>
+      <span class="open">Open<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span></div></div></a><a class="bz work-card w3" href="templates/restaurant/" target="_blank" rel="noopener" data-cta="work-restaurant"><div class="core">
+      <div class="shot"><img src="assets/tpl-restaurant.webp" alt="Maison Olive" loading="lazy" width="1440" height="836"></div>
+      <div class="work-body"><span class="kind">Template</span><h3>Maison Olive</h3><p>Reservation-first site for a restaurant.</p>
+      <span class="open">Open<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span></div></div></a><a class="bz work-card w4" href="https://herculesinvestmentsllc.com" target="_blank" rel="noopener" data-cta="work-hercules"><div class="core">
+      <div class="shot"><img src="assets/work-hercules.webp" alt="Hercules Investments" loading="lazy" width="1440" height="836"></div>
+      <div class="work-body"><span class="kind">Client site</span><h3>Hercules Investments</h3><p>Brand group site for a US e-commerce company.</p>
+      <span class="open">Open<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span></div></div></a><a class="bz work-card w5" href="templates/law/" target="_blank" rel="noopener" data-cta="work-law"><div class="core">
+      <div class="shot"><img src="assets/tpl-law.webp" alt="Hale &amp; Rowe" loading="lazy" width="1440" height="836"></div>
+      <div class="work-body"><span class="kind">Template</span><h3>Hale &amp; Rowe</h3><p>Authority site for a boutique law firm.</p>
+      <span class="open">Open<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span></div></div></a></div></section>
+
+<section id="process" class="sec wrap center" aria-labelledby="hpr"><span class="pill eyebrow"><i></i>Process<i></i></span><h2 id="hpr">Three steps from brief <em>to live</em></h2>
+  <ol class="cards3 steps"><li class="bz"><div class="core left"><span class="num">01</span><h3>Brief</h3><p>A free 30-minute call. We define the goal, the scope and the timeline.</p></div></li><li class="bz"><div class="core left"><span class="num">02</span><h3>Build</h3><p>Design and development in the open, with a live preview you can click.</p></div></li><li class="bz"><div class="core left"><span class="num">03</span><h3>Ship</h3><p>We launch, test on real devices and stay on for fixes and changes.</p></div></li></ol></section>
+
+<section id="pricing" class="sec wrap center" aria-labelledby="hpx"><span class="pill eyebrow"><i></i>Pricing<i></i></span><h2 id="hpx">Choose a package. <em>Get a fixed quote.</em></h2><p class="lead">No price list: every project is scoped on its own. You get a written quote within 24 hours.</p>
+  <div class="cards3 packs"><article class="bz"><div class="core pack left"><h3>Website</h3><p class="quote">Quote within 24 hours</p><ul><li>Art-directed design</li><li>Motion and fast load times</li><li>SEO-ready, English and Turkish</li><li>Launch and post-launch support</li></ul><a class="btn ghost" href="#contact" data-cta="pack-0">Get a quote<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></article><article class="bz"><div class="core pack left"><h3>App</h3><p class="quote">Quote within 24 hours</p><ul><li>Custom web app or internal tool</li><li>Dashboards, portals, automations</li><li>Built around your workflow</li><li>Launch and post-launch support</li></ul><a class="btn ghost" href="#contact" data-cta="pack-1">Get a quote<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></article><article class="bz feat-pack"><div class="core pack left"><span class="badge-top">Most complete</span><h3>Site + App</h3><p class="quote">Quote within 24 hours</p><ul><li>One design system across both</li><li>Marketing site and product together</li><li>English and Turkish</li><li>Launch and post-launch support</li></ul><a class="btn acc" href="#contact" data-cta="pack-2">Get a quote<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></article></div></section>
+
+<section id="faq" class="sec wrap center narrow" aria-labelledby="hf"><span class="pill eyebrow"><i></i>FAQ<i></i></span><h2 id="hf">Questions, answered</h2>
+  <div class="faq left"><details class="glass"><summary>How long does a website take?</summary><p>A focused marketing site usually takes two to four weeks from the first call to launch. Larger sites and apps take longer, and the timeline is in the quote.</p></details><details class="glass"><summary>What does the free call include?</summary><p>A 30-minute conversation about your goal, audience and timing. You leave with a rough scope and an honest view of fit. It costs nothing and commits you to nothing.</p></details><details class="glass"><summary>Do I own the site and the code?</summary><p>Yes. Design, code and content are yours, and everything is handed over at launch.</p></details><details class="glass"><summary>Do you keep working after launch?</summary><p>Yes. We fix issues, handle changes and can maintain the site on an ongoing basis.</p></details><details class="glass"><summary>Can you build apps, not just websites?</summary><p>Yes. Custom web apps, dashboards and internal tools are part of Shipcraft.</p></details><details class="glass"><summary>Which languages do you work in?</summary><p>English and Turkish, for the site and for communication.</p></details></div></section>
+
+<section id="contact" class="sec wrap" aria-labelledby="hc"><div class="cta-card glass"><div class="cta-glow" aria-hidden="true"></div>
+  <div class="contact-copy"><span class="pill eyebrow"><i></i>Contact<i></i></span><h2 id="hc">Ready to <em>launch?</em></h2><p class="lead">Tell us what you're building. We reply within 24 hours with a time for a free intro call.</p>
+    <p class="or">Prefer to chat now?</p><a class="btn ghost" href="https://wa.me/905079581642?text=Hi%2C%20I'd%20like%20a%20free%20intro%20call%20about%20a%20project." target="_blank" rel="noopener" data-cta="contact-whatsapp">Message us on WhatsApp<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+  <form id="lead" class="form" novalidate>
+    <label>Your name<input name="name" autocomplete="name" required></label>
+    <label>Email or phone<input name="reach" autocomplete="email" required></label>
+    <label>What do you need?<select name="type"><option value="site">A website</option><option value="app">An app</option><option value="both">Both</option><option value="unsure">Not sure yet</option></select></label>
+    <label>About the project<textarea name="msg" rows="3"></textarea></label>
+    <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button class="btn acc" type="submit" data-cta="form-submit">Request my free call<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+  </form></div></section>
+</main>
+<footer class="foot wrap"><p>© 2026 ai-ulu. All rights reserved.</p><p>Shipcraft is the web and app studio of ai-ulu.</p>
+  <p class="links"><a href="https://github.com/ali-ulu" rel="noopener">GitHub</a> · <a href="https://wa.me/905079581642?text=Hi%2C%20I'd%20like%20a%20free%20intro%20call%20about%20a%20project." rel="noopener">WhatsApp</a></p></footer>
+<a class="wa-float" href="https://wa.me/905079581642?text=Hi%2C%20I'd%20like%20a%20free%20intro%20call%20about%20a%20project." target="_blank" rel="noopener" aria-label="WhatsApp" data-cta="float-whatsapp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/></svg></a>
+<script>window.__CFG={"waNum":"905079581642","c":{"eyebrow":"Contact","h":"Ready to \u003cem>launch?\u003c/em>","sub":"Tell us what you're building. We reply within 24 hours with a time for a free intro call.","name":"Your name","reach":"Email or phone","type":"What do you need?","types":[["site","A website"],["app","An app"],["both","Both"],["unsure","Not sure yet"]],"msg":"About the project","send":"Request my free call","ok":"Thanks. We'll get back to you within 24 hours.","fallback":"The form service isn't reachable. Send the same details on WhatsApp:","fallbackBtn":"Send on WhatsApp","or":"Prefer to chat now?","waCta":"Message us on WhatsApp","waText":"Hi, I'd like a free intro call about a project.","required":"Please add your name and a way to reach you."}}</script>
+<script>(function () {
+  var d = document, root = d.documentElement, cfg = window.__CFG;
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Tema: varsayılan koyu; düğme açık/koyu arasında geçirir, seçim hatırlanır
+  d.getElementById("theme").addEventListener("click", function () {
+    var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("theme", next); } catch (e) {}
+  });
+
+  // Yıldız ve artı parıltıları (hero)
+  var stars = d.querySelector(".stars");
+  if (stars) {
+    var seed = 11, rnd = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    for (var i = 0; i < 52; i++) {
+      var s = d.createElement("i"); s.className = i % 8 === 0 ? "plus" : "star";
+      s.style.left = rnd() * 100 + "%"; s.style.top = rnd() * 60 + "%"; s.style.animationDelay = rnd() * 5 + "s";
+      stars.appendChild(s);
+    }
+  }
+
+  // Panoramik coverflow: kavisli 3B şerit; her koşulda kendiliğinden akar (hareket azaltma açık olsa da),
+  // sürükleme, oklar ve klavye ile de gezilir.
+  var flow = d.getElementById("flow");
+  if (flow) {
+    var tiles = [].slice.call(flow.querySelectorAll(".tile")), n = tiles.length, cur = 0, timer = null, idle = null;
+    var INTERVAL = reduce ? 6000 : 3400;
+    function place() {
+      var stepX = innerWidth < 700 ? 44 : 60;
+      tiles.forEach(function (t, i) {
+        var off = ((i - cur) % n + n) % n; if (off > n / 2) off -= n;
+        var a = Math.abs(off), vis = a <= 3;
+        t.style.opacity = vis ? (a === 0 ? 1 : Math.max(.3, 1 - a * .25)) : 0;
+        t.style.pointerEvents = vis ? "auto" : "none";
+        t.style.filter = a === 0 ? "none" : "brightness(" + Math.max(.45, 1 - a * .17) + ") saturate(.9)";
+        t.style.zIndex = 10 - a;
+        t.style.transform = "translate3d(" + off * stepX + "%,0," + (-a * 180) + "px) rotateY(" + (-off * 26) + "deg) scale(" + (a === 0 ? 1.05 : 1) + ")";
+        t.tabIndex = a === 0 ? 0 : -1;
+        t.setAttribute("aria-hidden", vis ? "false" : "true");
+      });
+    }
+    function go(dir) { cur = (cur + dir + n) % n; place(); }
+    function play() { stop(); timer = setInterval(function () { go(1); }, INTERVAL); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function nudge() { stop(); clearTimeout(idle); idle = setTimeout(play, 5000); }
+    flow.querySelectorAll(".fb").forEach(function (b) { b.addEventListener("click", function () { go(+b.getAttribute("data-d")); nudge(); }); });
+    tiles.forEach(function (t, i) {
+      t.addEventListener("click", function (e) { if (flow._moved) { e.preventDefault(); return; } if (i !== cur) { e.preventDefault(); cur = i; place(); nudge(); } });
+    });
+    // sürükleme (fare ve dokunma)
+    var sx = null;
+    flow.addEventListener("pointerdown", function (e) { if (e.target.closest(".fb")) return; sx = e.clientX; flow._moved = false; flow.classList.add("drag"); stop(); });
+    addEventListener("pointermove", function (e) { if (sx !== null && Math.abs(e.clientX - sx) > 8) flow._moved = true; });
+    addEventListener("pointerup", function (e) {
+      if (sx === null) return;
+      var dx = e.clientX - sx; sx = null; flow.classList.remove("drag");
+      if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+      nudge(); setTimeout(function () { flow._moved = false; }, 0);
+    });
+    flow.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") { go(1); nudge(); } if (e.key === "ArrowLeft") { go(-1); nudge(); } });
+    d.addEventListener("visibilitychange", function () { if (d.hidden) stop(); else play(); });
+    addEventListener("resize", place);
+    place(); play();
+  }
+
+  // Kart ışığı: imleci takip eden turuncu parıltı
+  d.addEventListener("pointermove", function (e) {
+    var bz = e.target.closest && e.target.closest(".bz");
+    if (!bz) return;
+    var core = bz.querySelector(".core"); if (!core) return;
+    var r = core.getBoundingClientRect();
+    core.style.setProperty("--mx", (e.clientX - r.left) + "px"); core.style.setProperty("--my", (e.clientY - r.top) + "px");
+  }, { passive: true });
+
+  // Kaydırma girişi
+  var rev = [].slice.call(d.querySelectorAll(".sec .pill, .sec h2, .sec .lead, .bz, details, .stats, .marquee"));
+  rev.forEach(function (e) { e.classList.add("reveal"); });
+  [].slice.call(d.querySelectorAll(".cards3, .stats, .work-grid, .faq")).forEach(function (g) {
+    [].slice.call(g.children).forEach(function (c, i) { c.style.setProperty("--d", (i % 4) * 0.09 + "s"); });
+  });
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -6% 0px" });
+    rev.forEach(function (e) { io.observe(e); });
+  } else rev.forEach(function (e) { e.classList.add("in"); });
+
+  // Form: sunucu uç noktası yoksa WhatsApp'a düş
+  var form = d.getElementById("lead"), status = d.getElementById("status");
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var f = new FormData(form), c = cfg.c;
+    var data = { name: (f.get("name") || "").trim(), reach: (f.get("reach") || "").trim(), type: f.get("type"), msg: (f.get("msg") || "").trim(), website: f.get("website") };
+    status.textContent = "";
+    if (!data.name || !data.reach) { status.textContent = c.required; return; }
+    if (data.website) return; // bal küpü
+    var text = c.waText + "\n" + data.name + " · " + data.reach + " · " + data.type + (data.msg ? "\n" + data.msg : "");
+    var wa = "https://wa.me/" + cfg.waNum + "?text=" + encodeURIComponent(text);
+    fetch("/form.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); status.textContent = c.ok; form.reset(); })
+      .catch(function () {
+        status.textContent = c.fallback + " ";
+        var a = d.createElement("a"); a.href = wa; a.target = "_blank"; a.rel = "noopener"; a.textContent = c.fallbackBtn;
+        status.appendChild(a);
+      });
+  });
+})();
+</script>
+</body>
+</html>
