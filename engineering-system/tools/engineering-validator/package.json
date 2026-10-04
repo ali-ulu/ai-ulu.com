@@ -1,0 +1,31 @@
+{
+  "name": "@ai-ulu/engineering-validator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Validates AI-ULU Engineering System project workspaces: ID standard, required fields, protected approvals and bidirectional traceability.",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "engineering-validate": "bin/engineering-validate.js",
+    "engineering-init": "bin/engineering-init.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "schema",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test tests/validator.test.js",
+    "lint": "node --check bin/engineering-validate.js && node --check bin/engineering-init.js && node --check lib/registry.js && node --check lib/graph.js && node --check lib/workspace.js && node --check lib/validate.js"
+  },
+  "keywords": [
+    "engineering-system",
+    "traceability",
+    "governance",
+    "validator"
+  ]
+}
