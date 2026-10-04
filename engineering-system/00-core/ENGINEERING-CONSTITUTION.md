@@ -17,6 +17,10 @@
 15. Only an approved baseline represents project truth.
 16. Research claims require provenance.
 17. Process weight scales with complexity and risk.
+17a. Every rule that can be enforced mechanically must be. A rule that depends
+only on attention is a rule that will be broken silently.
+17b. Behavior is specified as examples, not descriptions. A specification
+without executable examples is not approved.
 18. A project may terminate with NO-GO.
 19. Verification evaluates implementation against the agreed engineering contract.
 20. One project's learning cannot become universal policy without review.
