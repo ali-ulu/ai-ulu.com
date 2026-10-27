@@ -1,2 +1,5 @@
 node_modules/
 .openhands/
+shipcraft/dist/
+shipcraft/hosting/leads/leads.jsonl
+shipcraft/hosting/leads/rl-*.txt
