@@ -1,5 +1,11 @@
 Options -Indexes
 
+# The hosting account has a Git deploy that mirrors the repository into this
+# directory on every push to main. The build output is what belongs here, so
+# refuse the repository's own paths even if the mirror recreates them.
+RedirectMatch 404 ^/shipcraft(/|$)
+RedirectMatch 404 ^/(\.git|\.github)(/|$)
+
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
