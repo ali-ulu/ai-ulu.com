@@ -1,5 +1,5 @@
 // node build.mjs  ->  dist/ (EN: /, TR: /tr/) + robots, sitemap, llms.txt, favicon
-import { mkdirSync, writeFileSync, cpSync, readFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, cpSync, readFileSync, rmSync } from "node:fs";
 import { SITE, T, panorama, gridIds } from "./content.mjs";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -160,6 +160,7 @@ ${hero(t, p)}
 </html>`;
 }
 
+rmSync(new URL("./dist", import.meta.url), { recursive: true, force: true });
 mkdirSync(new URL("./dist/tr", import.meta.url), { recursive: true });
 writeFileSync(new URL("./dist/index.html", import.meta.url), page(T.en));
 writeFileSync(new URL("./dist/tr/index.html", import.meta.url), page(T.tr));
@@ -173,4 +174,11 @@ writeFileSync(new URL("./dist/robots.txt", import.meta.url), `User-agent: *\nAll
 const alt = (l, u) => `<xhtml:link rel="alternate" hreflang="${l}" href="${u}"/>`;
 writeFileSync(new URL("./dist/sitemap.xml", import.meta.url), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${["/", "/tr/"].map((d) => `<url><loc>${SITE.origin}${d}</loc>${alt("en", SITE.origin + "/")}${alt("tr", SITE.origin + "/tr/")}${alt("x-default", SITE.origin + "/")}</url>`).join("\n")}\n</urlset>\n`);
 writeFileSync(new URL("./dist/llms.txt", import.meta.url), `# ai-ulu\n\n> ai-ulu designs, builds and launches cinematic websites and custom web apps, and supports them after launch. Languages: English and Turkish.\n\n## What we do\n- Websites: brand and marketing sites with art direction and motion\n- Apps: custom web apps, dashboards, internal tools\n- Site + App under one design system\n\n## Work\n- Attalia (group site), Hercules Investments (https://herculesinvestmentsllc.com), Hydrelon (https://hydrelon.com)\n- Starter templates: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio (${SITE.origin}/templates/)\n\n## How to start\nFree intro call, written quote within 24 hours. Pricing is scoped per project.\n- English: ${SITE.origin}/\n- Turkish: ${SITE.origin}/tr/\n- WhatsApp: +90 507 958 16 42\n`);
+
+// Host-only files: the PHP form handler and the Apache rules. They ship inside
+// dist/ so a plain upload of dist/ is the whole deploy.
+cpSync(new URL("./hosting/form.php", import.meta.url), new URL("./dist/form.php", import.meta.url));
+cpSync(new URL("./hosting/htaccess", import.meta.url), new URL("./dist/.htaccess", import.meta.url));
+mkdirSync(new URL("./dist/leads", import.meta.url), { recursive: true });
+cpSync(new URL("./hosting/leads/.htaccess", import.meta.url), new URL("./dist/leads/.htaccess", import.meta.url));
 console.log("dist hazir");

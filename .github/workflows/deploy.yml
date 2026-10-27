@@ -5,17 +5,12 @@ on:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 concurrency:
-  group: pages
+  group: deploy
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,18 +21,21 @@ jobs:
         working-directory: shipcraft
         run: node build.mjs
       - name: Verify build output
-        run: test -f shipcraft/dist/index.html && test -f shipcraft/dist/tr/index.html
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+        run: |
+          test -f shipcraft/dist/index.html
+          test -f shipcraft/dist/tr/index.html
+          test -f shipcraft/dist/form.php
+          test -f shipcraft/dist/.htaccess
+      - name: Upload to hosting
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          path: shipcraft/dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: shipcraft/dist/
+          server-dir: /public_html/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
