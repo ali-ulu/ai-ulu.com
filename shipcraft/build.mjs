@@ -169,7 +169,6 @@ cpSync(new URL("./templates", import.meta.url), new URL("./dist/templates", impo
 const fav = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#090401"/><path d="M16 6 6 13v13h20V13z" fill="#fa6114"/></svg>`;
 writeFileSync(new URL("./dist/favicon.svg", import.meta.url), fav);
 writeFileSync(new URL("./dist/tr/favicon.svg", import.meta.url), fav);
-writeFileSync(new URL("./dist/CNAME", import.meta.url), `${new URL(SITE.origin).hostname}\n`);
 writeFileSync(new URL("./dist/robots.txt", import.meta.url), `User-agent: *\nAllow: /\n\n# AI crawlers are welcome\nUser-agent: GPTBot\nAllow: /\nUser-agent: ClaudeBot\nAllow: /\nUser-agent: PerplexityBot\nAllow: /\nUser-agent: Google-Extended\nAllow: /\n\nSitemap: ${SITE.origin}/sitemap.xml\n`);
 const alt = (l, u) => `<xhtml:link rel="alternate" hreflang="${l}" href="${u}"/>`;
 writeFileSync(new URL("./dist/sitemap.xml", import.meta.url), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${["/", "/tr/"].map((d) => `<url><loc>${SITE.origin}${d}</loc>${alt("en", SITE.origin + "/")}${alt("tr", SITE.origin + "/tr/")}${alt("x-default", SITE.origin + "/")}</url>`).join("\n")}\n</urlset>\n`);
