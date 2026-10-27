@@ -25,7 +25,7 @@ const probIcons = [
 
 function nav(t) {
   return `<header class="navwrap"><div class="nav glass">
-  <a class="brand" href="${t.dir}" aria-label="ai-ulu Shipcraft"><span class="mark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3 3 9v11h18V9z" fill="currentColor"/><path d="M12 8v8M8.5 11.5 12 8l3.5 3.5" stroke="#090401" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Shipcraft</span></a>
+  <a class="brand" href="${t.dir}" aria-label="ai-ulu"><span class="mark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3 3 9v11h18V9z" fill="currentColor"/><path d="M12 8v8M8.5 11.5 12 8l3.5 3.5" stroke="#090401" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>ai-ulu</span></a>
   <nav aria-label="Primary">${t.nav.map(([id, l]) => `<a href="#${id}">${esc(l)}</a>`).join("")}</nav>
   <div class="tools">
     <a class="lang" href="${t.alt}" hreflang="${t.lang === "en" ? "tr" : "en"}" data-cta="lang">${t.altLabel}</a>
@@ -73,7 +73,7 @@ function jsonld(t, url) {
   const graph = [
     { "@type": "Organization", "@id": org, name: "ai-ulu", url: SITE.origin + "/", description: t.ld.orgDesc, founder: { "@id": person }, sameAs },
     { "@type": "WebSite", "@id": `${SITE.origin}/#site`, url: SITE.origin + "/", name: "ai-ulu", inLanguage: ["en", "tr"], publisher: { "@id": org } },
-    { "@type": "ProfessionalService", "@id": `${SITE.origin}/#shipcraft`, name: "Shipcraft", description: t.desc, url, parentOrganization: { "@id": org },
+    { "@type": "ProfessionalService", "@id": `${SITE.origin}/#service`, name: "ai-ulu", description: t.desc, url, parentOrganization: { "@id": org },
       serviceType: ["Website development", "Web application development", "Web design"], areaServed: "Worldwide", availableLanguage: ["English", "Turkish"] },
     { "@type": "Person", "@id": person, name: "Ali Ulu", jobTitle: "Founder", worksFor: { "@id": org }, url: SITE.origin + "/", sameAs },
     { "@type": "FAQPage", mainEntity: t.faq.items.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
@@ -98,7 +98,6 @@ function page(t) {
 <meta property="og:type" content="website"><meta property="og:site_name" content="ai-ulu">
 <meta property="og:title" content="${esc(t.title)}"><meta property="og:description" content="${esc(t.desc)}">
 <meta property="og:url" content="${url}"><meta property="og:locale" content="${t.lang === "en" ? "en_US" : "tr_TR"}">
-<meta property="og:image" content="${SITE.origin}/assets/og.png"><meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#090401">
 <link rel="icon" href="${p}favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -169,8 +168,9 @@ cpSync(new URL("./templates", import.meta.url), new URL("./dist/templates", impo
 const fav = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#090401"/><path d="M16 6 6 13v13h20V13z" fill="#fa6114"/></svg>`;
 writeFileSync(new URL("./dist/favicon.svg", import.meta.url), fav);
 writeFileSync(new URL("./dist/tr/favicon.svg", import.meta.url), fav);
+writeFileSync(new URL("./dist/CNAME", import.meta.url), `${new URL(SITE.origin).hostname}\n`);
 writeFileSync(new URL("./dist/robots.txt", import.meta.url), `User-agent: *\nAllow: /\n\n# AI crawlers are welcome\nUser-agent: GPTBot\nAllow: /\nUser-agent: ClaudeBot\nAllow: /\nUser-agent: PerplexityBot\nAllow: /\nUser-agent: Google-Extended\nAllow: /\n\nSitemap: ${SITE.origin}/sitemap.xml\n`);
 const alt = (l, u) => `<xhtml:link rel="alternate" hreflang="${l}" href="${u}"/>`;
 writeFileSync(new URL("./dist/sitemap.xml", import.meta.url), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${["/", "/tr/"].map((d) => `<url><loc>${SITE.origin}${d}</loc>${alt("en", SITE.origin + "/")}${alt("tr", SITE.origin + "/tr/")}${alt("x-default", SITE.origin + "/")}</url>`).join("\n")}\n</urlset>\n`);
-writeFileSync(new URL("./dist/llms.txt", import.meta.url), `# ai-ulu — Shipcraft\n\n> Shipcraft is the web and app studio of ai-ulu, run by Ali Ulu. It designs, builds and launches cinematic websites and custom web apps, and supports them after launch. Languages: English and Turkish.\n\n## What we do\n- Websites: brand and marketing sites with art direction and motion\n- Apps: custom web apps, dashboards, internal tools\n- Site + App under one design system\n\n## Work\n- Attalia (group site), Hercules Investments (https://herculesinvestmentsllc.com), Hydrelon (https://hydrelon.com)\n- Starter templates: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio (https://ai-ulu.com/templates/)\n\n## How to start\nFree intro call, written quote within 24 hours. Pricing is scoped per project.\n- English: ${SITE.origin}/\n- Turkish: ${SITE.origin}/tr/\n- WhatsApp: +90 507 958 16 42\n`);
+writeFileSync(new URL("./dist/llms.txt", import.meta.url), `# ai-ulu\n\n> ai-ulu designs, builds and launches cinematic websites and custom web apps, and supports them after launch. Languages: English and Turkish.\n\n## What we do\n- Websites: brand and marketing sites with art direction and motion\n- Apps: custom web apps, dashboards, internal tools\n- Site + App under one design system\n\n## Work\n- Attalia (group site), Hercules Investments (https://herculesinvestmentsllc.com), Hydrelon (https://hydrelon.com)\n- Starter templates: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio (${SITE.origin}/templates/)\n\n## How to start\nFree intro call, written quote within 24 hours. Pricing is scoped per project.\n- English: ${SITE.origin}/\n- Turkish: ${SITE.origin}/tr/\n- WhatsApp: +90 507 958 16 42\n`);
 console.log("dist hazir");
