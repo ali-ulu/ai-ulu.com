@@ -4,6 +4,10 @@ export const SITE = {
   whatsapp: "905079581642",
   github: "https://github.com/ali-ulu",
   linkedin: "", // Ali'den bekleniyor; boşsa footer'da gösterilmez
+  // Analitik: çerezsiz, KVKK dostu. Cloudflare Web Analytics token'ı buraya yazılınca
+  // sayfalara script eklenir (ücretsiz, panel: dash.cloudflare.com > Analytics > Web Analytics).
+  // Boşken hiçbir şey yüklenmez ve hiçbir veri toplanmaz.
+  cloudflareAnalytics: "",
 };
 
 // kind: client | app | template. Hero panoraması ve "Works" gridi buradan beslenir.
@@ -76,6 +80,7 @@ export const T = {
         law: "Authority site for a boutique law firm.",
       },
       open: "Open", soon: "Not public yet",
+      prev: "Previous project", next: "Next project", pause: "Pause automatic scrolling", play: "Resume automatic scrolling",
     },
     process: {
       eyebrow: "Process", h: "Three steps from brief <em>to live</em>",
@@ -118,6 +123,9 @@ export const T = {
       or: "Prefer to chat now?", waCta: "Message us on WhatsApp",
       waText: "Hi, I'd like a free intro call about a project.",
       required: "Please add your name and a way to reach you.",
+      invalidReach: "That doesn't look like a working email or phone number. Check it and try again.",
+      sending: "Sending…",
+      sent: "Sent",
     },
     footer: { rights: "© 2026 ai-ulu. All rights reserved.", tag: "Websites and apps, from first call to live." },
     skip: "Skip to content",
@@ -179,6 +187,7 @@ export const T = {
         law: "Butik hukuk bürosu için güven veren site.",
       },
       open: "Aç", soon: "Henüz yayında değil",
+      prev: "Önceki proje", next: "Sonraki proje", pause: "Otomatik kaydırmayı duraklat", play: "Otomatik kaydırmayı sürdür",
     },
     process: {
       eyebrow: "Süreç", h: "Brief'ten <em>yayına</em> üç adım",
@@ -221,6 +230,9 @@ export const T = {
       or: "Şimdi yazışmak ister misiniz?", waCta: "WhatsApp'tan yazın",
       waText: "Merhaba, bir proje için ücretsiz ön görüşme istiyorum.",
       required: "Lütfen adınızı ve size ulaşabileceğimiz bir yol yazın.",
+      invalidReach: "Bu geçerli bir e-posta ya da telefon numarasına benzemiyor. Kontrol edip yeniden deneyin.",
+      sending: "Gönderiliyor…",
+      sent: "Gönderildi",
     },
     footer: { rights: "© 2026 ai-ulu. Tüm hakları saklıdır.", tag: "İlk görüşmeden yayına, web siteleri ve uygulamalar." },
     skip: "İçeriğe geç",

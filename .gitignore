@@ -3,3 +3,6 @@ node_modules/
 shipcraft/dist/
 shipcraft/hosting/leads/leads.jsonl
 shipcraft/hosting/leads/rl-*.txt
+# İç raporlar (strateji, rakip araştırması) private `ai-ulu-raporlar` reposunda tutulur;
+# public site reposuna sızmasın.
+docs/

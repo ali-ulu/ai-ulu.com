@@ -11,6 +11,11 @@ const eyebrow = (s) => `<span class="pill eyebrow"><i></i>${esc(s)}<i></i></span
 const href = (u, p) => (u.startsWith("http") ? u : p + u);
 const byId = Object.fromEntries(panorama.map((w) => [w.id, w]));
 
+// Görsel boyutları assets/ ile eşleşmeli (1440x900) — yanlış width/height layout shift yapar.
+const IMG_W = 1440, IMG_H = 900;
+const srcset = (p, img) =>
+  ` srcset="${p}assets/${img.replace(".webp", "-480.webp")} 480w, ${p}assets/${img.replace(".webp", "-720.webp")} 720w, ${p}assets/${img} 1440w" sizes="(max-width:700px) 92vw, (max-width:1100px) 46vw, 36vw"`;
+
 const grad = (id) => `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb27a"/><stop offset="1" stop-color="#fa6114"/></linearGradient></defs>`;
 const icons = [
   `<svg viewBox="0 0 120 120" aria-hidden="true">${grad("g1")}<rect x="14" y="26" width="92" height="68" rx="14" fill="#140b06" stroke="url(#g1)" stroke-width="3"/><path d="M14 46h92" stroke="url(#g1)" stroke-width="3"/><circle cx="28" cy="36" r="3.5" fill="#fa6114"/><circle cx="40" cy="36" r="3.5" fill="#ffb27a"/><path d="M30 64h34M30 76h54" stroke="#fa6114" stroke-width="5" stroke-linecap="round" opacity=".85"/></svg>`,
@@ -39,11 +44,11 @@ function hero(t, p) {
   const tiles = panorama.map((w, i) => {
     const tag = w.url ? "a" : "div";
     const attrs = w.url ? ` href="${href(w.url, p)}" target="_blank" rel="noopener" data-cta="pano-${w.id}"` : "";
-    return `<${tag} class="tile" data-i="${i}"${attrs}><img src="${p}assets/${w.img}" alt="${esc(w.name)}" width="1440" height="836"><span class="tile-meta"><b>${esc(w.name)}</b><em>${esc(t.work.kinds[w.kind])}</em></span></${tag}>`;
+    return `<${tag} class="tile" data-i="${i}"${attrs}><img src="${p}assets/${w.img}"${srcset(p, w.img)} alt="${esc(w.name)}" width="${IMG_W}" height="${IMG_H}" decoding="async"><span class="tile-meta"><b>${esc(w.name)}</b><em>${esc(t.work.kinds[w.kind])}</em></span></${tag}>`;
   }).join("");
   return `<section class="hero" aria-labelledby="h1">
   <div class="orb" aria-hidden="true"><i></i><i></i><i></i></div><div class="stars" aria-hidden="true"></div>
-  <figure class="hero-card glass" aria-label="Attalia"><img src="${p}assets/${at.img}" alt="Attalia website" width="1440" height="836"><figcaption><b>Attalia</b><em>${esc(t.hero.card)}</em></figcaption></figure>
+  <figure class="hero-card glass" aria-label="Attalia"><img src="${p}assets/${at.img}"${srcset(p, at.img)} alt="Attalia website" width="${IMG_W}" height="${IMG_H}" decoding="async"><figcaption><b>Attalia</b><em>${esc(t.hero.card)}</em></figcaption></figure>
   <div class="wrap hero-copy">
     <p class="pill badge"><span class="spark">✦</span>${esc(t.hero.badge)}</p>
     <h1 id="h1">${t.hero.h1}</h1>
@@ -51,7 +56,7 @@ function hero(t, p) {
     <div class="cta-row"><a class="btn acc" href="#contact" data-cta="hero-start">${esc(t.start)}${arrow}</a><a class="btn ghost" href="#work" data-cta="hero-works">${esc(t.works)}</a></div>
     <ul class="chips">${t.hero.chips.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>
   </div>
-  <div class="flow" id="flow" aria-roledescription="carousel" aria-label="${t.work.h}"><div class="flow-stage">${tiles}</div><div class="flow-ctl"><button type="button" class="fb" data-d="-1" aria-label="Previous"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="fb" data-d="1" aria-label="Next"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+  <div class="flow" id="flow" aria-roledescription="carousel" aria-label="${t.work.h}"><div class="flow-stage">${tiles}</div><div class="flow-ctl"><button type="button" class="fb" data-d="-1" aria-label="${esc(t.work.prev)}"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="fb pp" id="flow-pp" aria-pressed="false" data-pause="${esc(t.work.pause)}" data-play="${esc(t.work.play)}" aria-label="${esc(t.work.pause)}"><svg class="ic-pause" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 5v14M15 5v14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><svg class="ic-play" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M8 5l11 7-11 7z" fill="currentColor"/></svg></button><button type="button" class="fb" data-d="1" aria-label="${esc(t.work.next)}"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
 </section>`;
 }
 
@@ -61,7 +66,7 @@ function workGrid(t, p) {
     const tag = w.url ? "a" : "div";
     const attrs = w.url ? ` href="${href(w.url, p)}" target="_blank" rel="noopener" data-cta="work-${w.id}"` : "";
     return `<${tag} class="bz work-card w${i}"${attrs}><div class="core">
-      <div class="shot"><img src="${p}assets/${w.img}" alt="${esc(w.name)}" loading="lazy" width="1440" height="836"></div>
+      <div class="shot"><img src="${p}assets/${w.img}"${srcset(p, w.img)} alt="${esc(w.name)}" loading="lazy" decoding="async" width="${IMG_W}" height="${IMG_H}"></div>
       <div class="work-body"><span class="kind">${esc(t.work.kinds[w.kind])}</span><h3>${esc(w.name)}</h3><p>${esc(t.work.desc[w.id])}</p>
       <span class="open">${w.url ? esc(t.work.open) + arrow : esc(t.work.soon)}</span></div></div></${tag}>`;
   }).join("");
@@ -98,6 +103,12 @@ function page(t) {
 <meta property="og:type" content="website"><meta property="og:site_name" content="ai-ulu">
 <meta property="og:title" content="${esc(t.title)}"><meta property="og:description" content="${esc(t.desc)}">
 <meta property="og:url" content="${url}"><meta property="og:locale" content="${t.lang === "en" ? "en_US" : "tr_TR"}">
+<meta property="og:image" content="${SITE.origin}/assets/og-cover.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(t.title)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(t.title)}"><meta name="twitter:description" content="${esc(t.desc)}">
+<meta name="twitter:image" content="${SITE.origin}/assets/og-cover.png">
 <meta name="theme-color" content="#090401">
 <link rel="icon" href="${p}favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -155,9 +166,100 @@ ${hero(t, p)}
   <p class="links"><a href="${SITE.github}" rel="noopener">GitHub</a>${SITE.linkedin ? ` · <a href="${SITE.linkedin}" rel="noopener">LinkedIn</a>` : ""} · <a href="${waLink(t.contact.waText)}" rel="noopener">WhatsApp</a></p></footer>
 <a class="wa-float" href="${waLink(t.contact.waText)}" target="_blank" rel="noopener" aria-label="WhatsApp" data-cta="float-whatsapp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/></svg></a>
 <script>window.__CFG=${JSON.stringify(cfg).replace(/</g, "\\u003c")}</script>
-<script>${js}</script>
+<script>${js}</script>${analytics}
 </body>
 </html>`;
+}
+
+// Analitik: yalnızca token tanımlıysa enjekte edilir (çerezsiz, KVKK dostu).
+const analytics = SITE.cloudflareAnalytics
+  ? `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${SITE.cloudflareAnalytics}"}'></script>`
+  : "";
+
+// Şablon sayfaları: üretilen HTML'e SEO meta + ai-ulu dönüş şeridi eklenir.
+// Palet/tasarım korunur; yalnızca <head> meta ve üstte geri dönüş linki eklenir.
+function enrichTemplate(html, name, desc, slug) {
+  const url = `${SITE.origin}/templates/${slug}/`;
+  const head = [
+    `<meta name="description" content="${esc(desc)}">`,
+    `<link rel="canonical" href="${url}">`,
+    `<meta name="robots" content="index,follow">`,
+    `<meta property="og:type" content="website"><meta property="og:site_name" content="ai-ulu">`,
+    `<meta property="og:title" content="${esc(name)} — ai-ulu template">`,
+    `<meta property="og:description" content="${esc(desc)}">`,
+    `<meta property="og:url" content="${url}">`,
+    `<meta property="og:image" content="${SITE.origin}/assets/og-cover.png">`,
+    `<meta name="twitter:card" content="summary_large_image">`,
+    `<script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org", "@type": "WebPage", name: `${name} — ai-ulu template`, description: desc,
+      url, isPartOf: { "@type": "WebSite", "@id": `${SITE.origin}/#site` },
+      publisher: { "@type": "Organization", "@id": `${SITE.origin}/#org` },
+    }).replace(/</g, "\\u003c")}</script>`,
+  ].join("");
+  // Palet-nötr bar: hem açık hem koyu şablon paletinde okunur, sayfa sınıflandırmasını çevirmez.
+  const bar = `<div style="position:fixed;left:0;right:0;bottom:0;z-index:99;display:flex;justify-content:center;padding:16px;pointer-events:none">
+<a href="${SITE.origin}/" style="pointer-events:auto;display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid #00000022;border-radius:99px;padding:10px 18px;color:#1a0b04;font:500 14px system-ui,sans-serif;text-decoration:none">← <b style="font-weight:600">ai-ulu</b> · this template is adapted to your brand</a></div>`;
+  return html
+    .replace("</head>", `${head}</head>`)
+    .replace(/<body([^>]*)>/, `<body$1>${bar}`);
+}
+
+const TEMPLATES = [
+  ["clinic", "Aura Aesthetic Clinic", "Aesthetic clinic template: warm neutral palette, arch imagery and a booking-first layout.", "Aesthetic clinic website template"],
+  ["restaurant", "Maison Olive", "Restaurant template: wood-fired kitchen, menu-forward layout and a reservation call to action.", "Restaurant website template"],
+  ["law", "Hale & Rowe", "Law firm template: navy and gold, practice-area grid and a consultation call to action.", "Law firm website template"],
+  ["studio", "Atelier Nord", "Architecture studio template: editorial grid, project list and a strong typographic voice.", "Architecture studio website template"],
+  ["fitness", "Pulse Studio", "Fitness studio template: high-contrast type, class schedule chips and a free-class call to action.", "Fitness studio website template"],
+];
+
+// /templates/ dizin sayfası — llms.txt bu adrese işaret ediyor, 403 olmamalı.
+function templatesIndex() {
+  const url = `${SITE.origin}/templates/`;
+  const cards = TEMPLATES.map(([slug, name, desc]) =>
+    `<li style="border:1px solid #ffffff1f;border-radius:20px;padding:22px;background:#ffffff0a"><a href="./${slug}/" style="color:#fff6ee;text-decoration:none"><b style="font:300 30px 'Cormorant Garamond',Georgia,serif;display:block;margin-bottom:6px">${esc(name)}</b><span style="color:#ffb23d;font:600 11.5px/1.2 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase">${esc(slug)}</span></a><p style="color:#e8d6c8cc;margin:12px 0 0;font:400 15px/1.6 'Instrument Sans',system-ui,sans-serif">${esc(desc)}</p></li>`
+  ).join("");
+  return `<!doctype html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Website templates — ai-ulu</title>
+<meta name="description" content="Five starter website templates from ai-ulu: aesthetic clinic, restaurant, law firm, architecture studio and fitness studio. Each one is adapted to your brand.">
+<link rel="canonical" href="${url}">
+<meta property="og:title" content="Website templates — ai-ulu"><meta property="og:description" content="Five starter templates, each adapted to your brand.">
+<meta property="og:url" content="${url}"><meta property="og:image" content="${SITE.origin}/assets/og-cover.png">
+<meta name="theme-color" content="#090401">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>body{margin:0;background:#070302;color:#fff6ee;font:400 17px/1.6 "Instrument Sans",system-ui,sans-serif}
+.aur{position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 50% at 80% 10%,#ff5f1288,transparent 70%),radial-gradient(50% 50% at 10% 90%,#ffb23d55,transparent 70%)}
+.w{width:min(1080px,100% - 40px);margin-inline:auto;padding-block:clamp(60px,9vw,120px)}
+h1{font:300 clamp(44px,7vw,92px)/.95 "Cormorant Garamond",Georgia,serif;letter-spacing:-.02em;margin:0 0 .3em}
+h1 em{font-style:italic;color:#ff8a3d}
+ul{list-style:none;padding:0;margin:56px 0 0;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.back{display:inline-flex;gap:10px;align-items:center;color:#ffb23d;text-decoration:none;font:500 15px system-ui;margin-bottom:34px}
+p.lead{color:#e8d6c8cc;max-width:60ch;font-size:clamp(17px,1.5vw,20px)}</style></head>
+<body><div class="aur" aria-hidden="true"></div>
+<main class="w"><a class="back" href="${SITE.origin}/">← ai-ulu</a>
+<h1>Five templates,<br><em>one build system.</em></h1>
+<p class="lead">Starter sites for clinics, restaurants, law firms, studios and fitness. Each one is rebuilt around your brand, content and goals — not resold as-is.</p>
+<ul>${cards}</ul></main></body></html>`;
+}
+
+// 404 — hosting'in varsayılan sayfası yerine markalı sayfa.
+function notFound() {
+  return `<!doctype html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Page not found — ai-ulu</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#090401">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Instrument+Sans:wght@400;500&display=swap">
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#070302;color:#fff6ee;font:400 17px/1.6 "Instrument Sans",system-ui,sans-serif;text-align:center;padding:24px}
+.aur{position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 50% at 70% 20%,#ff5f1299,transparent 70%),radial-gradient(50% 50% at 10% 90%,#ffb23d44,transparent 70%)}
+h1{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(80px,18vw,180px);line-height:.9;margin:0;color:#ff8a3d}
+h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(28px,4vw,44px);line-height:1.05;margin:12px 0 18px}
+p{color:#e8d6c8cc;max-width:44ch;margin:0 auto 30px}
+a.b{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(180deg,#ff8a3d,#d94a08);color:#1a0b04;padding:14px 26px;border-radius:99px;text-decoration:none;font-weight:600}</style></head>
+<body><div class="aur" aria-hidden="true"></div><div>
+<h1>404</h1><h2>This page isn't here.</h2>
+<p>The link may be old, or the page may have moved. The work and the contact form are one click away.</p>
+<a class="b" href="${SITE.origin}/">Back to ai-ulu →</a></div></body></html>`;
 }
 
 rmSync(new URL("./dist", import.meta.url), { recursive: true, force: true });
@@ -166,12 +268,29 @@ writeFileSync(new URL("./dist/index.html", import.meta.url), page(T.en));
 writeFileSync(new URL("./dist/tr/index.html", import.meta.url), page(T.tr));
 cpSync(new URL("./assets", import.meta.url), new URL("./dist/assets", import.meta.url), { recursive: true });
 cpSync(new URL("./templates", import.meta.url), new URL("./dist/templates", import.meta.url), { recursive: true });
+
+// Şablonları SEO meta + dönüş şeridi ile zenginleştir (palet korunur)
+TEMPLATES.forEach(([slug, name, desc]) => {
+  const f = new URL(`./dist/templates/${slug}/index.html`, import.meta.url);
+  writeFileSync(f, enrichTemplate(readFileSync(f, "utf8"), name, desc, slug));
+});
+writeFileSync(new URL("./dist/templates/index.html", import.meta.url), templatesIndex());
+writeFileSync(new URL("./dist/404.html", import.meta.url), notFound());
 const fav = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#090401"/><path d="M16 6 6 13v13h20V13z" fill="#fa6114"/></svg>`;
 writeFileSync(new URL("./dist/favicon.svg", import.meta.url), fav);
 writeFileSync(new URL("./dist/tr/favicon.svg", import.meta.url), fav);
 writeFileSync(new URL("./dist/robots.txt", import.meta.url), `User-agent: *\nAllow: /\n\n# AI crawlers are welcome\nUser-agent: GPTBot\nAllow: /\nUser-agent: ClaudeBot\nAllow: /\nUser-agent: PerplexityBot\nAllow: /\nUser-agent: Google-Extended\nAllow: /\n\nSitemap: ${SITE.origin}/sitemap.xml\n`);
 const alt = (l, u) => `<xhtml:link rel="alternate" hreflang="${l}" href="${u}"/>`;
-writeFileSync(new URL("./dist/sitemap.xml", import.meta.url), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${["/", "/tr/"].map((d) => `<url><loc>${SITE.origin}${d}</loc>${alt("en", SITE.origin + "/")}${alt("tr", SITE.origin + "/tr/")}${alt("x-default", SITE.origin + "/")}</url>`).join("\n")}\n</urlset>\n`);
+const sitemapUrls = [
+  { loc: "/", alts: [["en", "/"], ["tr", "/tr/"], ["x-default", "/"]], pri: "1.0" },
+  { loc: "/tr/", alts: [["en", "/"], ["tr", "/tr/"], ["x-default", "/"]], pri: "0.9" },
+  { loc: "/templates/", pri: "0.7" },
+  ...TEMPLATES.map(([slug]) => ({ loc: `/templates/${slug}/`, pri: "0.6" })),
+];
+const sitemapBody = sitemapUrls.map(({ loc, alts, pri }) =>
+  `<url><loc>${SITE.origin}${loc}</loc>${(alts || []).map(([l, u]) => alt(l, SITE.origin + u)).join("")}<priority>${pri}</priority></url>`
+).join("\n");
+writeFileSync(new URL("./dist/sitemap.xml", import.meta.url), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${sitemapBody}\n</urlset>\n`);
 writeFileSync(new URL("./dist/llms.txt", import.meta.url), `# ai-ulu\n\n> ai-ulu designs, builds and launches cinematic websites and custom web apps, and supports them after launch. Languages: English and Turkish.\n\n## What we do\n- Websites: brand and marketing sites with art direction and motion\n- Apps: custom web apps, dashboards, internal tools\n- Site + App under one design system\n\n## Work\n- Attalia (group site), Hercules Investments (https://herculesinvestmentsllc.com), Hydrelon (https://hydrelon.com)\n- Starter templates: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio (${SITE.origin}/templates/)\n\n## How to start\nFree intro call, written quote within 24 hours. Pricing is scoped per project.\n- English: ${SITE.origin}/\n- Turkish: ${SITE.origin}/tr/\n- WhatsApp: +90 507 958 16 42\n`);
 
 // Host-only files: the PHP form handler and the Apache rules. They ship inside
