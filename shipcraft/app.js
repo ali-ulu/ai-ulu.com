@@ -20,8 +20,8 @@
     }
   }
 
-  // Panoramik coverflow: kavisli 3B şerit; her koşulda kendiliğinden akar (hareket azaltma açık olsa da),
-  // sürükleme, oklar ve klavye ile de gezilir.
+  // Panoramik coverflow: kavisli 3B şerit; kullanıcı duraklatabilir (WCAG 2.2.2).
+  // Hareket azaltma açıksa kendiliğinden akmaz; oklar, klavye ve sürükleme çalışır.
   var flow = d.getElementById("flow");
   if (flow) {
     var tiles = [].slice.call(flow.querySelectorAll(".tile")), n = tiles.length, cur = 0, timer = null, idle = null;
@@ -41,9 +41,21 @@
       });
     }
     function go(dir) { cur = (cur + dir + n) % n; place(); }
-    function play() { stop(); timer = setInterval(function () { go(1); }, INTERVAL); }
+    function play() { stop(); if (reduce || paused) return; timer = setInterval(function () { go(1); }, INTERVAL); }
     function stop() { if (timer) { clearInterval(timer); timer = null; } }
     function nudge() { stop(); clearTimeout(idle); idle = setTimeout(play, 5000); }
+    // WCAG 2.2.2: hareket eden içerik duraklatılabilmeli. Üzerine gelince/odaklanınca durur,
+    // ayrıca görünür bir duraklat/oynat düğmesi var. Hareket azaltma açıksa hiç başlamaz.
+    var paused = false, pp = d.getElementById("flow-pp");
+    function syncPP() { if (pp) { pp.setAttribute("aria-pressed", paused ? "true" : "false"); pp.setAttribute("aria-label", paused ? pp.getAttribute("data-play") : pp.getAttribute("data-pause")); } }
+    function pause() { paused = true; stop(); syncPP(); }
+    function resume() { paused = false; play(); syncPP(); }
+    if (pp) pp.addEventListener("click", function () { paused ? resume() : pause(); });
+    flow.addEventListener("pointerenter", function () { stop(); });
+    flow.addEventListener("pointerleave", function () { if (!paused) play(); });
+    flow.addEventListener("focusin", function () { stop(); });
+    flow.addEventListener("focusout", function (e) { if (!paused && !flow.contains(e.relatedTarget)) play(); });
+    syncPP();
     flow.querySelectorAll(".fb").forEach(function (b) { b.addEventListener("click", function () { go(+b.getAttribute("data-d")); nudge(); }); });
     tiles.forEach(function (t, i) {
       t.addEventListener("click", function (e) { if (flow._moved) { e.preventDefault(); return; } if (i !== cur) { e.preventDefault(); cur = i; place(); nudge(); } });
@@ -86,23 +98,48 @@
     rev.forEach(function (e) { io.observe(e); });
   } else rev.forEach(function (e) { e.classList.add("in"); });
 
-  // Form: sunucu uç noktası yoksa WhatsApp'a düş
+  // Form: doğrula, durumu göster, sunucu yoksa WhatsApp'a düş
   var form = d.getElementById("lead"), status = d.getElementById("status");
+  var nameInput = form.querySelector('[name="name"]'), reachInput = form.querySelector('[name="reach"]');
+  var submitBtn = form.querySelector('button[type="submit"]');
+  var submitLabel = submitBtn.childNodes[0].nodeValue;
+  // E-posta ya da telefon: en az biri geçerli olsun (uluslararası biçimler dahil)
+  function reachOk(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) || /^\+?[\d\s().-]{7,}$/.test(v);
+  }
+  function setInvalid(el, bad, msg) {
+    if (bad) { el.setAttribute("aria-invalid", "true"); status.textContent = msg; }
+    else el.removeAttribute("aria-invalid");
+    return !bad;
+  }
+  // Kullanıcı düzeltirken hatayı temizle
+  [nameInput, reachInput].forEach(function (el) {
+    el.addEventListener("input", function () {
+      if (el.getAttribute("aria-invalid") === "true") { el.removeAttribute("aria-invalid"); status.textContent = ""; }
+    });
+  });
   form.addEventListener("submit", function (ev) {
     ev.preventDefault();
     var f = new FormData(form), c = cfg.c;
     var data = { name: (f.get("name") || "").trim(), reach: (f.get("reach") || "").trim(), type: f.get("type"), msg: (f.get("msg") || "").trim(), website: f.get("website") };
     status.textContent = "";
-    if (!data.name || !data.reach) { status.textContent = c.required; return; }
     if (data.website) return; // bal küpü
+    if (!data.name || !data.reach) { setInvalid(!data.name ? nameInput : reachInput, true, c.required); return; }
+    if (!setInvalid(reachInput, !reachOk(data.reach), c.invalidReach)) return;
     var text = c.waText + "\n" + data.name + " · " + data.reach + " · " + data.type + (data.msg ? "\n" + data.msg : "");
     var wa = "https://wa.me/" + cfg.waNum + "?text=" + encodeURIComponent(text);
+    submitBtn.disabled = true; submitBtn.setAttribute("aria-busy", "true");
+    status.textContent = c.sending;
     fetch("/form.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); status.textContent = c.ok; form.reset(); })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); status.textContent = c.ok; form.reset(); submitLabel = c.sent; })
       .catch(function () {
         status.textContent = c.fallback + " ";
         var a = d.createElement("a"); a.href = wa; a.target = "_blank"; a.rel = "noopener"; a.textContent = c.fallbackBtn;
         status.appendChild(a);
+      })
+      .then(function () {
+        submitBtn.disabled = false; submitBtn.removeAttribute("aria-busy");
+        submitBtn.childNodes[0].nodeValue = submitLabel;
       });
   });
 })();

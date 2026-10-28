@@ -1,5 +1,8 @@
 Options -Indexes
 
+# Markalı 404 (dist/404.html)
+ErrorDocument 404 /404.html
+
 # The hosting account has a Git deploy that mirrors the repository into this
 # directory on every push to main. The build output is what belongs here, so
 # refuse the repository's own paths even if the mirror recreates them.

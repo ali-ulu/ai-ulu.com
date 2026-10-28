@@ -9,6 +9,21 @@ const SENDER = 'form@ai-ulu.com';
 const LEAD_DIR = __DIR__ . '/leads';
 const MAX_PER_HOUR = 5;
 
+// mbstring her paylaşımlı hosting'de açık olmayabilir; yoksa fatal yerine
+// karakter-güvenli kırpma ve uzunluk için makul bir yedek kullan.
+if (!function_exists('mb_substr')) {
+    function mb_substr(string $s, int $start, ?int $length = null, ?string $enc = null): string {
+        $r = preg_split('//u', $s, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $slice = $length === null ? array_slice($r, $start) : array_slice($r, $start, $length);
+        return implode('', $slice);
+    }
+}
+if (!function_exists('mb_strlen')) {
+    function mb_strlen(string $s, ?string $enc = null): int {
+        return count(preg_split('//u', $s, -1, PREG_SPLIT_NO_EMPTY) ?: []);
+    }
+}
+
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 header('Cache-Control: no-store');
