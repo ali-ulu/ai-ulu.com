@@ -1,7 +1,7 @@
 // node build.mjs  ->  dist/ (EN: /, TR: /tr/) + robots, sitemap, llms.txt, favicon
 import { mkdirSync, writeFileSync, cpSync, readFileSync, rmSync } from "node:fs";
 import { execSync } from "node:child_process";
-import { SITE, T, panorama, gridIds } from "./content.mjs";
+import { SITE, T, PAGES, CONTACT, panorama, gridIds } from "./content.mjs";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const css = readFileSync(new URL("./style.css", import.meta.url), "utf8");
@@ -86,11 +86,17 @@ function jsonld(t, url) {
   }));
   const graph = [
     { "@type": "Organization", "@id": org, name: "ai-ulu", url: SITE.origin + "/", description: t.ld.orgDesc,
-      logo: { "@type": "ImageObject", url: logo }, image: logo, founder: { "@id": person }, sameAs },
+      logo: { "@type": "ImageObject", url: logo }, image: logo, founder: { "@id": person }, sameAs,
+      telephone: SITE.phone, email: SITE.email,
+      address: { "@type": "PostalAddress", addressCountry: SITE.country } },
     { "@type": "WebSite", "@id": `${SITE.origin}/#site`, url: SITE.origin + "/", name: "ai-ulu", inLanguage: ["en", "tr"], publisher: { "@id": org } },
     { "@type": "ProfessionalService", "@id": `${SITE.origin}/#service`, name: "ai-ulu", description: t.desc, url, parentOrganization: { "@id": org },
       serviceType: t.services.items.map(([h]) => h), hasOfferCatalog: { "@type": "OfferCatalog", name: t.pricing.h, itemListElement: offers },
-      areaServed: { "@type": "Place", name: "Worldwide" }, availableLanguage: ["English", "Turkish"] },
+      areaServed: { "@type": "Place", name: "Worldwide" }, availableLanguage: ["English", "Turkish"],
+      telephone: SITE.phone, email: SITE.email,
+      address: { "@type": "PostalAddress", addressCountry: SITE.country },
+      contactPoint: { "@type": "ContactPoint", contactType: "sales", telephone: SITE.phone, email: SITE.email,
+        availableLanguage: ["English", "Turkish"], url: `${SITE.origin}/contact/` } },
     { "@type": "Person", "@id": person, name: "Ali Ulu", jobTitle: "Founder", worksFor: { "@id": org }, url: SITE.origin + "/", sameAs },
     { "@type": "WebPage", "@id": `${url}#page`, url, name: t.title, description: t.desc, inLanguage: t.htmlLang,
       isPartOf: { "@id": `${SITE.origin}/#site` }, about: { "@id": `${SITE.origin}/#service` }, primaryImageOfPage: { "@type": "ImageObject", url: logo },
@@ -126,6 +132,7 @@ function page(t) {
 <meta name="twitter:image" content="${SITE.origin}/assets/og-cover.png">
 <meta name="theme-color" content="#090401">
 <link rel="icon" href="${p}favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="text/markdown" href="${url}index.md" title="Markdown">
 <link rel="preload" href="${p}assets/fonts/instrument-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="${p}assets/fonts/cormorant-garamond-300-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script>try{var s=localStorage.getItem("theme");if(s)document.documentElement.setAttribute("data-theme",s)}catch(e){}document.documentElement.classList.add("js")</script>
 <style>${fontCss}${css}</style>
@@ -165,6 +172,7 @@ ${hero(t, p)}
 
 <section id="contact" class="sec wrap" aria-labelledby="hc"><div class="cta-card glass"><div class="cta-glow" aria-hidden="true"></div>
   <div class="contact-copy">${eyebrow(t.contact.eyebrow)}<h2 id="hc">${t.contact.h}</h2><p class="lead">${esc(t.contact.sub)}</p>
+    <p class="direct"><a href="mailto:${SITE.email}">${SITE.email}</a><a href="tel:${SITE.phone}">${esc(t.telLabel)} ${SITE.phone}</a></p>
     <p class="or">${esc(t.contact.or)}</p><a class="btn ghost" href="${waLink(t.contact.waText)}" target="_blank" rel="noopener" data-cta="contact-whatsapp">${esc(t.contact.waCta)}${arrow}</a></div>
   <form id="lead" class="form" novalidate>
     <label>${esc(t.contact.name)}<input name="name" autocomplete="name" required></label>
@@ -176,8 +184,9 @@ ${hero(t, p)}
     <p class="status" id="status" role="status" aria-live="polite"></p>
   </form></div></section>
 </main>
-<footer class="foot wrap"><p>${esc(t.footer.rights)}</p><p>${esc(t.footer.tag)}</p>
-  <p class="links"><a href="${SITE.github}" rel="noopener">GitHub</a>${SITE.linkedin ? ` · <a href="${SITE.linkedin}" rel="noopener">LinkedIn</a>` : ""} · <a href="${waLink(t.contact.waText)}" rel="noopener">WhatsApp</a></p></footer>
+<footer class="foot wrap"><nav class="foot-nav" aria-label="${esc(t.footer.tag)}">${t.pagesNav.map(([k, l]) => `<a href="${relUrl(t.lang, k)}">${esc(l)}</a>`).join("")}</nav>
+  <p>${esc(t.footer.rights)}</p><p>${esc(t.footer.tag)}</p>
+  <p class="links"><a href="mailto:${SITE.email}">${SITE.email}</a> · <a href="tel:${SITE.phone}">${esc(t.telLabel)} ${SITE.phone}</a> · <a href="${SITE.github}" rel="noopener">GitHub</a>${SITE.linkedin ? ` · <a href="${SITE.linkedin}" rel="noopener">LinkedIn</a>` : ""} · <a href="${waLink(t.contact.waText)}" rel="noopener">WhatsApp</a></p></footer>
 <a class="wa-float" href="${waLink(t.contact.waText)}" target="_blank" rel="noopener" aria-label="WhatsApp" data-cta="float-whatsapp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/></svg></a>
 <script>window.__CFG=${JSON.stringify(cfg).replace(/</g, "\\u003c")}</script>
 <script>${js}</script>${analytics}
@@ -286,10 +295,159 @@ a.b{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(1
 <a class="b" href="${SITE.origin}/">Back to ai-ulu →</a></div></body></html>`;
 }
 
+// ---- Yardımcılar: dil bazlı URL ve slug ----
+const base = (lang) => (lang === "en" ? "" : "/tr/");
+const pagePath = (lang, slug) => `${base(lang)}${slug}/`;
+const absUrl = (lang, slug) => `${SITE.origin}/${base(lang).replace(/^\//, "")}${slug}/`;
+// Dört içerik sayfası + iletişim: slug EN/TR'de yerelleşir.
+const DOCS = [
+  ["about", PAGES.about.slug, PAGES.about.slugTr],
+  ["contact", CONTACT.slug, CONTACT.slugTr],
+  ["terms", PAGES.terms.slug, PAGES.terms.slugTr],
+  ["privacy", PAGES.privacy.slug, PAGES.privacy.slugTr],
+];
+const slugOf = (key, lang) => { const d = DOCS.find((x) => x[0] === key); return lang === "en" ? d[1] : d[2]; };
+// Sayfa derinliginden bagimsiz, kok-mutlak yol (ic sayfalar /slug/ derinliginde durur).
+const relUrl = (lang, key) => `/${lang === "en" ? "" : "tr/"}${slugOf(key, lang)}/`;
+
+// Markdown karşılığı: aynı URL + ".md". Ajanlar text/markdown istediğinde sunulur.
+const mdLink = (lang, key, label) => `[${label}](${absUrl(lang, slugOf(key, lang))})`;
+
+// İçerik sayfalarının ortak <head> parçaları (canonical, hreflang, og, JSON-LD).
+function docHead(t, lang, key, slug, title, desc, ldNodes) {
+  const url = absUrl(lang, slug);
+  const otherSlug = slugOf(key, lang === "en" ? "tr" : "en");
+  const otherUrl = `${SITE.origin}/${lang === "en" ? "tr/" : ""}${otherSlug}/`;
+  const graph = [
+    { "@type": "Organization", "@id": `${SITE.origin}/#org` },
+    { "@type": "WebSite", "@id": `${SITE.origin}/#site` },
+    ...ldNodes,
+    { "@type": "BreadcrumbList", "@id": `${url}#breadcrumb`, itemListElement: [
+      { "@type": "ListItem", position: 1, name: "ai-ulu", item: SITE.origin + "/" },
+      { "@type": "ListItem", position: 2, name: title, item: url },
+    ] },
+  ];
+  return `<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}">
+<link rel="canonical" href="${url}">
+<link rel="alternate" hreflang="${lang}" href="${url}"><link rel="alternate" hreflang="${lang === "en" ? "tr" : "en"}" href="${otherUrl}"><link rel="alternate" hreflang="x-default" href="${lang === "en" ? url : SITE.origin + "/"}">
+<meta property="og:type" content="website"><meta property="og:site_name" content="ai-ulu">
+<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${url}"><meta property="og:locale" content="${lang === "en" ? "en_US" : "tr_TR"}">
+<meta property="og:image" content="${SITE.origin}/assets/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#090401">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="text/markdown" href="${url}index.md" title="Markdown">
+<link rel="preload" href="/assets/fonts/instrument-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/cormorant-garamond-300-latin.woff2" as="font" type="font/woff2" crossorigin>
+<script>try{var s=localStorage.getItem("theme");if(s)document.documentElement.setAttribute("data-theme",s)}catch(e){}document.documentElement.classList.add("js")</script>
+<style>${fontCss}${css}</style>
+<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")}</script>`;
+}
+
+// Basit belge kabuğu: nav + footer + içerik.
+function docShell(t, lang, headHtml, bodyHtml) {
+  const p = lang === "en" ? "" : "../";
+  return `<!doctype html>
+<html lang="${t.htmlLang}" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+${headHtml}
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+<a class="skip" href="#main">${esc(t.skip)}</a>
+${nav(t)}
+<main id="main"><div class="wrap doc">${bodyHtml}</div></main>
+<footer class="foot wrap"><nav class="foot-nav" aria-label="${esc(t.footer.tag)}">${t.pagesNav.map(([k, l]) => `<a href="${relUrl(t.lang, k)}">${esc(l)}</a>`).join("")}</nav>
+  <p>${esc(t.footer.rights)}</p><p>${esc(t.footer.tag)}</p>
+  <p class="links"><a href="mailto:${SITE.email}">${SITE.email}</a> · <a href="tel:${SITE.phone}">${esc(t.telLabel)} ${SITE.phone}</a> · <a href="${SITE.github}" rel="noopener">GitHub</a>${SITE.linkedin ? ` · <a href="${SITE.linkedin}" rel="noopener">LinkedIn</a>` : ""} · <a href="${waLink(t.contact.waText)}" rel="noopener">WhatsApp</a></p></footer>
+<a class="wa-float" href="${waLink(t.contact.waText)}" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.4.2-.1.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/></svg></a>
+<script>window.__CFG=${JSON.stringify({ waNum: SITE.whatsapp, c: t.contact }).replace(/</g, "\\u003c")}</script>
+<script>${js}</script>${analytics}
+</body>
+</html>`;
+}
+
+// İçerik sayfası gövdesi: H1 + lead + bölümler.
+function docBody(title, lead, sections) {
+  const secs = sections.map(([h, items]) =>
+    `<section><h2>${esc(h)}</h2><ul>${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></section>`
+  ).join("");
+  return `<h1>${title}</h1><p class="lead">${esc(lead)}</p>${secs}`;
+}
+
+// Markdown karşılığı (aynı URL + ".md") — ajanlar için token-ucuz sürüm.
+function docMarkdown(lang, key, title, lead, sections) {
+  const t = T[lang];
+  const other = lang === "en" ? "tr" : "en";
+  const head = `# ${title.replace(/<[^>]+>/g, "")}\n\n> ${lead}\n\n`;
+  const body = sections.map(([h, items]) => `## ${h}\n${items.map((i) => `- ${i}`).join("\n")}`).join("\n\n");
+  const contact = `## Contact\n- Email: ${SITE.email}\n- Phone: ${SITE.phone}\n- WhatsApp: https://wa.me/${SITE.whatsapp}\n- Contact page: ${absUrl(lang, slugOf("contact", lang))}`;
+  const foot = `\n\n---\nCanonical: ${absUrl(lang, slugOf(key, lang))}\nLanguage: ${lang} (${other}: ${absUrl(other, slugOf(key, other))})\n`;
+  return head + body + (key === "contact" ? "" : "\n\n" + contact) + foot;
+}
+
 rmSync(new URL("./dist", import.meta.url), { recursive: true, force: true });
 mkdirSync(new URL("./dist/tr", import.meta.url), { recursive: true });
 writeFileSync(new URL("./dist/index.html", import.meta.url), page(T.en));
 writeFileSync(new URL("./dist/tr/index.html", import.meta.url), page(T.tr));
+
+// ---- İçerik sayfaları (about/contact/terms/privacy) + Markdown karşılıkları ----
+for (const lang of ["en", "tr"]) {
+  const t = T[lang];
+  // about / terms / privacy: PAGES'tan
+  for (const key of ["about", "terms", "privacy"]) {
+    const pg = PAGES[key], c = pg[lang], slug = slugOf(key, lang);
+    const ldNodes = [
+      { "@type": "AboutPage", "@id": `${absUrl(lang, slug)}#page`, url: absUrl(lang, slug), name: c.title,
+        description: c.desc, inLanguage: t.htmlLang, isPartOf: { "@id": `${SITE.origin}/#site` },
+        about: { "@id": `${SITE.origin}/#service` }, publisher: { "@id": `${SITE.origin}/#org` } },
+    ];
+    const html = docShell(t, lang, docHead(t, lang, key, slug, c.title, c.desc, ldNodes),
+      docBody(c.h1, c.lead, c.sections));
+    const dir = lang === "en" ? `./dist/${slug}` : `./dist/tr/${slug}`;
+    mkdirSync(new URL(dir, import.meta.url), { recursive: true });
+    writeFileSync(new URL(`${dir}/index.html`, import.meta.url), html);
+    writeFileSync(new URL(`${dir}/index.md`, import.meta.url), docMarkdown(lang, key, c.title, c.lead, c.sections));
+  }
+  // contact: CONTACT'tan, iletişim bilgileriyle
+  {
+    const key = "contact", c = CONTACT[lang], slug = slugOf(key, lang);
+    const ldNodes = [
+      { "@type": "ContactPage", "@id": `${absUrl(lang, slug)}#page`, url: absUrl(lang, slug), name: c.title,
+        description: c.desc, inLanguage: t.htmlLang, isPartOf: { "@id": `${SITE.origin}/#site` },
+        about: { "@id": `${SITE.origin}/#service` }, publisher: { "@id": `${SITE.origin}/#org` } },
+    ];
+    const rows = [
+      [c.emailLabel, `<a href="mailto:${SITE.email}">${SITE.email}</a>`],
+      [c.phoneLabel, `<a href="tel:${SITE.phone}">${SITE.phone}</a>`],
+      [c.waLabel, `<a href="${waLink(t.contact.waText)}" rel="noopener">+${SITE.whatsapp}</a>`],
+      [c.formLabel, `<a href="${base(lang)}#contact">${esc(c.formLabel)}</a>`],
+    ];
+    const body = `<h1>${c.h1}</h1><p class="lead">${esc(c.lead)}</p>
+<section><h2>${esc(c.h1)}</h2><ul class="contact-list">${rows.map(([label, val]) =>
+      `<li><b>${esc(label)}</b>${val}</li>`).join("")}</ul></section>`;
+    const md = `# ${c.title}\n\n> ${c.lead}\n\n## Contact\n- ${c.emailLabel}: ${SITE.email}\n- ${c.phoneLabel}: ${SITE.phone}\n- ${c.waLabel}: https://wa.me/${SITE.whatsapp}\n- ${c.formLabel}: ${SITE.origin}${base(lang)}#contact\n\n---\nCanonical: ${absUrl(lang, slug)}\n`;
+    const html = docShell(t, lang, docHead(t, lang, key, slug, c.title, c.desc, ldNodes), body);
+    const dir = lang === "en" ? `./dist/${slug}` : `./dist/tr/${slug}`;
+    mkdirSync(new URL(dir, import.meta.url), { recursive: true });
+    writeFileSync(new URL(`${dir}/index.html`, import.meta.url), html);
+    writeFileSync(new URL(`${dir}/index.md`, import.meta.url), md);
+  }
+}
+
+// ---- Ana sayfa Markdown karşılığı (aynı URL + ".md") ----
+function homeMarkdown(lang) {
+  const t = T[lang], other = lang === "en" ? "tr" : "en";
+  const otherUrl = SITE.origin + (other === "tr" ? "/tr/" : "/");
+  const homeUrl = SITE.origin + (lang === "tr" ? "/tr/" : "/");
+  const L = (key) => mdLink(lang, key, (t.pagesNav.find((x) => x[0] === key) || [, key])[1]);
+  return `# ai-ulu\n\n> ${t.desc}\n\n## Services\n${t.services.items.map(([h, b]) => `- ${h}: ${b}`).join("\n")}\n\n## Pricing\n${t.pricing.packs.map(([h, items]) => `- ${h}: ${items.join(", ")}`).join("\n")}\n\n## Process\n${t.process.steps.map(([h, b], i) => `${i + 1}. ${h} — ${b}`).join("\n")}\n\n## FAQ\n${t.faq.items.map(([q, a]) => `- ${q} ${a}`).join("\n")}\n\n## Pages\n- ${L("about")}\n- ${L("contact")}\n- ${L("terms")}\n- ${L("privacy")}\n- [Templates](${SITE.origin}/templates/)\n\n## Contact\n- Email: ${SITE.email}\n- Phone: ${SITE.phone}\n- WhatsApp: https://wa.me/${SITE.whatsapp}\n- Contact page: ${absUrl(lang, slugOf("contact", lang))}\n\n## Meta\n- llms.txt: ${SITE.origin}/llms.txt\n- Sitemap: ${SITE.origin}/sitemap.xml\n\n---\nCanonical: ${homeUrl}\nLanguage: ${lang} (${other}: ${otherUrl})\n`;
+}
+writeFileSync(new URL("./dist/index.md", import.meta.url), homeMarkdown("en"));
+writeFileSync(new URL("./dist/tr/index.md", import.meta.url), homeMarkdown("tr"));
 cpSync(new URL("./assets", import.meta.url), new URL("./dist/assets", import.meta.url), { recursive: true });
 cpSync(new URL("./templates", import.meta.url), new URL("./dist/templates", import.meta.url), { recursive: true });
 
@@ -306,12 +464,24 @@ writeFileSync(new URL("./dist/tr/favicon.svg", import.meta.url), fav);
 // AI tarayıcıları açıkça karşılanır; llms.txt ve sitemap işaret edilir.
 const AI_BOTS = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-Web", "anthropic-ai",
   "PerplexityBot", "Google-Extended", "Applebot-Extended", "CCBot", "cohere-ai", "Bytespider", "Amazonbot", "meta-externalagent"];
+// Content Signals (Cloudflare policy): icerigin arama icin kullanilabilir,
+// AI egitimi icin degil; kullanici istegiyle AI girdisi serbest.
+const CONTENT_SIGNAL = "ai-train=no, search=yes, ai-input=yes";
 writeFileSync(new URL("./dist/robots.txt", import.meta.url),
-  `User-agent: *\nAllow: /\n\n# AI crawlers are welcome\n${AI_BOTS.map((b) => `User-agent: ${b}\nAllow: /`).join("\n")}\n\nSitemap: ${SITE.origin}/sitemap.xml\n# Structured summary for AI assistants:\n# ${SITE.origin}/llms.txt\n`);
+  `# Content Signals: how this site's content may be used.\n# search = indexing and search results; ai-train = training AI models;\n# ai-input = using content as input to a live AI answer at the user's request.\nContent-Signal: ${CONTENT_SIGNAL}\n\nUser-agent: *\nAllow: /\n\n# AI crawlers are welcome\n${AI_BOTS.map((b) => `User-agent: ${b}\nAllow: /`).join("\n")}\n\nSitemap: ${SITE.origin}/sitemap.xml\n# Structured summary for AI assistants:\n# ${SITE.origin}/llms.txt\n`);
 const alt = (l, u) => `<xhtml:link rel="alternate" hreflang="${l}" href="${u}"/>`;
+const docAlts = (key) => [["en", "/" + slugOf(key, "en") + "/"], ["tr", "/tr/" + slugOf(key, "tr") + "/"], ["x-default", "/" + slugOf(key, "en") + "/"]];
 const sitemapUrls = [
   { loc: "/", alts: [["en", "/"], ["tr", "/tr/"], ["x-default", "/"]], pri: "1.0" },
   { loc: "/tr/", alts: [["en", "/"], ["tr", "/tr/"], ["x-default", "/"]], pri: "0.9" },
+  { loc: "/" + slugOf("about", "en") + "/", alts: docAlts("about"), pri: "0.7" },
+  { loc: "/tr/" + slugOf("about", "tr") + "/", alts: docAlts("about"), pri: "0.6" },
+  { loc: "/" + slugOf("contact", "en") + "/", alts: docAlts("contact"), pri: "0.8" },
+  { loc: "/tr/" + slugOf("contact", "tr") + "/", alts: docAlts("contact"), pri: "0.7" },
+  { loc: "/" + slugOf("terms", "en") + "/", alts: docAlts("terms"), pri: "0.4" },
+  { loc: "/tr/" + slugOf("terms", "tr") + "/", alts: docAlts("terms"), pri: "0.4" },
+  { loc: "/" + slugOf("privacy", "en") + "/", alts: docAlts("privacy"), pri: "0.4" },
+  { loc: "/tr/" + slugOf("privacy", "tr") + "/", alts: docAlts("privacy"), pri: "0.4" },
   { loc: "/templates/", pri: "0.7" },
   ...TEMPLATES.map(([slug]) => ({ loc: `/templates/${slug}/`, pri: "0.6" })),
 ];
@@ -328,11 +498,23 @@ const sitemapBody = sitemapUrls.map(({ loc, alts, pri }) =>
 writeFileSync(new URL("./dist/sitemap.xml", import.meta.url), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${sitemapBody}\n</urlset>\n`);
 // llms.txt — AI asistanlarının siteyi doğru okuması için yapılandırılmış özet.
 // Tüm ifadeler görünür sayfa içeriğiyle birebir tutarlıdır; yeni iddia eklenmez.
+// llms.txt — ajanlar için yapılandırılmış özet (llmstxt.org v2 formatı:
+// "# " başlık, "> " özet, ardından markdown link listeleri). Tüm ifadeler
+// görünür sayfa içeriğiyle birebir tutarlıdır; yeni iddia/rakam eklenmez.
 const llmsTxt = `# ai-ulu
 
 > ai-ulu designs, builds and launches cinematic websites and custom web apps, and supports them
 > after launch. It works in English and Turkish, and takes clients worldwide. One team, from the
 > first call to live. Free intro call, written quote within 24 hours.
+
+## Pages
+- [Home](${SITE.origin}/): services, work, pricing and the contact form.
+- [About](${absUrl("en", slugOf("about", "en"))}): who ai-ulu is and how it works.
+- [Contact](${absUrl("en", slugOf("contact", "en"))}): email, phone and WhatsApp.
+- [Terms of Service](${absUrl("en", slugOf("terms", "en"))}): the terms for client work.
+- [Privacy](${absUrl("en", slugOf("privacy", "en"))}): what is collected and why.
+- [Templates](${SITE.origin}/templates/): five starter sites, each rebuilt around the client's brand.
+- [Türkçe](${SITE.origin}/tr/): the Turkish version of this site.
 
 ## Services
 - Websites: art-directed brand and marketing sites. Fast, searchable, built to convert.
@@ -366,13 +548,34 @@ const llmsTxt = `# ai-ulu
 - Which languages? English and Turkish, for the site and for communication.
 
 ## Contact
-- Website: ${SITE.origin}/
-- Turkish: ${SITE.origin}/tr/
-- WhatsApp: +90 507 958 16 42
-- Contact form: ${SITE.origin}/#contact
+- Email: ${SITE.email}
+- Phone: ${SITE.phone}
+- WhatsApp: https://wa.me/${SITE.whatsapp}
+- Contact page: ${absUrl("en", slugOf("contact", "en"))}
 - GitHub: ${SITE.github}
+
+## Machine-readable
+- Markdown: append \`.md\` to any page URL (e.g. ${SITE.origin}/about/index.md, ${SITE.origin}/index.md).
+- Sitemap: ${SITE.origin}/sitemap.xml
+- MCP Server Card: ${SITE.origin}/.well-known/mcp/server-card.json
 `;
 writeFileSync(new URL("./dist/llms.txt", import.meta.url), llmsTxt);
+
+// ---- MCP Server Card (SEP-2127 / ext-server-card) ----
+// Zorunlu alanlar: $schema, name, version, description. `remotes` yalnizca gercek bir
+// HTTP MCP endpoint varsa verilir; ai-ulu'da yok, bu yuzden eklenmez (uydurma endpoint yok).
+// `capabilities` alani bu semada YOK; statik kart yetenek iddia etmez.
+const serverCard = {
+  "$schema": "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json",
+  name: "com.ai-ulu/website",
+  version: "1.0.0",
+  title: "ai-ulu",
+  description: "ai-ulu designs, builds and launches cinematic websites and custom web apps. This card describes the public website; it exposes no MCP tools or remote endpoint.",
+  websiteUrl: SITE.origin + "/",
+  repository: { source: "github", url: SITE.github },
+};
+mkdirSync(new URL("./dist/.well-known/mcp", import.meta.url), { recursive: true });
+writeFileSync(new URL("./dist/.well-known/mcp/server-card.json", import.meta.url), JSON.stringify(serverCard, null, 2) + "\n");
 
 // Host-only files: the PHP form handler and the Apache rules. They ship inside
 // dist/ so a plain upload of dist/ is the whole deploy.
