@@ -12,6 +12,10 @@ RedirectMatch 404 ^/(\.git|\.github)(/|$)
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+  # HSTS: once seen, browsers refuse plain HTTP for max-age. Kept short (1 day) so a
+  # certificate lapse is recoverable within a day. Raise to 31536000 once stable.
+  # No includeSubDomains/preload: neither is safe to promise before they are proven.
+  Header always set Strict-Transport-Security "max-age=86400"
 </IfModule>
 
 # Never serve dotfiles
