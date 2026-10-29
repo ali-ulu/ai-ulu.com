@@ -6,3 +6,6 @@ shipcraft/hosting/leads/rl-*.txt
 # İç raporlar (strateji, rakip araştırması) private `ai-ulu-raporlar` reposunda tutulur;
 # public site reposuna sızmasın.
 docs/
+
+# Yerel branch yedegi (public repoya girmesin)
+.git-archive/
