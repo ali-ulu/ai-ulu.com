@@ -6,6 +6,7 @@ import { SITE, T, panorama, gridIds } from "./content.mjs";
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const css = readFileSync(new URL("./style.css", import.meta.url), "utf8");
 const js = readFileSync(new URL("./app.js", import.meta.url), "utf8");
+const fontCss = readFileSync(new URL("./fonts.css", import.meta.url), "utf8");
 const waLink = (t) => `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(t)}`;
 const arrow = `<span class="ic"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
 const eyebrow = (s) => `<span class="pill eyebrow"><i></i>${esc(s)}<i></i></span>`;
@@ -125,10 +126,9 @@ function page(t) {
 <meta name="twitter:image" content="${SITE.origin}/assets/og-cover.png">
 <meta name="theme-color" content="#090401">
 <link rel="icon" href="${p}favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<link rel="preload" href="${p}assets/fonts/instrument-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="${p}assets/fonts/cormorant-garamond-300-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script>try{var s=localStorage.getItem("theme");if(s)document.documentElement.setAttribute("data-theme",s)}catch(e){}document.documentElement.classList.add("js")</script>
-<style>${css}</style>
+<style>${fontCss}${css}</style>
 <script type="application/ld+json">${jsonld(t, url)}</script>
 </head>
 <body>
@@ -273,8 +273,8 @@ function notFound() {
 <title>Page not found — ai-ulu</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#090401">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Instrument+Sans:wght@400;500&display=swap">
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#070302;color:#fff6ee;font:400 17px/1.6 "Instrument Sans",system-ui,sans-serif;text-align:center;padding:24px}
+<link rel="preload" href="/assets/fonts/instrument-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/cormorant-garamond-300-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>${fontCss}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#070302;color:#fff6ee;font:400 17px/1.6 "Instrument Sans",system-ui,sans-serif;text-align:center;padding:24px}
 .aur{position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 50% at 70% 20%,#ff5f1299,transparent 70%),radial-gradient(50% 50% at 10% 90%,#ffb23d44,transparent 70%)}
 h1{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(80px,18vw,180px);line-height:.9;margin:0;color:#ff8a3d}
 h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:300;font-size:clamp(28px,4vw,44px);line-height:1.05;margin:12px 0 18px}

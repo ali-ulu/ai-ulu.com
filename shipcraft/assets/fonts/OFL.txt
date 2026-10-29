@@ -1,0 +1,9 @@
+Fonts in this directory are self-hosted copies of open-source fonts,
+redistributed under the SIL Open Font License 1.1 (OFL-1.1).
+
+  Cormorant Garamond  (c) Christian Thalmann / Catharsis Fonts
+  Instrument Sans     (c) Instrument / Rodrigo Fuenzalida
+  DM Mono             (c) Colophon Foundry / Google
+
+Only the `latin` and `latin-ext` subsets and the weights actually used by the
+site are included. Full license text: https://scripts.sil.org/OFL
