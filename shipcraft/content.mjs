@@ -2,6 +2,13 @@
 export const SITE = {
   origin: "https://ai-ulu.com",
   whatsapp: "905079581642",
+  // Telefon, WhatsApp ile aynı numaradır (uydurma değil). Yapısal veri ve tel: linki buradan beslenir.
+  phone: "+905079581642",
+  // Form gönderimlerinin düştüğü gerçek kutu (hosting/form.php INBOX ile aynı).
+  email: "aliulu@ai-ulu.com",
+  // Ülke, telefon kodundan (+90) doğrulanabilir. Tam posta adresi (sokak/şehir) gerçek
+  // olarak bilinmediği için UYDURULMAZ; yalnızca ülke düzeyi verilir.
+  country: "TR",
   github: "https://github.com/ali-ulu",
   linkedin: "", // Ali'den bekleniyor; boşsa footer'da gösterilmez
   // Analitik: çerezsiz, KVKK dostu. Cloudflare Web Analytics token'ı buraya yazılınca
@@ -22,6 +29,183 @@ export const panorama = [
   { id: "fitness", img: "tpl-fitness.webp", name: "Pulse Studio", kind: "template", url: "templates/fitness/" },
 ];
 export const gridIds = ["attalia", "clinic", "hydrelon", "restaurant", "hercules", "law"];
+
+// Ayrı sayfalar: ajanların "gerçek bir işletme mi" kararını verebilmesi için.
+// Tüm ifadeler görünür sitedeki mevcut iddialarla tutarlıdır; yeni rakam/taahhüt eklenmez.
+export const PAGES = {
+  about: {
+    slug: "about", slugTr: "hakkinda",
+    en: {
+      title: "About ai-ulu — a studio that designs, builds and launches",
+      desc: "ai-ulu is a small design and engineering studio building cinematic websites and custom web apps in English and Turkish, for clients worldwide.",
+      h1: "A studio that builds websites and apps <em>that win clients</em>",
+      lead: "ai-ulu is a small design and engineering team. It designs, builds and launches cinematic websites and custom web apps, then stays on after launch for fixes and changes.",
+      ldDesc: "A small design and engineering studio building websites and web apps.",
+      sections: [
+        ["How we work", [
+          "Projects start with a free 30-minute intro call about the goal, the audience and the timeline. You get a written quote within 24 hours.",
+          "Work happens in the open, with a clickable live preview you can use while the site is being built. One team carries the project from the first call to going live, so nothing is lost between sales and delivery.",
+          "At launch, design, code and content are handed over. The client owns everything.",
+        ]],
+        ["What we build", [
+          "Websites: art-directed brand and marketing sites, engineered for speed, search and conversion.",
+          "Apps: custom web apps and internal tools such as dashboards, portals and automations.",
+          "Site + App: one design system across both, so a whole company feels like one product.",
+          "Post-launch support: fixes, changes and ongoing maintenance.",
+        ]],
+        ["Languages and reach", [
+          "The studio works in English and Turkish, for both the site and communication, and takes clients worldwide.",
+        ]],
+      ],
+    },
+    tr: {
+      title: "ai-ulu hakkında — tasarlayan, geliştiren ve yayına alan stüdyo",
+      desc: "ai-ulu, İngilizce ve Türkçe sinematik web siteleri ve özel uygulamalar geliştiren küçük bir tasarım ve mühendislik stüdyosudur; dünya çapında müşterilerle çalışır.",
+      h1: "Müşteri kazandıran web siteleri ve uygulamalar <em>geliştiren stüdyo</em>",
+      lead: "ai-ulu küçük bir tasarım ve mühendislik ekibidir. Sinematik web siteleri ve özel uygulamalar tasarlar, geliştirir, yayına alır ve yayından sonra da düzeltme ve değişiklikler için yanınızda kalır.",
+      ldDesc: "Web siteleri ve uygulamalar geliştiren küçük bir tasarım ve mühendislik stüdyosu.",
+      sections: [
+        ["Nasıl çalışıyoruz", [
+          "Projeler, hedef, kitle ve takvim üzerine ücretsiz 30 dakikalık bir ön görüşmeyle başlar. 24 saat içinde yazılı teklif alırsınız.",
+          "İş açıkta yürür: site kurulurken tıklanabilir canlı bir önizlemeyi kullanabilirsiniz. Projeyi ilk görüşmeden yayına tek ekip taşır; satış ve teslim arasında hiçbir şey kaybolmaz.",
+          "Yayında tasarım, kod ve içerik teslim edilir. Her şey müşteriye aittir.",
+        ]],
+        ["Neler yapıyoruz", [
+          "Web siteleri: hız, arama ve dönüşüm için kurulmuş, sanat yönetimli marka ve tanıtım siteleri.",
+          "Uygulamalar: paneller, portallar ve otomasyonlar gibi özel web uygulamaları ve iç araçlar.",
+          "Site + Uygulama: ikisinde tek tasarım sistemi; tüm şirket tek ürünmüş gibi hissettirir.",
+          "Yayın sonrası destek: düzeltmeler, değişiklikler ve sürekli bakım.",
+        ]],
+        ["Diller ve kapsam", [
+          "Stüdyo hem site hem iletişim için İngilizce ve Türkçe çalışır ve dünya çapında müşteri kabul eder.",
+        ]],
+      ],
+    },
+  },
+  terms: {
+    slug: "terms", slugTr: "sartlar",
+    en: {
+      title: "Terms of Service — ai-ulu",
+      desc: "The terms that apply to design and development work ai-ulu does for clients.",
+      h1: "Terms of Service",
+      lead: "These terms apply to design and development work ai-ulu does for clients. Each project's specific scope, timeline and price are agreed in the written quote.",
+      sections: [
+        ["Scope", [
+          "Every project is scoped individually and confirmed in a written quote before work starts. Anything not listed in the quote is out of scope.",
+          "Work is delivered in stages. Changes agreed after a stage is signed off may affect the timeline and the price.",
+        ]],
+        ["Payment", [
+          "Prices are set out in the written quote. Payment schedule and currency are stated there.",
+        ]],
+        ["Ownership", [
+          "On full payment at launch, the client owns the delivered design, code and content.",
+          "ai-ulu may show the finished work in its own portfolio unless the client asks otherwise in writing.",
+        ]],
+        ["Support", [
+          "Each package includes launch and post-launch support. The length and the extent are stated in the quote. Ongoing maintenance is available separately.",
+        ]],
+        ["Liability", [
+          "ai-ulu provides the agreed services with reasonable skill and care. It is not liable for indirect losses, or for content, data or third-party services supplied by the client.",
+        ]],
+        ["Contact", [
+          "Questions about these terms go to the contact details on the contact page.",
+        ]],
+      ],
+    },
+    tr: {
+      title: "Hizmet Şartları — ai-ulu",
+      desc: "ai-ulu'nun müşteriler için yaptığı tasarım ve geliştirme işlerine uygulanan şartlar.",
+      h1: "Hizmet Şartları",
+      lead: "Bu şartlar, ai-ulu'nun müşteriler için yaptığı tasarım ve geliştirme işlerine uygulanır. Her projenin kapsamı, takvimi ve fiyatı yazılı teklifte kararlaştırılır.",
+      sections: [
+        ["Kapsam", [
+          "Her proje kendi kapsamıyla fiyatlanır ve işe başlamadan önce yazılı teklifle onaylanır. Teklifte yer almayan her şey kapsam dışıdır.",
+          "İş aşamalar hâlinde teslim edilir. Bir aşama onaylandıktan sonra kararlaştırılan değişiklikler takvimi ve fiyatı etkileyebilir.",
+        ]],
+        ["Ödeme", [
+          "Fiyatlar yazılı teklifte belirtilir. Ödeme planı ve para birimi de orada yer alır.",
+        ]],
+        ["Sahiplik", [
+          "Yayında tam ödemeyle birlikte teslim edilen tasarım, kod ve içerik müşteriye ait olur.",
+          "ai-ulu, müşteri yazılı olarak aksini istemedikçe tamamlanan işi kendi portföyünde gösterebilir.",
+        ]],
+        ["Destek", [
+          "Her paket yayın ve yayın sonrası destek içerir. Süre ve kapsam teklifte belirtilir. Sürekli bakım ayrıca alınabilir.",
+        ]],
+        ["Sorumluluk", [
+          "ai-ulu, kararlaştırılan hizmetleri makul beceri ve özenle sunar. Dolaylı kayıplardan ya da müşterinin sağladığı içerik, veri veya üçüncü taraf hizmetlerden sorumlu değildir.",
+        ]],
+        ["İletişim", [
+          "Bu şartlarla ilgili sorular için iletişim sayfasındaki bilgileri kullanın.",
+        ]],
+      ],
+    },
+  },
+  privacy: {
+    slug: "privacy", slugTr: "gizlilik",
+    en: {
+      title: "Privacy — ai-ulu",
+      desc: "What ai-ulu collects, why, and how to have it removed. No tracking cookies, no third-party advertising.",
+      h1: "Privacy",
+      lead: "ai-ulu keeps data collection to a minimum. There are no tracking cookies and no advertising trackers.",
+      sections: [
+        ["What we collect", [
+          "If you send the contact form, we receive the name, contact detail (email or phone), project type and message you enter. We use them only to reply to you.",
+          "The site stores one preference in your browser's local storage: your light or dark theme choice. It never leaves your device.",
+        ]],
+        ["Analytics", [
+          "The site is built to use cookieless, privacy-friendly analytics. It is currently switched off, so no analytics data is collected at all.",
+        ]],
+        ["Storage and sharing", [
+          "Form messages are stored on the hosting server and emailed to ai-ulu's inbox. They are not sold or shared with third parties.",
+        ]],
+        ["Your rights", [
+          "You can ask what we hold about you, or ask us to delete it, by emailing the address on the contact page. We will act on a request within a reasonable time.",
+        ]],
+      ],
+    },
+    tr: {
+      title: "Gizlilik — ai-ulu",
+      desc: "ai-ulu'nun neleri, neden topladığı ve nasıl sildirebileceğiniz. Takip çerezi yok, üçüncü taraf reklam yok.",
+      h1: "Gizlilik",
+      lead: "ai-ulu veri toplamayı en aza indirir. Takip çerezi ve reklam izleyicisi yoktur.",
+      sections: [
+        ["Neleri topluyoruz", [
+          "İletişim formunu gönderirseniz girdiğiniz ad, iletişim bilgisi (e-posta ya da telefon), proje türü ve mesaj bize ulaşır. Bunları yalnızca size dönüş yapmak için kullanırız.",
+          "Site, tarayıcınızın yerel deposunda tek bir tercih tutar: açık ya da koyu tema seçiminiz. Bu bilgi cihazınızdan hiç çıkmaz.",
+        ]],
+        ["Analitik", [
+          "Site, çerezsiz ve gizlilik dostu analitik kullanacak şekilde kurulmuştur. Şu anda kapalıdır; yani hiçbir analitik verisi toplanmaz.",
+        ]],
+        ["Saklama ve paylaşım", [
+          "Form mesajları barındırma sunucusunda saklanır ve ai-ulu'nun gelen kutusuna e-postalanır. Satılmaz ve üçüncü taraflarla paylaşılmaz.",
+        ]],
+        ["Haklarınız", [
+          "Hakkınızda ne tuttuğumuzu sorabilir ya da silmemizi isteyebilirsiniz: iletişim sayfasındaki adrese e-posta gönderin. Talebi makul bir sürede yerine getiririz.",
+        ]],
+      ],
+    },
+  },
+};
+
+// İletişim sayfası ve yapısal veri bu tek kaynaktan beslenir.
+export const CONTACT = {
+  slug: "contact", slugTr: "iletisim",
+  en: {
+    title: "Contact ai-ulu",
+    desc: "Email, phone or WhatsApp ai-ulu, or send the contact form. We reply within 24 hours.",
+    h1: "Contact",
+    lead: "Tell us what you're building. We reply within 24 hours with a time for a free intro call.",
+    emailLabel: "Email", phoneLabel: "Phone", waLabel: "WhatsApp", formLabel: "Contact form",
+  },
+  tr: {
+    title: "ai-ulu ile iletişim",
+    desc: "ai-ulu'ya e-posta, telefon veya WhatsApp ile ulaşın ya da formu gönderin. 24 saat içinde dönüş yaparız.",
+    h1: "İletişim",
+    lead: "Ne kurduğunuzu anlatın. 24 saat içinde ücretsiz ön görüşme için bir saatle dönelim.",
+    emailLabel: "E-posta", phoneLabel: "Telefon", waLabel: "WhatsApp", formLabel: "İletişim formu",
+  },
+};
 
 export const T = {
   en: {
@@ -128,6 +312,9 @@ export const T = {
       sent: "Sent",
     },
     footer: { rights: "© 2026 ai-ulu. All rights reserved.", tag: "Websites and apps, from first call to live." },
+    // Footer/erişilebilirlik: ajanların ve ziyaretçilerin bulması gereken sayfalar.
+    pagesNav: [["about", "About"], ["contact", "Contact"], ["terms", "Terms"], ["privacy", "Privacy"]],
+    telLabel: "Call", emailLabel: "Email",
     skip: "Skip to content",
     ld: { orgDesc: "ai-ulu designs, builds and launches cinematic websites and custom apps." },
   },
@@ -235,6 +422,8 @@ export const T = {
       sent: "Gönderildi",
     },
     footer: { rights: "© 2026 ai-ulu. Tüm hakları saklıdır.", tag: "İlk görüşmeden yayına, web siteleri ve uygulamalar." },
+    pagesNav: [["about", "Hakkında"], ["contact", "İletişim"], ["terms", "Şartlar"], ["privacy", "Gizlilik"]],
+    telLabel: "Ara", emailLabel: "E-posta",
     skip: "İçeriğe geç",
     ld: { orgDesc: "ai-ulu, sinematik web siteleri ve özel uygulamalar tasarlar, geliştirir ve yayına alır." },
   },

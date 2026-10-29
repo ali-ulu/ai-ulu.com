@@ -9,6 +9,30 @@ ErrorDocument 404 /404.html
 RedirectMatch 404 ^/shipcraft(/|$)
 RedirectMatch 404 ^/(\.git|\.github)(/|$)
 
+# Markdown and JSON are served on purpose: every page has a .md alternate and
+# /.well-known/mcp/server-card.json must be readable. Only source artefacts stay blocked.
+AddType text/markdown .md
+AddCharset UTF-8 .md
+AddType application/json .json
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Content negotiation: an agent that asks for markdown gets the .md alternate of
+  # the same URL instead of the HTML. The last condition means the rewrite only
+  # fires when that .md file actually exists, so nothing 404s. Browsers never send
+  # this Accept value, so normal visitors are unaffected.
+  RewriteCond %{HTTP_ACCEPT} text/markdown [NC]
+  RewriteCond %{REQUEST_URI} !\.(md|txt|xml|json|svg|css|js|webp|png|woff2|ico)$ [NC]
+  RewriteCond %{DOCUMENT_ROOT}/$1/index.md -f
+  RewriteRule ^(.*?)/?$ /$1/index.md [L]
+</IfModule>
+
+<IfModule mod_setenvif.c>
+  SetEnvIf Request_URI "^/$" IS_HOME_EN
+  SetEnvIf Request_URI "^/tr/$" IS_HOME_TR
+</IfModule>
+
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
@@ -16,6 +40,18 @@ RedirectMatch 404 ^/(\.git|\.github)(/|$)
   # certificate lapse is recoverable within a day. Raise to 31536000 once stable.
   # No includeSubDomains/preload: neither is safe to promise before they are proven.
   Header always set Strict-Transport-Security "max-age=86400"
+  # RFC 8288 Link header: llms.txt is a site-wide resource, so it is advertised on
+  # every page. The homepage additionally points at its markdown alternate.
+  Header set Link "<https://ai-ulu.com/llms.txt>; rel=\"llms-txt\"; type=\"text/plain\""
+  Header add Link "<https://ai-ulu.com/index.md>; rel=\"alternate\"; type=\"text/markdown\"" env=IS_HOME_EN
+  Header add Link "<https://ai-ulu.com/tr/index.md>; rel=\"alternate\"; type=\"text/markdown\"" env=IS_HOME_TR
+  # The body depends on Accept, so caches must key on it.
+  Header append Vary Accept
+
+  # The Server Card has its own registered media type.
+  <Files "server-card.json">
+    Header set Content-Type "application/mcp-server-card+json"
+  </Files>
 </IfModule>
 
 # Never serve dotfiles
@@ -30,7 +66,7 @@ RedirectMatch 404 ^/(\.git|\.github)(/|$)
 </FilesMatch>
 
 # Never serve source or config artefacts
-<FilesMatch "\.(mjs|md|ya?ml|json|lock|log|sh|bak|ini|sql|env|toml)$">
+<FilesMatch "\.(mjs|ya?ml|lock|log|sh|bak|ini|sql|env|toml)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
@@ -41,7 +77,7 @@ RedirectMatch 404 ^/(\.git|\.github)(/|$)
 </FilesMatch>
 
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript image/svg+xml
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml text/markdown application/javascript image/svg+xml
 </IfModule>
 
 <IfModule mod_expires.c>
@@ -51,6 +87,7 @@ RedirectMatch 404 ^/(\.git|\.github)(/|$)
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
   ExpiresByType text/html "access plus 1 hour"
+  ExpiresByType text/markdown "access plus 1 hour"
 </IfModule>
 
 # Enable once the hosting certificate for ai-ulu.com is issued.

@@ -142,4 +142,72 @@
         submitBtn.childNodes[0].nodeValue = submitLabel;
       });
   });
+
+  // WebMCP: tarayıcı içi ajanların sayfayı kullanabilmesi için araçlar.
+  // API yoksa hiçbir şey yapılmaz (zarifçe devre dışı). Araçlar gerçek sayfa
+  // işlevlerini sarar; uydurma yetenek açığa çıkarmaz.
+  var mc = navigator.modelContext;
+  if (mc && typeof mc.registerTool === "function") {
+    var tools = [
+      {
+        name: "set-theme",
+        description: "Switches the site between the dark and light theme.",
+        inputSchema: { type: "object", properties: { theme: { type: "string", enum: ["dark", "light"], description: "The theme to apply." } }, required: ["theme"] },
+        execute: function (a) {
+          var th = a && a.theme === "light" ? "light" : "dark";
+          root.setAttribute("data-theme", th);
+          try { localStorage.setItem("theme", th); } catch (e) {}
+          return { theme: th };
+        }
+      },
+      {
+        name: "switch-language",
+        description: "Switches between the English and Turkish versions of the site.",
+        inputSchema: { type: "object", properties: { language: { type: "string", enum: ["en", "tr"], description: "The language to switch to." } }, required: ["language"] },
+        execute: function (a) {
+          var link = d.querySelector(".tools .lang");
+          if (link) link.click();
+          return { switched: true, to: a && a.language };
+        }
+      },
+      {
+        name: "go-to-section",
+        description: "Scrolls to a section of the page by name.",
+        inputSchema: { type: "object", properties: { section: { type: "string", enum: ["services", "work", "pricing", "faq", "contact"], description: "The section to scroll to." } }, required: ["section"] },
+        execute: function (a) {
+          var el = d.getElementById(a && a.section);
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+          return { scrolledTo: a && a.section, found: !!el };
+        }
+      },
+      {
+        name: "get-contact-details",
+        description: "Returns ai-ulu's contact details: email, phone and WhatsApp link.",
+        inputSchema: { type: "object", properties: {} },
+        execute: function () {
+          var mail = d.querySelector('a[href^="mailto:"]'), tel = d.querySelector('a[href^="tel:"]');
+          return {
+            email: mail ? mail.getAttribute("href").replace("mailto:", "") : null,
+            phone: tel ? tel.getAttribute("href").replace("tel:", "") : null,
+            whatsapp: "https://wa.me/" + cfg.waNum
+          };
+        }
+      },
+      {
+        name: "start-project",
+        description: "Opens the contact form and focuses the first field, so an agent can begin an enquiry.",
+        inputSchema: { type: "object", properties: {} },
+        execute: function () {
+          var sec = d.getElementById("contact");
+          if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+          var f = d.querySelector("#lead input[name=name]");
+          if (f) f.focus();
+          return { opened: !!sec };
+        }
+      }
+    ];
+    for (var ti = 0; ti < tools.length; ti++) {
+      try { mc.registerTool(tools[ti]); } catch (e) {}
+    }
+  }
 })();

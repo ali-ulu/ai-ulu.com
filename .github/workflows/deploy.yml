@@ -26,6 +26,19 @@ jobs:
           test -f shipcraft/dist/tr/index.html
           test -f shipcraft/dist/form.php
           test -f shipcraft/dist/.htaccess
+          # Agent-readiness artefacts: fail the deploy if any stops being generated.
+          test -f shipcraft/dist/about/index.html
+          test -f shipcraft/dist/contact/index.html
+          test -f shipcraft/dist/terms/index.html
+          test -f shipcraft/dist/privacy/index.html
+          test -f shipcraft/dist/index.md
+          test -f shipcraft/dist/about/index.md
+          test -f shipcraft/dist/tr/hakkinda/index.html
+          test -f shipcraft/dist/tr/iletisim/index.html
+          test -f shipcraft/dist/.well-known/mcp/server-card.json
+          grep -q 'Content-Signal' shipcraft/dist/robots.txt
+          grep -q 'llms-txt' shipcraft/dist/.htaccess
+          grep -q 'text/markdown' shipcraft/dist/.htaccess
       - name: Upload to hosting
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
