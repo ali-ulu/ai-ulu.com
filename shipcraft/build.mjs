@@ -1,5 +1,6 @@
 // node build.mjs  ->  dist/ (EN: /, TR: /tr/) + robots, sitemap, llms.txt, favicon
 import { mkdirSync, writeFileSync, cpSync, readFileSync, rmSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { SITE, T, panorama, gridIds } from "./content.mjs";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -74,14 +75,27 @@ function workGrid(t, p) {
 
 function jsonld(t, url) {
   const org = `${SITE.origin}/#org`, person = `${SITE.origin}/#ali`;
+  const logo = `${SITE.origin}/assets/logo.svg`;
   const sameAs = [SITE.github, SITE.linkedin].filter(Boolean);
+  // Hizmet kataloğu doğrudan görünür içerikten (services.items) türetilir — uydurma yok.
+  const offers = t.services.items.map(([h, b], i) => ({
+    "@type": "Offer", "@id": `${url}#offer-${i}`, name: h, description: b,
+    priceCurrency: "USD", availability: "https://schema.org/InStock",
+    url: `${url}#services`, seller: { "@id": org },
+  }));
   const graph = [
-    { "@type": "Organization", "@id": org, name: "ai-ulu", url: SITE.origin + "/", description: t.ld.orgDesc, founder: { "@id": person }, sameAs },
+    { "@type": "Organization", "@id": org, name: "ai-ulu", url: SITE.origin + "/", description: t.ld.orgDesc,
+      logo: { "@type": "ImageObject", url: logo }, image: logo, founder: { "@id": person }, sameAs },
     { "@type": "WebSite", "@id": `${SITE.origin}/#site`, url: SITE.origin + "/", name: "ai-ulu", inLanguage: ["en", "tr"], publisher: { "@id": org } },
     { "@type": "ProfessionalService", "@id": `${SITE.origin}/#service`, name: "ai-ulu", description: t.desc, url, parentOrganization: { "@id": org },
-      serviceType: ["Website development", "Web application development", "Web design"], areaServed: "Worldwide", availableLanguage: ["English", "Turkish"] },
+      serviceType: t.services.items.map(([h]) => h), hasOfferCatalog: { "@type": "OfferCatalog", name: t.pricing.h, itemListElement: offers },
+      areaServed: { "@type": "Place", name: "Worldwide" }, availableLanguage: ["English", "Turkish"] },
     { "@type": "Person", "@id": person, name: "Ali Ulu", jobTitle: "Founder", worksFor: { "@id": org }, url: SITE.origin + "/", sameAs },
-    { "@type": "FAQPage", mainEntity: t.faq.items.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
+    { "@type": "WebPage", "@id": `${url}#page`, url, name: t.title, description: t.desc, inLanguage: t.htmlLang,
+      isPartOf: { "@id": `${SITE.origin}/#site` }, about: { "@id": `${SITE.origin}/#service` }, primaryImageOfPage: { "@type": "ImageObject", url: logo },
+      speakable: { "@type": "SpeakableSpecification", cssSelector: ["#h1", ".lead"] } },
+    { "@type": "BreadcrumbList", "@id": `${url}#breadcrumb`, itemListElement: [{ "@type": "ListItem", position: 1, name: "ai-ulu", item: SITE.origin + "/" }] },
+    { "@type": "FAQPage", "@id": `${url}#faq`, mainEntity: t.faq.items.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
   ];
   return JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c");
 }
@@ -191,9 +205,19 @@ function enrichTemplate(html, name, desc, slug) {
     `<meta property="og:image" content="${SITE.origin}/assets/og-cover.png">`,
     `<meta name="twitter:card" content="summary_large_image">`,
     `<script type="application/ld+json">${JSON.stringify({
-      "@context": "https://schema.org", "@type": "WebPage", name: `${name} — ai-ulu template`, description: desc,
-      url, isPartOf: { "@type": "WebSite", "@id": `${SITE.origin}/#site` },
-      publisher: { "@type": "Organization", "@id": `${SITE.origin}/#org` },
+      "@context": "https://schema.org", "@graph": [
+        { "@type": "WebPage", "@id": `${url}#page`, name: `${name} — ai-ulu template`, description: desc,
+          url, inLanguage: "en", isPartOf: { "@id": `${SITE.origin}/#site` },
+          about: { "@type": "Service", "@id": `${url}#service`, name: `${name} template`,
+            description: desc, provider: { "@id": `${SITE.origin}/#org` },
+            offers: { "@type": "Offer", priceCurrency: "USD", availability: "https://schema.org/InStock", url: `${SITE.origin}/#contact` } },
+          publisher: { "@id": `${SITE.origin}/#org` } },
+        { "@type": "BreadcrumbList", "@id": `${url}#breadcrumb`, itemListElement: [
+          { "@type": "ListItem", position: 1, name: "ai-ulu", item: `${SITE.origin}/` },
+          { "@type": "ListItem", position: 2, name: "Templates", item: `${SITE.origin}/templates/` },
+          { "@type": "ListItem", position: 3, name: name, item: url },
+        ] },
+      ],
     }).replace(/</g, "\\u003c")}</script>`,
   ].join("");
   // Palet-nötr bar: hem açık hem koyu şablon paletinde okunur, sayfa sınıflandırmasını çevirmez.
@@ -279,7 +303,11 @@ writeFileSync(new URL("./dist/404.html", import.meta.url), notFound());
 const fav = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#090401"/><path d="M16 6 6 13v13h20V13z" fill="#fa6114"/></svg>`;
 writeFileSync(new URL("./dist/favicon.svg", import.meta.url), fav);
 writeFileSync(new URL("./dist/tr/favicon.svg", import.meta.url), fav);
-writeFileSync(new URL("./dist/robots.txt", import.meta.url), `User-agent: *\nAllow: /\n\n# AI crawlers are welcome\nUser-agent: GPTBot\nAllow: /\nUser-agent: ClaudeBot\nAllow: /\nUser-agent: PerplexityBot\nAllow: /\nUser-agent: Google-Extended\nAllow: /\n\nSitemap: ${SITE.origin}/sitemap.xml\n`);
+// AI tarayıcıları açıkça karşılanır; llms.txt ve sitemap işaret edilir.
+const AI_BOTS = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-Web", "anthropic-ai",
+  "PerplexityBot", "Google-Extended", "Applebot-Extended", "CCBot", "cohere-ai", "Bytespider", "Amazonbot", "meta-externalagent"];
+writeFileSync(new URL("./dist/robots.txt", import.meta.url),
+  `User-agent: *\nAllow: /\n\n# AI crawlers are welcome\n${AI_BOTS.map((b) => `User-agent: ${b}\nAllow: /`).join("\n")}\n\nSitemap: ${SITE.origin}/sitemap.xml\n# Structured summary for AI assistants:\n# ${SITE.origin}/llms.txt\n`);
 const alt = (l, u) => `<xhtml:link rel="alternate" hreflang="${l}" href="${u}"/>`;
 const sitemapUrls = [
   { loc: "/", alts: [["en", "/"], ["tr", "/tr/"], ["x-default", "/"]], pri: "1.0" },
@@ -287,11 +315,64 @@ const sitemapUrls = [
   { loc: "/templates/", pri: "0.7" },
   ...TEMPLATES.map(([slug]) => ({ loc: `/templates/${slug}/`, pri: "0.6" })),
 ];
+// lastmod: içeriğin gerçek son commit tarihi (uydurma "bugün" değil). Git yoksa alan atlanır.
+const lastmod = (() => {
+  try {
+    return execSync("git log -1 --format=%cs -- content.mjs build.mjs style.css", { cwd: new URL(".", import.meta.url), encoding: "utf8" }).trim();
+  } catch { return ""; }
+})();
+const lm = lastmod ? `<lastmod>${lastmod}</lastmod>` : "";
 const sitemapBody = sitemapUrls.map(({ loc, alts, pri }) =>
-  `<url><loc>${SITE.origin}${loc}</loc>${(alts || []).map(([l, u]) => alt(l, SITE.origin + u)).join("")}<priority>${pri}</priority></url>`
+  `<url><loc>${SITE.origin}${loc}</loc>${lm}${(alts || []).map(([l, u]) => alt(l, SITE.origin + u)).join("")}<priority>${pri}</priority></url>`
 ).join("\n");
 writeFileSync(new URL("./dist/sitemap.xml", import.meta.url), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${sitemapBody}\n</urlset>\n`);
-writeFileSync(new URL("./dist/llms.txt", import.meta.url), `# ai-ulu\n\n> ai-ulu designs, builds and launches cinematic websites and custom web apps, and supports them after launch. Languages: English and Turkish.\n\n## What we do\n- Websites: brand and marketing sites with art direction and motion\n- Apps: custom web apps, dashboards, internal tools\n- Site + App under one design system\n\n## Work\n- Attalia (group site), Hercules Investments (https://herculesinvestmentsllc.com), Hydrelon (https://hydrelon.com)\n- Starter templates: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio (${SITE.origin}/templates/)\n\n## How to start\nFree intro call, written quote within 24 hours. Pricing is scoped per project.\n- English: ${SITE.origin}/\n- Turkish: ${SITE.origin}/tr/\n- WhatsApp: +90 507 958 16 42\n`);
+// llms.txt — AI asistanlarının siteyi doğru okuması için yapılandırılmış özet.
+// Tüm ifadeler görünür sayfa içeriğiyle birebir tutarlıdır; yeni iddia eklenmez.
+const llmsTxt = `# ai-ulu
+
+> ai-ulu designs, builds and launches cinematic websites and custom web apps, and supports them
+> after launch. It works in English and Turkish, and takes clients worldwide. One team, from the
+> first call to live. Free intro call, written quote within 24 hours.
+
+## Services
+- Websites: art-directed brand and marketing sites. Fast, searchable, built to convert.
+- Apps: custom web apps and internal tools - dashboards, portals, automations.
+- Site + App: one design system across both, so a whole company feels like one product.
+- Post-launch support: fixes, changes and ongoing maintenance.
+
+## Pricing
+- No published price list. Every project is scoped individually.
+- A written quote is delivered within 24 hours of the intro call.
+- Three package shapes: Website, App, Site + App. Each includes launch and post-launch support.
+
+## Process
+1. Brief - a free 30-minute call to define goal, scope and timeline.
+2. Build - design and development in the open, with a clickable live preview.
+3. Ship - launch, test on real devices, then stay on for fixes and changes.
+
+## Work
+- Attalia - group site for a global commerce holding.
+- Hercules Investments - brand group site for a US e-commerce company (https://herculesinvestmentsllc.com).
+- Hydrelon - product site for a water-filtration brand (https://hydrelon.com).
+- Starter templates: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio
+  (${SITE.origin}/templates/). Each is rebuilt around the client's brand, not resold as-is.
+
+## FAQ
+- How long does a website take? A focused marketing site usually takes two to four weeks from the
+  first call to launch. Larger sites and apps take longer; the timeline is in the quote.
+- Do I own the site and the code? Yes - design, code and content are handed over at launch.
+- Do you work after launch? Yes - fixes, changes and ongoing maintenance.
+- Can you build apps, not just websites? Yes - custom web apps, dashboards and internal tools.
+- Which languages? English and Turkish, for the site and for communication.
+
+## Contact
+- Website: ${SITE.origin}/
+- Turkish: ${SITE.origin}/tr/
+- WhatsApp: +90 507 958 16 42
+- Contact form: ${SITE.origin}/#contact
+- GitHub: ${SITE.github}
+`;
+writeFileSync(new URL("./dist/llms.txt", import.meta.url), llmsTxt);
 
 // Host-only files: the PHP form handler and the Apache rules. They ship inside
 // dist/ so a plain upload of dist/ is the whole deploy.
