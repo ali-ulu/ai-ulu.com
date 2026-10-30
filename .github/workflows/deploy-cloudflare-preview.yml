@@ -24,6 +24,8 @@ jobs:
         run: npm test
       - name: Build static site
         run: npm run build
+      - name: Validate Wrangler bundle without deploying
+        run: npx wrangler deploy --dry-run
       - name: Verify build output
         run: |
           test -f shipcraft/dist/index.html
