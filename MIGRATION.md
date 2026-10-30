@@ -80,7 +80,7 @@ Do not run this schema command on every deploy. The schema is an initial migrati
 3. Confirm `aliulu@ai-ulu.com` is an allowed destination for the Email Sending binding.
 4. Verify the Email Service DNS records. Keep exactly one SPF record at the domain root; merge provider mechanisms if the dashboard requires a combined SPF value.
 
-Email Sending is outbound notification from the Worker. It is separate from Email Routing, which handles inbound forwarding to Gmail. Do not replace the current MX records just to deploy the website.
+Email Sending is outbound notification from the Worker; it does not create a mailbox or receive messages. Email Routing is a separate inbound service. Before relying on notifications to `aliulu@ai-ulu.com`, configure and test delivery for that address (for example, Email Routing to the Gmail destination). Do not replace the current MX records just to deploy the website.
 
 ## GitHub preview deployment
 
