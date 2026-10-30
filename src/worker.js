@@ -168,7 +168,20 @@ async function handleForm(request, env) {
     unsure: "Not sure yet",
   };
   const type = Object.hasOwn(typeLabels, typeValue) ? typeValue : "unsure";
-  const language = cleanText(data.lang || "", 5) === "tr" ? "tr" : "en";
+  const requestedLanguage = cleanText(data.lang || "", 5).toLowerCase();
+  let refererLanguage = "en";
+  try {
+    const referer = new URL(request.headers.get("Referer") || request.url);
+    if (referer.pathname === "/tr" || referer.pathname.startsWith("/tr/")) {
+      refererLanguage = "tr";
+    }
+  } catch {
+    // Invalid or absent Referer falls back to English.
+  }
+  const language =
+    requestedLanguage === "tr" || requestedLanguage === "en"
+      ? requestedLanguage
+      : refererLanguage;
 
   if (!name || !reach || !isValidReach(reach)) {
     return json(
