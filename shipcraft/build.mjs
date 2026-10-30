@@ -583,4 +583,44 @@ cpSync(new URL("./hosting/form.php", import.meta.url), new URL("./dist/form.php"
 cpSync(new URL("./hosting/htaccess", import.meta.url), new URL("./dist/.htaccess", import.meta.url));
 mkdirSync(new URL("./dist/leads", import.meta.url), { recursive: true });
 cpSync(new URL("./hosting/leads/.htaccess", import.meta.url), new URL("./dist/leads/.htaccess", import.meta.url));
+// Cloudflare Workers static-asset metadata. These files are generated into dist/
+// while the Hostinger FTP output remains intact for the existing deployment workflow.
+const cloudflareHeaders = `/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Strict-Transport-Security: max-age=86400
+
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*
+  Cache-Control: public, max-age=86400
+
+/*.html
+  Cache-Control: public, max-age=300
+
+/*.md
+  Cache-Control: public, max-age=300
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+
+/robots.txt
+  Cache-Control: public, max-age=3600
+
+https://:version.:subdomain.workers.dev/*
+  X-Robots-Tag: noindex
+`;
+writeFileSync(new URL("./dist/_headers", import.meta.url), cloudflareHeaders);
+
+// The PHP endpoint remains in dist for the existing Hostinger FTP deployment,
+// but must never be published as a static asset by the Workers migration.
+const cloudflareAssetsIgnore = `form.php
+.htaccess
+leads/**
+`;
+writeFileSync(new URL("./dist/.assetsignore", import.meta.url), cloudflareAssetsIgnore);
+
 console.log("dist hazir");

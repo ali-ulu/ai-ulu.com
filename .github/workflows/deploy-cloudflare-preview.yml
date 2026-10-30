@@ -1,0 +1,64 @@
+name: Cloudflare Workers migration preview
+
+on:
+  push:
+    branches:
+      - feat/cloudflare-workers-migration
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Build and test migration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Test Worker contract
+        run: npm test
+      - name: Build static site
+        run: npm run build
+      - name: Validate Wrangler bundle without deploying
+        run: npx wrangler deploy --dry-run
+      - name: Verify build output
+        run: |
+          test -f shipcraft/dist/index.html
+          test -f shipcraft/dist/tr/index.html
+          test -f shipcraft/dist/about/index.html
+          test -f shipcraft/dist/tr/hakkinda/index.html
+          test -f shipcraft/dist/form.php
+          test -f shipcraft/dist/_headers
+          test -f shipcraft/dist/.assetsignore
+          test -f shipcraft/dist/.well-known/mcp/server-card.json
+          grep -q 'Content-Signal' shipcraft/dist/robots.txt
+
+  deploy-preview:
+    name: Deploy opt-in workers.dev preview
+    needs: verify
+    if: ${{ vars.CLOUDFLARE_PREVIEW_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Build static site
+        run: npm run build
+      - name: Require a configured D1 database ID
+        run: |
+          node --input-type=module -e 'import { readFileSync } from "node:fs"; const config = JSON.parse(readFileSync("wrangler.jsonc", "utf8")); const id = config.d1_databases?.[0]?.database_id ?? ""; if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) { console.error("Replace the D1 database_id placeholder before enabling preview deployment."); process.exit(1); }'
+      - name: Deploy migration Worker
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.155.0"
+          command: deploy
