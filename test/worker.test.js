@@ -59,7 +59,7 @@ function formRequest(data, options = {}) {
       "Content-Type": "application/json",
       "CF-Connecting-IP": "203.0.113.10",
       "User-Agent": "worker-test",
-      "Referer": "https://ai-ulu.com/",
+      "Referer": options.referer || "https://ai-ulu.com/",
     },
     body: options.noBody ? undefined : JSON.stringify(data),
   });
@@ -106,6 +106,23 @@ test("existing app.js JSON contract is accepted and stored", async () => {
   assert.equal(emails[0].to, "aliulu@ai-ulu.com");
   assert.equal(emails[0].from, "noreply@ai-ulu.com");
   assert.match(emails[0].text, /Reach: ali@example.com/);
+});
+
+test("Turkish contact page receives a Turkish success response", async () => {
+  const { env } = makeEnv();
+  const response = await worker.fetch(
+    formRequest({
+      name: "Ali",
+      reach: "ali@example.com",
+      type: "site",
+      msg: "Merhaba",
+      website: "",
+    }, { referer: "https://ai-ulu.com/tr/" }),
+    env
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).message, "Mesajınız alındı. Teşekkürler!");
 });
 
 test("phone contact is accepted, matching the existing form validation", async () => {
