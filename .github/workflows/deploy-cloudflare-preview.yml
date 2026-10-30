@@ -52,6 +52,9 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Build static site
         run: npm run build
+      - name: Require a configured D1 database ID
+        run: |
+          node --input-type=module -e 'import { readFileSync } from "node:fs"; const config = JSON.parse(readFileSync("wrangler.jsonc", "utf8")); const id = config.d1_databases?.[0]?.database_id ?? ""; if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) { console.error("Replace the D1 database_id placeholder before enabling preview deployment."); process.exit(1); }'
       - name: Deploy migration Worker
         uses: cloudflare/wrangler-action@v4
         with:
