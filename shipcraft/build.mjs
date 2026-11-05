@@ -184,7 +184,7 @@ ${hero(t, p)}
     <p class="status" id="status" role="status" aria-live="polite"></p>
   </form></div></section>
 </main>
-<footer class="foot wrap"><nav class="foot-nav" aria-label="${esc(t.footer.tag)}">${t.pagesNav.map(([k, l]) => `<a href="${relUrl(t.lang, k)}">${esc(l)}</a>`).join("")}</nav>
+<footer class="foot wrap"><nav class="foot-nav" aria-label="${esc(t.footer.tag)}">${t.pagesNav.map(([k, l]) => `<a href="${relUrl(t.lang, k)}">${esc(l)}</a>`).join("")}<a href="/templates/">${esc(t.templatesNavLabel)}</a></nav>
   <p>${esc(t.footer.rights)}</p><p>${esc(t.footer.tag)}</p>
   <p class="links"><a href="mailto:${SITE.email}">${SITE.email}</a> · <a href="tel:${SITE.phone}">${esc(t.telLabel)} ${SITE.phone}</a> · <a href="${SITE.github}" rel="noopener">GitHub</a>${SITE.linkedin ? ` · <a href="${SITE.linkedin}" rel="noopener">LinkedIn</a>` : ""} · <a href="${waLink(t.contact.waText)}" rel="noopener">WhatsApp</a></p></footer>
 <a class="wa-float" href="${waLink(t.contact.waText)}" target="_blank" rel="noopener" aria-label="WhatsApp" data-cta="float-whatsapp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/></svg></a>
@@ -234,7 +234,8 @@ function enrichTemplate(html, name, desc, slug) {
 <a href="${SITE.origin}/" style="pointer-events:auto;display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid #00000022;border-radius:99px;padding:10px 18px;color:#1a0b04;font:500 14px system-ui,sans-serif;text-decoration:none">← <b style="font-weight:600">ai-ulu</b> · this template is adapted to your brand</a></div>`;
   return html
     .replace("</head>", `${head}</head>`)
-    .replace(/<body([^>]*)>/, `<body$1>${bar}`);
+    .replace(/<body([^>]*)>/, `<body$1>${bar}`)
+    .replace("</body>", `${templateBody(slug)}</body>`);
 }
 
 const TEMPLATES = [
@@ -244,6 +245,86 @@ const TEMPLATES = [
   ["studio", "Atelier Nord", "Architecture studio template: editorial grid, project list and a strong typographic voice.", "Architecture studio website template"],
   ["fitness", "Pulse Studio", "Fitness studio template: high-contrast type, class schedule chips and a free-class call to action.", "Fitness studio website template"],
 ];
+
+// Her şablon sayfasına eklenen metin: sayfa ince kalmasın ve hedef sektör kelimesiyle eşleşsin.
+// Palet-nötr beyaz kart; hem açık hem koyu şablon paletinde okunur.
+const TEMPLATE_CONTENT = {
+  clinic: {
+    h: "Aesthetic clinic website template",
+    intro: "Aura is a booking-first website template for aesthetic clinics, dermatology practices and medical spas. It opens with a single booking action, then explains treatments, the team and the clinic's approach — the order visitors actually decide in.",
+    includes: [
+      "A hero with a live \"next available\" booking card",
+      "Treatment groups: skin, contour and laser",
+      "Doctor profiles and a journal for trust and search",
+      "One repeated booking call to action on every screen",
+    ],
+    audience: "Aesthetic clinics, dermatologists and medical-spa practices that want bookings, not just visits.",
+  },
+  restaurant: {
+    h: "Restaurant website template",
+    intro: "Maison Olive is a reservation-first template for restaurants and cafes. It leads with the kitchen's story and a reservation action, then presents the menu, the space and the practical details guests look for before booking.",
+    includes: [
+      "A hero with a reservation call to action",
+      "A menu-forward layout that reads well on a phone",
+      "A kitchen and story section for character and search",
+      "Location, opening hours and contact details",
+    ],
+    audience: "Restaurants, cafes and bistros that want more table reservations and a menu guests can read anywhere.",
+  },
+  law: {
+    h: "Law firm website template",
+    intro: "Hale & Rowe is an authority-first template for law firms and professional practices. Its navy-and-gold palette and practice-area grid present expertise clearly, and every section drives toward a consultation request.",
+    includes: [
+      "A practice-area grid that maps your services",
+      "Attorney and team profiles for credibility",
+      "A credentials and results section",
+      "A single, repeated consultation call to action",
+    ],
+    audience: "Law firms, boutique practices and consultancies that need to look established and earn a consultation request.",
+  },
+  studio: {
+    h: "Architecture studio website template",
+    intro: "Atelier Nord is an editorial template for architecture and design studios. A project grid and a strong typographic voice let the work speak, while contact stays one click away.",
+    includes: [
+      "An editorial project grid with room for large images",
+      "A project detail layout for case studies",
+      "A studio and about section",
+      "A clear contact call to action",
+    ],
+    audience: "Architecture, interior and design studios that want a portfolio as considered as their work.",
+  },
+  fitness: {
+    h: "Fitness studio website template",
+    intro: "Pulse Studio is a high-energy template for gyms, fitness studios and class-based businesses. A class-schedule layout and a free-trial call to action turn interest into a first visit.",
+    includes: [
+      "Class schedule chips that are easy to scan",
+      "A free-trial and membership call to action",
+      "A trainers and studio story section",
+      "Location, hours and contact details",
+    ],
+    audience: "Gyms, fitness studios and class-based businesses that want more trial sign-ups and members.",
+  },
+};
+
+// Şablon sayfası alt içerik bölümü (SEO metni + iç linkler).
+function templateBody(slug) {
+  const c = TEMPLATE_CONTENT[slug];
+  const li = (items) => items.map((i) =>
+    `<li style="display:flex;gap:10px;font-size:16px;line-height:1.6;color:#3a2b22"><span style="color:#d94a08;font-weight:700">·</span><span>${esc(i)}</span></li>`).join("");
+  const h3 = (s) => `<h3 style="margin:0 0 10px;font:600 13px/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8a4a2a">${esc(s)}</h3>`;
+  const btn = "display:inline-flex;align-items:center;gap:8px;border-radius:99px;padding:14px 24px;font:600 15px system-ui,sans-serif;text-decoration:none";
+  return `<section id="about-template" style="max-width:900px;margin:0 auto;padding:72px 6vw 96px;font-family:system-ui,-apple-system,'Segoe UI',sans-serif">
+<div style="background:#fffaf5;border:1px solid #00000014;border-radius:28px;padding:clamp(28px,4vw,52px);box-shadow:0 40px 80px -50px #00000055">
+<p style="margin:0 0 12px;font:600 11.5px/1 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:#b4531a">ai-ulu template</p>
+<h2 style="margin:0 0 18px;font:400 clamp(28px,4vw,44px)/1.05 'Cormorant Garamond',Georgia,serif;color:#241a14">${esc(c.h)}</h2>
+<p style="margin:0 0 26px;font-size:17px;line-height:1.65;color:#3a2b22;max-width:64ch">${esc(c.intro)}</p>
+${h3("What's included")}<ul style="margin:0 0 26px;padding:0;list-style:none;display:grid;gap:8px">${li(c.includes)}</ul>
+${h3("Who it's for")}<p style="margin:0 0 30px;font-size:17px;line-height:1.65;color:#3a2b22;max-width:64ch">${esc(c.audience)}</p>
+<p style="margin:0;display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+<a href="${SITE.origin}/#contact" style="${btn};background:#d94a08;color:#fff">Get this template adapted to your brand →</a>
+<a href="${SITE.origin}/templates/" style="${btn};border:1px solid #00000022;color:#241a14">See all templates</a></p>
+</div></section>`;
+}
 
 // /templates/ dizin sayfası — llms.txt bu adrese işaret ediyor, 403 olmamalı.
 function templatesIndex() {
@@ -272,7 +353,20 @@ p.lead{color:#e8d6c8cc;max-width:60ch;font-size:clamp(17px,1.5vw,20px)}</style><
 <main class="w"><a class="back" href="${SITE.origin}/">← ai-ulu</a>
 <h1>Five templates,<br><em>one build system.</em></h1>
 <p class="lead">Starter sites for clinics, restaurants, law firms, studios and fitness. Each one is rebuilt around your brand, content and goals — not resold as-is.</p>
-<ul>${cards}</ul></main></body></html>`;
+<ul>${cards}</ul>
+<section class="expl" style="margin-top:72px;max-width:70ch">
+<h2 style="font:300 clamp(28px,4vw,44px)/1.05 'Cormorant Garamond',Georgia,serif;margin:0 0 18px">What these templates are, and what they are not</h2>
+<p style="color:#e8d6c8cc;font-size:17px;line-height:1.65;margin:0 0 18px">These are five finished starter websites ai-ulu built for common local-business types. Each one is a real, working layout — a clinic booking flow, a restaurant menu and reservation flow, a law firm's practice areas, an architecture portfolio, and a fitness class schedule. You can open any of them and click through a complete page.</p>
+<p style="color:#e8d6c8cc;font-size:17px;line-height:1.65;margin:0 0 18px">They are not off-the-shelf themes you buy and leave as-is. ai-ulu takes the closest template and rebuilds it around your brand, your content and your goals: your colours and type, your services, your photos, your booking or enquiry flow. The template is the starting point, not the finished site.</p>
+<h2 style="font:300 clamp(24px,3vw,34px)/1.1 'Cormorant Garamond',Georgia,serif;margin:44px 0 14px">How the process works</h2>
+<ol style="color:#e8d6c8cc;font-size:17px;line-height:1.7;margin:0;padding-left:1.2em">
+<li>Pick the template closest to your business — or tell us what you do and we will suggest one.</li>
+<li>A free 30-minute call to set the goal, the audience and the timeline. You get a written quote within 24 hours.</li>
+<li>We rebuild the template around your brand and content, with a live preview you can click while it is built.</li>
+<li>We launch it, test it on real devices and stay on for fixes and changes.</li>
+</ol>
+<p style="color:#e8d6c8cc;font-size:17px;line-height:1.65;margin:30px 0 0">Want the full picture first? See <a href="${SITE.origin}/" style="color:#ffb23d">how ai-ulu works</a>, or <a href="${SITE.origin}/#contact" style="color:#ffb23d">start a free intro call</a>.</p>
+</section></main></body></html>`;
 }
 
 // 404 — hosting'in varsayılan sayfası yerine markalı sayfa.
@@ -360,7 +454,7 @@ ${headHtml}
 <a class="skip" href="#main">${esc(t.skip)}</a>
 ${nav(t)}
 <main id="main"><div class="wrap doc">${bodyHtml}</div></main>
-<footer class="foot wrap"><nav class="foot-nav" aria-label="${esc(t.footer.tag)}">${t.pagesNav.map(([k, l]) => `<a href="${relUrl(t.lang, k)}">${esc(l)}</a>`).join("")}</nav>
+<footer class="foot wrap"><nav class="foot-nav" aria-label="${esc(t.footer.tag)}">${t.pagesNav.map(([k, l]) => `<a href="${relUrl(t.lang, k)}">${esc(l)}</a>`).join("")}<a href="/templates/">${esc(t.templatesNavLabel)}</a></nav>
   <p>${esc(t.footer.rights)}</p><p>${esc(t.footer.tag)}</p>
   <p class="links"><a href="mailto:${SITE.email}">${SITE.email}</a> · <a href="tel:${SITE.phone}">${esc(t.telLabel)} ${SITE.phone}</a> · <a href="${SITE.github}" rel="noopener">GitHub</a>${SITE.linkedin ? ` · <a href="${SITE.linkedin}" rel="noopener">LinkedIn</a>` : ""} · <a href="${waLink(t.contact.waText)}" rel="noopener">WhatsApp</a></p></footer>
 <a class="wa-float" href="${waLink(t.contact.waText)}" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.4.2-.1.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/></svg></a>
@@ -426,10 +520,13 @@ for (const lang of ["en", "tr"]) {
       [c.waLabel, `<a href="${waLink(t.contact.waText)}" rel="noopener">+${SITE.whatsapp}</a>`],
       [c.formLabel, `<a href="${base(lang)}#contact">${esc(c.formLabel)}</a>`],
     ];
+    const extra = (c.sections || []).map(([h, items]) =>
+      `<section><h2>${esc(h)}</h2><ul>${items.map((i) => `<li>${esc(i)}</li>`).join("")}</ul></section>`).join("");
     const body = `<h1>${c.h1}</h1><p class="lead">${esc(c.lead)}</p>
 <section><h2>${esc(c.h1)}</h2><ul class="contact-list">${rows.map(([label, val]) =>
-      `<li><b>${esc(label)}</b>${val}</li>`).join("")}</ul></section>`;
-    const md = `# ${c.title}\n\n> ${c.lead}\n\n## Contact\n- ${c.emailLabel}: ${SITE.email}\n- ${c.phoneLabel}: ${SITE.phone}\n- ${c.waLabel}: https://wa.me/${SITE.whatsapp}\n- ${c.formLabel}: ${SITE.origin}${base(lang)}#contact\n\n---\nCanonical: ${absUrl(lang, slug)}\n`;
+      `<li><b>${esc(label)}</b>${val}</li>`).join("")}</ul></section>${extra}`;
+    const mdExtra = (c.sections || []).map(([h, items]) => `\n## ${h}\n${items.map((i) => `- ${i}`).join("\n")}`).join("");
+    const md = `# ${c.title}\n\n> ${c.lead}\n\n## Contact\n- ${c.emailLabel}: ${SITE.email}\n- ${c.phoneLabel}: ${SITE.phone}\n- ${c.waLabel}: https://wa.me/${SITE.whatsapp}\n- ${c.formLabel}: ${SITE.origin}${base(lang)}#contact${mdExtra}\n\n---\nCanonical: ${absUrl(lang, slug)}\n`;
     const html = docShell(t, lang, docHead(t, lang, key, slug, c.title, c.desc, ldNodes), body);
     const dir = lang === "en" ? `./dist/${slug}` : `./dist/tr/${slug}`;
     mkdirSync(new URL(dir, import.meta.url), { recursive: true });

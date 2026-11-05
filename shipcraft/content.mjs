@@ -59,8 +59,8 @@ export const PAGES = {
       ],
     },
     tr: {
-      title: "ai-ulu hakkında — tasarlayan, geliştiren ve yayına alan stüdyo",
-      desc: "ai-ulu, İngilizce ve Türkçe sinematik web siteleri ve özel uygulamalar geliştiren küçük bir tasarım ve mühendislik stüdyosudur; dünya çapında müşterilerle çalışır.",
+      title: "ai-ulu hakkında — tasarlayan ve yayına alan stüdyo",
+      desc: "ai-ulu, sinematik web siteleri ve özel uygulamalar tasarlayan, geliştiren ve yayına alan küçük bir tasarım stüdyosudur. İngilizce ve Türkçe çalışır.",
       h1: "Müşteri kazandıran web siteleri ve uygulamalar <em>geliştiren stüdyo</em>",
       lead: "ai-ulu küçük bir tasarım ve mühendislik ekibidir. Sinematik web siteleri ve özel uygulamalar tasarlar, geliştirir, yayına alır ve yayından sonra da düzeltme ve değişiklikler için yanınızda kalır.",
       ldDesc: "Web siteleri ve uygulamalar geliştiren küçük bir tasarım ve mühendislik stüdyosu.",
@@ -197,6 +197,22 @@ export const CONTACT = {
     h1: "Contact",
     lead: "Tell us what you're building. We reply within 24 hours with a time for a free intro call.",
     emailLabel: "Email", phoneLabel: "Phone", waLabel: "WhatsApp", formLabel: "Contact form",
+    sections: [
+      ["What happens next", [
+        "Send the form, email or WhatsApp message and you get a reply within 24 hours with a time for a free 30-minute intro call.",
+        "On the call we cover the goal, the audience and the timeline. You leave with a rough scope and an honest view of fit.",
+        "You get a written quote within 24 hours of the call. It costs nothing and commits you to nothing.",
+      ]],
+      ["What to include", [
+        "What the business does and who it is for.",
+        "Whether you need a website, an app, or both.",
+        "Any site you have now, and what you would change about it.",
+        "A rough timeline, if you have one.",
+      ]],
+      ["Languages and reach", [
+        "The studio works in English and Turkish, for the site and for communication, and takes clients worldwide.",
+      ]],
+    ],
   },
   tr: {
     title: "ai-ulu ile iletişim",
@@ -204,6 +220,22 @@ export const CONTACT = {
     h1: "İletişim",
     lead: "Ne kurduğunuzu anlatın. 24 saat içinde ücretsiz ön görüşme için bir saatle dönelim.",
     emailLabel: "E-posta", phoneLabel: "Telefon", waLabel: "WhatsApp", formLabel: "İletişim formu",
+    sections: [
+      ["Bundan sonra ne olur", [
+        "Formu, e-postayı ya da WhatsApp mesajını gönderin; 24 saat içinde ücretsiz 30 dakikalık ön görüşme için bir saatle dönüş yaparız.",
+        "Görüşmede hedefi, kitleyi ve takvimi konuşuruz. Yaklaşık bir kapsamla ve uyumumuz hakkında dürüst bir görüşle ayrılırsınız.",
+        "Görüşmeden sonraki 24 saat içinde yazılı teklif alırsınız. Ücretsizdir, taahhüt gerektirmez.",
+      ]],
+      ["Neleri yazın", [
+        "İşletmenin ne yaptığı ve kime hitap ettiği.",
+        "Web sitesi mi, uygulama mı, yoksa ikisi mi gerektiği.",
+        "Şu an bir siteniz varsa ve neyi değiştirmek istediğiniz.",
+        "Varsa yaklaşık bir takvim.",
+      ]],
+      ["Diller ve kapsam", [
+        "Stüdyo hem site hem iletişim için İngilizce ve Türkçe çalışır ve dünya çapında müşteri kabul eder.",
+      ]],
+    ],
   },
 };
 
@@ -314,6 +346,7 @@ export const T = {
     footer: { rights: "© 2026 ai-ulu. All rights reserved.", tag: "Websites and apps, from first call to live." },
     // Footer/erişilebilirlik: ajanların ve ziyaretçilerin bulması gereken sayfalar.
     pagesNav: [["about", "About"], ["contact", "Contact"], ["terms", "Terms"], ["privacy", "Privacy"]],
+    templatesNavLabel: "Templates",
     telLabel: "Call", emailLabel: "Email",
     skip: "Skip to content",
     ld: { orgDesc: "ai-ulu designs, builds and launches cinematic websites and custom apps." },
@@ -423,6 +456,7 @@ export const T = {
     },
     footer: { rights: "© 2026 ai-ulu. Tüm hakları saklıdır.", tag: "İlk görüşmeden yayına, web siteleri ve uygulamalar." },
     pagesNav: [["about", "Hakkında"], ["contact", "İletişim"], ["terms", "Şartlar"], ["privacy", "Gizlilik"]],
+    templatesNavLabel: "Şablonlar",
     telLabel: "Ara", emailLabel: "E-posta",
     skip: "İçeriğe geç",
     ld: { orgDesc: "ai-ulu, sinematik web siteleri ve özel uygulamalar tasarlar, geliştirir ve yayına alır." },
