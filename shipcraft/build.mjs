@@ -88,11 +88,14 @@ function jsonld(t, url) {
     { "@type": "Organization", "@id": org, name: "ai-ulu", url: SITE.origin + "/", description: t.ld.orgDesc,
       logo: { "@type": "ImageObject", url: logo }, image: logo, founder: { "@id": person }, sameAs,
       telephone: SITE.phone, email: SITE.email,
+      // knowsAbout doğrudan hizmet listesinden türetilir (uydurma yok).
+      knowsAbout: t.services.items.map(([h]) => h).concat(["SEO", "GEO", "AI search visibility"]),
+      slogan: t.footer.tag,
       address: { "@type": "PostalAddress", addressCountry: SITE.country } },
     { "@type": "WebSite", "@id": `${SITE.origin}/#site`, url: SITE.origin + "/", name: "ai-ulu", inLanguage: ["en", "tr"], publisher: { "@id": org } },
     { "@type": "ProfessionalService", "@id": `${SITE.origin}/#service`, name: "ai-ulu", description: t.desc, url, parentOrganization: { "@id": org },
       serviceType: t.services.items.map(([h]) => h), hasOfferCatalog: { "@type": "OfferCatalog", name: t.pricing.h, itemListElement: offers },
-      areaServed: { "@type": "Place", name: "Worldwide" }, availableLanguage: ["English", "Turkish"],
+      areaServed: [{ "@type": "Country", name: "Turkey" }, { "@type": "Place", name: "Worldwide" }], availableLanguage: ["English", "Turkish"],
       telephone: SITE.phone, email: SITE.email,
       address: { "@type": "PostalAddress", addressCountry: SITE.country },
       contactPoint: { "@type": "ContactPoint", contactType: "sales", telephone: SITE.phone, email: SITE.email,
@@ -565,7 +568,7 @@ const AI_BOTS = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude
 // AI egitimi icin degil; kullanici istegiyle AI girdisi serbest.
 const CONTENT_SIGNAL = "ai-train=no, search=yes, ai-input=yes";
 writeFileSync(new URL("./dist/robots.txt", import.meta.url),
-  `# Content Signals: how this site's content may be used.\n# search = indexing and search results; ai-train = training AI models;\n# ai-input = using content as input to a live AI answer at the user's request.\nContent-Signal: ${CONTENT_SIGNAL}\n\nUser-agent: *\nAllow: /\n\n# AI crawlers are welcome\n${AI_BOTS.map((b) => `User-agent: ${b}\nAllow: /`).join("\n")}\n\nSitemap: ${SITE.origin}/sitemap.xml\n# Structured summary for AI assistants:\n# ${SITE.origin}/llms.txt\n`);
+  `# Content Signals: how this site's content may be used.\n# search = indexing and search results; ai-train = training AI models;\n# ai-input = using content as input to a live AI answer at the user's request.\nContent-Signal: ${CONTENT_SIGNAL}\n\nUser-agent: *\nAllow: /\n\n# AI crawlers are welcome\n${AI_BOTS.map((b) => `User-agent: ${b}\nAllow: /`).join("\n")}\n\nSitemap: ${SITE.origin}/sitemap.xml\n# Structured summary for AI assistants:\n# ${SITE.origin}/llms.txt\n# ${SITE.origin}/tr/llms.txt\n`);
 const alt = (l, u) => `<xhtml:link rel="alternate" hreflang="${l}" href="${u}"/>`;
 const docAlts = (key) => [["en", "/" + slugOf(key, "en") + "/"], ["tr", "/tr/" + slugOf(key, "tr") + "/"], ["x-default", "/" + slugOf(key, "en") + "/"]];
 const sitemapUrls = [
@@ -657,6 +660,68 @@ const llmsTxt = `# ai-ulu
 - MCP Server Card: ${SITE.origin}/.well-known/mcp/server-card.json
 `;
 writeFileSync(new URL("./dist/llms.txt", import.meta.url), llmsTxt);
+// Türkçe llms.txt — TR sayfaları için yapılandırılmış özet. İçerik görünür TR sayfalarla tutarlı.
+const llmsTxtTr = `# ai-ulu
+
+> ai-ulu, sinematik web siteleri ve özel web uygulamaları tasarlayan, geliştiren, yayına alan ve
+> yayın sonrası destekleyen küçük bir tasarım ve mühendislik stüdyosudur. Türkçe ve İngilizce
+> çalışır, Türkiye'den ve dünya genelinden müşteri kabul eder. İlk görüşmeden yayına tek ekip.
+> Ücretsiz ön görüşme, 24 saat içinde yazılı teklif.
+
+## Sayfalar
+- [Ana sayfa](${SITE.origin}/tr/): hizmetler, işler, paketler ve iletişim formu.
+- [Hakkında](${absUrl("tr", slugOf("about", "tr"))}): ai-ulu kimdir ve nasıl çalışır.
+- [İletişim](${absUrl("tr", slugOf("contact", "tr"))}): e-posta, telefon ve WhatsApp.
+- [Hizmet Şartları](${absUrl("tr", slugOf("terms", "tr"))}): müşteri işleri için şartlar.
+- [Gizlilik](${absUrl("tr", slugOf("privacy", "tr"))}): nelerin toplandığı ve nedeni.
+- [Şablonlar](${SITE.origin}/templates/): markaya göre yeniden kurulan beş başlangıç sitesi.
+- [English](${SITE.origin}/): sitenin İngilizce sürümü.
+
+## Hizmetler
+- Web Siteleri: sanat yönetimli marka ve tanıtım siteleri. Hızlı, aranabilir, dönüşüm için kurulu.
+- Uygulamalar: özel web uygulamaları ve iç araçlar - paneller, portallar, otomasyonlar.
+- Site + Uygulama: ikisinde tek tasarım sistemi; tüm şirket tek ürün gibi görünür.
+- Yayın sonrası destek: düzeltmeler, değişiklikler ve sürekli bakım.
+
+## Fiyatlandırma
+- Yayınlanmış fiyat listesi yoktur. Her proje kendi kapsamıyla fiyatlanır.
+- Ön görüşmeden sonraki 24 saat içinde yazılı teklif verilir.
+- Üç paket şekli: Web Sitesi, Uygulama, Site + Uygulama. Her biri yayın ve yayın sonrası destek içerir.
+
+## Süreç
+1. Brief - hedef, kapsam ve takvimi belirleyen ücretsiz 30 dakikalık görüşme.
+2. Yapım - tıklanabilir canlı önizlemeyle açık açık tasarım ve geliştirme.
+3. Yayın - yayına al, gerçek cihazlarda test et, düzeltme ve değişiklik için yanında kal.
+
+## İşler
+- Attalia - küresel ticaret holdingi için grup sitesi.
+- Hercules Investments - ABD merkezli e-ticaret şirketi için marka grubu sitesi (https://herculesinvestmentsllc.com).
+- Hydrelon - su arıtma markası için ürün sitesi (https://hydrelon.com).
+- Başlangıç şablonları: estetik klinik, restoran, hukuk bürosu, mimarlık stüdyosu, fitness stüdyosu
+  (${SITE.origin}/templates/). Her biri müşterinin markasına göre yeniden kurulur, olduğu gibi satılmaz.
+
+## SSS
+- Bir web sitesi ne kadar sürer? Odaklı bir tanıtım sitesi ilk görüşmeden yayına genellikle iki ila
+  dört hafta sürer. Büyük siteler ve uygulamalar daha uzun sürer; takvim teklifte yer alır.
+- Site ve kod bana mı ait olur? Evet - tasarım, kod ve içerik yayında teslim edilir.
+- Yayından sonra çalışıyor musunuz? Evet - düzeltmeler, değişiklikler ve sürekli bakım.
+- Sadece site değil, uygulama da yapıyor musunuz? Evet - özel web uygulamaları, paneller ve iç araçlar.
+- Hangi diller? Site ve iletişim için İngilizce ve Türkçe.
+
+## İletişim
+- E-posta: ${SITE.email}
+- Telefon: ${SITE.phone}
+- WhatsApp: https://wa.me/${SITE.whatsapp}
+- İletişim sayfası: ${absUrl("tr", slugOf("contact", "tr"))}
+- GitHub: ${SITE.github}
+
+## Makine tarafından okunabilir
+- Markdown: her sayfa URL'sinin sonuna \`.md\` ekleyin (ör. ${SITE.origin}/tr/index.md).
+- Site haritası: ${SITE.origin}/sitemap.xml
+- MCP Server Card: ${SITE.origin}/.well-known/mcp/server-card.json
+`;
+writeFileSync(new URL("./dist/tr/llms.txt", import.meta.url), llmsTxtTr);
+
 
 // ---- MCP Server Card (SEP-2127 / ext-server-card) ----
 // Zorunlu alanlar: $schema, name, version, description. `remotes` yalnizca gercek bir
