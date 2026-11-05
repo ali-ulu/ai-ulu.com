@@ -9,6 +9,9 @@ concurrency:
   group: deploy
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -16,17 +19,18 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
       - name: Build
-        working-directory: shipcraft
-        run: node build.mjs
+        run: npm run build
       - name: Verify build output
         run: |
           test -f shipcraft/dist/index.html
           test -f shipcraft/dist/tr/index.html
           test -f shipcraft/dist/form.php
           test -f shipcraft/dist/.htaccess
-          # Agent-readiness artefacts: fail the deploy if any stops being generated.
+          # Agent-readiness and GEO artefacts: fail the deploy if any stops being generated.
           test -f shipcraft/dist/about/index.html
           test -f shipcraft/dist/contact/index.html
           test -f shipcraft/dist/terms/index.html
@@ -36,19 +40,16 @@ jobs:
           test -f shipcraft/dist/tr/hakkinda/index.html
           test -f shipcraft/dist/tr/iletisim/index.html
           test -f shipcraft/dist/.well-known/mcp/server-card.json
+          test -f shipcraft/dist/llms.txt
+          test -f shipcraft/dist/tr/llms.txt
+          test -f shipcraft/dist/_headers
+          test -f shipcraft/dist/.assetsignore
           grep -q 'Content-Signal' shipcraft/dist/robots.txt
-          grep -q 'llms-txt' shipcraft/dist/.htaccess
           grep -q 'text/markdown' shipcraft/dist/.htaccess
-      - name: Upload to hosting
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v4
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: shipcraft/dist/
-          server-dir: /public_html/
-          dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.155.0"
+          command: deploy
