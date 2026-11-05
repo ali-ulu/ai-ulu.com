@@ -18,6 +18,12 @@ const SECURITY_HEADERS = {
   // Match the current site's short HSTS policy. Do not enable includeSubDomains
   // or preload until every subdomain has been verified for HTTPS.
   "Strict-Transport-Security": "max-age=86400",
+  // 'unsafe-inline' matches the existing inline theme script and inline styles;
+  // tightening to nonces requires templating every script tag in build.mjs.
+  "Content-Security-Policy":
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; " +
+    "img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; " +
+    "base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests",
 };
 
 function json(data, status = 200) {
