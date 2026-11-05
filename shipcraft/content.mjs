@@ -325,6 +325,10 @@ export const T = {
         ["Do you keep working after launch?", "Yes. We fix issues, handle changes and can maintain the site on an ongoing basis."],
         ["Can you build apps, not just websites?", "Yes. Custom web apps, dashboards and internal tools are part of ai-ulu."],
         ["Which languages do you work in?", "English and Turkish, for the site and for communication."],
+        ["How much does a website cost?", "There is no fixed price list. Each project is scoped on its own and you get a written quote within 24 hours of the free intro call. The quote depends on the number of pages, the content work and whether an app is involved."],
+        ["Do you work with clients in Turkey?", "Yes. ai-ulu works in Turkish and English, takes clients in Turkey and worldwide, and builds every site to be searchable and findable in both languages."],
+        ["How do you make a site visible in AI search?", "Every build ships with the structure AI assistants read: clean semantic HTML, structured data (Organization, Service, FAQ), an llms.txt summary, a sitemap and explicit access for AI crawlers. That is what gets a site cited in ChatGPT, Gemini and Google AI answers."],
+        ["Can you redesign an existing website?", "Yes. ai-ulu can rebuild an outdated or weak site around a conversion goal, keeping what works and fixing the structure, speed and content that hold it back."],
       ],
     },
     contact: {
@@ -436,6 +440,10 @@ export const T = {
         ["Yayından sonra da çalışıyor musunuz?", "Evet. Sorunları giderir, değişiklikleri yapar ve isterseniz siteyi sürekli bakımda tutarız."],
         ["Sadece site değil, uygulama da yapıyor musunuz?", "Evet. Özel web uygulamaları, paneller ve iç araçlar ai-ulu'nun parçası."],
         ["Hangi dillerde çalışıyorsunuz?", "Site ve iletişim için İngilizce ve Türkçe."],
+        ["Bir web sitesi ne kadar tutar?", "Sabit bir fiyat listesi yoktur. Her proje kendi kapsamıyla fiyatlanır ve ücretsiz ön görüşmeden sonraki 24 saat içinde yazılı teklif alırsınız. Teklif; sayfa sayısına, içerik işine ve bir uygulamanın dahil olup olmadığına göre değişir."],
+        ["Türkiye'deki müşterilerle çalışıyor musunuz?", "Evet. ai-ulu Türkçe ve İngilizce çalışır, Türkiye'den ve dünya genelinden müşteri kabul eder ve her siteyi iki dilde de aranabilir ve bulunabilir olacak şekilde kurar."],
+        ["Bir siteyi yapay zeka aramalarında nasıl görünür yapıyorsunuz?", "Her yapım, yapay zeka asistanlarının okuduğu yapıyla teslim edilir: temiz anlamsal HTML, yapısal veri (Organization, Service, FAQ), bir llms.txt özeti, site haritası ve AI tarayıcılarına açık erişim. Bir siteyi ChatGPT, Gemini ve Google AI cevaplarında alıntılanır yapan budur."],
+        ["Var olan bir siteyi yeniden yapabilir misiniz?", "Evet. ai-ulu, eski ya da zayıf bir siteyi dönüşüm hedefi etrafında yeniden kurabilir; işleyeni korur, sitenin önünü kesen yapı, hız ve içerik sorunlarını düzeltir."],
       ],
     },
     contact: {
