@@ -603,6 +603,86 @@ export const CASES = [
   },
 ];
 
+// Türkçe şablon sayfaları: EN şablonlarının TR karşılığı. Aynı şablon, yerelleştirilmiş slug.
+// slug: TR yol parçası; enSlug: hreflang için EN karşılığı; name: şablon adı (marka adı çevrilmez).
+export const TEMPLATES_TR = [
+  {
+    slug: "klinik", enSlug: "clinic", name: "Aura Aesthetic Clinic",
+    title: "Estetik klinik web sitesi şablonu — ai-ulu",
+    desc: "Estetik klinik, dermatoloji ve medikal spa için randevu odaklı web sitesi şablonu: sıcak nötr palet, kemer görselleri ve önce randevu alan bir düzen.",
+    h: "Estetik klinik web sitesi şablonu",
+    lead: "Aura, estetik klinikler, dermatoloji pratikleri ve medikal spalar için randevu odaklı bir web sitesi şablonudur.",
+    intro: "Tek bir randevu eylemiyle açılır; ardından tedavileri, ekibi ve kliniğin yaklaşımını anlatır — ziyaretçinin gerçekte karar verdiği sırayla.",
+    includes: [
+      "Canlı \"en yakın uygun\" randevu kartlı bir hero",
+      "Tedavi grupları: cilt, kontur ve lazer",
+      "Güven ve arama için doktor profilleri ve bir günlük bölümü",
+      "Her ekranda yinelenen tek bir randevu çağrısı",
+    ],
+    audience: "Sadece ziyaret değil, randevu isteyen estetik klinikler, dermatologlar ve medikal spa pratikleri.",
+  },
+  {
+    slug: "restoran", enSlug: "restaurant", name: "Maison Olive",
+    title: "Restoran web sitesi şablonu — ai-ulu",
+    desc: "Restoran ve kafeler için rezervasyon öncelikli web sitesi şablonu: mutfağın hikâyesi, menüye öncelik veren düzen ve rezervasyon çağrısı.",
+    h: "Restoran web sitesi şablonu",
+    lead: "Maison Olive, restoranlar ve kafeler için rezervasyon öncelikli bir web sitesi şablonudur.",
+    intro: "Mutfağın hikâyesi ve bir rezervasyon eylemiyle açılır; ardından menüyü, mekânı ve misafirlerin rezervasyondan önce aradığı pratik bilgileri sunar.",
+    includes: [
+      "Rezervasyon çağrılı bir hero",
+      "Telefonda iyi okunan, menüye öncelik veren bir düzen",
+      "Karakter ve arama için mutfak ve hikâye bölümü",
+      "Konum, çalışma saatleri ve iletişim bilgileri",
+    ],
+    audience: "Daha fazla masa rezervasyonu ve her yerden okunabilen bir menü isteyen restoranlar, kafeler ve bistrolar.",
+  },
+  {
+    slug: "hukuk", enSlug: "law", name: "Hale & Rowe",
+    title: "Hukuk bürosu web sitesi şablonu — ai-ulu",
+    desc: "Hukuk büroları ve profesyonel pratikler için otorite odaklı web sitesi şablonu: lacivert-altın palet, çalışma alanları ızgarası ve danışma çağrısı.",
+    h: "Hukuk bürosu web sitesi şablonu",
+    lead: "Hale & Rowe, hukuk büroları ve profesyonel pratikler için otorite odaklı bir web sitesi şablonudur.",
+    intro: "Lacivert-altın paleti ve çalışma alanları ızgarası uzmanlığı net sunar; her bölüm bir danışma talebine yönlendirir.",
+    includes: [
+      "Hizmetlerinizi eşleyen bir çalışma alanları ızgarası",
+      "Güvenilirlik için avukat ve ekip profilleri",
+      "Bir referanslar ve sonuçlar bölümü",
+      "Tek, yinelenen bir danışma çağrısı",
+    ],
+    audience: "Yerleşik görünmek ve bir danışma talebi kazanmak isteyen hukuk büroları, butik pratikler ve danışmanlıklar.",
+  },
+  {
+    slug: "studyo", enSlug: "studio", name: "Atelier Nord",
+    title: "Mimarlık stüdyosu web sitesi şablonu — ai-ulu",
+    desc: "Mimarlık ve tasarım stüdyoları için editoryal web sitesi şablonu: proje ızgarası, güçlü tipografik ses ve tek tıkla iletişim.",
+    h: "Mimarlık stüdyosu web sitesi şablonu",
+    lead: "Atelier Nord, mimarlık ve tasarım stüdyoları için editoryal bir web sitesi şablonudur.",
+    intro: "Bir proje ızgarası ve güçlü bir tipografik ses işin konuşmasına izin verir; iletişim ise tek tıkla ulaşılır kalır.",
+    includes: [
+      "Büyük görsellere yer açan editoryal proje ızgarası",
+      "Vaka çalışmaları için proje detay düzeni",
+      "Bir stüdyo ve hakkında bölümü",
+      "Net bir iletişim çağrısı",
+    ],
+    audience: "Portföyü işi kadar özenli olsun isteyen mimarlık, iç mimarlık ve tasarım stüdyoları.",
+  },
+  {
+    slug: "fitness", enSlug: "fitness", name: "Pulse Studio",
+    title: "Fitness stüdyosu web sitesi şablonu — ai-ulu",
+    desc: "Spor salonları ve ders tabanlı işletmeler için yüksek enerjili web sitesi şablonu: ders programı düzeni ve ücretsiz deneme çağrısı.",
+    h: "Fitness stüdyosu web sitesi şablonu",
+    lead: "Pulse Studio, spor salonları, fitness stüdyoları ve ders tabanlı işletmeler için yüksek enerjili bir web sitesi şablonudur.",
+    intro: "Bir ders programı düzeni ve ücretsiz deneme çağrısı, ilgiyi ilk ziyarete dönüştürür.",
+    includes: [
+      "Kolayca taranabilen ders programı etiketleri",
+      "Ücretsiz deneme ve üyelik çağrısı",
+      "Eğitmenler ve stüdyo hikâyesi bölümü",
+      "Konum, çalışma saatleri ve iletişim bilgileri",
+    ],
+    audience: "Daha fazla deneme kaydı ve üye isteyen spor salonları, fitness stüdyoları ve ders tabanlı işletmeler.",
+  },
+];
+
 // İletişim sayfası ve yapısal veri bu tek kaynaktan beslenir.
 export const CONTACT = {
   slug: "contact", slugTr: "iletisim",
