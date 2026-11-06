@@ -737,8 +737,10 @@ for (const tpl of TEMPLATES_TR) {
   const enUrl = `${SITE.origin}/templates/${tpl.enSlug}/`;
   const trUrl = `${SITE.origin}/tr/sablonlar/${tpl.slug}/`;
   let html = readFileSync(new URL(`./dist/templates/${tpl.enSlug}/index.html`, import.meta.url), "utf8");
-  // EN'den miras kalan canonical/hreflang satırlarını temizle (TR kendi setini alır).
-  html = html.replace(/<link rel="canonical"[^>]*>/g, "").replace(/<link rel="alternate" hreflang="[^"]*"[^>]*>/g, "");
+  // EN'den miras kalan canonical/hreflang/markdown satırlarını temizle (TR kendi setini alır).
+  html = html.replace(/<link rel="canonical"[^>]*>/g, "")
+             .replace(/<link rel="alternate" hreflang="[^"]*"[^>]*>/g, "")
+             .replace(/<link rel="alternate" type="text\/markdown"[^>]*>/g, "");
   // <html lang> ve <title> TR'ye çevrilir.
   html = html.replace(/<html lang="en"/, '<html lang="tr"').replace(/<title>[^<]*<\/title>/, `<title>${esc(tpl.title)}</title>`);
   // og:url ve og:locale TR'ye çevrilir.
