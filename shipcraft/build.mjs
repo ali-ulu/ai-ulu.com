@@ -1,7 +1,7 @@
 // node build.mjs  ->  dist/ (EN: /, TR: /tr/) + robots, sitemap, llms.txt, favicon
 import { mkdirSync, writeFileSync, cpSync, readFileSync, rmSync } from "node:fs";
 import { execSync } from "node:child_process";
-import { SITE, T, PAGES, CONTACT, panorama, gridIds } from "./content.mjs";
+import { SITE, T, PAGES, CONTACT, SERVICES, panorama, gridIds } from "./content.mjs";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const css = readFileSync(new URL("./style.css", import.meta.url), "utf8");
@@ -157,7 +157,7 @@ ${hero(t, p)}
   <a class="btn acc" href="#work" data-cta="solution-works">${esc(t.works)}${arrow}</a></section>
 
 <section id="services" class="sec wrap center" aria-labelledby="hs">${eyebrow(t.services.eyebrow)}<h2 id="hs">${t.services.h}</h2><p class="lead">${esc(t.services.sub)}</p>
-  <div class="cards3 svc">${t.services.items.map(([h, b], i) => `<article class="bz"><div class="core svc-card"><h3>${esc(h)}</h3><div class="ico">${icons[i]}</div><p>${esc(b)}</p></div></article>`).join("")}</div>
+  <div class="cards3 svc">${t.services.items.map(([h, b], i) => `<article class="bz"><div class="core svc-card"><h3>${esc(h)}</h3><div class="ico">${icons[i]}</div><p>${esc(b)}</p><a class="btn ghost svc-more" href="${relUrl(t.lang, SERVICES[i].key)}" data-cta="svc-${i}">${esc(t.services.more)}${arrow}</a></div></article>`).join("")}</div>
   <div class="bz"><div class="core feat left"><div><h3 class="feat-h">${t.services.feat.h}</h3><p>${esc(t.services.feat.text)}</p><a class="btn acc" href="#contact" data-cta="feat-start">${esc(t.start)}${arrow}</a></div>
   <ul>${t.services.feat.items.map(([h, b]) => `<li><b>${esc(h)}</b><span>${esc(b)}</span></li>`).join("")}</ul></div></div></section>
 
@@ -396,12 +396,13 @@ a.b{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(1
 const base = (lang) => (lang === "en" ? "" : "/tr/");
 const pagePath = (lang, slug) => `${base(lang)}${slug}/`;
 const absUrl = (lang, slug) => `${SITE.origin}/${base(lang).replace(/^\//, "")}${slug}/`;
-// Dört içerik sayfası + iletişim: slug EN/TR'de yerelleşir.
+// Dört içerik sayfası + iletişim + hizmet sayfaları: slug EN/TR'de yerelleşir.
 const DOCS = [
   ["about", PAGES.about.slug, PAGES.about.slugTr],
   ["contact", CONTACT.slug, CONTACT.slugTr],
   ["terms", PAGES.terms.slug, PAGES.terms.slugTr],
   ["privacy", PAGES.privacy.slug, PAGES.privacy.slugTr],
+  ...SERVICES.map((s) => [s.key, s.slug, s.slugTr]),
 ];
 const slugOf = (key, lang) => { const d = DOCS.find((x) => x[0] === key); return lang === "en" ? d[1] : d[2]; };
 // Sayfa derinliginden bagimsiz, kok-mutlak yol (ic sayfalar /slug/ derinliginde durur).
@@ -486,6 +487,29 @@ function docMarkdown(lang, key, title, lead, sections) {
   return head + body + (key === "contact" ? "" : "\n\n" + contact) + foot;
 }
 
+// Hizmet sayfası gövdesi: H1 + lead + paragraflı bölümler (alıntılanabilir düz metin).
+function serviceBody(title, lead, sections, faq) {
+  const secs = sections.map(([h, paras]) =>
+    `<section><h2>${esc(h)}</h2>${paras.map((p) => `<p>${esc(p)}</p>`).join("")}</section>`
+  ).join("");
+  const faqHtml = faq && faq.length
+    ? `<section id="faq"><h2>FAQ</h2><div class="faq left">${faq.map(([q, a]) =>
+        `<details class="glass"><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div></section>`
+    : "";
+  return `<h1>${esc(title)}</h1><p class="lead">${esc(lead)}</p>${secs}${faqHtml}`;
+}
+
+// Hizmet sayfası Markdown karşılığı.
+function serviceMarkdown(lang, key, title, lead, sections, faq) {
+  const other = lang === "en" ? "tr" : "en";
+  const head = `# ${title}\n\n> ${lead}\n\n`;
+  const body = sections.map(([h, paras]) => `## ${h}\n${paras.join("\n\n")}`).join("\n\n");
+  const faqMd = faq && faq.length ? `\n\n## FAQ\n${faq.map(([q, a]) => `- ${q} ${a}`).join("\n")}` : "";
+  const contact = `## Contact\n- Email: ${SITE.email}\n- Phone: ${SITE.phone}\n- WhatsApp: https://wa.me/${SITE.whatsapp}\n- Contact page: ${absUrl(lang, slugOf("contact", lang))}`;
+  const foot = `\n\n---\nCanonical: ${absUrl(lang, slugOf(key, lang))}\nLanguage: ${lang} (${other}: ${absUrl(other, slugOf(key, other))})\n`;
+  return head + body + faqMd + "\n\n" + contact + foot;
+}
+
 rmSync(new URL("./dist", import.meta.url), { recursive: true, force: true });
 mkdirSync(new URL("./dist/tr", import.meta.url), { recursive: true });
 writeFileSync(new URL("./dist/index.html", import.meta.url), page(T.en));
@@ -538,6 +562,33 @@ for (const lang of ["en", "tr"]) {
   }
 }
 
+// ---- Hizmet sayfaları (hizmet başına derin sayfa) + Markdown karşılıkları ----
+for (const svc of SERVICES) {
+  for (const lang of ["en", "tr"]) {
+    const t = T[lang], c = svc[lang], slug = lang === "en" ? svc.slug : svc.slugTr;
+    const url = absUrl(lang, slug);
+    const offer = t.pricing.packs[svc.pack];
+    const ldNodes = [
+      { "@type": "Service", "@id": `${url}#service`, name: c.h1, description: c.desc, serviceType: c.h1,
+        url, provider: { "@id": `${SITE.origin}/#org` },
+        areaServed: [{ "@type": "Country", name: "Turkey" }, { "@type": "Place", name: "Worldwide" }],
+        availableLanguage: ["English", "Turkish"],
+        offers: { "@type": "Offer", name: offer[0], description: offer[1].join(", "), priceCurrency: "USD",
+          availability: "https://schema.org/InStock", seller: { "@id": `${SITE.origin}/#org` } } },
+      { "@type": "WebPage", "@id": `${url}#page`, url, name: c.title, description: c.desc, inLanguage: t.htmlLang,
+        isPartOf: { "@id": `${SITE.origin}/#site` }, about: { "@id": `${url}#service` }, publisher: { "@id": `${SITE.origin}/#org` } },
+      ...(c.faq && c.faq.length ? [{ "@type": "FAQPage", "@id": `${url}#faq`,
+        mainEntity: c.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }] : []),
+    ];
+    const html = docShell(t, lang, docHead(t, lang, svc.key, slug, c.title, c.desc, ldNodes),
+      serviceBody(c.h1, c.lead, c.sections, c.faq));
+    const dir = lang === "en" ? `./dist/${slug}` : `./dist/tr/${slug}`;
+    mkdirSync(new URL(dir, import.meta.url), { recursive: true });
+    writeFileSync(new URL(`${dir}/index.html`, import.meta.url), html);
+    writeFileSync(new URL(`${dir}/index.md`, import.meta.url), serviceMarkdown(lang, svc.key, c.title, c.lead, c.sections, c.faq));
+  }
+}
+
 // ---- Ana sayfa Markdown karşılığı (aynı URL + ".md") ----
 function homeMarkdown(lang) {
   const t = T[lang], other = lang === "en" ? "tr" : "en";
@@ -582,6 +633,10 @@ const sitemapUrls = [
   { loc: "/tr/" + slugOf("terms", "tr") + "/", alts: docAlts("terms"), pri: "0.4" },
   { loc: "/" + slugOf("privacy", "en") + "/", alts: docAlts("privacy"), pri: "0.4" },
   { loc: "/tr/" + slugOf("privacy", "tr") + "/", alts: docAlts("privacy"), pri: "0.4" },
+  ...SERVICES.flatMap((s) => [
+    { loc: "/" + s.slug + "/", alts: docAlts(s.key), pri: "0.8" },
+    { loc: "/tr/" + s.slugTr + "/", alts: docAlts(s.key), pri: "0.7" },
+  ]),
   { loc: "/templates/", pri: "0.7" },
   ...TEMPLATES.map(([slug]) => ({ loc: `/templates/${slug}/`, pri: "0.6" })),
 ];
@@ -617,9 +672,9 @@ const llmsTxt = `# ai-ulu
 - [Türkçe](${SITE.origin}/tr/): the Turkish version of this site.
 
 ## Services
-- Websites: art-directed brand and marketing sites. Fast, searchable, built to convert.
-- Apps: custom web apps and internal tools - dashboards, portals, automations.
-- Site + App: one design system across both, so a whole company feels like one product.
+- [Websites](${absUrl("en", slugOf("svcWebsites", "en"))}): art-directed brand and marketing sites. Fast, searchable, built to convert.
+- [Apps](${absUrl("en", slugOf("svcApps", "en"))}): custom web apps and internal tools - dashboards, portals, automations.
+- [Site + App](${absUrl("en", slugOf("svcSiteApp", "en"))}): one design system across both, so a whole company feels like one product.
 - Post-launch support: fixes, changes and ongoing maintenance.
 
 ## Pricing
@@ -678,9 +733,9 @@ const llmsTxtTr = `# ai-ulu
 - [English](${SITE.origin}/): sitenin İngilizce sürümü.
 
 ## Hizmetler
-- Web Siteleri: sanat yönetimli marka ve tanıtım siteleri. Hızlı, aranabilir, dönüşüm için kurulu.
-- Uygulamalar: özel web uygulamaları ve iç araçlar - paneller, portallar, otomasyonlar.
-- Site + Uygulama: ikisinde tek tasarım sistemi; tüm şirket tek ürün gibi görünür.
+- [Web Siteleri](${absUrl("tr", slugOf("svcWebsites", "tr"))}): sanat yönetimli marka ve tanıtım siteleri. Hızlı, aranabilir, dönüşüm için kurulu.
+- [Uygulamalar](${absUrl("tr", slugOf("svcApps", "tr"))}): özel web uygulamaları ve iç araçlar - paneller, portallar, otomasyonlar.
+- [Site + Uygulama](${absUrl("tr", slugOf("svcSiteApp", "tr"))}): ikisinde tek tasarım sistemi; tüm şirket tek ürün gibi görünür.
 - Yayın sonrası destek: düzeltmeler, değişiklikler ve sürekli bakım.
 
 ## Fiyatlandırma

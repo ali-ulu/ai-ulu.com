@@ -188,6 +188,263 @@ export const PAGES = {
   },
 };
 
+// Hizmet sayfaları: AI asistanlarının alıntılayacağı, hizmet başına ayrı derin sayfalar.
+// Tüm ifadeler ana sayfadaki mevcut hizmet/fiyat/süreç metinleriyle tutarlıdır; yeni rakam yok.
+export const SERVICES = [
+  {
+    key: "svcWebsites", slug: "services/websites", slugTr: "hizmetler/web-siteleri",
+    pack: 0,
+    en: {
+      title: "Website design and development — ai-ulu",
+      desc: "Art-directed brand and marketing websites, engineered for speed, search and conversion. Built in English and Turkish, launched with post-launch support.",
+      h1: "Website design and development",
+      lead: "Art-directed brand and marketing sites, engineered for speed, search and conversion. Built in English and Turkish, and supported after launch.",
+      sections: [
+        ["What you get", [
+          "An art-directed brand or marketing website: a design that fits the brand rather than a template with your logo dropped in. Every page is written, structured and built to move a visitor toward contacting you.",
+          "Speed is treated as a feature, not an afterthought. Pages are engineered for fast load times on real devices, and for search engines and AI assistants to read cleanly.",
+        ]],
+        ["Built for search and AI answers", [
+          "Every site ships with the structure that search engines and AI assistants read: clean semantic HTML, structured data (Organization, Service, FAQ), an llms.txt summary, a sitemap and explicit access for AI crawlers.",
+          "That is what makes a site citable in ChatGPT, Gemini and Google AI answers, not just findable in classic search results. It is built in from the first line of code, not bolted on later.",
+        ]],
+        ["English and Turkish", [
+          "Sites are built to work in both English and Turkish, for the interface and for search. Each language gets its own URL, its own metadata and correct hreflang links, so neither language competes with the other.",
+        ]],
+        ["What is included", [
+          "Art-directed design, motion and fast load times.",
+          "SEO-ready structure, in English and Turkish.",
+          "Launch and post-launch support: fixes, changes and ongoing maintenance.",
+          "Full handover at launch — design, code and content are yours.",
+        ]],
+        ["How the project runs", [
+          "Brief: a free 30-minute call to define the goal, the scope and the timeline.",
+          "Build: design and development in the open, with a live preview you can click.",
+          "Ship: launch, testing on real devices, then staying on for fixes and changes.",
+        ]],
+        ["Cost and timing", [
+          "There is no fixed price list. Each project is scoped on its own, and a written quote follows within 24 hours of the free intro call.",
+          "A focused marketing site usually takes two to four weeks from the first call to launch. Larger sites take longer, and the timeline is in the quote.",
+        ]],
+      ],
+      faq: [
+        ["How long does a website take?", "A focused marketing site usually takes two to four weeks from the first call to launch. Larger sites take longer, and the timeline is in the quote."],
+        ["How much does a website cost?", "There is no fixed price list. Each project is scoped on its own and you get a written quote within 24 hours of the free intro call. The quote depends on the number of pages, the content work and whether an app is involved."],
+        ["Can you redesign an existing website?", "Yes. ai-ulu can rebuild an outdated or weak site around a conversion goal, keeping what works and fixing the structure, speed and content that hold it back."],
+      ],
+    },
+    tr: {
+      title: "Web sitesi tasarımı ve geliştirme — ai-ulu",
+      desc: "Hız, arama ve dönüşüm için kurulu, sanat yönetimli marka ve tanıtım siteleri. Türkçe ve İngilizce kurulur, yayın sonrası destekle teslim edilir.",
+      h1: "Web sitesi tasarımı ve geliştirme",
+      lead: "Hız, arama ve dönüşüm için kurulu, sanat yönetimli marka ve tanıtım siteleri. Türkçe ve İngilizce kurulur, yayın sonrası desteklenir.",
+      sections: [
+        ["Ne alırsınız", [
+          "Sanat yönetimli bir marka ya da tanıtım sitesi: logonuzu üzerine koyduğunuz bir şablon değil, markaya uyan bir tasarım. Her sayfa ziyaretçiyi size ulaşmaya yaklaştıracak şekilde yazılır, yapılandırılır ve kurulur.",
+          "Hız bir özellik olarak ele alınır, sonradan eklenen bir detay değil. Sayfalar gerçek cihazlarda hızlı yüklenir; arama motorları ve yapay zeka asistanları temiz okuyabilir.",
+        ]],
+        ["Arama ve yapay zeka cevapları için kurulu", [
+          "Her site, arama motorlarının ve yapay zeka asistanlarının okuduğu yapıyla teslim edilir: temiz anlamsal HTML, yapısal veri (Organization, Service, FAQ), bir llms.txt özeti, site haritası ve AI tarayıcılarına açık erişim.",
+          "Bir siteyi klasik arama sonuçlarında bulunur olmanın ötesine taşıyıp ChatGPT, Gemini ve Google AI cevaplarında alıntılanır yapan budur. Sonradan eklenmez; ilk kod satırından itibaren kurulur.",
+        ]],
+        ["İngilizce ve Türkçe", [
+          "Siteler hem İngilizce hem Türkçe çalışacak şekilde kurulur; arayüz ve arama için. Her dil kendi URL'sini, kendi meta verisini ve doğru hreflang bağlantılarını alır; böylece iki dil birbiriyle yarışmaz.",
+        ]],
+        ["Neler dahil", [
+          "Sanat yönetimli tasarım, hareket ve hızlı yüklenme.",
+          "SEO hazır yapı, İngilizce ve Türkçe.",
+          "Yayın ve yayın sonrası destek: düzeltmeler, değişiklikler ve sürekli bakım.",
+          "Yayın günü tam teslim — tasarım, kod ve içerik size ait.",
+        ]],
+        ["Proje nasıl işler", [
+          "Brief: hedefi, kapsamı ve takvimi netleştiren ücretsiz 30 dakikalık görüşme.",
+          "Yapım: tıklayabildiğiniz canlı önizlemeyle, açık açık tasarım ve geliştirme.",
+          "Yayın: yayına alır, gerçek cihazlarda test eder, düzeltme ve değişiklik için yanınızda kalırız.",
+        ]],
+        ["Maliyet ve süre", [
+          "Sabit bir fiyat listesi yoktur. Her proje kendi kapsamıyla fiyatlanır ve ücretsiz ön görüşmeden sonraki 24 saat içinde yazılı teklif alırsınız.",
+          "Odaklı bir tanıtım sitesi ilk görüşmeden yayına genellikle iki ila dört hafta sürer. Büyük siteler daha uzun sürer; takvim teklifte yer alır.",
+        ]],
+      ],
+      faq: [
+        ["Bir web sitesi ne kadar sürer?", "Odaklı bir tanıtım sitesi ilk görüşmeden yayına genellikle iki ila dört hafta sürer. Büyük siteler daha uzun sürer; takvim teklifte yer alır."],
+        ["Bir web sitesi ne kadar tutar?", "Sabit bir fiyat listesi yoktur. Her proje kendi kapsamıyla fiyatlanır ve ücretsiz ön görüşmeden sonraki 24 saat içinde yazılı teklif alırsınız. Teklif; sayfa sayısına, içerik işine ve bir uygulamanın dahil olup olmadığına göre değişir."],
+        ["Var olan bir siteyi yeniden yapabilir misiniz?", "Evet. ai-ulu, eski ya da zayıf bir siteyi dönüşüm hedefi etrafında yeniden kurabilir; işleyeni korur, sitenin önünü kesen yapı, hız ve içerik sorunlarını düzeltir."],
+      ],
+    },
+  },
+  {
+    key: "svcApps", slug: "services/apps", slugTr: "hizmetler/uygulamalar",
+    pack: 1,
+    en: {
+      title: "Custom web app development — ai-ulu",
+      desc: "Custom web apps and internal tools: dashboards, portals and automations, built around your workflow, with launch and post-launch support.",
+      h1: "Custom web app development",
+      lead: "Custom web apps and internal tools — dashboards, portals and automations — built around your workflow, with launch and post-launch support.",
+      sections: [
+        ["What you get", [
+          "A custom web application built for the job it has to do, not a generic tool bent into shape. That can be a customer-facing portal, an internal dashboard, or an automation that removes a manual step from your day.",
+          "The app is built around your workflow. The goal is that using it feels obvious, because it was designed from how your team already works.",
+        ]],
+        ["Types of app", [
+          "Dashboards: a single view of the numbers and status that matter, updated and readable.",
+          "Portals: a place for clients, partners or staff to log in and do their part of the work.",
+          "Automations: internal tools that take over repetitive steps so people do not have to.",
+        ]],
+        ["Built to last", [
+          "Apps are built with the same care as the sites: clean structure, fast responses, and a design that fits the rest of the brand. Launch is not the end — fixes, changes and ongoing maintenance are part of the work.",
+          "If the app has to sit alongside a marketing site, it can share one design system with it, so the whole company feels like one product.",
+        ]],
+        ["What is included", [
+          "A custom web app or internal tool, built around your workflow.",
+          "Dashboards, portals and automations as needed.",
+          "Launch and post-launch support.",
+          "Full handover — the code is yours.",
+        ]],
+        ["How the project runs", [
+          "Brief: a free 30-minute call to define the goal, the scope and the timeline.",
+          "Build: design and development in the open, with a live preview you can click.",
+          "Ship: launch, testing on real devices, then staying on for fixes and changes.",
+        ]],
+        ["Cost and timing", [
+          "There is no fixed price list. Each project is scoped on its own, and a written quote follows within 24 hours of the free intro call.",
+          "An app takes longer than a marketing site. The timeline depends on the workflow it has to cover, and it is set out in the quote.",
+        ]],
+      ],
+      faq: [
+        ["Can you build apps, not just websites?", "Yes. Custom web apps, dashboards and internal tools are part of ai-ulu, built around your workflow."],
+        ["How much does an app cost?", "There is no fixed price list. Each app is scoped on its own and you get a written quote within 24 hours of the free intro call. The quote depends on the workflows, screens and integrations involved."],
+        ["Do I own the app and the code?", "Yes. Design, code and content are yours, and everything is handed over at launch."],
+      ],
+    },
+    tr: {
+      title: "Özel web uygulaması geliştirme — ai-ulu",
+      desc: "İş akışınıza göre kurulan özel web uygulamaları ve iç araçlar: paneller, portallar ve otomasyonlar; yayın ve yayın sonrası destekle.",
+      h1: "Özel web uygulaması geliştirme",
+      lead: "İş akışınıza göre kurulan özel web uygulamaları ve iç araçlar — paneller, portallar ve otomasyonlar — yayın ve yayın sonrası destekle.",
+      sections: [
+        ["Ne alırsınız", [
+          "Yapması gereken iş için kurulmuş özel bir web uygulaması; şekle sokulmuş genel bir araç değil. Bu, müşteriye dönük bir portal, bir iç panel ya da gününüzden manuel bir adımı kaldıran bir otomasyon olabilir.",
+          "Uygulama iş akışınıza göre kurulur. Amaç, kullanmanın bariz hissettirmesidir; çünkü ekibinizin hâlihazırda nasıl çalıştığından tasarlanır.",
+        ]],
+        ["Uygulama türleri", [
+          "Paneller: önemli sayıların ve durumun tek bir görünümü; güncel ve okunur.",
+          "Portallar: müşterilerin, iş ortaklarının ya da personelin girip işin kendi payını yaptığı bir yer.",
+          "Otomasyonlar: tekrar eden adımları devralan iç araçlar; böylece insanların yapmasına gerek kalmaz.",
+        ]],
+        ["Kalıcı olacak şekilde kurulu", [
+          "Uygulamalar sitelerle aynı özenle kurulur: temiz yapı, hızlı yanıtlar ve markanın geri kalanına uyan bir tasarım. Yayın son değildir — düzeltmeler, değişiklikler ve sürekli bakım işin parçasıdır.",
+          "Uygulama bir tanıtım sitesiyle yan yana duracaksa, onunla tek bir tasarım sistemini paylaşabilir; böylece tüm şirket tek ürün gibi görünür.",
+        ]],
+        ["Neler dahil", [
+          "İş akışınıza göre kurulmuş özel bir web uygulaması ya da iç araç.",
+          "İhtiyaca göre paneller, portallar ve otomasyonlar.",
+          "Yayın ve yayın sonrası destek.",
+          "Tam teslim — kod size ait.",
+        ]],
+        ["Proje nasıl işler", [
+          "Brief: hedefi, kapsamı ve takvimi netleştiren ücretsiz 30 dakikalık görüşme.",
+          "Yapım: tıklayabildiğiniz canlı önizlemeyle, açık açık tasarım ve geliştirme.",
+          "Yayın: yayına alır, gerçek cihazlarda test eder, düzeltme ve değişiklik için yanınızda kalırız.",
+        ]],
+        ["Maliyet ve süre", [
+          "Sabit bir fiyat listesi yoktur. Her proje kendi kapsamıyla fiyatlanır ve ücretsiz ön görüşmeden sonraki 24 saat içinde yazılı teklif alırsınız.",
+          "Bir uygulama tanıtım sitesinden daha uzun sürer. Süre, kapsaması gereken iş akışına bağlıdır ve teklifte belirtilir.",
+        ]],
+      ],
+      faq: [
+        ["Sadece site değil, uygulama da yapıyor musunuz?", "Evet. Özel web uygulamaları, paneller ve iç araçlar ai-ulu'nun parçası; iş akışınıza göre kurulur."],
+        ["Bir uygulama ne kadar tutar?", "Sabit bir fiyat listesi yoktur. Her uygulama kendi kapsamıyla fiyatlanır ve ücretsiz ön görüşmeden sonraki 24 saat içinde yazılı teklif alırsınız. Teklif; iş akışlarına, ekranlara ve entegrasyonlara göre değişir."],
+        ["Uygulama ve kod bana mı ait olur?", "Evet. Tasarım, kod ve içerik size aittir; yayın günü her şey teslim edilir."],
+      ],
+    },
+  },
+  {
+    key: "svcSiteApp", slug: "services/site-app", slugTr: "hizmetler/site-uygulama",
+    pack: 2,
+    en: {
+      title: "Site and app in one design system — ai-ulu",
+      desc: "A marketing site and a custom web app built as one product, sharing a single design system, so a whole company feels like one brand.",
+      h1: "Site and app, one design system",
+      lead: "A marketing site and a custom web app built as one product, sharing a single design system, so a whole company feels like one brand.",
+      sections: [
+        ["Why one system", [
+          "Most companies end up with a marketing site from one supplier and an app from another, and the two look and feel like different businesses. Building both together removes that seam.",
+          "One design system means the same colours, type, components and voice across the site and the product. A visitor who moves from the marketing site into the app does not feel like they left.",
+        ]],
+        ["What it covers", [
+          "The marketing site: brand and marketing pages, built for speed, search and conversion.",
+          "The product: the custom web app, dashboard or portal itself.",
+          "The shared system: the design tokens and components both are built from, in English and Turkish.",
+        ]],
+        ["Who it is for", [
+          "A company launching a product alongside its brand, or one whose site and app have drifted apart and now look like two different companies. It suits a team that wants a single partner for both, rather than managing two suppliers.",
+        ]],
+        ["What is included", [
+          "One design system across both the site and the app.",
+          "Marketing site and product built together.",
+          "English and Turkish.",
+          "Launch and post-launch support.",
+        ]],
+        ["How the project runs", [
+          "Brief: a free 30-minute call to define the goal, the scope and the timeline.",
+          "Build: design and development in the open, with a live preview you can click.",
+          "Ship: launch, testing on real devices, then staying on for fixes and changes.",
+        ]],
+        ["Cost and timing", [
+          "There is no fixed price list. Each project is scoped on its own, and a written quote follows within 24 hours of the free intro call.",
+          "Building a site and an app together takes longer than either alone. The timeline is set out in the quote.",
+        ]],
+      ],
+      faq: [
+        ["What is Site + App?", "One design system across the marketing site and the custom web app, so a whole company feels like one product instead of two."],
+        ["Should I build the site and the app with one team?", "It removes the seam. When one team builds both, the colours, type, components and voice match, and a visitor moving from the site into the app does not feel like they left."],
+        ["How much does Site + App cost?", "There is no fixed price list. The project is scoped on its own and you get a written quote within 24 hours of the free intro call."],
+      ],
+    },
+    tr: {
+      title: "Tek tasarım sisteminde site ve uygulama — ai-ulu",
+      desc: "Tek ürün olarak kurulmuş bir tanıtım sitesi ve özel web uygulaması; tek tasarım sistemini paylaşır, böylece tüm şirket tek marka gibi görünür.",
+      h1: "Site ve uygulama, tek tasarım sistemi",
+      lead: "Tek ürün olarak kurulmuş bir tanıtım sitesi ve özel web uygulaması; tek tasarım sistemini paylaşır, böylece tüm şirket tek marka gibi görünür.",
+      sections: [
+        ["Neden tek sistem", [
+          "Çoğu şirket bir tedarikçiden tanıtım sitesi, başka birinden uygulama alır ve ikisi farklı işletmelermiş gibi görünür. İkisini birlikte kurmak bu ayrımı ortadan kaldırır.",
+          "Tek tasarım sistemi, site ve ürün genelinde aynı renkler, tipografi, bileşenler ve ses demektir. Tanıtım sitesinden uygulamaya geçen ziyaretçi, oradan ayrılmış gibi hissetmez.",
+        ]],
+        ["Neleri kapsar", [
+          "Tanıtım sitesi: hız, arama ve dönüşüm için kurulu marka ve tanıtım sayfaları.",
+          "Ürün: özel web uygulaması, panel ya da portalın kendisi.",
+          "Paylaşılan sistem: ikisinin de kurulduğu tasarım belirteçleri ve bileşenler, İngilizce ve Türkçe.",
+        ]],
+        ["Kimler için", [
+          "Markasının yanında bir ürün çıkaran ya da sitesi ve uygulaması birbirinden kopup iki farklı şirket gibi görünen bir şirket. İkisi için tek ortak isteyen, iki tedarikçi yönetmek istemeyen ekipler için uygundur.",
+        ]],
+        ["Neler dahil", [
+          "Site ve uygulama genelinde tek tasarım sistemi.",
+          "Tanıtım sitesi ve ürün birlikte kurulur.",
+          "İngilizce ve Türkçe.",
+          "Yayın ve yayın sonrası destek.",
+        ]],
+        ["Proje nasıl işler", [
+          "Brief: hedefi, kapsamı ve takvimi netleştiren ücretsiz 30 dakikalık görüşme.",
+          "Yapım: tıklayabildiğiniz canlı önizlemeyle, açık açık tasarım ve geliştirme.",
+          "Yayın: yayına alır, gerçek cihazlarda test eder, düzeltme ve değişiklik için yanınızda kalırız.",
+        ]],
+        ["Maliyet ve süre", [
+          "Sabit bir fiyat listesi yoktur. Her proje kendi kapsamıyla fiyatlanır ve ücretsiz ön görüşmeden sonraki 24 saat içinde yazılı teklif alırsınız.",
+          "Site ve uygulamayı birlikte kurmak, tek başına her birinden daha uzun sürer. Takvim teklifte belirtilir.",
+        ]],
+      ],
+      faq: [
+        ["Site + Uygulama nedir?", "Tanıtım sitesi ve özel web uygulaması genelinde tek tasarım sistemi; böylece tüm şirket iki değil tek ürün gibi görünür."],
+        ["Site ve uygulamayı tek ekiple yaptırmalı mıyım?", "Bu ayrımı ortadan kaldırır. Tek ekip ikisini de kurduğunda renkler, tipografi, bileşenler ve ses uyuşur; siteden uygulamaya geçen ziyaretçi oradan ayrılmış gibi hissetmez."],
+        ["Site + Uygulama ne kadar tutar?", "Sabit bir fiyat listesi yoktur. Proje kendi kapsamıyla fiyatlanır ve ücretsiz ön görüşmeden sonraki 24 saat içinde yazılı teklif alırsınız."],
+      ],
+    },
+  },
+];
+
 // İletişim sayfası ve yapısal veri bu tek kaynaktan beslenir.
 export const CONTACT = {
   slug: "contact", slugTr: "iletisim",
@@ -277,6 +534,7 @@ export const T = {
         ["Apps", "Custom web apps and internal tools: dashboards, portals and automations."],
         ["Site + App", "One design system across both, so your whole company feels like one product."],
       ],
+      more: "See how it works",
       feat: {
         h: "More launches,<br>less chaos",
         text: "Hand off the build. We deliver a polished, production-ready result while you focus on running the business.",
@@ -349,7 +607,7 @@ export const T = {
     },
     footer: { rights: "© 2026 ai-ulu. All rights reserved.", tag: "Websites and apps, from first call to live." },
     // Footer/erişilebilirlik: ajanların ve ziyaretçilerin bulması gereken sayfalar.
-    pagesNav: [["about", "About"], ["contact", "Contact"], ["terms", "Terms"], ["privacy", "Privacy"]],
+    pagesNav: [["svcWebsites", "Websites"], ["svcApps", "Apps"], ["svcSiteApp", "Site + App"], ["about", "About"], ["contact", "Contact"], ["terms", "Terms"], ["privacy", "Privacy"]],
     templatesNavLabel: "Templates",
     telLabel: "Call", emailLabel: "Email",
     skip: "Skip to content",
@@ -392,6 +650,7 @@ export const T = {
         ["Uygulamalar", "Özel web uygulamaları ve iç araçlar: paneller, portallar, otomasyonlar."],
         ["Site + Uygulama", "İkisinde tek tasarım sistemi; tüm şirketiniz tek ürün gibi görünür."],
       ],
+      more: "Nasıl çalıştığını gör",
       feat: {
         h: "Daha çok yayın,<br>daha az karmaşa",
         text: "Yapımı devredin. Siz işi yönetmeye odaklanırken biz cilalı, yayına hazır sonucu teslim ederiz.",
@@ -463,7 +722,7 @@ export const T = {
       sent: "Gönderildi",
     },
     footer: { rights: "© 2026 ai-ulu. Tüm hakları saklıdır.", tag: "İlk görüşmeden yayına, web siteleri ve uygulamalar." },
-    pagesNav: [["about", "Hakkında"], ["contact", "İletişim"], ["terms", "Şartlar"], ["privacy", "Gizlilik"]],
+    pagesNav: [["svcWebsites", "Web Siteleri"], ["svcApps", "Uygulamalar"], ["svcSiteApp", "Site + Uygulama"], ["about", "Hakkında"], ["contact", "İletişim"], ["terms", "Şartlar"], ["privacy", "Gizlilik"]],
     templatesNavLabel: "Şablonlar",
     telLabel: "Ara", emailLabel: "E-posta",
     skip: "İçeriğe geç",
