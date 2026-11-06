@@ -1,7 +1,7 @@
 // node build.mjs  ->  dist/ (EN: /, TR: /tr/) + robots, sitemap, llms.txt, favicon
 import { mkdirSync, writeFileSync, cpSync, readFileSync, rmSync } from "node:fs";
 import { execSync } from "node:child_process";
-import { SITE, T, PAGES, CONTACT, SERVICES, panorama, gridIds } from "./content.mjs";
+import { SITE, T, PAGES, CONTACT, SERVICES, CASES, panorama, gridIds } from "./content.mjs";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const css = readFileSync(new URL("./style.css", import.meta.url), "utf8");
@@ -62,15 +62,22 @@ function hero(t, p) {
 </section>`;
 }
 
+// Vaka çalışması olan işler: kart iç sayfaya gider (iç içe <a> olmadan).
+const caseByWork = { attalia: "caseAttalia", hercules: "caseHercules", hydrelon: "caseHydrelon" };
+
 function workGrid(t, p) {
   return gridIds.map((id, i) => {
     const w = byId[id];
-    const tag = w.url ? "a" : "div";
-    const attrs = w.url ? ` href="${href(w.url, p)}" target="_blank" rel="noopener" data-cta="work-${w.id}"` : "";
+    const caseKey = caseByWork[id];
+    const tag = w.url || caseKey ? "a" : "div";
+    const attrs = caseKey
+      ? ` href="${relUrl(t.lang, caseKey)}" data-cta="work-${w.id}"`
+      : w.url ? ` href="${href(w.url, p)}" target="_blank" rel="noopener" data-cta="work-${w.id}"` : "";
+    const openLabel = caseKey ? esc(t.work.case) : w.url ? esc(t.work.open) : esc(t.work.soon);
     return `<${tag} class="bz work-card w${i}"${attrs}><div class="core">
       <div class="shot"><img src="${p}assets/${w.img}"${srcset(p, w.img)} alt="${esc(w.name)}" loading="lazy" decoding="async" width="${IMG_W}" height="${IMG_H}"></div>
       <div class="work-body"><span class="kind">${esc(t.work.kinds[w.kind])}</span><h3>${esc(w.name)}</h3><p>${esc(t.work.desc[w.id])}</p>
-      <span class="open">${w.url ? esc(t.work.open) + arrow : esc(t.work.soon)}</span></div></div></${tag}>`;
+      <span class="open">${openLabel}${caseKey || w.url ? arrow : ""}</span></div></div></${tag}>`;
   }).join("");
 }
 
@@ -403,6 +410,7 @@ const DOCS = [
   ["terms", PAGES.terms.slug, PAGES.terms.slugTr],
   ["privacy", PAGES.privacy.slug, PAGES.privacy.slugTr],
   ...SERVICES.map((s) => [s.key, s.slug, s.slugTr]),
+  ...CASES.map((c) => [c.key, c.slug, c.slugTr]),
 ];
 const slugOf = (key, lang) => { const d = DOCS.find((x) => x[0] === key); return lang === "en" ? d[1] : d[2]; };
 // Sayfa derinliginden bagimsiz, kok-mutlak yol (ic sayfalar /slug/ derinliginde durur).
@@ -589,6 +597,29 @@ for (const svc of SERVICES) {
   }
 }
 
+// ---- Vaka çalışmaları + Markdown karşılıkları ----
+for (const cs of CASES) {
+  for (const lang of ["en", "tr"]) {
+    const t = T[lang], c = cs[lang], slug = lang === "en" ? cs.slug : cs.slugTr;
+    const url = absUrl(lang, slug);
+    const ldNodes = [
+      { "@type": "WebPage", "@id": `${url}#page`, url, name: c.title, description: c.desc, inLanguage: t.htmlLang,
+        isPartOf: { "@id": `${SITE.origin}/#site` }, about: { "@id": `${SITE.origin}/#service` }, publisher: { "@id": `${SITE.origin}/#org` } },
+      { "@type": "CreativeWork", "@id": `${url}#work`, name: c.h1, description: c.desc, url,
+        creator: { "@id": `${SITE.origin}/#org` }, about: cs.client,
+        ...(cs.live ? { sameAs: cs.live } : {}) },
+      ...(c.faq && c.faq.length ? [{ "@type": "FAQPage", "@id": `${url}#faq`,
+        mainEntity: c.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }] : []),
+    ];
+    const html = docShell(t, lang, docHead(t, lang, cs.key, slug, c.title, c.desc, ldNodes),
+      serviceBody(c.h1, c.lead, c.sections, c.faq));
+    const dir = lang === "en" ? `./dist/${slug}` : `./dist/tr/${slug}`;
+    mkdirSync(new URL(dir, import.meta.url), { recursive: true });
+    writeFileSync(new URL(`${dir}/index.html`, import.meta.url), html);
+    writeFileSync(new URL(`${dir}/index.md`, import.meta.url), serviceMarkdown(lang, cs.key, c.title, c.lead, c.sections, c.faq));
+  }
+}
+
 // ---- Ana sayfa Markdown karşılığı (aynı URL + ".md") ----
 function homeMarkdown(lang) {
   const t = T[lang], other = lang === "en" ? "tr" : "en";
@@ -636,6 +667,10 @@ const sitemapUrls = [
   ...SERVICES.flatMap((s) => [
     { loc: "/" + s.slug + "/", alts: docAlts(s.key), pri: "0.8" },
     { loc: "/tr/" + s.slugTr + "/", alts: docAlts(s.key), pri: "0.7" },
+  ]),
+  ...CASES.flatMap((c) => [
+    { loc: "/" + c.slug + "/", alts: docAlts(c.key), pri: "0.7" },
+    { loc: "/tr/" + c.slugTr + "/", alts: docAlts(c.key), pri: "0.6" },
   ]),
   { loc: "/templates/", pri: "0.7" },
   ...TEMPLATES.map(([slug]) => ({ loc: `/templates/${slug}/`, pri: "0.6" })),
@@ -688,9 +723,9 @@ const llmsTxt = `# ai-ulu
 3. Ship - launch, test on real devices, then stay on for fixes and changes.
 
 ## Work
-- Attalia - group site for a global commerce holding.
-- Hercules Investments - brand group site for a US e-commerce company (https://herculesinvestmentsllc.com).
-- Hydrelon - product site for a water-filtration brand (https://hydrelon.com).
+- [Attalia](${absUrl("en", slugOf("caseAttalia", "en"))}) - group site for a global commerce holding.
+- [Hercules Investments](${absUrl("en", slugOf("caseHercules", "en"))}) - brand group site for a US e-commerce company (https://herculesinvestmentsllc.com).
+- [Hydrelon](${absUrl("en", slugOf("caseHydrelon", "en"))}) - product site for a water-filtration brand (https://hydrelon.com).
 - Starter templates: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio
   (${SITE.origin}/templates/). Each is rebuilt around the client's brand, not resold as-is.
 
@@ -749,9 +784,9 @@ const llmsTxtTr = `# ai-ulu
 3. Yayın - yayına al, gerçek cihazlarda test et, düzeltme ve değişiklik için yanında kal.
 
 ## İşler
-- Attalia - küresel ticaret holdingi için grup sitesi.
-- Hercules Investments - ABD merkezli e-ticaret şirketi için marka grubu sitesi (https://herculesinvestmentsllc.com).
-- Hydrelon - su arıtma markası için ürün sitesi (https://hydrelon.com).
+- [Attalia](${absUrl("tr", slugOf("caseAttalia", "tr"))}) - küresel ticaret holdingi için grup sitesi.
+- [Hercules Investments](${absUrl("tr", slugOf("caseHercules", "tr"))}) - ABD merkezli e-ticaret şirketi için marka grubu sitesi (https://herculesinvestmentsllc.com).
+- [Hydrelon](${absUrl("tr", slugOf("caseHydrelon", "tr"))}) - su arıtma markası için ürün sitesi (https://hydrelon.com).
 - Başlangıç şablonları: estetik klinik, restoran, hukuk bürosu, mimarlık stüdyosu, fitness stüdyosu
   (${SITE.origin}/templates/). Her biri müşterinin markasına göre yeniden kurulur, olduğu gibi satılmaz.
 

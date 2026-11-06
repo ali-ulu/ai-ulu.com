@@ -445,6 +445,164 @@ export const SERVICES = [
   },
 ];
 
+// Vaka çalışmaları: yalnızca doğrulanabilir gerçekler (canlı site + repo). Uydurma metrik yok.
+// Sonuç rakamı yoksa yazılmaz; "problem / yaklaşım / ne teslim edildi" çerçevesi kullanılır.
+export const CASES = [
+  {
+    key: "caseAttalia", slug: "work/attalia", slugTr: "isler/attalia",
+    client: "Attalia",
+    live: "",
+    en: {
+      title: "Attalia — group site for a global commerce holding | ai-ulu",
+      desc: "A group website for Attalia, a global commerce holding: one site that presents several businesses under a single brand.",
+      h1: "Attalia — a group site for a global commerce holding",
+      lead: "A group website that presents a global commerce holding's businesses under one clear, coherent brand.",
+      sections: [
+        ["The brief", [
+          "Attalia is a global commerce holding. A holding is not one business but several, and a group site has to serve all of them without becoming a list of unrelated logos.",
+          "The goal was a single site that reads as one company, while still giving each business its own room.",
+        ]],
+        ["What we built", [
+          "A group site: one brand, one design system, one clear hierarchy that holds several businesses together and makes the group feel larger than the sum of its parts.",
+          "The site is art-directed and built for speed and search, like every ai-ulu build, so the group is findable and citable — in classic search and in AI answers.",
+        ]],
+        ["Outcome", [
+          "Attalia has a group site that presents its businesses under one brand. This project is the group-level site for a global commerce holding.",
+        ]],
+      ],
+      faq: [
+        ["What did ai-ulu build for Attalia?", "A group website for a global commerce holding: one brand and one design system presenting several businesses together."],
+        ["Is Attalia's site public?", "Attalia's site is not linked publicly from this page. The description here reflects the project as delivered."],
+      ],
+    },
+    tr: {
+      title: "Attalia — küresel ticaret holdingi için grup sitesi | ai-ulu",
+      desc: "Attalia için grup sitesi: birden çok işi tek marka altında sunan küresel bir ticaret holdingi sitesi.",
+      h1: "Attalia — küresel ticaret holdingi için grup sitesi",
+      lead: "Küresel bir ticaret holdinginin işlerini tek, net ve tutarlı bir marka altında sunan grup sitesi.",
+      sections: [
+        ["Brief", [
+          "Attalia küresel bir ticaret holdingi. Holding tek bir iş değil, birkaç iştir; grup sitesi de ilgisiz logolar listesine dönüşmeden hepsine hizmet etmelidir.",
+          "Hedef, her işe kendi alanını verirken tek şirket gibi okunan tek bir siteydi.",
+        ]],
+        ["Ne kurduk", [
+          "Grup sitesi: tek marka, tek tasarım sistemi, birkaç işi bir arada tutan net bir hiyerarşi; grubu parçalarının toplamından büyük hissettirir.",
+          "Site, her ai-ulu yapımı gibi sanat yönetimli; hız ve arama için kurulu. Böylece grup hem klasik aramada hem yapay zeka cevaplarında bulunur ve alıntılanır.",
+        ]],
+        ["Sonuç", [
+          "Attalia, işlerini tek marka altında sunan bir grup sitesine sahip. Bu proje, küresel bir ticaret holdingi için grup düzeyindeki sitedir.",
+        ]],
+      ],
+      faq: [
+        ["ai-ulu, Attalia için ne kurdu?", "Küresel bir ticaret holdingi için grup sitesi: birkaç işi bir arada sunan tek marka ve tek tasarım sistemi."],
+        ["Attalia'nın sitesi herkese açık mı?", "Attalia'nın sitesi bu sayfadan herkese açık şekilde bağlanmıyor. Buradaki açıklama, teslim edilen projeyi yansıtır."],
+      ],
+    },
+  },
+  {
+    key: "caseHercules", slug: "work/hercules-investments", slugTr: "isler/hercules-investments",
+    client: "Hercules Investments",
+    live: "https://herculesinvestmentsllc.com",
+    en: {
+      title: "Hercules Investments — brand group site for a US e-commerce company | ai-ulu",
+      desc: "A brand group site for Hercules Investments LLC, a US-based e-commerce group building and scaling its own consumer brands in-house.",
+      h1: "Hercules Investments — a brand group site for a US e-commerce company",
+      lead: "A brand group site for Hercules Investments LLC, a US-based e-commerce group that builds and scales its own consumer brands in-house.",
+      sections: [
+        ["The brief", [
+          "Hercules Investments LLC is a US-based e-commerce group. It does not resell other people's products; it builds and scales its own consumer brands in-house.",
+          "That is an unusual position, and it needed a site that says so clearly: an operating company, not a holding on paper.",
+        ]],
+        ["What we built", [
+          "A brand group site that explains the operating model — three jobs, all in-house, every step run on data — and presents the group's brands as part of one story.",
+          "The site carries the message \"We don't resell. We build the brand.\" front and centre, so the difference is clear from the first screen.",
+        ]],
+        ["Outcome", [
+          "Hercules Investments has a brand group site that states its operating model plainly and presents its brands together.",
+        ]],
+      ],
+      faq: [
+        ["What is Hercules Investments?", "A US-based e-commerce group that builds and scales its own consumer brands in-house, rather than reselling other people's products."],
+        ["What did ai-ulu build for Hercules Investments?", "A brand group site that explains the in-house operating model and presents the group's brands as one story."],
+      ],
+    },
+    tr: {
+      title: "Hercules Investments — ABD e-ticaret şirketi için marka grubu sitesi | ai-ulu",
+      desc: "Hercules Investments LLC için marka grubu sitesi: kendi tüketici markalarını kendi bünyesinde kuran ve büyüten ABD merkezli bir e-ticaret grubu.",
+      h1: "Hercules Investments — ABD e-ticaret şirketi için marka grubu sitesi",
+      lead: "Kendi tüketici markalarını kendi bünyesinde kuran ve büyüten ABD merkezli e-ticaret grubu Hercules Investments LLC için marka grubu sitesi.",
+      sections: [
+        ["Brief", [
+          "Hercules Investments LLC, ABD merkezli bir e-ticaret grubu. Başkalarının ürünlerini yeniden satmaz; kendi tüketici markalarını kendi bünyesinde kurar ve büyütür.",
+          "Bu sıra dışı bir konumdur ve bunu net söyleyen bir site gerektiriyordu: kâğıt üstünde bir holding değil, işleten bir şirket.",
+        ]],
+        ["Ne kurduk", [
+          "İşletme modelini anlatan bir marka grubu sitesi — üç iş, hepsi kendi bünyesinde, her adım veriyle — ve grubun markalarını tek bir hikâyenin parçası olarak sunar.",
+          "Site, \"We don't resell. We build the brand.\" mesajını en öne taşır; böylece fark ilk ekrandan bellidir.",
+        ]],
+        ["Sonuç", [
+          "Hercules Investments, işletme modelini açıkça belirten ve markalarını bir arada sunan bir marka grubu sitesine sahip.",
+        ]],
+      ],
+      faq: [
+        ["Hercules Investments nedir?", "Başkalarının ürünlerini yeniden satmak yerine kendi tüketici markalarını kendi bünyesinde kuran ve büyüten ABD merkezli bir e-ticaret grubu."],
+        ["ai-ulu, Hercules Investments için ne kurdu?", "Kendi bünyesindeki işletme modelini anlatan ve grubun markalarını tek hikâye olarak sunan bir marka grubu sitesi."],
+      ],
+    },
+  },
+  {
+    key: "caseHydrelon", slug: "work/hydrelon", slugTr: "isler/hydrelon",
+    client: "Hydrelon",
+    live: "https://hydrelon.com",
+    en: {
+      title: "Hydrelon — product site for a water-filtration brand | ai-ulu",
+      desc: "A product site for Hydrelon, a water-filtration brand: presenting the filter system and the brand's message, Pure Water. Better Life.",
+      h1: "Hydrelon — a product site for a water-filtration brand",
+      lead: "A product site for Hydrelon, a water-filtration brand with the message \"Pure Water. Better Life.\"",
+      sections: [
+        ["The brief", [
+          "Hydrelon is a water-filtration brand, and a brand of Hercules Investments LLC. It needed a product site that presents the filter system clearly and carries the brand's promise.",
+          "A product site has to do two jobs at once: explain what the product is, and make the brand feel worth trusting.",
+        ]],
+        ["What we built", [
+          "A product site built around the brand's message, \"Pure Water. Better Life.\", and the filter system itself: what it is, how it works and why it matters.",
+          "The site is art-directed and built for speed and search, so the product and the brand are findable and citable — in classic search and in AI answers.",
+        ]],
+        ["Outcome", [
+          "Hydrelon has a product site that presents its filter system and its brand message together, at hydrelon.com.",
+        ]],
+      ],
+      faq: [
+        ["What is Hydrelon?", "A water-filtration brand with the message \"Pure Water. Better Life.\" It is a brand of Hercules Investments LLC."],
+        ["What did ai-ulu build for Hydrelon?", "A product site for the water-filtration brand: presenting the filter system and the brand's message, Pure Water. Better Life."],
+      ],
+    },
+    tr: {
+      title: "Hydrelon — su arıtma markası için ürün sitesi | ai-ulu",
+      desc: "Hydrelon için ürün sitesi: filtre sistemini ve markanın \"Pure Water. Better Life.\" mesajını sunan su arıtma markası sitesi.",
+      h1: "Hydrelon — su arıtma markası için ürün sitesi",
+      lead: "Hydrelon için ürün sitesi: \"Pure Water. Better Life.\" mesajlı bir su arıtma markası.",
+      sections: [
+        ["Brief", [
+          "Hydrelon bir su arıtma markası ve Hercules Investments LLC'nin bir markası. Filtre sistemini net sunan ve markanın vaadini taşıyan bir ürün sitesi gerekiyordu.",
+          "Bir ürün sitesi aynı anda iki iş yapmalı: ürünün ne olduğunu anlatmak ve markayı güvenilir hissettirmek.",
+        ]],
+        ["Ne kurduk", [
+          "Markanın \"Pure Water. Better Life.\" mesajı ve filtre sisteminin kendisi etrafında kurulmuş bir ürün sitesi: ne olduğu, nasıl çalıştığı ve neden önemli olduğu.",
+          "Site sanat yönetimli; hız ve arama için kurulu. Böylece ürün ve marka hem klasik aramada hem yapay zeka cevaplarında bulunur ve alıntılanır.",
+        ]],
+        ["Sonuç", [
+          "Hydrelon, filtre sistemini ve marka mesajını bir arada sunan bir ürün sitesine sahip: hydrelon.com.",
+        ]],
+      ],
+      faq: [
+        ["Hydrelon nedir?", "\"Pure Water. Better Life.\" mesajlı bir su arıtma markası. Hercules Investments LLC'nin bir markasıdır."],
+        ["ai-ulu, Hydrelon için ne kurdu?", "Su arıtma markası için ürün sitesi: filtre sistemini ve markanın \"Pure Water. Better Life.\" mesajını sunar."],
+      ],
+    },
+  },
+];
+
 // İletişim sayfası ve yapısal veri bu tek kaynaktan beslenir.
 export const CONTACT = {
   slug: "contact", slugTr: "iletisim",
@@ -553,7 +711,7 @@ export const T = {
         hercules: "Brand group site for a US e-commerce company.",
         law: "Authority site for a boutique law firm.",
       },
-      open: "Open", soon: "Not public yet",
+      open: "Open", soon: "Not public yet", case: "Read the case",
       prev: "Previous project", next: "Next project", pause: "Pause automatic scrolling", play: "Resume automatic scrolling",
     },
     process: {
@@ -669,7 +827,7 @@ export const T = {
         hercules: "ABD merkezli e-ticaret şirketi için marka grubu sitesi.",
         law: "Butik hukuk bürosu için güven veren site.",
       },
-      open: "Aç", soon: "Henüz yayında değil",
+      open: "Aç", soon: "Henüz yayında değil", case: "Vakayı oku",
       prev: "Önceki proje", next: "Sonraki proje", pause: "Otomatik kaydırmayı duraklat", play: "Otomatik kaydırmayı sürdür",
     },
     process: {
