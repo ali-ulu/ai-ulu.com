@@ -39,6 +39,23 @@ jobs:
           test -f shipcraft/dist/about/index.md
           test -f shipcraft/dist/tr/hakkinda/index.html
           test -f shipcraft/dist/tr/iletisim/index.html
+          # Service, case and template pages, plus their markdown twins.
+          test -f shipcraft/dist/services/websites/index.html
+          test -f shipcraft/dist/services/websites/index.md
+          test -f shipcraft/dist/services/apps/index.html
+          test -f shipcraft/dist/services/site-app/index.html
+          test -f shipcraft/dist/tr/hizmetler/web-siteleri/index.html
+          test -f shipcraft/dist/tr/hizmetler/uygulamalar/index.html
+          test -f shipcraft/dist/tr/hizmetler/site-uygulama/index.html
+          test -f shipcraft/dist/work/attalia/index.html
+          test -f shipcraft/dist/work/hercules-investments/index.html
+          test -f shipcraft/dist/work/hydrelon/index.html
+          test -f shipcraft/dist/tr/isler/attalia/index.html
+          test -f shipcraft/dist/tr/isler/hydrelon/index.html
+          test -f shipcraft/dist/templates/clinic/index.md
+          test -f shipcraft/dist/tr/sablonlar/index.html
+          test -f shipcraft/dist/tr/sablonlar/klinik/index.html
+          test -f shipcraft/dist/tr/sablonlar/klinik/index.md
           test -f shipcraft/dist/.well-known/mcp/server-card.json
           test -f shipcraft/dist/llms.txt
           test -f shipcraft/dist/tr/llms.txt

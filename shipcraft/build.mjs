@@ -1,7 +1,7 @@
 // node build.mjs  ->  dist/ (EN: /, TR: /tr/) + robots, sitemap, llms.txt, favicon
 import { mkdirSync, writeFileSync, cpSync, readFileSync, rmSync } from "node:fs";
 import { execSync } from "node:child_process";
-import { SITE, T, PAGES, CONTACT, panorama, gridIds } from "./content.mjs";
+import { SITE, T, PAGES, CONTACT, SERVICES, CASES, TEMPLATES_TR, panorama, gridIds } from "./content.mjs";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const css = readFileSync(new URL("./style.css", import.meta.url), "utf8");
@@ -62,15 +62,22 @@ function hero(t, p) {
 </section>`;
 }
 
+// Vaka çalışması olan işler: kart iç sayfaya gider (iç içe <a> olmadan).
+const caseByWork = { attalia: "caseAttalia", hercules: "caseHercules", hydrelon: "caseHydrelon" };
+
 function workGrid(t, p) {
   return gridIds.map((id, i) => {
     const w = byId[id];
-    const tag = w.url ? "a" : "div";
-    const attrs = w.url ? ` href="${href(w.url, p)}" target="_blank" rel="noopener" data-cta="work-${w.id}"` : "";
+    const caseKey = caseByWork[id];
+    const tag = w.url || caseKey ? "a" : "div";
+    const attrs = caseKey
+      ? ` href="${relUrl(t.lang, caseKey)}" data-cta="work-${w.id}"`
+      : w.url ? ` href="${href(w.url, p)}" target="_blank" rel="noopener" data-cta="work-${w.id}"` : "";
+    const openLabel = caseKey ? esc(t.work.case) : w.url ? esc(t.work.open) : esc(t.work.soon);
     return `<${tag} class="bz work-card w${i}"${attrs}><div class="core">
       <div class="shot"><img src="${p}assets/${w.img}"${srcset(p, w.img)} alt="${esc(w.name)}" loading="lazy" decoding="async" width="${IMG_W}" height="${IMG_H}"></div>
       <div class="work-body"><span class="kind">${esc(t.work.kinds[w.kind])}</span><h3>${esc(w.name)}</h3><p>${esc(t.work.desc[w.id])}</p>
-      <span class="open">${w.url ? esc(t.work.open) + arrow : esc(t.work.soon)}</span></div></div></${tag}>`;
+      <span class="open">${openLabel}${caseKey || w.url ? arrow : ""}</span></div></div></${tag}>`;
   }).join("");
 }
 
@@ -157,7 +164,7 @@ ${hero(t, p)}
   <a class="btn acc" href="#work" data-cta="solution-works">${esc(t.works)}${arrow}</a></section>
 
 <section id="services" class="sec wrap center" aria-labelledby="hs">${eyebrow(t.services.eyebrow)}<h2 id="hs">${t.services.h}</h2><p class="lead">${esc(t.services.sub)}</p>
-  <div class="cards3 svc">${t.services.items.map(([h, b], i) => `<article class="bz"><div class="core svc-card"><h3>${esc(h)}</h3><div class="ico">${icons[i]}</div><p>${esc(b)}</p></div></article>`).join("")}</div>
+  <div class="cards3 svc">${t.services.items.map(([h, b], i) => `<article class="bz"><div class="core svc-card"><h3>${esc(h)}</h3><div class="ico">${icons[i]}</div><p>${esc(b)}</p><a class="btn ghost svc-more" href="${relUrl(t.lang, SERVICES[i].key)}" data-cta="svc-${i}">${esc(t.services.more)}${arrow}</a></div></article>`).join("")}</div>
   <div class="bz"><div class="core feat left"><div><h3 class="feat-h">${t.services.feat.h}</h3><p>${esc(t.services.feat.text)}</p><a class="btn acc" href="#contact" data-cta="feat-start">${esc(t.start)}${arrow}</a></div>
   <ul>${t.services.feat.items.map(([h, b]) => `<li><b>${esc(h)}</b><span>${esc(b)}</span></li>`).join("")}</ul></div></div></section>
 
@@ -187,7 +194,7 @@ ${hero(t, p)}
     <p class="status" id="status" role="status" aria-live="polite"></p>
   </form></div></section>
 </main>
-<footer class="foot wrap"><nav class="foot-nav" aria-label="${esc(t.footer.tag)}">${t.pagesNav.map(([k, l]) => `<a href="${relUrl(t.lang, k)}">${esc(l)}</a>`).join("")}<a href="/templates/">${esc(t.templatesNavLabel)}</a></nav>
+<footer class="foot wrap"><nav class="foot-nav" aria-label="${esc(t.footer.tag)}">${t.pagesNav.map(([k, l]) => `<a href="${relUrl(t.lang, k)}">${esc(l)}</a>`).join("")}<a href="${t.lang === "tr" ? "/tr/sablonlar/" : "/templates/"}">${esc(t.templatesNavLabel)}</a></nav>
   <p>${esc(t.footer.rights)}</p><p>${esc(t.footer.tag)}</p>
   <p class="links"><a href="mailto:${SITE.email}">${SITE.email}</a> · <a href="tel:${SITE.phone}">${esc(t.telLabel)} ${SITE.phone}</a> · <a href="${SITE.github}" rel="noopener">GitHub</a>${SITE.linkedin ? ` · <a href="${SITE.linkedin}" rel="noopener">LinkedIn</a>` : ""} · <a href="${waLink(t.contact.waText)}" rel="noopener">WhatsApp</a></p></footer>
 <a class="wa-float" href="${waLink(t.contact.waText)}" target="_blank" rel="noopener" aria-label="WhatsApp" data-cta="float-whatsapp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/></svg></a>
@@ -206,9 +213,14 @@ const analytics = SITE.cloudflareAnalytics
 // Palet/tasarım korunur; yalnızca <head> meta ve üstte geri dönüş linki eklenir.
 function enrichTemplate(html, name, desc, slug) {
   const url = `${SITE.origin}/templates/${slug}/`;
+  const trTpl = TEMPLATES_TR.find((t) => t.enSlug === slug);
+  const trUrl = trTpl ? `${SITE.origin}/tr/sablonlar/${trTpl.slug}/` : "";
   const head = [
     `<meta name="description" content="${esc(desc)}">`,
     `<link rel="canonical" href="${url}">`,
+    `<link rel="alternate" hreflang="en" href="${url}">`,
+    ...(trUrl ? [`<link rel="alternate" hreflang="tr" href="${trUrl}">`, `<link rel="alternate" hreflang="x-default" href="${url}">`] : []),
+    `<link rel="alternate" type="text/markdown" href="${url}index.md" title="Markdown">`,
     `<meta name="robots" content="index,follow">`,
     `<meta property="og:type" content="website"><meta property="og:site_name" content="ai-ulu">`,
     `<meta property="og:title" content="${esc(name)} — ai-ulu template">`,
@@ -329,18 +341,103 @@ ${h3("Who it's for")}<p style="margin:0 0 30px;font-size:17px;line-height:1.65;c
 </div></section>`;
 }
 
-// /templates/ dizin sayfası — llms.txt bu adrese işaret ediyor, 403 olmamalı.
-function templatesIndex() {
-  const url = `${SITE.origin}/templates/`;
-  const cards = TEMPLATES.map(([slug, name, desc]) =>
-    `<li style="border:1px solid #ffffff1f;border-radius:20px;padding:22px;background:#ffffff0a"><a href="./${slug}/" style="color:#fff6ee;text-decoration:none"><b style="font:300 30px 'Cormorant Garamond',Georgia,serif;display:block;margin-bottom:6px">${esc(name)}</b><span style="color:#ffb23d;font:600 11.5px/1.2 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase">${esc(slug)}</span></a><p style="color:#e8d6c8cc;margin:12px 0 0;font:400 15px/1.6 'Instrument Sans',system-ui,sans-serif">${esc(desc)}</p></li>`
-  ).join("");
+// Türkçe şablon bilgi kartı: EN kartının TR karşılığı (palet-nötr, beyaz kart).
+function templateBodyTr(tpl) {
+  const li = (items) => items.map((i) =>
+    `<li style="display:flex;gap:10px;font-size:16px;line-height:1.6;color:#3a2b22"><span style="color:#d94a08;font-weight:700">·</span><span>${esc(i)}</span></li>`).join("");
+  const h3 = (s) => `<h3 style="margin:0 0 10px;font:600 13px/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8a4a2a">${esc(s)}</h3>`;
+  const btn = "display:inline-flex;align-items:center;gap:8px;border-radius:99px;padding:14px 24px;font:600 15px system-ui,sans-serif;text-decoration:none";
+  return `<section id="about-template-tr" style="max-width:900px;margin:0 auto;padding:72px 6vw 96px;font-family:system-ui,-apple-system,'Segoe UI',sans-serif">
+<div style="background:#fffaf5;border:1px solid #00000014;border-radius:28px;padding:clamp(28px,4vw,52px);box-shadow:0 40px 80px -50px #00000055">
+<p style="margin:0 0 12px;font:600 11.5px/1 ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;color:#b4531a">ai-ulu şablon</p>
+<h2 style="margin:0 0 18px;font:400 clamp(28px,4vw,44px)/1.05 'Cormorant Garamond',Georgia,serif;color:#241a14">${esc(tpl.h)}</h2>
+<p style="margin:0 0 26px;font-size:17px;line-height:1.65;color:#3a2b22;max-width:64ch">${esc(tpl.intro)}</p>
+${h3("Neler dahil")}<ul style="margin:0 0 26px;padding:0;list-style:none;display:grid;gap:8px">${li(tpl.includes)}</ul>
+${h3("Kimler için")}<p style="margin:0 0 30px;font-size:17px;line-height:1.65;color:#3a2b22;max-width:64ch">${esc(tpl.audience)}</p>
+<p style="margin:0;display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+<a href="${SITE.origin}/tr/#contact" style="${btn};background:#d94a08;color:#fff">Bu şablonu markanıza uyarlayın →</a>
+<a href="${SITE.origin}/tr/sablonlar/" style="${btn};border:1px solid #00000022;color:#241a14">Tüm şablonlar</a></p>
+</div></section>`;
+}
+
+// TR şablon sayfası Markdown karşılığı.
+function templateMarkdownTr(tpl, trUrl, enUrl) {
+  const head = `# ${tpl.h}\n\n> ${tpl.lead}\n\n${tpl.intro}\n\n`;
+  const inc = `## Neler dahil\n${tpl.includes.map((i) => `- ${i}`).join("\n")}\n\n`;
+  const aud = `## Kimler için\n${tpl.audience}\n\n`;
+  const contact = `## İletişim\n- E-posta: ${SITE.email}\n- Telefon: ${SITE.phone}\n- WhatsApp: https://wa.me/${SITE.whatsapp}\n- İletişim sayfası: ${absUrl("tr", slugOf("contact", "tr"))}`;
+  return `${head}${inc}${aud}${contact}\n\n---\nCanonical: ${trUrl}\nLanguage: tr (en: ${enUrl})\n`;
+}
+
+// EN şablon sayfası Markdown karşılığı (/templates/<slug>/index.md).
+function templateMarkdownEn(slug) {
+  const c = TEMPLATE_CONTENT[slug];
+  const enUrl = `${SITE.origin}/templates/${slug}/`;
+  const trTpl = TEMPLATES_TR.find((t) => t.enSlug === slug);
+  const trUrl = trTpl ? `${SITE.origin}/tr/sablonlar/${trTpl.slug}/` : "";
+  const head = `# ${c.h}\n\n> ${c.intro}\n\n`;
+  const inc = `## What's included\n${c.includes.map((i) => `- ${i}`).join("\n")}\n\n`;
+  const aud = `## Who it's for\n${c.audience}\n\n`;
+  const contact = `## Contact\n- Email: ${SITE.email}\n- Phone: ${SITE.phone}\n- WhatsApp: https://wa.me/${SITE.whatsapp}\n- Contact page: ${absUrl("en", slugOf("contact", "en"))}`;
+  return `${head}${inc}${aud}${contact}\n\n---\nCanonical: ${enUrl}\nLanguage: en${trUrl ? ` (tr: ${trUrl})` : ""}\n`;
+}
+
+// /templates/ ve /tr/sablonlar/ dizin sayfaları — llms.txt bu adreslere işaret ediyor, 403 olmamalı.
+function templatesIndex(lang = "en") {
+  const tr = lang === "tr";
+  const url = `${SITE.origin}${tr ? "/tr/sablonlar/" : "/templates/"}`;
+  const enUrl = `${SITE.origin}/templates/`;
+  const altHead = tr
+    ? `<link rel="canonical" href="${url}"><link rel="alternate" hreflang="tr" href="${url}"><link rel="alternate" hreflang="en" href="${enUrl}"><link rel="alternate" hreflang="x-default" href="${enUrl}">`
+    : `<link rel="canonical" href="${url}"><link rel="alternate" hreflang="en" href="${url}"><link rel="alternate" hreflang="tr" href="${SITE.origin}/tr/sablonlar/"><link rel="alternate" hreflang="x-default" href="${url}">`;
+  const cards = tr
+    ? TEMPLATES_TR.map((t) =>
+        `<li style="border:1px solid #ffffff1f;border-radius:20px;padding:22px;background:#ffffff0a"><a href="./${t.slug}/" style="color:#fff6ee;text-decoration:none"><b style="font:300 30px 'Cormorant Garamond',Georgia,serif;display:block;margin-bottom:6px">${esc(t.name)}</b><span style="color:#ffb23d;font:600 11.5px/1.2 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase">${esc(t.slug)}</span></a><p style="color:#e8d6c8cc;margin:12px 0 0;font:400 15px/1.6 'Instrument Sans',system-ui,sans-serif">${esc(t.desc)}</p></li>`
+      ).join("")
+    : TEMPLATES.map(([slug, name, desc]) =>
+        `<li style="border:1px solid #ffffff1f;border-radius:20px;padding:22px;background:#ffffff0a"><a href="./${slug}/" style="color:#fff6ee;text-decoration:none"><b style="font:300 30px 'Cormorant Garamond',Georgia,serif;display:block;margin-bottom:6px">${esc(name)}</b><span style="color:#ffb23d;font:600 11.5px/1.2 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase">${esc(slug)}</span></a><p style="color:#e8d6c8cc;margin:12px 0 0;font:400 15px/1.6 'Instrument Sans',system-ui,sans-serif">${esc(desc)}</p></li>`
+      ).join("");
+  const c = tr ? {
+    title: "Web sitesi şablonları — ai-ulu",
+    desc: "ai-ulu'dan beş başlangıç web sitesi şablonu: estetik klinik, restoran, hukuk bürosu, mimarlık stüdyosu ve fitness stüdyosu. Her biri markanıza uyarlanır.",
+    ogTitle: "Web sitesi şablonları — ai-ulu", ogDesc: "Beş başlangıç şablonu, her biri markanıza uyarlanır.",
+    back: "← ai-ulu", h1: "Beş şablon,<br><em>tek yapı sistemi.</em>",
+    lead: "Klinikler, restoranlar, hukuk büroları, stüdyolar ve fitness için başlangıç siteleri. Her biri markanız, içeriğiniz ve hedefleriniz etrafında yeniden kurulur — olduğu gibi satılmaz.",
+    h2a: "Bu şablonlar nedir, ne değildir",
+    p1: "Bunlar ai-ulu'nun yaygın yerel işletme türleri için kurduğu beş bitmiş başlangıç sitesidir. Her biri gerçek, çalışan bir düzendir — bir klinik randevu akışı, bir restoran menü ve rezervasyon akışı, bir hukuk bürosunun çalışma alanları, bir mimarlık portföyü ve bir fitness ders programı. Herhangi birini açıp eksiksiz bir sayfada gezinebilirsiniz.",
+    p2: "Bunlar, alıp olduğu gibi bıraktığınız hazır temalar değildir. ai-ulu en yakın şablonu alır ve markanız, içeriğiniz ve hedefleriniz etrafında yeniden kurar: renkleriniz ve tipografiniz, hizmetleriniz, fotoğraflarınız, randevu ya da talep akışınız. Şablon başlangıç noktasıdır, bitmiş site değil.",
+    h2b: "Süreç nasıl işler",
+    steps: [
+      "İşinize en yakın şablonu seçin — ya da ne yaptığınızı söyleyin, biz önerelim.",
+      "Hedefi, kitleyi ve takvimi belirleyen ücretsiz 30 dakikalık görüşme. 24 saat içinde yazılı teklif alırsınız.",
+      "Şablonu markanız ve içeriğiniz etrafında yeniden kurarız; yapılırken tıklayabildiğiniz canlı bir önizlemeyle.",
+      "Yayına alır, gerçek cihazlarda test eder ve düzeltme ile değişiklik için yanınızda kalırız.",
+    ],
+    outro: `Önce büyük resmi görmek ister misiniz? <a href="${SITE.origin}/tr/" style="color:#ffb23d">ai-ulu nasıl çalışır</a> sayfasına bakın ya da <a href="${SITE.origin}/tr/#contact" style="color:#ffb23d">ücretsiz ön görüşme başlatın</a>.`,
+  } : {
+    title: "Website templates — ai-ulu",
+    desc: "Five starter website templates from ai-ulu: aesthetic clinic, restaurant, law firm, architecture studio and fitness studio. Each one is adapted to your brand.",
+    ogTitle: "Website templates — ai-ulu", ogDesc: "Five starter templates, each adapted to your brand.",
+    back: "← ai-ulu", h1: "Five templates,<br><em>one build system.</em>",
+    lead: "Starter sites for clinics, restaurants, law firms, studios and fitness. Each one is rebuilt around your brand, content and goals — not resold as-is.",
+    h2a: "What these templates are, and what they are not",
+    p1: "These are five finished starter websites ai-ulu built for common local-business types. Each one is a real, working layout — a clinic booking flow, a restaurant menu and reservation flow, a law firm's practice areas, an architecture portfolio, and a fitness class schedule. You can open any of them and click through a complete page.",
+    p2: "They are not off-the-shelf themes you buy and leave as-is. ai-ulu takes the closest template and rebuilds it around your brand, your content and your goals: your colours and type, your services, your photos, your booking or enquiry flow. The template is the starting point, not the finished site.",
+    h2b: "How the process works",
+    steps: [
+      "Pick the template closest to your business — or tell us what you do and we will suggest one.",
+      "A free 30-minute call to set the goal, the audience and the timeline. You get a written quote within 24 hours.",
+      "We rebuild the template around your brand and content, with a live preview you can click while it is built.",
+      "We launch it, test it on real devices and stay on for fixes and changes.",
+    ],
+    outro: `Want the full picture first? See <a href="${SITE.origin}/" style="color:#ffb23d">how ai-ulu works</a>, or <a href="${SITE.origin}/#contact" style="color:#ffb23d">start a free intro call</a>.`,
+  };
   return `<!doctype html>
-<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Website templates — ai-ulu</title>
-<meta name="description" content="Five starter website templates from ai-ulu: aesthetic clinic, restaurant, law firm, architecture studio and fitness studio. Each one is adapted to your brand.">
-<link rel="canonical" href="${url}">
-<meta property="og:title" content="Website templates — ai-ulu"><meta property="og:description" content="Five starter templates, each adapted to your brand.">
+<html lang="${lang}" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(c.title)}</title>
+<meta name="description" content="${esc(c.desc)}">
+${altHead}
+<meta property="og:title" content="${esc(c.ogTitle)}"><meta property="og:description" content="${esc(c.ogDesc)}">
 <meta property="og:url" content="${url}"><meta property="og:image" content="${SITE.origin}/assets/og-cover.png">
 <meta name="theme-color" content="#090401">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
@@ -353,22 +450,19 @@ ul{list-style:none;padding:0;margin:56px 0 0;display:grid;gap:16px;grid-template
 .back{display:inline-flex;gap:10px;align-items:center;color:#ffb23d;text-decoration:none;font:500 15px system-ui;margin-bottom:34px}
 p.lead{color:#e8d6c8cc;max-width:60ch;font-size:clamp(17px,1.5vw,20px)}</style></head>
 <body><div class="aur" aria-hidden="true"></div>
-<main class="w"><a class="back" href="${SITE.origin}/">← ai-ulu</a>
-<h1>Five templates,<br><em>one build system.</em></h1>
-<p class="lead">Starter sites for clinics, restaurants, law firms, studios and fitness. Each one is rebuilt around your brand, content and goals — not resold as-is.</p>
+<main class="w"><a class="back" href="${SITE.origin}${tr ? "/tr/" : "/"}">${esc(c.back)}</a>
+<h1>${c.h1}</h1>
+<p class="lead">${esc(c.lead)}</p>
 <ul>${cards}</ul>
 <section class="expl" style="margin-top:72px;max-width:70ch">
-<h2 style="font:300 clamp(28px,4vw,44px)/1.05 'Cormorant Garamond',Georgia,serif;margin:0 0 18px">What these templates are, and what they are not</h2>
-<p style="color:#e8d6c8cc;font-size:17px;line-height:1.65;margin:0 0 18px">These are five finished starter websites ai-ulu built for common local-business types. Each one is a real, working layout — a clinic booking flow, a restaurant menu and reservation flow, a law firm's practice areas, an architecture portfolio, and a fitness class schedule. You can open any of them and click through a complete page.</p>
-<p style="color:#e8d6c8cc;font-size:17px;line-height:1.65;margin:0 0 18px">They are not off-the-shelf themes you buy and leave as-is. ai-ulu takes the closest template and rebuilds it around your brand, your content and your goals: your colours and type, your services, your photos, your booking or enquiry flow. The template is the starting point, not the finished site.</p>
-<h2 style="font:300 clamp(24px,3vw,34px)/1.1 'Cormorant Garamond',Georgia,serif;margin:44px 0 14px">How the process works</h2>
+<h2 style="font:300 clamp(28px,4vw,44px)/1.05 'Cormorant Garamond',Georgia,serif;margin:0 0 18px">${esc(c.h2a)}</h2>
+<p style="color:#e8d6c8cc;font-size:17px;line-height:1.65;margin:0 0 18px">${esc(c.p1)}</p>
+<p style="color:#e8d6c8cc;font-size:17px;line-height:1.65;margin:0 0 18px">${esc(c.p2)}</p>
+<h2 style="font:300 clamp(24px,3vw,34px)/1.1 'Cormorant Garamond',Georgia,serif;margin:44px 0 14px">${esc(c.h2b)}</h2>
 <ol style="color:#e8d6c8cc;font-size:17px;line-height:1.7;margin:0;padding-left:1.2em">
-<li>Pick the template closest to your business — or tell us what you do and we will suggest one.</li>
-<li>A free 30-minute call to set the goal, the audience and the timeline. You get a written quote within 24 hours.</li>
-<li>We rebuild the template around your brand and content, with a live preview you can click while it is built.</li>
-<li>We launch it, test it on real devices and stay on for fixes and changes.</li>
+${c.steps.map((s) => `<li>${esc(s)}</li>`).join("")}
 </ol>
-<p style="color:#e8d6c8cc;font-size:17px;line-height:1.65;margin:30px 0 0">Want the full picture first? See <a href="${SITE.origin}/" style="color:#ffb23d">how ai-ulu works</a>, or <a href="${SITE.origin}/#contact" style="color:#ffb23d">start a free intro call</a>.</p>
+<p style="color:#e8d6c8cc;font-size:17px;line-height:1.65;margin:30px 0 0">${c.outro}</p>
 </section></main></body></html>`;
 }
 
@@ -396,12 +490,14 @@ a.b{display:inline-flex;align-items:center;gap:12px;background:linear-gradient(1
 const base = (lang) => (lang === "en" ? "" : "/tr/");
 const pagePath = (lang, slug) => `${base(lang)}${slug}/`;
 const absUrl = (lang, slug) => `${SITE.origin}/${base(lang).replace(/^\//, "")}${slug}/`;
-// Dört içerik sayfası + iletişim: slug EN/TR'de yerelleşir.
+// Dört içerik sayfası + iletişim + hizmet sayfaları: slug EN/TR'de yerelleşir.
 const DOCS = [
   ["about", PAGES.about.slug, PAGES.about.slugTr],
   ["contact", CONTACT.slug, CONTACT.slugTr],
   ["terms", PAGES.terms.slug, PAGES.terms.slugTr],
   ["privacy", PAGES.privacy.slug, PAGES.privacy.slugTr],
+  ...SERVICES.map((s) => [s.key, s.slug, s.slugTr]),
+  ...CASES.map((c) => [c.key, c.slug, c.slugTr]),
 ];
 const slugOf = (key, lang) => { const d = DOCS.find((x) => x[0] === key); return lang === "en" ? d[1] : d[2]; };
 // Sayfa derinliginden bagimsiz, kok-mutlak yol (ic sayfalar /slug/ derinliginde durur).
@@ -457,7 +553,7 @@ ${headHtml}
 <a class="skip" href="#main">${esc(t.skip)}</a>
 ${nav(t)}
 <main id="main"><div class="wrap doc">${bodyHtml}</div></main>
-<footer class="foot wrap"><nav class="foot-nav" aria-label="${esc(t.footer.tag)}">${t.pagesNav.map(([k, l]) => `<a href="${relUrl(t.lang, k)}">${esc(l)}</a>`).join("")}<a href="/templates/">${esc(t.templatesNavLabel)}</a></nav>
+<footer class="foot wrap"><nav class="foot-nav" aria-label="${esc(t.footer.tag)}">${t.pagesNav.map(([k, l]) => `<a href="${relUrl(t.lang, k)}">${esc(l)}</a>`).join("")}<a href="${t.lang === "tr" ? "/tr/sablonlar/" : "/templates/"}">${esc(t.templatesNavLabel)}</a></nav>
   <p>${esc(t.footer.rights)}</p><p>${esc(t.footer.tag)}</p>
   <p class="links"><a href="mailto:${SITE.email}">${SITE.email}</a> · <a href="tel:${SITE.phone}">${esc(t.telLabel)} ${SITE.phone}</a> · <a href="${SITE.github}" rel="noopener">GitHub</a>${SITE.linkedin ? ` · <a href="${SITE.linkedin}" rel="noopener">LinkedIn</a>` : ""} · <a href="${waLink(t.contact.waText)}" rel="noopener">WhatsApp</a></p></footer>
 <a class="wa-float" href="${waLink(t.contact.waText)}" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.4.6c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.4.2-.1.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/></svg></a>
@@ -484,6 +580,29 @@ function docMarkdown(lang, key, title, lead, sections) {
   const contact = `## Contact\n- Email: ${SITE.email}\n- Phone: ${SITE.phone}\n- WhatsApp: https://wa.me/${SITE.whatsapp}\n- Contact page: ${absUrl(lang, slugOf("contact", lang))}`;
   const foot = `\n\n---\nCanonical: ${absUrl(lang, slugOf(key, lang))}\nLanguage: ${lang} (${other}: ${absUrl(other, slugOf(key, other))})\n`;
   return head + body + (key === "contact" ? "" : "\n\n" + contact) + foot;
+}
+
+// Hizmet sayfası gövdesi: H1 + lead + paragraflı bölümler (alıntılanabilir düz metin).
+function serviceBody(title, lead, sections, faq) {
+  const secs = sections.map(([h, paras]) =>
+    `<section><h2>${esc(h)}</h2>${paras.map((p) => `<p>${esc(p)}</p>`).join("")}</section>`
+  ).join("");
+  const faqHtml = faq && faq.length
+    ? `<section id="faq"><h2>FAQ</h2><div class="faq left">${faq.map(([q, a]) =>
+        `<details class="glass"><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div></section>`
+    : "";
+  return `<h1>${esc(title)}</h1><p class="lead">${esc(lead)}</p>${secs}${faqHtml}`;
+}
+
+// Hizmet sayfası Markdown karşılığı.
+function serviceMarkdown(lang, key, title, lead, sections, faq) {
+  const other = lang === "en" ? "tr" : "en";
+  const head = `# ${title}\n\n> ${lead}\n\n`;
+  const body = sections.map(([h, paras]) => `## ${h}\n${paras.join("\n\n")}`).join("\n\n");
+  const faqMd = faq && faq.length ? `\n\n## FAQ\n${faq.map(([q, a]) => `- ${q} ${a}`).join("\n")}` : "";
+  const contact = `## Contact\n- Email: ${SITE.email}\n- Phone: ${SITE.phone}\n- WhatsApp: https://wa.me/${SITE.whatsapp}\n- Contact page: ${absUrl(lang, slugOf("contact", lang))}`;
+  const foot = `\n\n---\nCanonical: ${absUrl(lang, slugOf(key, lang))}\nLanguage: ${lang} (${other}: ${absUrl(other, slugOf(key, other))})\n`;
+  return head + body + faqMd + "\n\n" + contact + foot;
 }
 
 rmSync(new URL("./dist", import.meta.url), { recursive: true, force: true });
@@ -538,6 +657,56 @@ for (const lang of ["en", "tr"]) {
   }
 }
 
+// ---- Hizmet sayfaları (hizmet başına derin sayfa) + Markdown karşılıkları ----
+for (const svc of SERVICES) {
+  for (const lang of ["en", "tr"]) {
+    const t = T[lang], c = svc[lang], slug = lang === "en" ? svc.slug : svc.slugTr;
+    const url = absUrl(lang, slug);
+    const offer = t.pricing.packs[svc.pack];
+    const ldNodes = [
+      { "@type": "Service", "@id": `${url}#service`, name: c.h1, description: c.desc, serviceType: c.h1,
+        url, provider: { "@id": `${SITE.origin}/#org` },
+        areaServed: [{ "@type": "Country", name: "Turkey" }, { "@type": "Place", name: "Worldwide" }],
+        availableLanguage: ["English", "Turkish"],
+        offers: { "@type": "Offer", name: offer[0], description: offer[1].join(", "), priceCurrency: "USD",
+          availability: "https://schema.org/InStock", seller: { "@id": `${SITE.origin}/#org` } } },
+      { "@type": "WebPage", "@id": `${url}#page`, url, name: c.title, description: c.desc, inLanguage: t.htmlLang,
+        isPartOf: { "@id": `${SITE.origin}/#site` }, about: { "@id": `${url}#service` }, publisher: { "@id": `${SITE.origin}/#org` } },
+      ...(c.faq && c.faq.length ? [{ "@type": "FAQPage", "@id": `${url}#faq`,
+        mainEntity: c.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }] : []),
+    ];
+    const html = docShell(t, lang, docHead(t, lang, svc.key, slug, c.title, c.desc, ldNodes),
+      serviceBody(c.h1, c.lead, c.sections, c.faq));
+    const dir = lang === "en" ? `./dist/${slug}` : `./dist/tr/${slug}`;
+    mkdirSync(new URL(dir, import.meta.url), { recursive: true });
+    writeFileSync(new URL(`${dir}/index.html`, import.meta.url), html);
+    writeFileSync(new URL(`${dir}/index.md`, import.meta.url), serviceMarkdown(lang, svc.key, c.title, c.lead, c.sections, c.faq));
+  }
+}
+
+// ---- Vaka çalışmaları + Markdown karşılıkları ----
+for (const cs of CASES) {
+  for (const lang of ["en", "tr"]) {
+    const t = T[lang], c = cs[lang], slug = lang === "en" ? cs.slug : cs.slugTr;
+    const url = absUrl(lang, slug);
+    const ldNodes = [
+      { "@type": "WebPage", "@id": `${url}#page`, url, name: c.title, description: c.desc, inLanguage: t.htmlLang,
+        isPartOf: { "@id": `${SITE.origin}/#site` }, about: { "@id": `${SITE.origin}/#service` }, publisher: { "@id": `${SITE.origin}/#org` } },
+      { "@type": "CreativeWork", "@id": `${url}#work`, name: c.h1, description: c.desc, url,
+        creator: { "@id": `${SITE.origin}/#org` }, about: cs.client,
+        ...(cs.live ? { sameAs: cs.live } : {}) },
+      ...(c.faq && c.faq.length ? [{ "@type": "FAQPage", "@id": `${url}#faq`,
+        mainEntity: c.faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) }] : []),
+    ];
+    const html = docShell(t, lang, docHead(t, lang, cs.key, slug, c.title, c.desc, ldNodes),
+      serviceBody(c.h1, c.lead, c.sections, c.faq));
+    const dir = lang === "en" ? `./dist/${slug}` : `./dist/tr/${slug}`;
+    mkdirSync(new URL(dir, import.meta.url), { recursive: true });
+    writeFileSync(new URL(`${dir}/index.html`, import.meta.url), html);
+    writeFileSync(new URL(`${dir}/index.md`, import.meta.url), serviceMarkdown(lang, cs.key, c.title, c.lead, c.sections, c.faq));
+  }
+}
+
 // ---- Ana sayfa Markdown karşılığı (aynı URL + ".md") ----
 function homeMarkdown(lang) {
   const t = T[lang], other = lang === "en" ? "tr" : "en";
@@ -555,9 +724,50 @@ cpSync(new URL("./templates", import.meta.url), new URL("./dist/templates", impo
 TEMPLATES.forEach(([slug, name, desc]) => {
   const f = new URL(`./dist/templates/${slug}/index.html`, import.meta.url);
   writeFileSync(f, enrichTemplate(readFileSync(f, "utf8"), name, desc, slug));
+  writeFileSync(new URL(`./dist/templates/${slug}/index.md`, import.meta.url), templateMarkdownEn(slug));
 });
-writeFileSync(new URL("./dist/templates/index.html", import.meta.url), templatesIndex());
+writeFileSync(new URL("./dist/templates/index.html", import.meta.url), templatesIndex("en"));
+mkdirSync(new URL("./dist/tr/sablonlar", import.meta.url), { recursive: true });
+writeFileSync(new URL("./dist/tr/sablonlar/index.html", import.meta.url), templatesIndex("tr"));
 writeFileSync(new URL("./dist/404.html", import.meta.url), notFound());
+
+// ---- Türkçe şablon sayfaları: /tr/sablonlar/<slug>/ (EN şablonun TR karşılığı) ----
+// EN şablon HTML'i temel alınır; TR meta + hreflang + TR içerik bloğu eklenir.
+for (const tpl of TEMPLATES_TR) {
+  const enUrl = `${SITE.origin}/templates/${tpl.enSlug}/`;
+  const trUrl = `${SITE.origin}/tr/sablonlar/${tpl.slug}/`;
+  let html = readFileSync(new URL(`./dist/templates/${tpl.enSlug}/index.html`, import.meta.url), "utf8");
+  // EN'den miras kalan canonical/hreflang satırlarını temizle (TR kendi setini alır).
+  html = html.replace(/<link rel="canonical"[^>]*>/g, "").replace(/<link rel="alternate" hreflang="[^"]*"[^>]*>/g, "");
+  // <html lang> ve <title> TR'ye çevrilir.
+  html = html.replace(/<html lang="en"/, '<html lang="tr"').replace(/<title>[^<]*<\/title>/, `<title>${esc(tpl.title)}</title>`);
+  // og:url ve og:locale TR'ye çevrilir.
+  html = html.replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${trUrl}">`)
+             .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${esc(tpl.title)}">`)
+             .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${esc(tpl.desc)}">`)
+             .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${esc(tpl.desc)}">`);
+  // JSON-LD şemasındaki EN dil/URL değerleri TR'ye çevrilir.
+  html = html.replace(/"inLanguage":"en"/g, '"inLanguage":"tr"')
+             .replace(new RegExp(enUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trUrl);
+  const head = [
+    `<link rel="canonical" href="${trUrl}">`,
+    `<link rel="alternate" hreflang="tr" href="${trUrl}">`,
+    `<link rel="alternate" hreflang="en" href="${enUrl}">`,
+    `<link rel="alternate" hreflang="x-default" href="${enUrl}">`,
+    `<link rel="alternate" type="text/markdown" href="${trUrl}index.md" title="Markdown">`,
+  ].join("");
+  html = html.replace("</head>", `${head}</head>`);
+  // EN bilgi kartını TR bilgi kartıyla değiştir (varsa), yoksa sonuna ekle.
+  html = html.replace(/<section id="about-template"[\s\S]*?<\/section>/, templateBodyTr(tpl));
+  if (!html.includes('id="about-template-tr"')) html = html.replace("</body>", `${templateBodyTr(tpl)}</body>`);
+  // Dönüş şeridi metnini TR yap.
+  html = html.replace("← <b style=\"font-weight:600\">ai-ulu</b> · this template is adapted to your brand",
+    "← <b style=\"font-weight:600\">ai-ulu</b> · bu şablon markanıza uyarlanır");
+  const dir = `./dist/tr/sablonlar/${tpl.slug}`;
+  mkdirSync(new URL(dir, import.meta.url), { recursive: true });
+  writeFileSync(new URL(`${dir}/index.html`, import.meta.url), html);
+  writeFileSync(new URL(`${dir}/index.md`, import.meta.url), templateMarkdownTr(tpl, trUrl, enUrl));
+}
 const fav = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#090401"/><path d="M16 6 6 13v13h20V13z" fill="#fa6114"/></svg>`;
 writeFileSync(new URL("./dist/favicon.svg", import.meta.url), fav);
 writeFileSync(new URL("./dist/tr/favicon.svg", import.meta.url), fav);
@@ -582,8 +792,17 @@ const sitemapUrls = [
   { loc: "/tr/" + slugOf("terms", "tr") + "/", alts: docAlts("terms"), pri: "0.4" },
   { loc: "/" + slugOf("privacy", "en") + "/", alts: docAlts("privacy"), pri: "0.4" },
   { loc: "/tr/" + slugOf("privacy", "tr") + "/", alts: docAlts("privacy"), pri: "0.4" },
+  ...SERVICES.flatMap((s) => [
+    { loc: "/" + s.slug + "/", alts: docAlts(s.key), pri: "0.8" },
+    { loc: "/tr/" + s.slugTr + "/", alts: docAlts(s.key), pri: "0.7" },
+  ]),
+  ...CASES.flatMap((c) => [
+    { loc: "/" + c.slug + "/", alts: docAlts(c.key), pri: "0.7" },
+    { loc: "/tr/" + c.slugTr + "/", alts: docAlts(c.key), pri: "0.6" },
+  ]),
   { loc: "/templates/", pri: "0.7" },
   ...TEMPLATES.map(([slug]) => ({ loc: `/templates/${slug}/`, pri: "0.6" })),
+  ...TEMPLATES_TR.map((tpl) => ({ loc: `/tr/sablonlar/${tpl.slug}/`, pri: "0.5" })),
 ];
 // lastmod: içeriğin gerçek son commit tarihi (uydurma "bugün" değil). Git yoksa alan atlanır.
 const lastmod = (() => {
@@ -617,9 +836,9 @@ const llmsTxt = `# ai-ulu
 - [Türkçe](${SITE.origin}/tr/): the Turkish version of this site.
 
 ## Services
-- Websites: art-directed brand and marketing sites. Fast, searchable, built to convert.
-- Apps: custom web apps and internal tools - dashboards, portals, automations.
-- Site + App: one design system across both, so a whole company feels like one product.
+- [Websites](${absUrl("en", slugOf("svcWebsites", "en"))}): art-directed brand and marketing sites. Fast, searchable, built to convert.
+- [Apps](${absUrl("en", slugOf("svcApps", "en"))}): custom web apps and internal tools - dashboards, portals, automations.
+- [Site + App](${absUrl("en", slugOf("svcSiteApp", "en"))}): one design system across both, so a whole company feels like one product.
 - Post-launch support: fixes, changes and ongoing maintenance.
 
 ## Pricing
@@ -633,9 +852,9 @@ const llmsTxt = `# ai-ulu
 3. Ship - launch, test on real devices, then stay on for fixes and changes.
 
 ## Work
-- Attalia - group site for a global commerce holding.
-- Hercules Investments - brand group site for a US e-commerce company (https://herculesinvestmentsllc.com).
-- Hydrelon - product site for a water-filtration brand (https://hydrelon.com).
+- [Attalia](${absUrl("en", slugOf("caseAttalia", "en"))}) - group site for a global commerce holding.
+- [Hercules Investments](${absUrl("en", slugOf("caseHercules", "en"))}) - brand group site for a US e-commerce company (https://herculesinvestmentsllc.com).
+- [Hydrelon](${absUrl("en", slugOf("caseHydrelon", "en"))}) - product site for a water-filtration brand (https://hydrelon.com).
 - Starter templates: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio
   (${SITE.origin}/templates/). Each is rebuilt around the client's brand, not resold as-is.
 
@@ -674,13 +893,13 @@ const llmsTxtTr = `# ai-ulu
 - [İletişim](${absUrl("tr", slugOf("contact", "tr"))}): e-posta, telefon ve WhatsApp.
 - [Hizmet Şartları](${absUrl("tr", slugOf("terms", "tr"))}): müşteri işleri için şartlar.
 - [Gizlilik](${absUrl("tr", slugOf("privacy", "tr"))}): nelerin toplandığı ve nedeni.
-- [Şablonlar](${SITE.origin}/templates/): markaya göre yeniden kurulan beş başlangıç sitesi.
+- [Şablonlar](${SITE.origin}/tr/sablonlar/): markaya göre yeniden kurulan beş başlangıç sitesi.
 - [English](${SITE.origin}/): sitenin İngilizce sürümü.
 
 ## Hizmetler
-- Web Siteleri: sanat yönetimli marka ve tanıtım siteleri. Hızlı, aranabilir, dönüşüm için kurulu.
-- Uygulamalar: özel web uygulamaları ve iç araçlar - paneller, portallar, otomasyonlar.
-- Site + Uygulama: ikisinde tek tasarım sistemi; tüm şirket tek ürün gibi görünür.
+- [Web Siteleri](${absUrl("tr", slugOf("svcWebsites", "tr"))}): sanat yönetimli marka ve tanıtım siteleri. Hızlı, aranabilir, dönüşüm için kurulu.
+- [Uygulamalar](${absUrl("tr", slugOf("svcApps", "tr"))}): özel web uygulamaları ve iç araçlar - paneller, portallar, otomasyonlar.
+- [Site + Uygulama](${absUrl("tr", slugOf("svcSiteApp", "tr"))}): ikisinde tek tasarım sistemi; tüm şirket tek ürün gibi görünür.
 - Yayın sonrası destek: düzeltmeler, değişiklikler ve sürekli bakım.
 
 ## Fiyatlandırma
@@ -694,11 +913,11 @@ const llmsTxtTr = `# ai-ulu
 3. Yayın - yayına al, gerçek cihazlarda test et, düzeltme ve değişiklik için yanında kal.
 
 ## İşler
-- Attalia - küresel ticaret holdingi için grup sitesi.
-- Hercules Investments - ABD merkezli e-ticaret şirketi için marka grubu sitesi (https://herculesinvestmentsllc.com).
-- Hydrelon - su arıtma markası için ürün sitesi (https://hydrelon.com).
+- [Attalia](${absUrl("tr", slugOf("caseAttalia", "tr"))}) - küresel ticaret holdingi için grup sitesi.
+- [Hercules Investments](${absUrl("tr", slugOf("caseHercules", "tr"))}) - ABD merkezli e-ticaret şirketi için marka grubu sitesi (https://herculesinvestmentsllc.com).
+- [Hydrelon](${absUrl("tr", slugOf("caseHydrelon", "tr"))}) - su arıtma markası için ürün sitesi (https://hydrelon.com).
 - Başlangıç şablonları: estetik klinik, restoran, hukuk bürosu, mimarlık stüdyosu, fitness stüdyosu
-  (${SITE.origin}/templates/). Her biri müşterinin markasına göre yeniden kurulur, olduğu gibi satılmaz.
+  (${SITE.origin}/tr/sablonlar/). Her biri müşterinin markasına göre yeniden kurulur, olduğu gibi satılmaz.
 
 ## SSS
 - Bir web sitesi ne kadar sürer? Odaklı bir tanıtım sitesi ilk görüşmeden yayına genellikle iki ila
