@@ -220,6 +220,7 @@ function enrichTemplate(html, name, desc, slug) {
     `<link rel="canonical" href="${url}">`,
     `<link rel="alternate" hreflang="en" href="${url}">`,
     ...(trUrl ? [`<link rel="alternate" hreflang="tr" href="${trUrl}">`, `<link rel="alternate" hreflang="x-default" href="${url}">`] : []),
+    `<link rel="alternate" type="text/markdown" href="${url}index.md" title="Markdown">`,
     `<meta name="robots" content="index,follow">`,
     `<meta property="og:type" content="website"><meta property="og:site_name" content="ai-ulu">`,
     `<meta property="og:title" content="${esc(name)} — ai-ulu template">`,
@@ -366,6 +367,19 @@ function templateMarkdownTr(tpl, trUrl, enUrl) {
   const aud = `## Kimler için\n${tpl.audience}\n\n`;
   const contact = `## İletişim\n- E-posta: ${SITE.email}\n- Telefon: ${SITE.phone}\n- WhatsApp: https://wa.me/${SITE.whatsapp}\n- İletişim sayfası: ${absUrl("tr", slugOf("contact", "tr"))}`;
   return `${head}${inc}${aud}${contact}\n\n---\nCanonical: ${trUrl}\nLanguage: tr (en: ${enUrl})\n`;
+}
+
+// EN şablon sayfası Markdown karşılığı (/templates/<slug>/index.md).
+function templateMarkdownEn(slug) {
+  const c = TEMPLATE_CONTENT[slug];
+  const enUrl = `${SITE.origin}/templates/${slug}/`;
+  const trTpl = TEMPLATES_TR.find((t) => t.enSlug === slug);
+  const trUrl = trTpl ? `${SITE.origin}/tr/sablonlar/${trTpl.slug}/` : "";
+  const head = `# ${c.h}\n\n> ${c.intro}\n\n`;
+  const inc = `## What's included\n${c.includes.map((i) => `- ${i}`).join("\n")}\n\n`;
+  const aud = `## Who it's for\n${c.audience}\n\n`;
+  const contact = `## Contact\n- Email: ${SITE.email}\n- Phone: ${SITE.phone}\n- WhatsApp: https://wa.me/${SITE.whatsapp}\n- Contact page: ${absUrl("en", slugOf("contact", "en"))}`;
+  return `${head}${inc}${aud}${contact}\n\n---\nCanonical: ${enUrl}\nLanguage: en${trUrl ? ` (tr: ${trUrl})` : ""}\n`;
 }
 
 // /templates/ ve /tr/sablonlar/ dizin sayfaları — llms.txt bu adreslere işaret ediyor, 403 olmamalı.
@@ -710,6 +724,7 @@ cpSync(new URL("./templates", import.meta.url), new URL("./dist/templates", impo
 TEMPLATES.forEach(([slug, name, desc]) => {
   const f = new URL(`./dist/templates/${slug}/index.html`, import.meta.url);
   writeFileSync(f, enrichTemplate(readFileSync(f, "utf8"), name, desc, slug));
+  writeFileSync(new URL(`./dist/templates/${slug}/index.md`, import.meta.url), templateMarkdownEn(slug));
 });
 writeFileSync(new URL("./dist/templates/index.html", import.meta.url), templatesIndex("en"));
 mkdirSync(new URL("./dist/tr/sablonlar", import.meta.url), { recursive: true });
