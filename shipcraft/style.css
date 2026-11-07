@@ -159,3 +159,20 @@ h1,h2,.lead{text-wrap:balance}.work-head h2{max-width:20ch}
 @media (forced-colors:active){h1 em,h2 em,.stat strong{background:none;color:CanvasText;-webkit-text-fill-color:CanvasText}}
 /* gradyan metin desteklenmezse görünür kalsın */
 @supports not ((-webkit-background-clip:text) or (background-clip:text)){h1 em,h2 em,.stat strong{background:none;color:var(--acc)}}
+/* ilham destesi: sayfa kaydırması kartları tek tek devirir; yalnız öndeki kart video oynatır */
+.inspire-head{padding-bottom:0}.inspire-close{padding-top:clamp(40px,6vw,80px)}
+.deck{position:relative;height:calc(var(--n,10) * 60vh)}
+.deck-stage{position:sticky;top:0;height:100svh;overflow:hidden;outline:none}
+.deck-stage:focus-visible{box-shadow:inset 0 0 0 2px var(--acc)}
+.deck-scene{position:absolute;inset:0;transform-style:preserve-3d}
+.deck-card{position:absolute;left:50%;top:var(--top);width:var(--w);height:var(--h);margin-left:calc(var(--w) / -2);transform-origin:50% 100%;transform-style:preserve-3d;will-change:transform;border-radius:6px;overflow:hidden;cursor:pointer;background:var(--shell);box-shadow:0 0 0 1px var(--line),0 30px 60px -30px rgba(0,0,0,.6)}
+.deck-card img,.deck-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;pointer-events:none}
+.deck-card video{opacity:0;transition:opacity .4s cubic-bezier(.22,1,.36,1)}.deck-card video.is-on{opacity:1}
+.deck-card::after{content:"";position:absolute;inset:0;background:#000;opacity:var(--shade,0);pointer-events:none}
+.deck-caption{position:absolute;left:0;right:0;bottom:calc(max(20px,3svh) + 64px);margin:0;text-align:center;color:var(--mute);font-size:15px}
+.deck-caption strong{display:block;color:var(--ink);font:400 clamp(24px,2.4vw,32px)/1.1 "Cormorant Garamond",Georgia,serif}
+.deck-thumbs{position:absolute;left:0;right:0;bottom:max(20px,3svh);display:flex;justify-content:center;gap:8px;padding-inline:20px;overflow-x:auto;scrollbar-width:none}
+.deck-thumbs button{flex:none;width:72px;aspect-ratio:2.06;padding:0;border:1px solid var(--line);border-radius:4px;background:center/cover no-repeat;opacity:.45;cursor:pointer;transition:opacity .25s cubic-bezier(.22,1,.36,1),border-color .25s}
+.deck-thumbs button[aria-current="true"]{opacity:1;border-color:var(--acc)}
+@media (hover:hover){.deck-thumbs button:hover{opacity:.85}}
+@media (max-width:47.99rem){.deck-thumbs{justify-content:flex-start}.deck-thumbs button{width:56px}}

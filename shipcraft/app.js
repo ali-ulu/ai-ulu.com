@@ -211,3 +211,137 @@
     }
   }
 })();
+
+// İlham destesi: kartlar tabanları üstünde öne devrilir. Sayfa kaydırması sürer (tekerlek
+// yakalanmaz, dokunmatik kaydırma bozulmaz); yalnız öndeki oturmuş kart videosunu oynatır.
+(function () {
+  var deck = document.getElementById("deck");
+  if (!deck) return;
+  var stage = deck.querySelector(".deck-stage"), scene = deck.querySelector(".deck-scene");
+  var caption = deck.querySelector(".deck-caption"), nav = deck.querySelector(".deck-thumbs");
+  var CARDS = JSON.parse(deck.getAttribute("data-cards")), SRC = deck.getAttribute("data-src");
+  var VIDEO = deck.getAttribute("data-video").split(" ");
+  var n = CARDS.length, ASPECT = 2.06, DEPTH = 5, POOL = DEPTH + 5;
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function clamp01(v) { return Math.min(1, Math.max(0, v)); }
+  function wrap(k) { return ((k % n) + n) % n; }
+  // Yerçekimi kartı hızlandırır, yere bir kez sekip oturur.
+  function fallAngle(t) {
+    var u = clamp01(t), land = 0.78, k;
+    if (u <= land) { k = u / land; return -90 * k * k * k; }
+    k = (u - land) / (1 - land);
+    return -90 + 6 * Math.sin(Math.PI * k) * (1 - k);
+  }
+  function deckAdvance(pos) {
+    var i = Math.floor(pos), k = clamp01((pos - i - 0.28) / 0.6);
+    return i + k * k * (3 - 2 * k);
+  }
+  function cardPose(k, pos) {
+    var t = pos - k, lift = (k - Math.floor(pos) + 3) * 0.6;
+    if (t >= 1) return { angle: -90, z: 0, lift: lift, opacity: t < 3 ? 1 : 0, flat: true };
+    if (t > 0) return { angle: fallAngle(t), z: 0, lift: lift, opacity: 1, flat: false };
+    var rel = k - deckAdvance(pos);
+    return { angle: 0, z: -Math.max(rel, 0), lift: 0, opacity: clamp01(DEPTH + 1 - rel), flat: false };
+  }
+
+  var slots = [];
+  for (var j = 0; j < POOL; j++) {
+    var el = document.createElement("div"); el.className = "deck-card";
+    var img = document.createElement("img"); img.width = 1000; img.height = 486; img.decoding = "async"; img.draggable = false;
+    var video = document.createElement("video");
+    video.muted = true; video.loop = true; video.playsInline = true; video.preload = "none"; video.setAttribute("aria-hidden", "true");
+    el.appendChild(img); el.appendChild(video); scene.appendChild(el);
+    slots.push({ el: el, img: img, video: video, k: null, live: false });
+  }
+  var thumbs = CARDS.map(function (c, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.style.backgroundImage = "url(" + SRC + c[0] + ".webp)"; b.setAttribute("aria-label", c[1]);
+    b.addEventListener("click", function () { jump(i); });
+    nav.appendChild(b);
+    return b;
+  });
+
+  var gap = 44, pos = 0, target = 0, raf = 0, shown = -1;
+  function setLive(s, live) {
+    if (live === s.live) return;
+    s.live = live;
+    if (live) {
+      var p = s.video.play();
+      if (p && p.then) p.then(function () { s.video.classList.add("is-on"); }, function () {});
+    } else { s.video.pause(); s.video.classList.remove("is-on"); }
+  }
+  function paint() {
+    var base = Math.floor(pos) - 2;
+    slots.forEach(function (s, j) {
+      var k = base + (((j - base) % POOL) + POOL) % POOL;
+      if (s.k !== k) {
+        s.k = k;
+        var c = CARDS[wrap(k)];
+        s.img.src = SRC + c[0] + ".webp"; s.img.alt = c[1];
+        setLive(s, false);
+        if (VIDEO.indexOf(c[0]) >= 0) s.video.src = SRC + c[0] + ".mp4"; else s.video.removeAttribute("src");
+      }
+      var p = cardPose(k, pos);
+      s.el.style.transform = "translate3d(0," + (-p.lift) + "px," + (p.z * gap) + "px) rotateX(" + p.angle + "deg)";
+      s.el.style.opacity = p.opacity;
+      s.el.style.visibility = p.opacity > 0 ? "visible" : "hidden";
+      s.el.style.setProperty("--shade", p.flat ? 0.06 : (-p.angle / 90) * 0.06);
+      // Yalnız öne oturmuş kart oynar; devrilmeye başlayınca durur.
+      setLive(s, !reduce && s.video.hasAttribute("src") && Math.abs(pos - k) < 0.12);
+    });
+    var front = wrap(Math.round(pos));
+    if (front !== shown) {
+      shown = front;
+      caption.textContent = "";
+      var strong = document.createElement("strong");
+      strong.textContent = CARDS[front][1];
+      caption.appendChild(strong);
+      caption.appendChild(document.createTextNode(CARDS[front][2]));
+      thumbs.forEach(function (t, i) { t.setAttribute("aria-current", String(i === front)); });
+      var t = thumbs[front];
+      nav.scrollLeft = t.offsetLeft - (nav.clientWidth - t.offsetWidth) / 2;
+    }
+  }
+  function fit() {
+    var W = stage.clientWidth, H = stage.clientHeight;
+    var h = Math.max(60, Math.min((W * (W < 420 ? 0.82 : 0.655)) / ASPECT, H * 0.34, 560));
+    var top = H * 0.42 - 0.62 * h; // yüzen menünün altında kalmasın
+    gap = 0.24 * h;
+    scene.style.perspective = 6 * h + "px";
+    scene.style.perspectiveOrigin = "50% " + (top - 1.66 * h) + "px";
+    stage.style.setProperty("--w", h * ASPECT + "px");
+    stage.style.setProperty("--h", h + "px");
+    stage.style.setProperty("--top", top + "px");
+    paint();
+  }
+  function fromScroll() {
+    var r = deck.getBoundingClientRect();
+    return clamp01(-r.top / (r.height - innerHeight)) * (n - 1);
+  }
+  function tick() {
+    pos += (target - pos) * 0.14;
+    if (Math.abs(target - pos) < 1e-3) { pos = target; raf = 0; } else raf = requestAnimationFrame(tick);
+    paint();
+  }
+  function go(to) {
+    target = to;
+    if (reduce) { pos = Math.round(to); paint(); return; }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  addEventListener("scroll", function () { go(fromScroll()); }, { passive: true });
+  // Tık, ok tuşu ve küçük resimler sayfayı kaydırır; deste ile sayfa hep eş kalır.
+  function jump(next) {
+    var travel = deck.offsetHeight - innerHeight;
+    scrollTo({ top: deck.offsetTop + (next / (n - 1)) * travel, behavior: reduce ? "auto" : "smooth" });
+  }
+  function step(dir) { jump(Math.max(0, Math.min(n - 1, Math.round(target) + dir))); }
+  scene.addEventListener("click", function () { step(1); });
+  stage.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); step(1); }
+    if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); step(-1); }
+  });
+  if ("ResizeObserver" in window) new ResizeObserver(fit).observe(stage); else addEventListener("resize", fit);
+  pos = target = fromScroll();
+  fit();
+})();
