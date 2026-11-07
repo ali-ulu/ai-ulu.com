@@ -399,44 +399,50 @@ function templateMarkdownEn(slug) {
 // her CTA sitedeki iletişim akışına bağlanır. Görseller temsilidir.
 function framerPicksSection(tr) {
   const contactUrl = `${SITE.origin}/${tr ? "tr/" + CONTACT.slugTr + "/" : CONTACT.slug + "/"}`;
+  // Tek tık WhatsApp: numara SITE.whatsapp'tan türetilir, metin şablon/sektör bazlıdır.
+  const waLink = (msg) => `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(msg)}`;
+  const waTpl = (t) => waLink(tr ? `Merhaba, web sitesi için ${t.name} şablonunu istiyorum.`
+                                 : `Hi, I'd like the ${t.name} template for my website.`);
   const x = tr
     ? { h: "Sektörel <em>şablonlarımız</em>", lead: "Yaygın yerel işletme türleri için hazırladığımız başlangıç düzenleri. Sektörünüzü seçin, beğendiğiniz şablonu seçin; ai-ulu onu markanız, içeriğiniz ve randevu akışınızla yeniden kurar.",
         cta: "Bu şablonu istiyorum", all: "Tümü", sectorsLabel: "Sektöre göre filtrele",
         note: "Görseller temsilidir; şablon sizin içeriğiniz, renkleriniz ve logonuzla kurulur.",
-        closePre: "Beğendiğin şablonun adını bize yaz, gerisini biz hallederiz.",
-        closeCta: "İletişime geç",
+        closePre: "Beğendiğin şablonun adını WhatsApp'tan yaz, gerisini biz hallederiz.",
+        closeCta: "ya da formu doldur",
         descDefault: "Bir rozeti tıklayın ya da Enter'la çevirin: arkasındaki şablonları görürsünüz." }
     : { h: "Our sector <em>templates</em>", lead: "Starter layouts we prepared for common local business types. Pick your sector, choose a template you like, and ai-ulu rebuilds it around your brand, content and booking flow.",
         cta: "I want this template", all: "All", sectorsLabel: "Filter by sector",
         note: "Images are illustrative; the template is built with your content, colours and logo.",
-        closePre: "Send us the name of the template you like and we take it from there.",
-        closeCta: "Get in touch",
+        closePre: "Send the template you like on WhatsApp and we take it from there.",
+        closeCta: "or use the form",
         descDefault: "Click a badge or press Enter to flip it: the templates behind it appear." };
   const tabs = [`<button type="button" class="fp-tab" aria-pressed="true" data-f="all">${esc(x.all)}</button>`]
     .concat(FRAMER_PICKS.sectors.map((s) =>
       `<button type="button" class="fp-tab" aria-pressed="false" data-f="${s.id}">${esc(tr ? s.tr : s.en)}</button>`))
     .join("");
   const cards = FRAMER_PICKS.sectors.flatMap((s) => s.templates.map((t) =>
-    `<a class="fp-card" data-sector="${s.id}" style="--sc:${s.color};--sci:${s.ink}" href="${contactUrl}" data-cta="tpl-${t.slug}">
+    `<a class="fp-card" data-sector="${s.id}" style="--sc:${s.color};--sci:${s.ink}" href="${waTpl(t)}" target="_blank" rel="noopener" data-cta="tpl-${t.slug}">
       <span class="fp-shot"><img src="${t.thumb}" alt="${esc(t.name)} ${tr ? "şablon önizlemesi" : "template preview"}" loading="lazy" decoding="async" width="640" height="480"></span>
       <span class="fp-body"><span class="fp-sector">${esc(tr ? s.tr : s.en)}</span><b>${esc(t.name)}</b><p>${esc(tr ? t.tr : t.en)}</p>
       <span class="fp-open">${esc(x.cta)}<i aria-hidden="true">→</i></span></span></a>`))
     .join("");
   // Lanyard rayı (JS ile devreye girer; JS kapalıyken üstteki grid fallback kalır).
-  // Ön yüz: sektör rozeti (buton). Arka yüz: sektörün şablon adları + tek CTA.
-  const hanger = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a2 2 0 0 1 2 2c0 .9-.55 1.65-1.35 1.92L12 7.2v1.6l8.1 5.5c.95.65.5 2.1-.65 2.1H4.55c-1.15 0-1.6-1.45-.65-2.1L12 8.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  // Ön yüz: sektör önizlemeleri + rozet (buton). Arka yüz: şablonlar + tek WhatsApp CTA'sı.
   const countWord = (n) => `${n} ${tr ? "şablon" : n === 1 ? "template" : "templates"}`;
   const badges = FRAMER_PICKS.sectors.map((s) =>
     `<li class="fp-badge" data-sector="${s.id}" style="--sc:${s.color};--sci:${s.ink}">
     <span class="fp-cord" aria-hidden="true"></span>
     <div class="fp-tilt"><div class="fp-flip">
-      <button type="button" class="fp-face fp-front" aria-pressed="false">${hanger}
+      <button type="button" class="fp-face fp-front" aria-pressed="false">
+        <span class="fp-thumbs" aria-hidden="true">${s.templates.map((t) =>
+          `<img src="${t.thumb}" alt="" loading="lazy" decoding="async" width="160" height="120">`).join("")}</span>
         <b>${esc(tr ? s.tr : s.en)}</b><span>${esc(countWord(s.templates.length))}</span>
         <span class="fp-hint" aria-hidden="true">${esc(tr ? "çevir" : "flip")}</span></button>
       <div class="fp-face fp-back" inert>
         ${s.templates.map((t) =>
           `<span class="fp-titem"><b>${esc(t.name)}</b><em>${esc(tr ? t.tr : t.en)}</em></span>`).join("")}
-        <a href="${contactUrl}" data-cta="tpl-rail-${s.id}">${esc(x.cta)}<i aria-hidden="true">→</i></a>
+        <a class="wa" href="${waLink(tr ? `Merhaba, web sitesi için ${s.tr} şablonunu istiyorum.`
+                                       : `Hi, I'd like the ${s.en} template for my website.`)}" target="_blank" rel="noopener" data-cta="tpl-rail-${s.id}">${esc(x.cta)}<i aria-hidden="true">→</i></a>
       </div>
     </div></div></li>`).join("");
   const fpData = JSON.stringify({
@@ -455,7 +461,7 @@ function framerPicksSection(tr) {
     <ul class="fp-track" aria-label="${esc(x.sectorsLabel)}">${badges}</ul></div>
   <p class="fp-desc" aria-live="polite">${esc(x.descDefault)}</p>
   <p class="fp-note">${esc(x.note)}</p>
-  <p class="fp-close">${esc(x.closePre)} <a href="${contactUrl}" data-cta="tpl-contact">${esc(x.closeCta)}<i aria-hidden="true">→</i></a></p>
+  <p class="fp-close">${esc(x.closePre)} <a href="${contactUrl}" data-cta="tpl-contact">${esc(x.closeCta)}</a></p>
 </section>
 <script type="application/json" id="fp-data">${fpData}</script>
 <script>document.querySelectorAll(".fp-tab").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".fp-tab").forEach(function(t){t.setAttribute("aria-pressed",t===b?"true":"false")});var f=b.getAttribute("data-f");document.querySelectorAll(".fp-card").forEach(function(c){c.hidden=f!=="all"&&c.getAttribute("data-sector")!==f})})})</script>
@@ -595,10 +601,11 @@ p.lead{color:#e8d6c8cc;max-width:60ch;font-size:clamp(17px,1.5vw,20px)}
 .fp-flip{position:relative;width:clamp(148px,36vw,176px);height:clamp(156px,36vw,184px);transform-style:preserve-3d;transition:transform .55s cubic-bezier(.32,.72,0,1)}
 .fp-flip[data-open="true"]{transform:rotateY(180deg)}
 .fp-face{position:absolute;inset:0;box-sizing:border-box;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;border:1px solid #ffffff24;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));box-shadow:0 18px 34px -20px #000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px;text-align:center}
-.fp-front{cursor:pointer;color:#fff6ee;font-family:inherit}
+.fp-front{cursor:pointer;color:#fff6ee;font-family:inherit;justify-content:flex-start;gap:6px;padding:10px 10px 18px}
 .fp-front::after{content:"";position:absolute;left:12px;right:12px;bottom:10px;height:4px;border-radius:99px;background:var(--sc,#ff5f12)}
-.fp-front svg{width:22px;height:22px;color:#ff8a3d}
-.fp-front b{font:400 clamp(17px,1.6vw,20px)/1.15 "Cormorant Garamond",Georgia,serif}
+.fp-thumbs{display:flex;gap:4px;width:100%;height:clamp(50px,10vw,62px);flex:0 0 auto}
+.fp-thumbs img{flex:1;min-width:0;height:100%;object-fit:cover;border-radius:10px;border:1px solid #ffffff1f;display:block}
+.fp-front b{font:400 clamp(17px,1.6vw,20px)/1.15 "Cormorant Garamond",Georgia,serif;margin-top:2px}
 .fp-front span{font:600 10.5px/1 "DM Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:#ffb23d}
 .fp-front .fp-hint{color:#e8d6c880;letter-spacing:.14em}
 .fp-front:focus-visible{outline:2px solid #ff8a3d;outline-offset:3px}
@@ -607,8 +614,10 @@ p.lead{color:#e8d6c8cc;max-width:60ch;font-size:clamp(17px,1.5vw,20px)}
 .fp-titem{display:grid;gap:1px;text-align:center}
 .fp-titem b{font:400 14.5px/1.15 "Cormorant Garamond",Georgia,serif;color:#fff6ee}
 .fp-titem em{font-style:normal;font-size:10.5px;line-height:1.35;color:#e8d6c8b0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.fp-back a{display:inline-flex;align-items:center;gap:6px;margin-top:2px;color:var(--sci,#1a0b04);background:var(--sc,#ff5f12);text-decoration:none;font:600 12px/1.2 "Instrument Sans",system-ui,sans-serif;padding:8px 12px;border-radius:999px;transition:filter .3s}
-.fp-back a:hover{filter:brightness(1.12)}
+.fp-back a{display:inline-flex;align-items:center;gap:6px;margin-top:2px;text-decoration:none;font:600 12px/1.2 "Instrument Sans",system-ui,sans-serif;padding:8px 12px;border-radius:999px;transition:filter .3s}
+/* Tek tık WhatsApp: #25D366 üzerine #0a331a = 7.05:1 kontrast (≥4.5). */
+.fp-back a.wa{color:#0a331a;background:#25d366}
+.fp-back a:hover{filter:brightness(1.1)}
 .fp-back a:focus-visible{outline:2px solid #ff8a3d;outline-offset:2px}
 .fp-back a i{font-style:normal}
 .fp-desc{min-height:3.4em;margin:14px 0 0;color:#e8d6c8cc;font-size:15px;line-height:1.6;max-width:64ch}
