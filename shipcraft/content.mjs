@@ -858,6 +858,42 @@ export const FRAMER_PICKS = {
           thumb: "https://image.mux.com/nZ1N9Bo702jk4YnA01e7ABFl9210000Vmxzi3NP2r6zV02Q4/thumbnail.webp?time=2.433" },
       ],
     },
+    {
+      id: "mobilya", tr: "Mobilya & Dekorasyon", en: "Furniture & Decor", color: "#b0713f", ink: "#1c0e04",
+      templates: [
+        { slug: "mobilya-one", name: "Mobilya One",
+          tr: "Mobilya mağazaları ve dekorasyon stüdyoları için ürün vitrinli, mağaza odaklı düzen.",
+          en: "A shop-first layout for furniture stores and decor studios, built around product displays.",
+          thumb: "https://y4pdgnepgswqffpt.public.blob.vercel-storage.com/templates/58873/furnexa-KRqLSe2iS7YG4Gurk0AEoqabCFW12d" },
+      ],
+    },
+    {
+      id: "dugun", tr: "Düğün & Organizasyon", en: "Weddings & Events", color: "#b98fd9", ink: "#17092b",
+      templates: [
+        { slug: "dugun-one", name: "Düğün One",
+          tr: "Düğün salonları ve organizasyon ofisleri için davet, program ve iletişim odaklı düzen.",
+          en: "An invitation, schedule and contact-focused layout for wedding venues and event planners.",
+          thumb: "https://image.mux.com/zmJAN02LWEbdoCMVR71mV7aDYWS7ln0118nLvM00i1k8is/thumbnail.webp?time=1.567" },
+      ],
+    },
+    {
+      id: "dermo", tr: "Eczane & Dermokozmetik", en: "Pharmacy & Skincare", color: "#5aa7e8", ink: "#041523",
+      templates: [
+        { slug: "dermo-one", name: "Dermo One",
+          tr: "Eczane, dermokozmetik ve cilt bakım merkezleri için ürün ve tedavi vitrini olan düzen.",
+          en: "A product and treatment display layout for pharmacies, skincare retail and skin centres.",
+          thumb: "https://y4pdgnepgswqffpt.public.blob.vercel-storage.com/templates/59404/dermato-YUyOYj6AzwO1s7EkNEioxs8PvWdp61" },
+      ],
+    },
+    {
+      id: "insaat", tr: "İnşaat & Yapı", en: "Construction", color: "#3fae7a", ink: "#04180f",
+      templates: [
+        { slug: "yapi-pro", name: "Yapı Pro",
+          tr: "İnşaat firmaları için proje referansları ve teklif akışı olan düzen.",
+          en: "A layout for construction firms, with project references and a quote flow.",
+          thumb: "https://y4pdgnepgswqffpt.public.blob.vercel-storage.com/media/0b9ddd51-d756-434b-8b6c-e7649b6106fe/01a181e3-b24f-773c-8d85-8558e909501e.png" },
+      ],
+    },
   ],
 };
 
