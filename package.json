@@ -1,0 +1,21 @@
+{
+  "name": "ai-ulu-com",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "ai-ulu.com — fast, secure websites for businesses and individuals.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "preview": "npm run build && wrangler dev",
+    "test": "node --test test/*.test.js",
+    "check": "node scripts/check.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.155.0"
+  }
+}
