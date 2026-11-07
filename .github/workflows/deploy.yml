@@ -28,8 +28,6 @@ jobs:
         run: |
           test -f shipcraft/dist/index.html
           test -f shipcraft/dist/tr/index.html
-          test -f shipcraft/dist/form.php
-          test -f shipcraft/dist/.htaccess
           # Agent-readiness and GEO artefacts: fail the deploy if any stops being generated.
           test -f shipcraft/dist/about/index.html
           test -f shipcraft/dist/contact/index.html
@@ -60,9 +58,7 @@ jobs:
           test -f shipcraft/dist/llms.txt
           test -f shipcraft/dist/tr/llms.txt
           test -f shipcraft/dist/_headers
-          test -f shipcraft/dist/.assetsignore
           grep -q 'Content-Signal' shipcraft/dist/robots.txt
-          grep -q 'text/markdown' shipcraft/dist/.htaccess
       - name: Check Cloudflare credentials
         id: cf
         env:

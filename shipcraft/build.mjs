@@ -1,7 +1,7 @@
 // node build.mjs  ->  dist/ (EN: /, TR: /tr/) + robots, sitemap, llms.txt, favicon
 import { mkdirSync, writeFileSync, cpSync, readFileSync, rmSync } from "node:fs";
 import { execSync } from "node:child_process";
-import { SITE, T, PAGES, CONTACT, SERVICES, CASES, TEMPLATES_TR, panorama, gridIds } from "./content.mjs";
+import { SITE, T, PAGES, CONTACT, SERVICES, CASES, TEMPLATES_TR, FRAMER_PICKS, panorama, gridIds } from "./content.mjs";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const css = readFileSync(new URL("./style.css", import.meta.url), "utf8");
@@ -394,6 +394,35 @@ function templateMarkdownEn(slug) {
   return `${head}${inc}${aud}${contact}\n\n---\nCanonical: ${enUrl}\nLanguage: en${trUrl ? ` (tr: ${trUrl})` : ""}\n`;
 }
 
+// Framer Marketplace seçkisi: /templates/ ve /tr/sablonlar/ sayfalarında sektör
+// filtresiyle listelenir. Yalnızca resmi link ve resmi önizleme görseli kullanılır.
+function framerPicksSection(tr) {
+  const x = tr
+    ? { h: "Sektörel <em>Framer şablonları</em>", lead: "Framer Marketplace'ten seçtiğimiz, güncel ve mobil uyumlu şablonlar. Sektörünüzü seçin, beğendiğiniz şablonu açın; ai-ulu onu markanız, içeriğiniz ve randevu akışınızla yeniden kurar.",
+        cta: "Framer'de görüntüle", all: "Tümü", sectorsLabel: "Sektöre göre filtrele",
+        note: "Şablonlar Framer Marketplace'te yayımlanır; önizleme görselleri resmidir. Fiyat ve kapsamı Framer sayfasında görürsünüz. Beğendiğiniz şablonun adını bize yazın, gerisini biz yapalım." }
+    : { h: "Sector <em>Framer templates</em>", lead: "Hand-picked, current and mobile-ready templates from the Framer Marketplace. Pick your sector, open a template you like, and ai-ulu rebuilds it around your brand, content and booking flow.",
+        cta: "View on Framer", all: "All", sectorsLabel: "Filter by sector",
+        note: "These templates are published on the Framer Marketplace; previews are official. You will see pricing and scope on the Framer page. Send us the name of the template you like and we take it from there." };
+  const tabs = [`<button type="button" class="fp-tab" aria-pressed="true" data-f="all">${esc(x.all)}</button>`]
+    .concat(FRAMER_PICKS.sectors.map((s) =>
+      `<button type="button" class="fp-tab" aria-pressed="false" data-f="${s.id}">${esc(tr ? s.tr : s.en)}</button>`))
+    .join("");
+  const cards = FRAMER_PICKS.sectors.flatMap((s) => s.templates.map((t) =>
+    `<a class="fp-card" data-sector="${s.id}" href="https://www.framer.com/marketplace/templates/${t.slug}/" target="_blank" rel="noopener">
+      <span class="fp-shot"><img src="${t.thumb}" alt="${esc(t.name)} Framer template preview" loading="lazy" decoding="async" width="640" height="480"></span>
+      <span class="fp-body"><span class="fp-sector">${esc(tr ? s.tr : s.en)}</span><b>${esc(t.name)}</b><p>${esc(tr ? t.tr : t.en)}</p>
+      <span class="fp-open">${esc(x.cta)}<i aria-hidden="true">→</i></span></span></a>`))
+    .join("");
+  return `<section class="fp" id="${tr ? "framer-sablonlari" : "framer-templates"}" aria-labelledby="fp-h">
+  <h2 id="fp-h">${x.h}</h2><p class="lead">${esc(x.lead)}</p>
+  <div class="fp-tabs" role="group" aria-label="${esc(x.sectorsLabel)}">${tabs}</div>
+  <div class="fp-grid">${cards}</div>
+  <p class="fp-note">${esc(x.note)}</p>
+</section>
+<script>document.querySelectorAll(".fp-tab").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".fp-tab").forEach(function(t){t.setAttribute("aria-pressed",t===b?"true":"false")});var f=b.getAttribute("data-f");document.querySelectorAll(".fp-card").forEach(function(c){c.hidden=f!=="all"&&c.getAttribute("data-sector")!==f})})})</script>`;
+}
+
 // /templates/ ve /tr/sablonlar/ dizin sayfaları — llms.txt bu adreslere işaret ediyor, 403 olmamalı.
 function templatesIndex(lang = "en") {
   const tr = lang === "tr";
@@ -460,12 +489,38 @@ h1{font:300 clamp(44px,7vw,92px)/.95 "Cormorant Garamond",Georgia,serif;letter-s
 h1 em{font-style:italic;color:#ff8a3d}
 ul{list-style:none;padding:0;margin:56px 0 0;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 .back{display:inline-flex;gap:10px;align-items:center;color:#ffb23d;text-decoration:none;font:500 15px system-ui;margin-bottom:34px}
-p.lead{color:#e8d6c8cc;max-width:60ch;font-size:clamp(17px,1.5vw,20px)}</style></head>
+p.lead{color:#e8d6c8cc;max-width:60ch;font-size:clamp(17px,1.5vw,20px)}
+/* Framer seçkisi: sektör filtresi + kart ızgarası (mobil-first) */
+.fp{margin-top:96px}
+.fp h2{font:300 clamp(34px,5vw,64px)/1.02 "Cormorant Garamond",Georgia,serif;margin:0 0 16px}
+.fp h2 em{font-style:italic;color:#ff8a3d}
+.fp .lead{margin-bottom:28px}
+.fp-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px}
+.fp-tab{cursor:pointer;border-radius:999px;padding:9px 16px;border:1px solid #ffffff24;background:transparent;color:#e8d6c8;font:500 13.5px/1 "Instrument Sans",system-ui,sans-serif;transition:border-color .3s,background .3s,color .3s}
+.fp-tab:hover{border-color:#ffb23d;color:#fff6ee}
+.fp-tab[aria-pressed="true"]{background:#ff5f12;border-color:#ffb27a;color:#1a0b04;font-weight:600}
+.fp-tab:focus-visible{outline:2px solid #ff8a3d;outline-offset:2px}
+.fp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:16px}
+.fp-card{display:flex;flex-direction:column;border:1px solid #ffffff1f;border-radius:20px;overflow:hidden;background:#ffffff0a;text-decoration:none;color:#fff6ee;transition:transform .4s ease,border-color .4s ease}
+.fp-card:hover{transform:translateY(-4px);border-color:#ff5f1288}
+.fp-card[hidden]{display:none}
+.fp-shot{display:block;aspect-ratio:4/3;overflow:hidden;background:#140b06}
+.fp-shot img{width:100%;height:100%;object-fit:cover;display:block}
+.fp-body{display:flex;flex-direction:column;gap:6px;padding:16px 18px 18px}
+.fp-sector{font:600 11px/1.2 "DM Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:#ffb23d}
+.fp-body b{font:400 24px/1.1 "Cormorant Garamond",Georgia,serif}
+.fp-body p{margin:0;color:#e8d6c8cc;font-size:14.5px;line-height:1.55}
+.fp-open{display:inline-flex;align-items:center;gap:8px;margin-top:10px;font-weight:500;font-size:14px;color:#ffb23d}
+.fp-open i{font-style:normal;transition:transform .3s}
+.fp-card:hover .fp-open i{transform:translateX(3px)}
+.fp-note{margin:22px 0 0;color:#e8d6c899;font-size:14px;line-height:1.6;max-width:64ch}
+@media (max-width:420px){.fp-grid{grid-template-columns:1fr}}</style></head>
 <body><div class="aur" aria-hidden="true"></div>
 <main class="w"><a class="back" href="${SITE.origin}${tr ? "/tr/" : "/"}">${esc(c.back)}</a>
 <h1>${c.h1}</h1>
 <p class="lead">${esc(c.lead)}</p>
 <ul>${cards}</ul>
+${framerPicksSection(tr)}
 <section class="expl" style="margin-top:72px;max-width:70ch">
 <h2 style="font:300 clamp(28px,4vw,44px)/1.05 'Cormorant Garamond',Georgia,serif;margin:0 0 18px">${esc(c.h2a)}</h2>
 <p style="color:#e8d6c8cc;font-size:17px;line-height:1.65;margin:0 0 18px">${esc(c.p1)}</p>
@@ -972,21 +1027,15 @@ const serverCard = {
 mkdirSync(new URL("./dist/.well-known/mcp", import.meta.url), { recursive: true });
 writeFileSync(new URL("./dist/.well-known/mcp/server-card.json", import.meta.url), JSON.stringify(serverCard, null, 2) + "\n");
 
-// Host-only files: the PHP form handler and the Apache rules. They ship inside
-// dist/ so a plain upload of dist/ is the whole deploy.
-cpSync(new URL("./hosting/form.php", import.meta.url), new URL("./dist/form.php", import.meta.url));
-cpSync(new URL("./hosting/htaccess", import.meta.url), new URL("./dist/.htaccess", import.meta.url));
-mkdirSync(new URL("./dist/leads", import.meta.url), { recursive: true });
-cpSync(new URL("./hosting/leads/.htaccess", import.meta.url), new URL("./dist/leads/.htaccess", import.meta.url));
-// Cloudflare Workers static-asset metadata. These files are generated into dist/
-// while the Hostinger FTP output remains intact for the existing deployment workflow.
+// Cloudflare Workers static-asset headers. Form POSTs are handled by src/worker.js,
+// so no PHP handler or Apache rules ship in dist/.
 const cloudflareHeaders = `/*
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=()
   Strict-Transport-Security: max-age=86400
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://y4pdgnepgswqffpt.public.blob.vercel-storage.com https://image.mux.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests
 
 /assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
@@ -1010,13 +1059,5 @@ https://:version.:subdomain.workers.dev/*
   X-Robots-Tag: noindex
 `;
 writeFileSync(new URL("./dist/_headers", import.meta.url), cloudflareHeaders);
-
-// The PHP endpoint remains in dist for the existing Hostinger FTP deployment,
-// but must never be published as a static asset by the Workers migration.
-const cloudflareAssetsIgnore = `form.php
-.htaccess
-leads/**
-`;
-writeFileSync(new URL("./dist/.assetsignore", import.meta.url), cloudflareAssetsIgnore);
 
 console.log("dist hazir");
