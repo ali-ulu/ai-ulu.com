@@ -32,7 +32,7 @@ const probIcons = [
 
 function nav(t) {
   return `<header class="navwrap"><div class="nav glass">
-  <a class="brand" href="${t.dir}" aria-label="ai-ulu"><span class="mark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3 3 9v11h18V9z" fill="currentColor"/><path d="M12 8v8M8.5 11.5 12 8l3.5 3.5" stroke="#090401" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>ai-ulu</span></a>
+  <a class="brand" href="${t.dir}" aria-label="ai-ulu"><span class="mark" aria-hidden="true">Ai</span><span>ai-ulu</span></a>
   <nav aria-label="Primary">${t.nav.map(([id, l]) => `<a href="#${id}">${esc(l)}</a>`).join("")}</nav>
   <div class="tools">
     <a class="lang" href="${t.alt}" hreflang="${t.lang === "en" ? "tr" : "en"}" data-cta="lang">${t.altLabel}</a>
@@ -142,6 +142,8 @@ function page(t) {
 <meta name="twitter:image" content="${SITE.origin}/assets/og-cover.png">
 <meta name="theme-color" content="#090401">
 <link rel="icon" href="${p}favicon.svg" type="image/svg+xml">
+<link rel="icon" href="${p}favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="${p}favicon-180.png">
 <link rel="alternate" type="text/markdown" href="${url}index.md" title="Markdown">
 <link rel="preload" href="${p}assets/fonts/instrument-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="${p}assets/fonts/cormorant-garamond-300-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script>try{var s=localStorage.getItem("theme");if(s)document.documentElement.setAttribute("data-theme",s)}catch(e){}document.documentElement.classList.add("js")</script>
@@ -724,6 +726,8 @@ function docHead(t, lang, key, slug, title, desc, ldNodes) {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#090401">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/favicon-180.png">
 <link rel="alternate" type="text/markdown" href="${url}index.md" title="Markdown">
 <link rel="preload" href="/assets/fonts/instrument-sans-400-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/cormorant-garamond-300-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script>try{var s=localStorage.getItem("theme");if(s)document.documentElement.setAttribute("data-theme",s)}catch(e){}document.documentElement.classList.add("js")</script>
@@ -963,9 +967,13 @@ for (const tpl of TEMPLATES_TR) {
   writeFileSync(new URL(`${dir}/index.html`, import.meta.url), html);
   writeFileSync(new URL(`${dir}/index.md`, import.meta.url), templateMarkdownTr(tpl, trUrl, enUrl));
 }
-const fav = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#090401"/><path d="M16 6 6 13v13h20V13z" fill="#fa6114"/></svg>`;
+const fav = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#0c0a08"/><text x="16" y="23" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="19" font-weight="600" fill="#d4af37">Ai</text></svg>`;
 writeFileSync(new URL("./dist/favicon.svg", import.meta.url), fav);
 writeFileSync(new URL("./dist/tr/favicon.svg", import.meta.url), fav);
+for (const [src, out] of [["favicon-32.png", "favicon-32.png"], ["favicon-180.png", "favicon-180.png"], ["favicon-512.png", "favicon-512.png"]]) {
+  cpSync(new URL(`./assets/${src}`, import.meta.url), new URL(`./dist/${out}`, import.meta.url));
+  cpSync(new URL(`./assets/${src}`, import.meta.url), new URL(`./dist/tr/${out}`, import.meta.url));
+}
 // AI tarayıcıları açıkça karşılanır; llms.txt ve sitemap işaret edilir.
 const AI_BOTS = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-Web", "anthropic-ai",
   "PerplexityBot", "Google-Extended", "Applebot-Extended", "CCBot", "cohere-ai", "Bytespider", "Amazonbot", "meta-externalagent"];

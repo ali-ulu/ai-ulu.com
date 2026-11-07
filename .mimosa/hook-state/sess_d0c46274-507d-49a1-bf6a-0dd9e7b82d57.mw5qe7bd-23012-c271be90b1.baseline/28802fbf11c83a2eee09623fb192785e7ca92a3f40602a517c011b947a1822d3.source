@@ -1,0 +1,80 @@
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Build
+        run: npm run build
+      - name: Verify build output
+        run: |
+          test -f shipcraft/dist/index.html
+          test -f shipcraft/dist/tr/index.html
+          # Agent-readiness and GEO artefacts: fail the deploy if any stops being generated.
+          test -f shipcraft/dist/about/index.html
+          test -f shipcraft/dist/contact/index.html
+          test -f shipcraft/dist/terms/index.html
+          test -f shipcraft/dist/privacy/index.html
+          test -f shipcraft/dist/index.md
+          test -f shipcraft/dist/about/index.md
+          test -f shipcraft/dist/tr/hakkinda/index.html
+          test -f shipcraft/dist/tr/iletisim/index.html
+          # Service, case and template pages, plus their markdown twins.
+          test -f shipcraft/dist/services/websites/index.html
+          test -f shipcraft/dist/services/websites/index.md
+          test -f shipcraft/dist/services/apps/index.html
+          test -f shipcraft/dist/services/site-app/index.html
+          test -f shipcraft/dist/tr/hizmetler/web-siteleri/index.html
+          test -f shipcraft/dist/tr/hizmetler/uygulamalar/index.html
+          test -f shipcraft/dist/tr/hizmetler/site-uygulama/index.html
+          test -f shipcraft/dist/work/attalia/index.html
+          test -f shipcraft/dist/work/hercules-investments/index.html
+          test -f shipcraft/dist/work/hydrelon/index.html
+          test -f shipcraft/dist/tr/isler/attalia/index.html
+          test -f shipcraft/dist/tr/isler/hydrelon/index.html
+          test -f shipcraft/dist/templates/clinic/index.md
+          test -f shipcraft/dist/tr/sablonlar/index.html
+          test -f shipcraft/dist/tr/sablonlar/klinik/index.html
+          test -f shipcraft/dist/tr/sablonlar/klinik/index.md
+          test -f shipcraft/dist/.well-known/mcp/server-card.json
+          test -f shipcraft/dist/llms.txt
+          test -f shipcraft/dist/tr/llms.txt
+          test -f shipcraft/dist/_headers
+          grep -q 'Content-Signal' shipcraft/dist/robots.txt
+      - name: Check Cloudflare credentials
+        id: cf
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -n "$CF_TOKEN" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Cloudflare credentials missing::The site was built but NOT deployed. Add repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID to deploy to Cloudflare Workers."
+          fi
+      - name: Deploy to Cloudflare Workers
+        if: steps.cf.outputs.present == 'true'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.155.0"
+          command: deploy
