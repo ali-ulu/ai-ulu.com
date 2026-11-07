@@ -171,6 +171,18 @@ ${hero(t, p)}
 <section id="work" class="sec wrap" aria-labelledby="hw"><div class="work-head"><div>${eyebrow(t.work.eyebrow)}<h2 id="hw">${t.work.h}</h2><p class="lead">${esc(t.work.sub)}</p></div><a class="btn acc" href="#contact" data-cta="work-start">${esc(t.start)}${arrow}</a></div>
   <div class="work-grid">${workGrid(t, p)}</div></section>
 
+<section id="inspire" class="inspire" aria-labelledby="hi">
+  <div class="sec wrap center inspire-head">${eyebrow(t.inspire.eyebrow)}<h2 id="hi">${t.inspire.h}</h2><p class="lead">${esc(t.inspire.sub)}</p></div>
+  <div class="deck" id="deck" data-src="${p}assets/deck/" data-video="klinik fitness yayla hukuk seramik zeytinyagi restoran yayla-dag seramik-kase" data-cards="${esc(JSON.stringify(t.inspire.cards))}" style="--n:${t.inspire.cards.length}">
+    <div class="deck-stage" tabindex="0" role="region" aria-roledescription="carousel" aria-label="${esc(t.inspire.label)}">
+      <div class="deck-scene"></div>
+      <p class="deck-caption" aria-live="polite"></p>
+      <nav class="deck-thumbs" aria-label="${esc(t.inspire.pick)}"></nav>
+    </div>
+  </div>
+  <div class="sec wrap center inspire-close"><h2>${t.inspire.close}</h2><p class="lead">${esc(t.inspire.closeSub)}</p><a class="btn acc" href="#contact" data-cta="inspire-start">${esc(t.start)}${arrow}</a></div>
+</section>
+
 <section id="process" class="sec wrap center" aria-labelledby="hpr">${eyebrow(t.process.eyebrow)}<h2 id="hpr">${t.process.h}</h2>
   <ol class="cards3 steps">${t.process.steps.map(([h, b], i) => `<li class="bz"><div class="core left"><span class="num">0${i + 1}</span><h3>${esc(h)}</h3><p>${esc(b)}</p></div></li>`).join("")}</ol></section>
 
