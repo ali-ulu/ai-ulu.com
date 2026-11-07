@@ -400,10 +400,12 @@ function framerPicksSection(tr) {
   const x = tr
     ? { h: "Sektörel <em>Framer şablonları</em>", lead: "Framer Marketplace'ten seçtiğimiz, güncel ve mobil uyumlu şablonlar. Sektörünüzü seçin, beğendiğiniz şablonu açın; ai-ulu onu markanız, içeriğiniz ve randevu akışınızla yeniden kurar.",
         cta: "Framer'de görüntüle", all: "Tümü", sectorsLabel: "Sektöre göre filtrele",
-        note: "Şablonlar Framer Marketplace'te yayımlanır; önizleme görselleri resmidir. Fiyat ve kapsamı Framer sayfasında görürsünüz. Beğendiğiniz şablonun adını bize yazın, gerisini biz yapalım." }
+        note: "Şablonlar Framer Marketplace'te yayımlanır; önizleme görselleri resmidir. Fiyat ve kapsamı Framer sayfasında görürsünüz. Beğendiğiniz şablonun adını bize yazın, gerisini biz yapalım.",
+        descDefault: "Bir rozeti tıklayın ya da Enter'la çevirin: arkasındaki şablonları ve linkleri görürsünüz." }
     : { h: "Sector <em>Framer templates</em>", lead: "Hand-picked, current and mobile-ready templates from the Framer Marketplace. Pick your sector, open a template you like, and ai-ulu rebuilds it around your brand, content and booking flow.",
         cta: "View on Framer", all: "All", sectorsLabel: "Filter by sector",
-        note: "These templates are published on the Framer Marketplace; previews are official. You will see pricing and scope on the Framer page. Send us the name of the template you like and we take it from there." };
+        note: "These templates are published on the Framer Marketplace; previews are official. You will see pricing and scope on the Framer page. Send us the name of the template you like and we take it from there.",
+        descDefault: "Click a badge or press Enter to flip it: the templates behind it and their links appear." };
   const tabs = [`<button type="button" class="fp-tab" aria-pressed="true" data-f="all">${esc(x.all)}</button>`]
     .concat(FRAMER_PICKS.sectors.map((s) =>
       `<button type="button" class="fp-tab" aria-pressed="false" data-f="${s.id}">${esc(tr ? s.tr : s.en)}</button>`))
@@ -414,13 +416,73 @@ function framerPicksSection(tr) {
       <span class="fp-body"><span class="fp-sector">${esc(tr ? s.tr : s.en)}</span><b>${esc(t.name)}</b><p>${esc(tr ? t.tr : t.en)}</p>
       <span class="fp-open">${esc(x.cta)}<i aria-hidden="true">→</i></span></span></a>`))
     .join("");
+  // Lanyard rayı (JS ile devreye girer; JS kapalıyken üstteki grid fallback kalır).
+  // Ön yüz: sektör rozeti (buton). Arka yüz: sektörün şablon linkleri.
+  const hanger = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a2 2 0 0 1 2 2c0 .9-.55 1.65-1.35 1.92L12 7.2v1.6l8.1 5.5c.95.65.5 2.1-.65 2.1H4.55c-1.15 0-1.6-1.45-.65-2.1L12 8.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const countWord = (n) => `${n} ${tr ? "şablon" : n === 1 ? "template" : "templates"}`;
+  const badges = FRAMER_PICKS.sectors.map((s) =>
+    `<li class="fp-badge" data-sector="${s.id}">
+    <span class="fp-cord" aria-hidden="true"></span>
+    <div class="fp-tilt"><div class="fp-flip">
+      <button type="button" class="fp-face fp-front" aria-pressed="false">${hanger}
+        <b>${esc(tr ? s.tr : s.en)}</b><span>${esc(countWord(s.templates.length))}</span>
+        <span class="fp-hint" aria-hidden="true">${esc(tr ? "çevir" : "flip")}</span></button>
+      <div class="fp-face fp-back" inert>
+        <b>${esc(tr ? s.tr : s.en)}</b>
+        ${s.templates.map((t) =>
+          `<a href="https://www.framer.com/marketplace/templates/${t.slug}/" target="_blank" rel="noopener" tabindex="-1">${esc(t.name)}<i aria-hidden="true">→</i></a>`).join("")}
+      </div>
+    </div></div></li>`).join("");
+  const fpData = JSON.stringify({
+    default: tr ? "Bir rozeti tıklayın ya da Enter'la çevirin: arkasındaki şablonları ve linkleri görürsünüz."
+                : "Click a badge or press Enter to flip it: the templates behind it and their links appear.",
+    sectors: FRAMER_PICKS.sectors.map((s) => ({
+      id: s.id,
+      name: tr ? s.tr : s.en,
+      desc: s.templates.map((t) => `${t.name} — ${tr ? t.tr : t.en}`).join(" "),
+    })),
+  }).replace(/</g, "\\u003c");
   return `<section class="fp" id="${tr ? "framer-sablonlari" : "framer-templates"}" aria-labelledby="fp-h">
   <h2 id="fp-h">${x.h}</h2><p class="lead">${esc(x.lead)}</p>
   <div class="fp-tabs" role="group" aria-label="${esc(x.sectorsLabel)}">${tabs}</div>
   <div class="fp-grid">${cards}</div>
+  <div class="fp-rail" hidden><div class="fp-rail-bar" aria-hidden="true"></div>
+    <ul class="fp-track" aria-label="${esc(x.sectorsLabel)}">${badges}</ul></div>
+  <p class="fp-desc" aria-live="polite">${esc(x.descDefault)}</p>
   <p class="fp-note">${esc(x.note)}</p>
 </section>
-<script>document.querySelectorAll(".fp-tab").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".fp-tab").forEach(function(t){t.setAttribute("aria-pressed",t===b?"true":"false")});var f=b.getAttribute("data-f");document.querySelectorAll(".fp-card").forEach(function(c){c.hidden=f!=="all"&&c.getAttribute("data-sector")!==f})})})</script>`;
+<script type="application/json" id="fp-data">${fpData}</script>
+<script>document.querySelectorAll(".fp-tab").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".fp-tab").forEach(function(t){t.setAttribute("aria-pressed",t===b?"true":"false")});var f=b.getAttribute("data-f");document.querySelectorAll(".fp-card").forEach(function(c){c.hidden=f!=="all"&&c.getAttribute("data-sector")!==f})})})</script>
+<script>(function(){
+  var rail=document.querySelector(".fp-rail"),grid=document.querySelector(".fp-grid"),tabs=document.querySelector(".fp-tabs"),desc=document.querySelector(".fp-desc");
+  if(!rail||!grid||!desc)return;
+  var data;try{data=JSON.parse(document.getElementById("fp-data").textContent)}catch(e){return}
+  var byId={};data.sectors.forEach(function(s){byId[s.id]=s});
+  rail.hidden=false;grid.hidden=true;if(tabs)tabs.hidden=true;
+  desc.textContent=data.default;
+  function closeAll(){rail.querySelectorAll('.fp-front[aria-pressed="true"]').forEach(function(b){
+    b.setAttribute("aria-pressed","false");
+    var badge=b.closest(".fp-badge");
+    badge.querySelector(".fp-flip").removeAttribute("data-open");
+    var back=badge.querySelector(".fp-back");back.setAttribute("inert","");back.querySelectorAll("a").forEach(function(a){a.setAttribute("tabindex","-1")});
+  })}
+  rail.addEventListener("click",function(e){
+    var btn=e.target.closest(".fp-front");if(!btn)return;
+    var badge=btn.closest(".fp-badge"),id=badge.getAttribute("data-sector");
+    var wasOpen=btn.getAttribute("aria-pressed")==="true";
+    closeAll();
+    if(!wasOpen){btn.setAttribute("aria-pressed","true");
+      badge.querySelector(".fp-flip").setAttribute("data-open","true");
+      var back=badge.querySelector(".fp-back");back.removeAttribute("inert");back.querySelectorAll("a").forEach(function(a){a.removeAttribute("tabindex")});
+      if(byId[id])desc.textContent=byId[id].name+": "+byId[id].desc;
+    }else{desc.textContent=data.default;}
+  });
+  rail.addEventListener("keydown",function(e){
+    if(e.key!=="Escape")return;
+    var open=rail.querySelector('.fp-front[aria-pressed="true"]');
+    if(open){var badge=open.closest(".fp-badge");closeAll();desc.textContent=data.default;open.focus();e.preventDefault();}
+  });
+})();</script>`;
 }
 
 // /templates/ ve /tr/sablonlar/ dizin sayfaları — llms.txt bu adreslere işaret ediyor, 403 olmamalı.
@@ -514,6 +576,34 @@ p.lead{color:#e8d6c8cc;max-width:60ch;font-size:clamp(17px,1.5vw,20px)}
 .fp-open i{font-style:normal;transition:transform .3s}
 .fp-card:hover .fp-open i{transform:translateX(3px)}
 .fp-note{margin:22px 0 0;color:#e8d6c899;font-size:14px;line-height:1.6;max-width:64ch}
+/* Lanyard rayı: metal bar + asılı sektör rozetleri. JS ile açılır; JS yoksa grid görünür.
+   Animasyon yalnızca transform; sallanma pivotu ipin üst ucudur. */
+.fp-rail{margin-top:40px}
+.fp-rail-bar{height:10px;border-radius:999px;background:linear-gradient(180deg,#4a3624,#140b06 55%,#2a1608);box-shadow:0 1px 0 #ffffff2b,0 14px 28px -14px #000}
+.fp-track{list-style:none;display:flex;align-items:flex-start;gap:clamp(8px,1.6vw,20px);margin:0;padding:0 4px 10px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.fp-badge{flex:0 0 auto;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;padding-top:0;perspective:900px}
+.fp-cord{width:2px;height:clamp(16px,2.6vw,28px);background:linear-gradient(180deg,#6a523c,#ffb23d);border-radius:1px}
+.fp-tilt{transform-origin:50% calc(-1 * clamp(16px,2.6vw,28px))}
+.fp-badge:hover .fp-tilt,.fp-badge:focus-within .fp-tilt{animation:fp-swing 1.9s ease-in-out}
+@keyframes fp-swing{0%{transform:rotate(0deg)}22%{transform:rotate(3.2deg)}52%{transform:rotate(-2.4deg)}78%{transform:rotate(1.2deg)}100%{transform:rotate(0deg)}}
+.fp-flip{position:relative;width:clamp(148px,36vw,176px);height:clamp(128px,30vw,148px);transform-style:preserve-3d;transition:transform .55s cubic-bezier(.32,.72,0,1)}
+.fp-flip[data-open="true"]{transform:rotateY(180deg)}
+.fp-face{position:absolute;inset:0;box-sizing:border-box;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;border:1px solid #ffffff24;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));box-shadow:0 18px 34px -20px #000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px;text-align:center}
+.fp-front{cursor:pointer;color:#fff6ee;font-family:inherit}
+.fp-front svg{width:22px;height:22px;color:#ff8a3d}
+.fp-front b{font:400 clamp(17px,1.6vw,20px)/1.15 "Cormorant Garamond",Georgia,serif}
+.fp-front span{font:600 10.5px/1 "DM Mono",monospace;letter-spacing:.1em;text-transform:uppercase;color:#ffb23d}
+.fp-front .fp-hint{color:#e8d6c880;letter-spacing:.14em}
+.fp-front:focus-visible{outline:2px solid #ff8a3d;outline-offset:3px}
+.fp-back{transform:rotateY(180deg);visibility:hidden;justify-content:center;gap:7px}
+.fp-flip[data-open="true"] .fp-back{visibility:visible}
+.fp-back b{font:400 15px/1.1 "Cormorant Garamond",Georgia,serif;color:#ffb23d;margin-bottom:2px}
+.fp-back a{display:inline-flex;align-items:center;gap:6px;color:#fff6ee;text-decoration:none;font:500 12.5px/1.2 "Instrument Sans",system-ui,sans-serif;padding:6px 10px;border-radius:10px;border:1px solid #ffffff1f;background:#ffffff08;transition:border-color .3s}
+.fp-back a:hover{border-color:#ff5f1288}
+.fp-back a:focus-visible{outline:2px solid #ff8a3d;outline-offset:2px}
+.fp-back a i{font-style:normal;color:#ffb23d}
+.fp-desc{min-height:3.4em;margin:14px 0 0;color:#e8d6c8cc;font-size:15px;line-height:1.6;max-width:64ch}
+@media (prefers-reduced-motion:reduce){.fp-tilt{animation:none!important}.fp-flip{transition:none}}
 @media (max-width:420px){.fp-grid{grid-template-columns:1fr}}</style></head>
 <body><div class="aur" aria-hidden="true"></div>
 <main class="w"><a class="back" href="${SITE.origin}${tr ? "/tr/" : "/"}">${esc(c.back)}</a>
