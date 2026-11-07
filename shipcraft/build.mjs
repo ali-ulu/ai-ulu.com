@@ -271,6 +271,7 @@ const TEMPLATES = [
   ["law", "Hale & Rowe", "Law firm template: navy and gold, practice-area grid and a consultation call to action.", "Law firm website template"],
   ["studio", "Atelier Nord", "Architecture studio template: editorial grid, project list and a strong typographic voice.", "Architecture studio website template"],
   ["fitness", "Pulse Studio", "Fitness studio template: high-contrast type, class schedule chips and a free-class call to action.", "Fitness studio website template"],
+  ["holo", "Salon Holo", "Holographic beauty and care studio template: dark glass panels, cyan-magenta light, a one-time glitch entrance and a booking-first layout.", "Holographic beauty studio website template"],
 ];
 
 // Her şablon sayfasına eklenen metin: sayfa ince kalmasın ve hedef sektör kelimesiyle eşleşsin.
@@ -330,6 +331,17 @@ const TEMPLATE_CONTENT = {
       "Location, hours and contact details",
     ],
     audience: "Gyms, fitness studios and class-based businesses that want more trial sign-ups and members.",
+  },
+  holo: {
+    h: "Holographic beauty studio website template",
+    intro: "Salon Holo is a hologram-themed template for beauty and care studios that want a premium, light-driven look. A dark glass palette with cyan and magenta accents opens with a one-time glitch entrance, then stays calm and readable.",
+    includes: [
+      "A dark glass hero with a chromatic-light headline",
+      "Care-service cards with a light sweep on hover",
+      "A booking call to action repeated on every screen",
+      "A sample service card where your real booking flow sits",
+    ],
+    audience: "Beauty and care studios that want to look premium and a little futuristic — without giving up readability or speed.",
   },
 };
 
@@ -514,12 +526,12 @@ function templatesIndex(lang = "en") {
       ).join("");
   const c = tr ? {
     title: "Web sitesi şablonları — ai-ulu",
-    desc: "ai-ulu'dan beş başlangıç web sitesi şablonu: estetik klinik, restoran, hukuk bürosu, mimarlık stüdyosu ve fitness stüdyosu. Her biri markanıza uyarlanır.",
-    ogTitle: "Web sitesi şablonları — ai-ulu", ogDesc: "Beş başlangıç şablonu, her biri markanıza uyarlanır.",
-    back: "← ai-ulu", h1: "Beş şablon,<br><em>tek yapı sistemi.</em>",
-    lead: "Klinikler, restoranlar, hukuk büroları, stüdyolar ve fitness için başlangıç siteleri. Her biri markanız, içeriğiniz ve hedefleriniz etrafında yeniden kurulur — olduğu gibi satılmaz.",
+    desc: "ai-ulu'dan altı başlangıç web sitesi şablonu: estetik klinik, restoran, hukuk bürosu, mimarlık stüdyosu, fitness stüdyosu ve hologram güzellik stüdyosu. Her biri markanıza uyarlanır.",
+    ogTitle: "Web sitesi şablonları — ai-ulu", ogDesc: "Altı başlangıç şablonu, her biri markanıza uyarlanır.",
+    back: "← ai-ulu", h1: "Altı şablon,<br><em>tek yapı sistemi.</em>",
+    lead: "Klinikler, restoranlar, hukuk büroları, stüdyolar, fitness ve güzellik için başlangıç siteleri. Her biri markanız, içeriğiniz ve hedefleriniz etrafında yeniden kurulur — olduğu gibi satılmaz.",
     h2a: "Bu şablonlar nedir, ne değildir",
-    p1: "Bunlar ai-ulu'nun yaygın yerel işletme türleri için kurduğu beş bitmiş başlangıç sitesidir. Her biri gerçek, çalışan bir düzendir — bir klinik randevu akışı, bir restoran menü ve rezervasyon akışı, bir hukuk bürosunun çalışma alanları, bir mimarlık portföyü ve bir fitness ders programı. Herhangi birini açıp eksiksiz bir sayfada gezinebilirsiniz.",
+    p1: "Bunlar ai-ulu'nun yaygın yerel işletme türleri için kurduğu altı bitmiş başlangıç sitesidir. Her biri gerçek, çalışan bir düzendir — bir klinik randevu akışı, bir restoran menü ve rezervasyon akışı, bir hukuk bürosunun çalışma alanları, bir mimarlık portföyü, bir fitness ders programı ve bir bakım stüdyosu ışık gösterisi. Herhangi birini açıp eksiksiz bir sayfada gezinebilirsiniz.",
     p2: "Bunlar, alıp olduğu gibi bıraktığınız hazır temalar değildir. ai-ulu en yakın şablonu alır ve markanız, içeriğiniz ve hedefleriniz etrafında yeniden kurar: renkleriniz ve tipografiniz, hizmetleriniz, fotoğraflarınız, randevu ya da talep akışınız. Şablon başlangıç noktasıdır, bitmiş site değil.",
     h2b: "Süreç nasıl işler",
     steps: [
@@ -531,12 +543,12 @@ function templatesIndex(lang = "en") {
     outro: `Önce büyük resmi görmek ister misiniz? <a href="${SITE.origin}/tr/" style="color:#ffb23d">ai-ulu nasıl çalışır</a> sayfasına bakın ya da <a href="${SITE.origin}/tr/#contact" style="color:#ffb23d">ücretsiz ön görüşme başlatın</a>.`,
   } : {
     title: "Website templates — ai-ulu",
-    desc: "Five starter website templates from ai-ulu: aesthetic clinic, restaurant, law firm, architecture studio and fitness studio. Each one is adapted to your brand.",
-    ogTitle: "Website templates — ai-ulu", ogDesc: "Five starter templates, each adapted to your brand.",
-    back: "← ai-ulu", h1: "Five templates,<br><em>one build system.</em>",
-    lead: "Starter sites for clinics, restaurants, law firms, studios and fitness. Each one is rebuilt around your brand, content and goals — not resold as-is.",
+    desc: "Six starter website templates from ai-ulu: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio and a holographic beauty studio. Each one is adapted to your brand.",
+    ogTitle: "Website templates — ai-ulu", ogDesc: "Six starter templates, each adapted to your brand.",
+    back: "← ai-ulu", h1: "Six templates,<br><em>one build system.</em>",
+    lead: "Starter sites for clinics, restaurants, law firms, studios, fitness and beauty. Each one is rebuilt around your brand, content and goals — not resold as-is.",
     h2a: "What these templates are, and what they are not",
-    p1: "These are five finished starter websites ai-ulu built for common local-business types. Each one is a real, working layout — a clinic booking flow, a restaurant menu and reservation flow, a law firm's practice areas, an architecture portfolio, and a fitness class schedule. You can open any of them and click through a complete page.",
+    p1: "These are six finished starter websites ai-ulu built for common local-business types. Each one is a real, working layout — a clinic booking flow, a restaurant menu and reservation flow, a law firm's practice areas, an architecture portfolio, a fitness class schedule, and a light-driven care studio. You can open any of them and click through a complete page.",
     p2: "They are not off-the-shelf themes you buy and leave as-is. ai-ulu takes the closest template and rebuilds it around your brand, your content and your goals: your colours and type, your services, your photos, your booking or enquiry flow. The template is the starting point, not the finished site.",
     h2b: "How the process works",
     steps: [
@@ -1015,7 +1027,7 @@ const llmsTxt = `# ai-ulu
 - [Contact](${absUrl("en", slugOf("contact", "en"))}): email, phone and WhatsApp.
 - [Terms of Service](${absUrl("en", slugOf("terms", "en"))}): the terms for client work.
 - [Privacy](${absUrl("en", slugOf("privacy", "en"))}): what is collected and why.
-- [Templates](${SITE.origin}/templates/): five starter sites, each rebuilt around the client's brand.
+- [Templates](${SITE.origin}/templates/): six starter sites, each rebuilt around the client's brand.
 - [Türkçe](${SITE.origin}/tr/): the Turkish version of this site.
 
 ## Services
@@ -1038,7 +1050,7 @@ const llmsTxt = `# ai-ulu
 - [Attalia](${absUrl("en", slugOf("caseAttalia", "en"))}) - group site for a global commerce holding.
 - [Hercules Investments](${absUrl("en", slugOf("caseHercules", "en"))}) - brand group site for a US e-commerce company (https://herculesinvestmentsllc.com).
 - [Hydrelon](${absUrl("en", slugOf("caseHydrelon", "en"))}) - product site for a water-filtration brand (https://hydrelon.com).
-- Starter templates: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio
+- Starter templates: aesthetic clinic, restaurant, law firm, architecture studio, fitness studio, holographic beauty studio
   (${SITE.origin}/templates/). Each is rebuilt around the client's brand, not resold as-is.
 
 ## FAQ
@@ -1076,7 +1088,7 @@ const llmsTxtTr = `# ai-ulu
 - [İletişim](${absUrl("tr", slugOf("contact", "tr"))}): e-posta, telefon ve WhatsApp.
 - [Hizmet Şartları](${absUrl("tr", slugOf("terms", "tr"))}): müşteri işleri için şartlar.
 - [Gizlilik](${absUrl("tr", slugOf("privacy", "tr"))}): nelerin toplandığı ve nedeni.
-- [Şablonlar](${SITE.origin}/tr/sablonlar/): markaya göre yeniden kurulan beş başlangıç sitesi.
+- [Şablonlar](${SITE.origin}/tr/sablonlar/): markaya göre yeniden kurulan altı başlangıç sitesi.
 - [English](${SITE.origin}/): sitenin İngilizce sürümü.
 
 ## Hizmetler
@@ -1099,7 +1111,7 @@ const llmsTxtTr = `# ai-ulu
 - [Attalia](${absUrl("tr", slugOf("caseAttalia", "tr"))}) - küresel ticaret holdingi için grup sitesi.
 - [Hercules Investments](${absUrl("tr", slugOf("caseHercules", "tr"))}) - ABD merkezli e-ticaret şirketi için marka grubu sitesi (https://herculesinvestmentsllc.com).
 - [Hydrelon](${absUrl("tr", slugOf("caseHydrelon", "tr"))}) - su arıtma markası için ürün sitesi (https://hydrelon.com).
-- Başlangıç şablonları: estetik klinik, restoran, hukuk bürosu, mimarlık stüdyosu, fitness stüdyosu
+- Başlangıç şablonları: estetik klinik, restoran, hukuk bürosu, mimarlık stüdyosu, fitness stüdyosu, hologram güzellik stüdyosu
   (${SITE.origin}/tr/sablonlar/). Her biri müşterinin markasına göre yeniden kurulur, olduğu gibi satılmaz.
 
 ## SSS

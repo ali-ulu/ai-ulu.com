@@ -1,0 +1,55 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lumen — hologram bakım stüdyosu — template</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@300;400;500&display=swap">
+<style>
+:root{--bg:#070310;--glass:#0d0a20;--ink:#eaf4ff;--mute:#a8bccf;--cy:#58cfe0;--cy2:#7fe3f2;--mg:#ff9ade;--btn:#4fd8eb;--btnink:#04121c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:300 17px/1.65 Jost,sans-serif;overflow-x:hidden}
+/* scanline örtüsü: statik, çok hafif */
+body::after{content:"";position:fixed;inset:0;z-index:6;pointer-events:none;background:repeating-linear-gradient(0deg,#ffffff07 0 1px,transparent 1px 3px)}
+.bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(55% 45% at 78% 14%,#0e2f4288,transparent 70%),radial-gradient(45% 40% at 12% 88%,#2a0e3388,transparent 70%)}
+nav{display:flex;justify-content:space-between;align-items:center;padding:26px 6vw}nav b{font:400 28px "Cormorant Garamond",serif;letter-spacing:.14em;color:var(--cy2)}nav span{font-size:13px;letter-spacing:.18em;text-transform:uppercase;display:flex;gap:32px;color:var(--mute)}
+nav a.b{border:1px solid var(--cy);border-radius:99px;padding:11px 22px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--cy2);text-decoration:none}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:4vw;align-items:center;padding:3vw 6vw 6vw;min-height:76vh}
+.eyebrow{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--cy);margin-bottom:22px}
+h1{font:300 clamp(46px,7.5vw,116px)/.95 "Cormorant Garamond",serif;letter-spacing:-.01em;margin:0 0 26px}
+/* holografik kromatik aberasyon: renk kopyaları screen blend'de üstte kalır;
+   glitch SAYFA GİRİŞTE BİR KEZ oynar, sonra statik sapma olarak kalır. */
+.gl{position:relative;display:block}
+.gl::before,.gl::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;mix-blend-mode:screen;pointer-events:none;opacity:0}
+.gl::before{color:#41f0ff;animation:glA 1.2s steps(2,end) 1 .15s forwards}
+.gl::after{color:#ff4fd8;animation:glB 1.2s steps(3,end) 1 .15s forwards}
+@keyframes glA{0%{opacity:.95;transform:translate(-7px,2px)}30%{opacity:.75;transform:translate(5px,-2px)}60%{opacity:.6;transform:translate(-3px,1px)}100%{opacity:.5;transform:translate(1.5px,0)}}
+@keyframes glB{0%{opacity:.95;transform:translate(6px,-2px)}35%{opacity:.7;transform:translate(-5px,2px)}70%{opacity:.55;transform:translate(3px,-1px)}100%{opacity:.45;transform:translate(-1.5px,0)}}
+em{font-style:italic;color:var(--mg)}
+p.l{max-width:44ch;font-size:18px;color:var(--mute)}
+.cta{display:inline-flex;gap:10px;margin-top:22px;background:var(--btn);color:var(--btnink);padding:16px 28px;border-radius:99px;text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
+.panel{position:relative;height:min(58vh,520px);border-radius:28px;background:linear-gradient(160deg,#101430,#0a0818 60%);border:1px solid #58cfe055;overflow:hidden;box-shadow:0 40px 90px -40px #0a2a3f99}
+.panel::before{content:"";position:absolute;inset:14%;border-radius:50%;background:radial-gradient(circle at 38% 32%,#7fe3f244,#12344a66 45%,transparent 70%);filter:blur(6px)}
+.panel::after{content:"";position:absolute;left:-10%;right:-10%;bottom:-14%;height:42%;background:radial-gradient(65% 100% at 50% 100%,#12304499,transparent 70%)}
+.ring{position:absolute;left:22%;top:16%;width:56%;aspect-ratio:1;border-radius:50%;border:1px solid #58cfe066;border-top-color:#ff4fd866;box-shadow:0 0 40px -8px #58cfe055 inset}
+.card{position:absolute;left:7%;bottom:9%;background:#0d0a20ee;border:1px solid #58cfe044;border-radius:18px;padding:14px 18px;z-index:2;font-size:14px;color:var(--mute);box-shadow:0 24px 44px -20px #000000aa}.card b{display:block;font:400 21px "Cormorant Garamond",serif;color:var(--ink)}
+.row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:0 6vw 70px}
+.cardx{position:relative;overflow:hidden;border:1px solid #58cfe044;border-radius:24px;padding:30px;background:linear-gradient(180deg,#0d0a20,#090714)}
+.cardx h2{font:400 29px "Cormorant Garamond",serif;margin:0 0 8px;color:var(--cy2)}
+.cardx p{margin:0;color:var(--mute)}
+/* kenardan ışık süpürmesi: yalnızca transform, hover'da */
+.cardx::before{content:"";position:absolute;top:-10%;bottom:-10%;left:-45%;width:36%;background:linear-gradient(100deg,transparent,#7fe3f21f 45%,#ffffff2e 50%,#ff4fd81f 55%,transparent);transform:translateX(-130%);transition:transform .9s ease;pointer-events:none}
+.cardx:hover::before{transform:translateX(430%)}
+.foot{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center;padding:26px 6vw 40px;border-top:1px solid #58cfe022;color:var(--mute);font-size:14px}
+.foot .cta{margin:0;padding:12px 22px}
+.note{padding:0 6vw 26px;color:#8fa2b5;font-size:13px}
+@media(max-width:800px){.hero,.row{grid-template-columns:1fr}nav span{display:none}.hero{padding-top:2vw}}
+@media(prefers-reduced-motion:reduce){.gl::before,.gl::after{animation:none;opacity:.45;transform:translate(1.5px,0)}.gl::after{transform:translate(-1.5px,0)}.cardx::before{transition:none;display:none}}
+</style></head><body><div class="bg"></div>
+<nav><b>LUMEN</b><span><a>Hizmetler</a><a>Stüdyo</a><a>İletişim</a></span><a class="b" href="#">Randevu Al</a></nav>
+<section class="hero"><div><p class="eyebrow">Bakım &amp; Güzellik Stüdyosu</p>
+<h1><span class="gl" data-text="Işık gibi">Işık gibi</span><span class="gl" data-text="yenilen."><em>yenilen.</em></span></h1>
+<p class="l">Cilt bakımından vücut konturuna, her seansta temiz ürünler, sakin bir ortam ve cildinize uygun bir bakım planı. Randevunuzu bir mesajla alın.</p>
+<a class="cta" href="#">Randevu Al →</a></div>
+<div class="panel"><span class="ring"></span><div class="card"><b>Cilt &amp; Işık bakımı</b>Örnek hizmet kartı — randevu akışında burada gerçek takviminiz görünür</div></div></section>
+<section class="row">
+<div class="cardx"><h2>Cilt &amp; Işık</h2><p>Temizleme, nemlendirme ve ışıklı bakım seansları; cilt tipinize göre planlanır.</p></div>
+<div class="cardx"><h2>Vücut &amp; Kontur</h2><p>Sıkılaştırma ve şekillendirme uygulamaları; ölçülü, kademeli bir programla.</p></div>
+<div class="cardx"><h2>Kaş &amp; Kirpik</h2><p>Şekillendirme, laminasyon ve bakım; yüz hatlarınıza göre yorumlanır.</p></div>
+</section>
+<p class="note">Görseller temsilidir; stüdyo adı ve içerik örnektir. Şablon markanız, hizmetleriniz ve randevu akışınızla yeniden kurulur.</p>
+<section class="foot"><span>Randevular mesajla ya da telefonla alınır.</span><a class="cta" href="#">Randevu Al →</a></section></body></html>

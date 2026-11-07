@@ -681,6 +681,21 @@ export const TEMPLATES_TR = [
     ],
     audience: "Daha fazla deneme kaydı ve üye isteyen spor salonları, fitness stüdyoları ve ders tabanlı işletmeler.",
   },
+  {
+    slug: "salon-holo", enSlug: "holo", name: "Salon Holo",
+    title: "Hologram güzellik stüdyosu web sitesi şablonu — ai-ulu",
+    desc: "Güzellik ve bakım stüdyoları için hologram temalı web sitesi şablonu: koyu cam paneller, cyan-magenta ışık, tek seferlik glitch girişi ve önce randevu alan bir düzen.",
+    h: "Hologram güzellik stüdyosu web sitesi şablonu",
+    lead: "Salon Holo, güzellik ve bakım stüdyoları için hologram temalı bir web sitesi şablonudur.",
+    intro: "Koyu cam palet, cyan ve magenta vurgular ve sayfa girişte bir kez oynayan bir glitch efektiyle premium bir ışık hissi verir; ardından sakin ve okunabilir kalır.",
+    includes: [
+      "Kromatik ışıklı başlığa sahip koyu cam hero",
+      "Hover'da ışık süpürmesi olan bakım hizmeti kartları",
+      "Her ekranda yinelenen randevu çağrısı",
+      "Gerçek randevu akışınızın oturduğu örnek hizmet kartı",
+    ],
+    audience: "Okunabilirlikten ve hızdan ödün vermeden premium ve biraz gelecekçi görünmek isteyen güzellik ve bakım stüdyoları.",
+  },
 ];
 
 // Kendi şablon ailemiz: yaygın yerel işletme sektörleri için başlangıç düzenleri.
