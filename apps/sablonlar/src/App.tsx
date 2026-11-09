@@ -60,6 +60,7 @@ export default function App() {
         <span className="font-serif text-xl">ai-ulu</span>
       </nav>
 
+      <h1 className="sr-only">Örnek tasarımlar</h1>
       <div className="flex flex-1 items-center">
         <PictureRailGallery
           items={STILLER}

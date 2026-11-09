@@ -27,7 +27,7 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 .site-header{position:fixed;inset:0 0 auto;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:calc(1rem + env(safe-area-inset-top,0px)) var(--pad) 1.6rem;background:linear-gradient(var(--ink) 35%,rgba(8,9,11,0))}
 .logo{font:400 1.6rem/1 var(--serif);text-decoration:none}
 .site-header nav{display:flex;gap:2rem;font-size:.85rem;color:var(--dim)}
-.site-header nav a{text-decoration:none;transition:color .2s}
+.site-header nav a{display:inline-flex;align-items:center;min-height:44px;text-decoration:none;transition:color .2s}
 .site-header nav a:hover{color:var(--bone)}
 .site-header .btn{padding:.7rem 1.1rem}
 
@@ -76,7 +76,8 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .g3{grid-template-columns:repeat(3,1fr)}
 .cell{background:var(--ink);padding:2rem 1.6rem 2.2rem}
 .cell .n{font:500 .72rem/1 var(--mono);color:var(--amber);letter-spacing:.1em}
-.cell h3{font:400 1.8rem/1.05 var(--serif);margin:1.6rem 0 .8rem}
+.cell h3{font:400 1.8rem/1.05 var(--serif);margin:0 0 .8rem}
+.cell .n+h3{margin-top:1.6rem}
 .cell p{color:var(--dim);font-size:.95rem}
 .cell ul{list-style:none;margin:1.4rem 0 2rem;display:grid;gap:.55rem;font-size:.95rem;color:var(--soft)}
 .cell ul li::before{content:"—  ";color:var(--amber)}

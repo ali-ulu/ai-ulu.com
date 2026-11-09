@@ -41,7 +41,7 @@ const film = `<div id="film">
     <div class="ch right" id="c4" data-a=".88" data-b="1.01">
       <span class="eyebrow">04 — Yayında</span>
       <h2>Müşteriniz sizi <em>bulsun.</em></h2>
-      <p>Telefonda kusursuz, saniyeler içinde açılan, tek dokunuşla WhatsApp'tan size ulaştıran siteniz hazır.</p>
+      <p>Telefonda rahat okunan, hızlı açılan, tek dokunuşla WhatsApp'tan size ulaştıran siteniz hazır.</p>
       <div class="cta"><a class="btn" href="#iletisim">Projeyi başlatalım <span aria-hidden="true">→</span></a></div>
     </div>
 
@@ -60,10 +60,10 @@ const benefits = `<section class="s" id="nasil">
   <h2>Ziyaretçi gelir, <em>müşteri</em> olarak kalır.</h2>
   <p class="lead">Çoğu site ilk kaydırmada ziyaretçiyi kaybeder. Sorun marka değil, kurulum. Biz kurulumu baştan doğru yaparız.</p>
   <div class="grid g4">
-    <div class="cell"><span class="n">01</span><h3>Özgün tasarım</h3><p>Şablon değil; sektörünüze ve markanıza göre çizilmiş bir site.</p></div>
-    <div class="cell"><span class="n">02</span><h3>Google'da görünürlük</h3><p>Teknik SEO, hız ve yapılandırılmış veri ilk günden sitenin içinde.</p></div>
-    <div class="cell"><span class="n">03</span><h3>Yapay zekâ aramaları</h3><p>ChatGPT, Gemini ve Google'ın yapay zekâ yanıtlarının okuyabildiği yapı: llms.txt, şema, temiz HTML.</p></div>
-    <div class="cell"><span class="n">04</span><h3>Doğrudan iletişim</h3><p>Her sayfada tek dokunuşla WhatsApp ve arama. Ziyaretçi aklındayken size ulaşır.</p></div>
+    <div class="cell"><h3>Özgün tasarım</h3><p>Şablon değil; sektörünüze ve markanıza göre çizilmiş bir site.</p></div>
+    <div class="cell"><h3>Google'da görünürlük</h3><p>Teknik SEO, hız ve yapılandırılmış veri ilk günden sitenin içinde.</p></div>
+    <div class="cell"><h3>Yapay zekâ aramaları</h3><p>ChatGPT, Gemini ve Google'ın yapay zekâ yanıtlarının okuyabildiği yapı: llms.txt, şema, temiz HTML.</p></div>
+    <div class="cell"><h3>Doğrudan iletişim</h3><p>Her sayfada tek dokunuşla WhatsApp ve arama. Ziyaretçi aklındayken size ulaşır.</p></div>
   </div>
 </section>`;
 
