@@ -10,7 +10,7 @@ function head({ title, description, path, jsonLd }) {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${escapeHtml(fullTitle)}</title>
 <meta name="description" content="${escapeHtml(description)}">
-<link rel="canonical" href="${url}">
+${path.endsWith(".html") ? `<meta name="robots" content="noindex">` : `<link rel="canonical" href="${url}">`}
 <meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${site.name}">

@@ -66,6 +66,20 @@ export const pages = [
     description: "ai-ulu gizlilik politikası ve kişisel verilerin korunması (KVKK) bilgilendirmesi.",
     body: privacyBody,
   },
+  {
+    // Served by Workers assets (not_found_handling: 404-page); kept out of the sitemap.
+    path: "/404.html",
+    file: "404.html",
+    inSitemap: false,
+    title: "Sayfa bulunamadı",
+    description: "Aradığınız sayfa bulunamadı.",
+    body: () => `<section class="s">
+  <span class="eyebrow">404</span>
+  <h1>Bu sayfa <em>yok.</em></h1>
+  <p class="lead">Adres değişmiş ya da yanlış yazılmış olabilir.</p>
+  <p style="margin-top:2rem;display:flex;gap:.8rem;flex-wrap:wrap"><a class="btn" href="/">Ana sayfa <span aria-hidden="true">→</span></a><a class="btn ghost" href="/sablonlar/">Örnek tasarımlar</a></p>
+</section>`,
+  },
 ];
 
 export function renderPage(p) {

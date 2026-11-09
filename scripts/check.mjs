@@ -8,6 +8,7 @@ const dist = join(root, "dist");
 const required = [
   "index.html",
   "gizlilik/index.html",
+  "404.html",
   "sablonlar/index.html",
   "site.css",
   "ora.js",
