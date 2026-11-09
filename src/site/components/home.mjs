@@ -4,11 +4,6 @@ import { escapeHtml } from "../lib/html.mjs";
 
 const wa = `<a class="btn" href="${site.whatsapp}" rel="noopener">`;
 
-export const preloader = `<div id="pre" role="status" aria-live="polite" aria-label="Yükleniyor"><div class="in">
-  <div class="mark" aria-hidden="true">ai-ulu</div>
-  <div class="bar"><i id="preBar"></i></div>
-  <div class="pct" id="prePct" aria-hidden="true">000</div>
-</div></div>`;
 
 // data-a / data-b: scroll progress (0–1) where each chapter fades in and out (read by ora.js).
 const film = `<div id="film">

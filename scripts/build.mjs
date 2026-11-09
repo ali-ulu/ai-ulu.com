@@ -1,4 +1,5 @@
-import { mkdir, writeFile, rm, cp, access } from "node:fs/promises";
+import { mkdir, writeFile, readFile, rm, cp, access } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pages, renderPage } from "../src/site/pages.mjs";
@@ -26,9 +27,19 @@ async function build() {
   await rm(dist, { recursive: true, force: true });
   await mkdir(dist, { recursive: true });
 
-  for (const p of pages) await write(p.file, renderPage(p));
   await cp(assets, dist, { recursive: true });
   await cp(gallery, join(dist, "sablonlar"), { recursive: true });
+  // One render-blocking stylesheet: font faces + design system (fonts.css stays for the gallery app).
+  const css = (await readFile(join(assets, "fonts", "fonts.css"), "utf8")) + (await readFile(join(assets, "site.css"), "utf8"));
+  await write("site.css", css);
+
+  // ?v=<content hash> lets these files be cached as immutable; any edit changes the URL.
+  const versions = {};
+  for (const rel of ["/site.css", "/app.js", "/ora.js"]) {
+    versions[rel] = createHash("sha256").update(await readFile(join(dist, rel))).digest("hex").slice(0, 10);
+  }
+  const asset = (rel) => (versions[rel] ? `${rel}?v=${versions[rel]}` : rel);
+  for (const p of pages) await write(p.file, renderPage(p, asset));
 
   await write("robots.txt", `User-agent: *
 Allow: /
@@ -77,6 +88,15 @@ ${faq.items.map((f) => `- ${f.q} ${f.a}`).join("\n")}
   Cross-Origin-Opener-Policy: same-origin
   Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'
   Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+/site.css
+${immutable}
+
+/app.js
+${immutable}
+
+/ora.js
+${immutable}
 
 /fonts/*
 ${immutable}

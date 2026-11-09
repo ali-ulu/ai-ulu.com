@@ -2,7 +2,7 @@ import { site } from "../config.mjs";
 import { nav, footerLinks } from "../content/site-content.mjs";
 import { escapeHtml } from "../lib/html.mjs";
 
-function head({ title, description, path, jsonLd }) {
+function head({ title, description, path, jsonLd, asset }) {
   const fullTitle = title ? `${title} · ${site.name}` : site.title;
   const url = `${site.url}${path}`;
   const ld = jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : "";
@@ -24,8 +24,7 @@ ${path.endsWith(".html") ? `<meta name="robots" content="noindex">` : `<link rel
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/fonts/bodoni-moda-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/fonts/fonts.css">
-<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="${asset("/site.css")}">
 ${ld}`;
 }
 
@@ -50,23 +49,22 @@ function footer(note) {
 </footer>`;
 }
 
-// before: markup placed ahead of the header (the home preloader); scripts: extra module scripts.
-export function page({ title, description = site.description, path, body, jsonLd = null, before = "", scripts = [], footerNote = "" }) {
-  const extra = scripts.map((src) => `<script type="module" src="${src}"></script>`).join("\n");
+// asset(path) adds a content hash so CSS/JS can be cached for a year; scripts: extra module scripts.
+export function page({ title, description = site.description, path, body, jsonLd = null, scripts = [], footerNote = "", asset }) {
+  const extra = scripts.map((src) => `<script type="module" src="${asset(src)}"></script>`).join("\n");
   return `<!doctype html>
 <html lang="${site.lang}">
 <head>
-${head({ title, description, path, jsonLd })}
+${head({ title, description, path, jsonLd, asset })}
 </head>
 <body>
 <a class="skip-link" href="#main">İçeriğe geç</a>
-${before}
 ${header()}
 <main id="main">
 ${body}
 </main>
 ${footer(footerNote)}
-<script src="/app.js" defer></script>
+<script src="${asset("/app.js")}" defer></script>
 ${extra}
 </body>
 </html>`;

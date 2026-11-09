@@ -1,5 +1,5 @@
 import { page } from "./components/layout.mjs";
-import { homeBody, preloader } from "./components/home.mjs";
+import { homeBody } from "./components/home.mjs";
 import { site } from "./config.mjs";
 import { faq } from "./content/site-content.mjs";
 
@@ -54,7 +54,6 @@ export const pages = [
     path: "/",
     file: "index.html",
     jsonLd: [organizationLd(), faqLd()],
-    before: preloader,
     scripts: ["/ora.js"],
     footerNote: "Ekrandaki klinik sitesi örnek tasarımdır",
     body: homeBody,
@@ -82,6 +81,6 @@ export const pages = [
   },
 ];
 
-export function renderPage(p) {
-  return page({ ...p, body: p.body() });
+export function renderPage(p, asset) {
+  return page({ ...p, body: p.body(), asset });
 }

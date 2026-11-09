@@ -1,40 +1,37 @@
 // Home page film: a procedural laptop types real code, turns it into a site and comes apart, scrubbed by scroll.
 const root = document.documentElement;
-const preBar = document.getElementById('preBar');
-const prePct = document.getElementById('prePct');
-let loaded = 0;
-const step = (n) => { loaded = Math.max(loaded, n); preBar.style.width = loaded + '%'; prePct.textContent = String(Math.round(loaded)).padStart(3, '0'); };
-const finishPre = () => { step(100); document.getElementById('pre').classList.add('done'); };
 // No WebGL or a failed download: show the chapters as a plain column instead of an empty stage.
-const fallback = (err) => { root.classList.add('no-3d'); finishPre(); if (err) console.error('3D scene disabled:', err); };
+const fallback = (err) => { root.classList.add('no-3d'); if (err) console.error('3D scene disabled:', err); };
 
-let THREE, RoundedBoxGeometry, RoomEnvironment;
-try {
+// The scene (three.js ≈170 KB gzip plus GPU setup) waits for the first sign of intent, or 6 s of idling,
+// so the first paint and the main thread stay free; the CSS poster shows its first frame meanwhile.
+const TRIGGERS = ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown'];
+let booted = false;
+function boot() {
+  if (booted) return;
+  booted = true;
+  TRIGGERS.forEach((t) => removeEventListener(t, boot));
+  load().catch(fallback);
+}
+TRIGGERS.forEach((t) => addEventListener(t, boot, { passive: true, once: true }));
+setTimeout(boot, 6000);
+if (scrollY > 0) boot(); // reloaded mid-page
+
+let THREE, RoundedBoxGeometry, RoomEnvironment, photo;
+async function load() {
   [THREE, { RoundedBoxGeometry }, { RoomEnvironment }] = await Promise.all([
-    import('/vendor/three/three.module.min.js').then((m) => (step(45), m)),
-    import('/vendor/three/RoundedBoxGeometry.js').then((m) => (step(60), m)),
-    import('/vendor/three/RoomEnvironment.js').then((m) => (step(70), m)),
+    import('/vendor/three/three.module.min.js'),
+    import('/vendor/three/RoundedBoxGeometry.js'),
+    import('/vendor/three/RoomEnvironment.js'),
   ]);
   await document.fonts.ready;
-  step(80);
-} catch (err) {
-  fallback(err);
+  // Mock-site photo (Unsplash licence, see img/KAYNAK.txt); the screen still draws without it.
+  photo = await (async () => { const im = new Image(); im.src = '/img/gulus.webp'; try { await im.decode(); return im; } catch { return null; } })();
+  const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gl'), antialias: true, alpha: true, powerPreference: 'high-performance' });
+  start(renderer);
 }
 
-// Mock-site photo (Unsplash licence, see img/KAYNAK.txt); the screen still draws without it.
-const photo = THREE ? await (async () => { const im = new Image(); im.src = '/img/gulus.webp'; try { await im.decode(); return im; } catch { return null; } })() : null;
-let renderer = null;
-if (THREE) {
-  try {
-    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gl'), antialias: true, alpha: true, powerPreference: 'high-performance' });
-  } catch (err) {
-    fallback(err);
-  }
-}
-if (renderer) start();
-
-function start() {
-  step(88);
+function start(renderer) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -303,5 +300,5 @@ function start() {
   addEventListener('resize', resize);
   resize();
   readScroll(); cur = target;
-  requestAnimationFrame(() => { frame(); finishPre(); });
+  requestAnimationFrame(() => { frame(); root.classList.add('scene-ready'); });
 }
