@@ -3,14 +3,11 @@ export const site = {
   owner: "Ali Ulu",
   url: "https://ai-ulu.com",
   email: "aliulu@ai-ulu.com",
-  locale: "tr",
   lang: "tr",
-  tagline: "Hızlı, güvenli, dönüştüren web siteleri",
+  title: "ai-ulu — Müşteri getiren web siteleri",
   description:
-    "İşletmeler ve kişiler için özel tasarım web siteleri. Cloudflare altyapısı, hızlı açılış, güvenli formlar, SEO/GEO uyumu. Teklif için iletişime geç.",
-  // Contact channels
-  phoneDisplay: "+90 500 000 00 00",
-  whatsapp: "https://wa.me/905000000000",
-  // Social / proof
-  github: "https://github.com/ali-ulu",
+    "ai-ulu, işletmeler için müşteri getiren web siteleri kurar: özgün tasarım, Google'da ve yapay zekâ aramalarında görünürlük, WhatsApp'a bağlı iletişim.",
+  phone: "+905079581642",
+  phoneDisplay: "+90 507 958 16 42",
+  whatsapp: "https://wa.me/905079581642",
 };

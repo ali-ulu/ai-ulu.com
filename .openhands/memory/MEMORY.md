@@ -35,3 +35,9 @@ Deploy target: **Cloudflare only**. The old site is intentionally forgotten.
   process → know what to do → contact.
 - No fake guarantees ("%100 garanti") talk.
 - Strong on speed, security, SEO/GEO, personal-data protection (KVKK).
+
+## 2026-11-09 redesign (Claude Code)
+- Home rebuilt as a cinematic scroll page (procedural three.js laptop: code types → site → layers). One design system: `src/site/assets/site.css` (Bodoni Moda + Hanken Grotesk, ink/bone/amber) for every page.
+- Old home sections (`components/sections.mjs`, `styles.css`, `og.svg`) removed. Real contact: +90 507 958 16 42 / wa.me/905079581642 (the old config had placeholders).
+- `/sablonlar/` = workspace `apps/sablonlar` (Vite/React/Tailwind/shadcn `picture-rail-gallery`). Images there are other designers' template previews labelled "Örnek tasarım"; owner accepted that.
+- Next job: Turkish voice-over on the home page (owner request, 09.11).

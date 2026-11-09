@@ -1,19 +1,7 @@
 import { page } from "./components/layout.mjs";
-import {
-  heroSection,
-  trustSection,
-  valueSection,
-  templatesSection,
-  processSection,
-  clientStepsSection,
-  servicesSection,
-  faqSection,
-  contactSection,
-  ctaBand,
-} from "./components/sections.mjs";
+import { homeBody, preloader } from "./components/home.mjs";
 import { site } from "./config.mjs";
 import { faq } from "./content/site-content.mjs";
-import { escapeHtml } from "./lib/html.mjs";
 
 function organizationLd() {
   return {
@@ -22,10 +10,12 @@ function organizationLd() {
     name: site.name,
     url: site.url,
     email: site.email,
+    telephone: site.phone,
     description: site.description,
+    image: `${site.url}/og.png`,
     areaServed: "TR",
-    knowsLanguage: ["tr", "en"],
-    serviceType: "Web site tasarımı ve geliştirme",
+    knowsLanguage: ["tr"],
+    serviceType: "Web sitesi tasarımı ve geliştirme",
   };
 }
 
@@ -41,63 +31,43 @@ function faqLd() {
   };
 }
 
+const privacyBody = () => `<section class="s">
+  <span class="eyebrow">Gizlilik</span>
+  <h1>Gizlilik ve <em>KVKK</em></h1>
+  <div class="prose">
+    <p>Bu sayfa, ${site.name} üzerinden ilettiğiniz bilgilerin nasıl işlendiğini açıklar.</p>
+    <h2>Hangi verileri topluyoruz?</h2>
+    <p>Yalnızca iletişim formunda paylaştığınız ad, e-posta veya telefon ve proje açıklamasını toplarız. Kötüye kullanımı önlemek için gönderimin IP adresi ve tarayıcı bilgisi de kaydedilir.</p>
+    <h2>Ne için kullanıyoruz?</h2>
+    <p>Bu bilgiler yalnızca size dönüş yapmak ve teklif hazırlamak için kullanılır. Reklam amacıyla üçüncü taraflarla paylaşılmaz.</p>
+    <h2>Nasıl saklanıyor?</h2>
+    <p>Veriler şifreli bağlantı (HTTPS) üzerinden iletilir ve Cloudflare altyapısında, yalnızca yetkili kişinin erişebildiği bir veritabanında saklanır.</p>
+    <h2>Çerezler</h2>
+    <p>Bu site çerez veya izleme aracı kullanmaz.</p>
+    <h2>Haklarınız</h2>
+    <p>KVKK kapsamında verilerinize erişmeyi, düzeltilmesini veya silinmesini talep edebilirsiniz. Bunun için <a href="mailto:${site.email}">${site.email}</a> adresine yazabilirsiniz.</p>
+  </div>
+</section>`;
+
 export const pages = [
   {
     path: "/",
     file: "index.html",
-    title: "",
-    description: site.description,
     jsonLd: [organizationLd(), faqLd()],
-    body: () =>
-      [
-        heroSection(),
-        trustSection(),
-        valueSection(),
-        templatesSection(),
-        processSection(),
-        clientStepsSection(),
-        servicesSection(),
-        faqSection(),
-        contactSection(),
-        ctaBand(),
-      ].join("\n"),
+    before: preloader,
+    scripts: ["/ora.js"],
+    footerNote: "Ekrandaki klinik sitesi örnek tasarımdır",
+    body: homeBody,
   },
   {
     path: "/gizlilik/",
     file: "gizlilik/index.html",
     title: "Gizlilik ve KVKK",
-    description: "ai-ulu.com gizlilik politikası ve kişisel verilerin korunması bilgilendirmesi.",
-    body: () => privacyBody(),
+    description: "ai-ulu gizlilik politikası ve kişisel verilerin korunması (KVKK) bilgilendirmesi.",
+    body: privacyBody,
   },
 ];
 
-function privacyBody() {
-  return `<section class="section">
-  <div class="wrap" style="max-width:52rem">
-    <span class="eyebrow">Gizlilik</span>
-    <h1>Gizlilik ve KVKK</h1>
-    <div class="stack-sm" style="margin-top:1.5rem;color:var(--text-muted)">
-      <p>Bu sayfa, ${escapeHtml(site.name)} üzerinden ilettiğiniz bilgilerin nasıl işlendiğini açıklar.</p>
-      <h3 style="color:var(--text);margin-top:2rem">Hangi verileri topluyoruz?</h3>
-      <p>Yalnızca iletişim formunda paylaştığınız ad, e-posta/telefon ve proje açıklaması gibi bilgileri toplarız. Bu bilgiler size dönüş yapmak için kullanılır.</p>
-      <h3 style="color:var(--text);margin-top:2rem">Nasıl saklanıyor?</h3>
-      <p>Veriler şifreli bağlantı (HTTPS) üzerinden iletilir ve güvenli bir veritabanında saklanır. Yalnızca yetkili kişiler erişebilir.</p>
-      <h3 style="color:var(--text);margin-top:2rem">Çerezler ve analitik</h3>
-      <p>Siteyi iyileştirmek için anonim, gizlilik dostu ölçümleme kullanabiliriz. Kişisel verilerinizi reklam amacıyla üçüncü taraflarla paylaşmayız.</p>
-      <h3 style="color:var(--text);margin-top:2rem">Haklarınız</h3>
-      <p>KVKK kapsamında verilerinizin silinmesini, düzeltilmesini veya size iletilmesini talep edebilirsiniz. Bunun için ${escapeHtml(site.email)} adresine yazabilirsiniz.</p>
-    </div>
-  </div>
-</section>`;
-}
-
 export function renderPage(p) {
-  const ld = p.jsonLd ? (Array.isArray(p.jsonLd) ? p.jsonLd : [p.jsonLd]) : null;
-  return page({
-    title: p.title,
-    description: p.description,
-    path: p.path,
-    body: p.body(),
-    jsonLd: ld,
-  });
+  return page({ ...p, body: p.body() });
 }
