@@ -42,8 +42,8 @@ const privacyBody = () => `<section class="s">
     <p>Bu bilgiler yalnızca size dönüş yapmak ve teklif hazırlamak için kullanılır. Reklam amacıyla üçüncü taraflarla paylaşılmaz.</p>
     <h2>Nasıl saklanıyor?</h2>
     <p>Veriler şifreli bağlantı (HTTPS) üzerinden iletilir ve Cloudflare altyapısında, yalnızca yetkili kişinin erişebildiği bir veritabanında saklanır.</p>
-    <h2>Çerezler</h2>
-    <p>Bu site çerez veya izleme aracı kullanmaz.</p>
+    <h2>Çerezler ve ölçüm</h2>
+    <p>Bu site çerez kullanmaz. Ziyaret sayısını görmek için Cloudflare Web Analytics kullanılır; çerezsiz çalışır, sizi tanımlayan bir profil oluşturmaz ve reklam için kullanılmaz.</p>
     <h2>Haklarınız</h2>
     <p>KVKK kapsamında verilerinize erişmeyi, düzeltilmesini veya silinmesini talep edebilirsiniz. Bunun için <a href="mailto:${site.email}">${site.email}</a> adresine yazabilirsiniz.</p>
   </div>

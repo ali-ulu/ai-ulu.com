@@ -7,13 +7,14 @@ const fallback = (err) => { root.classList.add('no-3d'); if (err) console.error(
 // so the first paint and the main thread stay free; the CSS poster shows its first frame meanwhile.
 const TRIGGERS = ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown'];
 let booted = false;
-function boot() {
-  if (booted) return;
+function boot(event) {
+  // Browsers fire a scroll event during load (restoration, font swaps); only a real move counts.
+  if (booted || (event?.type === 'scroll' && scrollY === 0)) return;
   booted = true;
   TRIGGERS.forEach((t) => removeEventListener(t, boot));
   load().catch(fallback);
 }
-TRIGGERS.forEach((t) => addEventListener(t, boot, { passive: true, once: true }));
+TRIGGERS.forEach((t) => addEventListener(t, boot, { passive: true }));
 setTimeout(boot, 6000);
 if (scrollY > 0) boot(); // reloaded mid-page
 

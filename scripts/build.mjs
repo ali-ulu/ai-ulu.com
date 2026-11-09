@@ -78,7 +78,8 @@ ${paths.map((p) => `  <url><loc>${site.url}${p}</loc></url>`).join("\n")}
 ${faq.items.map((f) => `- ${f.q} ${f.a}`).join("\n")}
 `);
 
-  // Security headers. CSP stays 'self'-only: fonts, three.js and images are all served from this origin.
+  // Security headers. Everything is served from this origin; the only third party is the cookieless
+  // Cloudflare Web Analytics beacon, which Cloudflare injects at the edge when analytics is enabled.
   const immutable = "  Cache-Control: public, max-age=31536000, immutable";
   await write("_headers", `/*
   X-Content-Type-Options: nosniff
@@ -86,7 +87,7 @@ ${faq.items.map((f) => `- ${f.q} ${f.a}`).join("\n")}
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
   Cross-Origin-Opener-Policy: same-origin
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' https://static.cloudflareinsights.com; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; form-action 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'
   Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 /site.css
