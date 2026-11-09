@@ -1,13 +1,12 @@
--- D1 schema for ai-ulu.com contact leads.
--- Apply once:
---   npx wrangler d1 execute ai-ulu-leads --remote --file=schema.sql
+-- Initial D1 schema for ai-ulu.com.
+-- Apply once after creating the database:
+-- npx wrangler d1 execute ai-ulu-leads --remote --file=schema.sql
 
 CREATE TABLE IF NOT EXISTS leads (
   id                  TEXT PRIMARY KEY,
   name                TEXT NOT NULL,
   reach               TEXT NOT NULL,
-  project_type        TEXT NOT NULL DEFAULT 'unsure',
-  budget              TEXT NOT NULL DEFAULT '',
+  type                TEXT NOT NULL DEFAULT 'unsure',
   msg                 TEXT NOT NULL DEFAULT '',
   ip                  TEXT NOT NULL,
   user_agent          TEXT NOT NULL DEFAULT '',
@@ -19,8 +18,11 @@ CREATE TABLE IF NOT EXISTS leads (
 CREATE INDEX IF NOT EXISTS idx_leads_created_at
   ON leads(created_at DESC);
 
--- One row per IP; the Worker uses an atomic UPSERT so concurrent
--- submissions cannot bypass the per-IP window counter.
+CREATE INDEX IF NOT EXISTS idx_leads_reach
+  ON leads(reach);
+
+-- One row per IP. The Worker uses an atomic UPSERT + RETURNING statement,
+-- so concurrent submissions cannot bypass the per-IP window counter.
 CREATE TABLE IF NOT EXISTS rate_limits (
   ip                TEXT PRIMARY KEY,
   window_started_at INTEGER NOT NULL,

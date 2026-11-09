@@ -15,8 +15,8 @@ function makeDb() {
         bind(...args) { this._args = args; return this; },
         async run() {
           if (sql.includes("INSERT INTO leads")) {
-            const [id, name, reach, project_type, msg, ip, user_agent, page, created_at] = this._args;
-            leads.push({ id, name, reach, project_type, msg, ip, user_agent, page, created_at });
+            const [id, name, reach, type, msg, ip, user_agent, page, created_at] = this._args;
+            leads.push({ id, name, reach, type, msg, ip, user_agent, page, created_at });
           }
           return { success: true };
         },

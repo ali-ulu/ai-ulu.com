@@ -88,7 +88,7 @@ async function handleLead(request, env) {
 
   try {
     await env.DB.prepare(
-      `INSERT INTO leads (id, name, reach, project_type, msg, ip, user_agent, page, created_at)
+      `INSERT INTO leads (id, name, reach, type, msg, ip, user_agent, page, created_at)
        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)`
     ).bind(id, name, reach, type, msg, ip, ua, page, createdAt).run();
   } catch (err) {
