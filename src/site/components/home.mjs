@@ -65,13 +65,28 @@ const benefits = `<section class="s" id="nasil">
   <span class="eyebrow">Ne kazanırsınız</span>
   <h2>Ziyaretçi gelir, <em>müşteri</em> olarak kalır.</h2>
   <p class="lead">Çoğu site ilk kaydırmada ziyaretçiyi kaybeder. Sorun marka değil, kurulum. Biz kurulumu baştan doğru yaparız.</p>
-  <p class="lead">Nereden başlayacağınızdan emin değilseniz <a href="/sablonlar/">örnek tasarımlara</a> göz atın, kapsamı <a href="/#paketler">paketlerde</a> karşılaştırın, çalışma şeklimizi <a href="/#nasil">süreçte</a> görün.</p>
+  <p class="lead">Nereden başlayacağınızdan emin değilseniz <a href="/sablonlar/">örnek tasarımlara</a> göz atın, kapsamı <a href="/#paketler">paketlerde</a> karşılaştırın, çalışma şeklimizi <a href="/#nasil">süreçte</a> görün. "Yapay zekâ ile bedava yaparım" diyenler için dürüst cevabımız <a href="/#neden">aşağıda</a>.</p>
   <div class="grid g4">
     <div class="cell"><span class="n">01</span><h3>Özgün tasarım</h3><p>Şablon değil; sektörünüze ve markanıza göre çizilmiş bir site.</p></div>
     <div class="cell"><span class="n">02</span><h3>Google'da görünürlük</h3><p>Teknik SEO, hız ve yapılandırılmış veri ilk günden sitenin içinde.</p></div>
     <div class="cell"><span class="n">03</span><h3>Yapay zekâ aramaları</h3><p>ChatGPT, Gemini ve Google'ın yapay zekâ yanıtlarının okuyabildiği yapı: llms.txt, şema, temiz HTML.</p></div>
     <div class="cell"><span class="n">04</span><h3>Doğrudan iletişim</h3><p>Her sayfada tek dokunuşla WhatsApp ve arama. Ziyaretçi aklındayken size ulaşır.</p></div>
   </div>
+</section>`;
+
+// The largest objection people type into search is "can I just build it with AI
+// for free?". Answering it head-on beats ignoring it, so the site says where a
+// generated draft stops and a business site starts. No invented numbers.
+const why = `<section class="s" id="neden">
+  <span class="eyebrow">Dürüst cevap</span>
+  <h2>"Yapay zekâ ile <em>bedava</em> yaparım" — peki neden bize?</h2>
+  <p class="lead">Araçlar artık ilk taslağı saniyeler içinde üretiyor; bunu saklamayacağız. Fark, taslağın bittiği yerde başlıyor.</p>
+  <div class="grid g3">
+    <div class="cell"><span class="n">01</span><h3>Doğru metin, doğru müşteri</h3><p>Yapay zekâ elindeki bilgiyi dizer; sizin işletmenizi, müşterinizi ve teklifinizi bilmez. Sizi arayan kişinin duymak istediği cümleyi biz yazarız.</p></div>
+    <div class="cell"><span class="n">02</span><h3>Sahibi olduğunuz bir site</h3><p>Ücretsiz araçların ücretsiz planında alan adı onların, tasarım şablonun. Burada alan adı, kod ve içerik sizin adınıza teslim edilir.</p></div>
+    <div class="cell"><span class="n">03</span><h3>Yayından sonra da çalışır</h3><p>Araç siteyi kurar ve bırakır. Biz hızı, arama görünürlüğünü ve dönüşümü ölçer, gerektiğinde düzeltiriz.</p></div>
+  </div>
+  <p class="lead">Hangi iş için hangisinin yettiğini <a href="/blog/yapay-zeka-ile-web-sitesi-yapmak/">yazıda</a> ayrıntılı anlattık.</p>
 </section>`;
 
 const process = `<section class="s">
@@ -87,7 +102,7 @@ const process = `<section class="s">
 const packages = `<section class="s" id="paketler">
   <span class="eyebrow">Paketler</span>
   <h2>Paketi seçin, <em>net teklif</em> alın.</h2>
-  <p class="lead">Fiyat listesi yok; her proje kendi kapsamıyla fiyatlanır. Görüşmeden sonra 24 saat içinde yazılı teklif gelir. Tarzları görmek için <a href="/sablonlar/">örnek tasarımlara</a> bakabilirsiniz.</p>
+  <p class="lead">${site.priceFrom ? `Tanıtım siteleri ${escapeHtml(site.priceFrom)} başlar; kalan kapsam projeye göre netleşir.` : "Fiyat listesi yok; her proje kendi kapsamıyla fiyatlanır."} Görüşmeden sonra 24 saat içinde yazılı teklif gelir. Fiyatı neyin belirlediğini <a href="/blog/web-sitesi-fiyatini-ne-belirler/">yazıda</a> anlattık; tarzlar için <a href="/sablonlar/">örnek tasarımlara</a> bakabilirsiniz.</p>
   <div class="grid g3">
     <div class="cell"><span class="n">Web sitesi</span><h3>Tanıtım sitesi</h3><ul><li>Markanıza özel tasarım</li><li>Hızlı açılış, akıcı hareket</li><li>Google ve YZ aramalarına hazır</li><li>Yayın ve sonrası destek</li></ul><a class="btn ghost" href="#iletisim">Teklif al</a></div>
     <div class="cell"><span class="n">Uygulama</span><h3>Özel web uygulaması</h3><ul><li>Panel, portal, otomasyon</li><li>İş akışınıza göre kurulur</li><li>Randevu, sipariş, form</li><li>Yayın ve sonrası destek</li></ul><a class="btn ghost" href="#iletisim">Teklif al</a></div>
@@ -237,4 +252,4 @@ const contact = () => `<section class="s" id="iletisim">
   </aside>
 </section>`;
 
-export const homeBody = () => [film, benefits, process, packages, faqSection(), blogTeaser(), contact()].join("\n\n");
+export const homeBody = () => [film, benefits, why, process, packages, faqSection(), blogTeaser(), contact()].join("\n\n");

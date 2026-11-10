@@ -6,6 +6,45 @@ const DATE = "2026-11-11";
 
 export const posts = [
   {
+    slug: "yapay-zeka-ile-web-sitesi-yapmak",
+    title: "Yapay zekâ ile web sitesi yapmak: ne zaman yeter, ne zaman yetmez?",
+    description: "ChatGPT, Gemini ya da hazır bir araçla ücretsiz site kurmak mümkün. Peki hangi iş için yeter, hangi iş için size müşteri kaybettirir? Tarafsız bir karşılaştırma.",
+    targetQuery: "yapay zeka ile web sitesi yapmak, chatgpt ile web sitesi yapmak, web sitesi yapan yapay zeka",
+    published: DATE,
+    updated: DATE,
+    body: [
+      { p: "Bu soruyu artık herkes soruyor: \"ChatGPT'ye yaptırsam olmaz mı?\" Dürüst cevap: birçok iş için olur. Bu yazı size araçları kötülemek için değil, hangi durumda hangisinin yettiğini göstermek için yazıldı. Karar sizin." },
+      { h: "Yapay zekâ neyi gerçekten iyi yapıyor?" },
+      { p: "İlk taslağı. Sayfa yapısını, genel bir metni, basit bir formu saniyeler içinde üretir. Eğer işiniz yalnızca \"internette bir adresim olsun\" ise, ücretsiz bir araçla bir akşamda halledebilirsiniz. Bunda yanlış bir şey yok." },
+      { h: "Fark nerede başlıyor?" },
+      { p: "Üretilen taslak, elindeki genel bilgiyle kurulur. Sizin müşterinizi, fiyatınızı, sizi rakipten ayıran cümleyi bilmez. Site \"var olur\" ama \"çalışmaz\". Fark, taslağın bittiği yerde başlar:" },
+      { ul: [
+        "**Metin:** Ziyaretçinin duymak istediği cümle, sizin işinize özel yazılır; genel bir kalıp değil.",
+        "**Sahiplik:** Ücretsiz araçların ücretsiz planında alan adı onların, tasarım şablonun. Siz yalnızca kullanıcısınız.",
+        "**Arama görünürlüğü:** Hızlı açılan, yapılandırılmış verisi olan, arama motorlarının ve yapay zekâ yanıtlarının okuyabildiği bir yapı.",
+        "**Dönüşüm:** Ziyaretçiyi müşteriye çeviren kurulum — net bir çağrı, tek dokunuşla WhatsApp, çalışan bir form.",
+        "**Devamlılık:** Yayından sonra ölçüm, düzeltme ve güncelleme. Araç siteyi kurar ve bırakır.",
+      ] },
+      { h: "Hangi iş için hangisi?" },
+      { ul: [
+        "**Kişisel bir vitrin, hobi, henüz karar vermediğiniz bir deneme:** ücretsiz araç yeter. Önce fikri deneyin.",
+        "**Müşteriden iş bekleyen bir işletme (klinik, atölye, danışman, mağaza):** fark burada başlar. Site sizi arayanı getirmeli; bu yüzden kurulum ve devamlılık gerekir.",
+        "**Sipariş, randevu, ödeme alan bir site:** burada araçların sınırına gelirsiniz. Bunlar özel kurulum ister.",
+      ] },
+      { h: "Peki ücretsiz araçla başlayıp sonra taşınabilir miyim?" },
+      { p: "Genelde hayır, ya da zor. Ücretsiz planlar alan adını ve tasarımı kendine bağlar; taşımak istediğinizde baştan başlarsınız. Bu yüzden mesele \"bedava mı, paralı mı\" değil, \"bu site bir yıl sonra da benim elimde mi\" sorusudur." },
+      { h: "Karar için üç soru" },
+      { ul: [
+        "Bu siteyi müşteri getirmek için mi, yalnızca var olmak için mi istiyorum?",
+        "Alan adı, kod ve içerik benim adıma mı kayıtlı olacak?",
+        "Yayından sonra bir şey bozulduğunda ya da değişmesi gerektiğinde kimi arayacağım?",
+      ] },
+      { p: "Üçünün cevabı \"müşteri, evet, sizi\" ise bir kuruluma ihtiyacınız var. \"Var olmak, fark etmez, kimseyi\" ise ücretsiz araçla başlamanız mantıklı — ve bütçenizi büyük işe saklarsınız." },
+      { note: "**ai-ulu'da:** İlk görüşme ücretsiz. Kapsam, takvim ve teslim edilecekler yazılı teklifte netleşir; tasarım, kod ve içerik yayında size teslim edilir. Belirli bir sıralama garanti edilmez." },
+    ],
+    cta: { text: "İşiniz için hangisi doğru, birlikte bakalım →", message: "Merhaba, yapay zekâ ile site yapmak mı yoksa özel kurulum mu bana uygun, danışmak istiyorum." },
+  },
+  {
     slug: "web-sitesi-fiyatini-ne-belirler",
     title: "Web sitesi fiyatını ne belirler? Teklif almadan önce sormanız gereken 7 soru",
     description: "Aynı site için neden biri 10 bin, diğeri 100 bin lira diyor? Fiyatı belirleyen 7 kalem ve teklifleri karşılaştırmanın doğru yolu.",
