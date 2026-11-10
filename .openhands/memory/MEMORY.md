@@ -1072,3 +1072,16 @@ commit'te `expectedHeadOid` OLMAMALI (yoksa "Expected value to not be null" ters
   highlight gradyanı, inset+outer box-shadow). `@supports not (backdrop-filter…)` → opak fallback.
   `app.js` scroll ile `.site-header.is-stuck` ekler (koyulaştırır). CSP `'self'` olduğu için
   Framer bileşeni gömülemez; **kendi CSS'imizle yeniden üretildi**.
+
+## "main'de kırmızı commit" = genelde cancelled, hata değil (2026-11-10)
+
+- Ardışık merge'lerde main'de kırmızı/sarı görünen commit'ler çoğu zaman **`cancelled`**:
+  `concurrency.cancel-in-progress: true` koşulsuzsa her yeni push aynı gruptaki
+  (`deploy-refs/heads/main`) devam eden run'ı öldürür. `gh api .../commits/<sha>/check-runs`
+  ile `conclusion`'a bak: `cancelled` ≠ `failure`.
+- Teşhis: `gh run list --repo O/R --branch main --limit 12 --json conclusion,headSha,event`
+  → art arda `cancelled` + birkaç saniyelik süreler.
+- Düzeltme: `cancel-in-progress: ${{ github.event_name == 'pull_request' }}` → main'de sıraya girer,
+  yarıda deploy kesilmez. Regresyon testi: `test/ci-workflow.test.js`.
+- Not: bu repo'da PR'lar `ali-ulu` tarafından merge ediliyor; branch'i merge sonrası **main'e
+  rebase** etmek gerekebilir (çakışma: `src/site/config.mjs` gibi config dosyaları).

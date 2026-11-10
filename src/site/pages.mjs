@@ -72,7 +72,7 @@ export const pages = [
     file: "index.html",
     jsonLd: [organizationLd(), faqLd()],
     before: preloader,
-    scripts: ["/ora.js"],
+    scripts: ["/vortex.js", "/ora.js"],
     footerNote: "Ekrandaki klinik sitesi örnek tasarımdır",
     body: homeBody,
   },

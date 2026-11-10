@@ -11,6 +11,7 @@ const required = [
   "gizlilik/index.html",
   "sablonlar/index.html",
   "site.css",
+  "vortex.js",
   "ora.js",
   "app.js",
   "fonts/fonts.css",
