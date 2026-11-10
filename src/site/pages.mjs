@@ -41,7 +41,7 @@ const privacyBody = () => `<section class="s">
     <h2>Ne için kullanıyoruz?</h2>
     <p>Bu bilgiler yalnızca size dönüş yapmak ve teklif hazırlamak için kullanılır. Reklam amacıyla üçüncü taraflarla paylaşılmaz.</p>
     <h2>Nasıl saklanıyor?</h2>
-    <p>Veriler şifreli bağlantı (HTTPS) üzerinden iletilir ve Cloudflare altyapısında, yalnızca yetkili kişinin erişebildiği bir veritabanında saklanır.</p>
+    <p>Veriler şifreli bağlantı (HTTPS) üzerinden iletilir ve Cloudflare altyapısında, yalnızca yetkili kişinin erişebildiği bir veritabanında saklanır. Kayıtlar en fazla 12 ay tutulur; bu sürenin sonunda otomatik olarak silinir. IP adresi ve tarayıcı bilgisi yalnızca kötüye kullanımı önlemek için kısa süreliğine saklanır.</p>
     <h2>Çerezler</h2>
     <p>Bu site çerez veya izleme aracı kullanmaz.</p>
     <h2>Haklarınız</h2>

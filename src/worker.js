@@ -12,9 +12,22 @@ function json(body, status = 200) {
 
 function sanitize(value, max = 2000) {
   return String(value ?? "")
+    .slice(0, max)
     .replace(/[\u0000-\u001f\u007f]/g, " ")
-    .trim()
-    .slice(0, max);
+    .trim();
+}
+
+// Same-origin guard: a cross-site page must not be able to post leads or burn
+// the rate limit. Requests without an Origin header (curl, same-origin form
+// fallback) are allowed; browsers always send Origin on cross-origin POSTs.
+function crossOrigin(request) {
+  const origin = request.headers.get("origin");
+  if (!origin) return false;
+  try {
+    return new URL(origin).host !== new URL(request.url).host;
+  } catch {
+    return true;
+  }
 }
 
 // Validates an e-mail OR a phone-ish reach string. Kept permissive on purpose:
@@ -28,7 +41,10 @@ function validReach(value) {
 }
 
 function clientIp(request) {
-  return request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "unknown";
+  // Cloudflare always sets cf-connecting-ip and overwrites any client-supplied
+  // value, so it is trustworthy at the edge. x-forwarded-for is attacker
+  // controlled and must never be used as a fallback.
+  return request.headers.get("cf-connecting-ip") || "unknown";
 }
 
 async function rateLimited(env, ip) {
@@ -51,13 +67,32 @@ async function rateLimited(env, ip) {
   return row && row.submissions > maxSubs;
 }
 
+const MAX_BODY_BYTES = 16 * 1024;
+const LEAD_RETENTION_DAYS = 365;
+
 async function handleLead(request, env) {
   if (request.method !== "POST") return json({ error: "Yöntem desteklenmiyor." }, 405);
 
+  if (crossOrigin(request)) return json({ error: "Geçersiz istek." }, 403);
+
+  const contentType = request.headers.get("content-type") || "";
+  if (!contentType.toLowerCase().includes("application/json")) {
+    return json({ error: "Geçersiz istek." }, 415);
+  }
+
+  const declared = Number(request.headers.get("content-length") || 0);
+  if (declared > MAX_BODY_BYTES) return json({ error: "İstek çok büyük." }, 413);
+
+  const raw = await request.text();
+  if (raw.length > MAX_BODY_BYTES) return json({ error: "İstek çok büyük." }, 413);
+
   let payload;
   try {
-    payload = await request.json();
+    payload = JSON.parse(raw);
   } catch {
+    return json({ error: "Geçersiz istek." }, 400);
+  }
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
     return json({ error: "Geçersiz istek." }, 400);
   }
 
@@ -73,12 +108,17 @@ async function handleLead(request, env) {
   if (!validReach(reach)) return json({ error: "Geçerli bir e-posta veya telefon girin." }, 422);
 
   const ip = clientIp(request);
+  let limited;
   try {
-    if (await rateLimited(env, ip)) {
-      return json({ error: "Çok fazla deneme. Lütfen biraz sonra tekrar deneyin." }, 429);
-    }
+    limited = await rateLimited(env, ip);
   } catch (err) {
+    // Fail closed: if the limiter itself is unavailable, do not accept an
+    // unbounded stream of submissions.
     console.error("rate limit check failed", err);
+    return json({ error: "Şu anda kayıt alınamıyor. Lütfen biraz sonra tekrar deneyin." }, 503);
+  }
+  if (limited) {
+    return json({ error: "Çok fazla deneme. Lütfen biraz sonra tekrar deneyin." }, 429);
   }
 
   const id = crypto.randomUUID();
@@ -126,5 +166,22 @@ export default {
       return handleLead(request, env);
     }
     return new Response("Not found", { status: 404 });
+  },
+
+  // Cron: drop stale rate-limit rows and leads past the retention window so the
+  // database cannot grow without bound and personal data is not kept forever.
+  async scheduled(_event, env) {
+    const now = Date.now();
+    const leadCutoff = new Date(now - LEAD_RETENTION_DAYS * 24 * 60 * 60 * 1000).toISOString();
+    const windowMs = Number(env.RATE_LIMIT_WINDOW_MINUTES || 15) * 60 * 1000;
+    const rateCutoff = now - windowMs;
+    try {
+      await env.DB.batch([
+        env.DB.prepare("DELETE FROM leads WHERE created_at < ?1").bind(leadCutoff),
+        env.DB.prepare("DELETE FROM rate_limits WHERE window_started_at < ?1").bind(rateCutoff),
+      ]);
+    } catch (err) {
+      console.error("retention cleanup failed", err);
+    }
   },
 };

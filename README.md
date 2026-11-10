@@ -41,3 +41,11 @@ schema.sql         D1 schema (apply once per database)
 2. Apply the D1 schema once:
    `npx wrangler d1 execute ai-ulu-leads --remote --file=schema.sql`
 3. Push to `main` — CI builds, tests, and deploys.
+
+`wrangler deploy` also registers the daily cron in `wrangler.jsonc`; the
+`scheduled` handler in `src/worker.js` prunes stale rate-limit rows and leads
+older than the retention window. Verify the SPF/DKIM/DMARC records for
+`ai-ulu.com` (see `SECURITY.md`) so `noreply@ai-ulu.com` cannot be spoofed.
+
+`package-lock.json` is committed and CI installs with `npm ci`; do not delete
+it.
