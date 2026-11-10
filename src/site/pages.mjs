@@ -1,5 +1,6 @@
 import { page } from "./components/layout.mjs";
 import { homeBody, preloader } from "./components/home.mjs";
+import { blogIndexBody, byDateDesc, postBody } from "./components/blog.mjs";
 import { site } from "./config.mjs";
 import { faq } from "./content/site-content.mjs";
 
@@ -55,6 +56,41 @@ function faqLd() {
   };
 }
 
+// A post is a BlogPosting; the author and publisher are the site owner. The
+// target query rides along as keywords, which is what the post was written for.
+function blogPostingLd(post) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    url: `${site.url}/blog/${post.slug}/`,
+    mainEntityOfPage: `${site.url}/blog/${post.slug}/`,
+    datePublished: post.published,
+    dateModified: post.updated,
+    inLanguage: site.lang,
+    keywords: post.targetQuery,
+    author: { "@type": "Person", name: site.owner, url: site.url },
+    publisher: { "@type": "Organization", name: site.name, url: site.url },
+  };
+}
+
+function blogLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: `${site.name} Blog`,
+    url: `${site.url}/blog/`,
+    inLanguage: site.lang,
+    blogPost: byDateDesc.map((p) => ({
+      "@type": "BlogPosting",
+      headline: p.title,
+      url: `${site.url}/blog/${p.slug}/`,
+      datePublished: p.published,
+    })),
+  };
+}
+
 const privacyBody = () => `<section class="s">
   <span class="eyebrow">Gizlilik</span>
   <h1>Gizlilik ve <em>KVKK</em></h1>
@@ -84,6 +120,24 @@ export const pages = [
     footerNote: "Ekrandaki klinik sitesi örnek tasarımdır",
     body: homeBody,
   },
+  {
+    path: "/blog/",
+    file: "blog/index.html",
+    title: "Blog",
+    description: "Web sitesi fiyatı, arama görünürlüğü ve müşteri kazanma üzerine pratik yazılar.",
+    jsonLd: [blogLd()],
+    styles: ["/blog.css"],
+    body: blogIndexBody,
+  },
+  ...byDateDesc.map((post) => ({
+    path: `/blog/${post.slug}/`,
+    file: `blog/${post.slug}/index.html`,
+    title: post.title,
+    description: post.description,
+    jsonLd: [blogPostingLd(post)],
+    styles: ["/blog.css"],
+    body: () => postBody(post.slug),
+  })),
   {
     path: "/gizlilik/",
     file: "gizlilik/index.html",

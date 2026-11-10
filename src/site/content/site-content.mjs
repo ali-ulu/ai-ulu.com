@@ -4,6 +4,7 @@ export const nav = [
   { href: "/#nasil", label: "Nasıl çalışır" },
   { href: "/sablonlar/", label: "Örnek tasarımlar", keep: true },
   { href: "/#paketler", label: "Paketler" },
+  { href: "/blog/", label: "Blog", keep: true },
   { href: "/#sss", label: "SSS" },
 ];
 
@@ -64,6 +65,7 @@ export const budgets = [
 
 export const footerLinks = [
   { href: "/sablonlar/", label: "Örnek tasarımlar" },
+  { href: "/blog/", label: "Blog" },
   { href: "/#iletisim", label: "İletişim" },
   { href: "/gizlilik/", label: "Gizlilik ve KVKK" },
 ];
