@@ -112,14 +112,7 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   .cell{background:linear-gradient(163deg,rgba(255,255,255,.06),rgba(255,255,255,0) 44%),rgba(14,16,20,.9)}
 }
-.faq{margin-top:3rem;max-width:52rem}
-.faq details{border-top:1px solid var(--line);padding:1.4rem 0}
-.faq details:last-child{border-bottom:1px solid var(--line)}
-.faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:1rem;font:400 1.45rem/1.2 var(--serif)}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";font-family:var(--sans);color:var(--amber);transition:transform .3s}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq p{color:var(--dim);margin-top:.9rem;max-width:44rem}
+/* The FAQ section (#sss) is styled by /faq-drawer.css, loaded only on the home page. */
 
 /* contact + lead form */
 .contact-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(2rem,5vw,5rem);margin-top:3rem;align-items:start}
