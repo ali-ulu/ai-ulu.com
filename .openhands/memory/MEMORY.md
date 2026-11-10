@@ -1149,3 +1149,25 @@ commit'te `expectedHeadOid` OLMAMALI (yoksa "Expected value to not be null" ters
 - **Tarayıcı önbelleği testi yanıltır:** `curl` yeni CSS gösterirken Playwright eski `site.css`'i
   diskten okur → computed style eski kalır. Çözüm: `Network.clearBrowserCache` (CDP) VEYA
   `?v=<ts>` + `page.context().newCDPSession`. Doğrulamadan önce daima cache temizle.
+
+## SSS kart-indeks cekmecesi (FaqDrawer) + sayfa-basina stil (PR #11, 2026-11-10)
+
+- **PR #10 merge edilmisti** (vortex+navbar+ServiceCards). Ayni dala sonradan push YANLIS
+  (kapanmis/merge dala push yok) → `git checkout -b feat/faq-drawer origin/main` + `git cherry-pick`
+  ile kurtarildi. **Ders:** push oncesi `gh api .../pulls/<n>` → `merged:true` mi kontrol et.
+- **Kok depo React DEGIL** (statik uretec). Ama shadcn+Tailwind+TS **zaten var**:
+  `apps/sablonlar/` (React 19 + Vite + Tailwind v4 + TS; `components.json`; `@/components/ui` →
+  `src/components/ui`). Yani "shadcn kur" talimatina gerek yok; saf-React bilesenleri ya o app'e
+  ya da (mekanizmasi `<details>` gibi saf ise) **build-time markup + CSS** olarak siteye uyarla.
+- **FaqDrawer uyarlamasi:** mekanizma native `<details>` + paylasilan `name` (tek-acik) → JS YOK.
+  `home.mjs` build-time markup (`.fq` kapsamli), `faq-drawer.css` (grafit cekmece + kagit kartlar).
+  **Gomulu webfont YASAK** (CSP `font-src 'self'`); site fontlarini `--fq-sans: var(--sans)` ile kullan.
+  Grain data-URI SVG (`img-src 'self' data:` izinli). FAQPage JSON-LD + `#sss` capasi korunmali.
+- **Sayfa-basina stil:** `layout.mjs` `head()`/`page()`'e `styles` dizisi; `pages.mjs` sayfaya
+  `styles:["/faq-drawer.css"]`. Yalniz gereken sayfa yukler. `check.mjs` "dis kaynak yok" kurali CSS
+  linkini kabul eder.
+- **`wrangler dev` asset listesini onbellege alir:** build sonrasi yeni asset (or. faq-drawer.css)
+  404 verir. Dev sunucusunu **yeniden baslat**. `npm exec wrangler dev --port ...` bayraklari
+  gecirmez → `./node_modules/.bin/wrangler dev --port 12000 --ip 0.0.0.0` kullan.
+- **sticky baslik:** site navbar'i `position:fixed` (~80px) → `.fq-head{position:sticky;top:96px}`.
+  Ayrica `.s h2` margin/max-width override'i icin `.fq .fq-title{margin:0;max-width:none}`.
