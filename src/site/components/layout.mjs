@@ -1,4 +1,4 @@
-import { site } from "../config.mjs";
+import { site, waLink } from "../config.mjs";
 import { nav, footerLinks } from "../content/site-content.mjs";
 import { escapeHtml } from "../lib/html.mjs";
 
@@ -42,7 +42,7 @@ function header() {
     <nav aria-label="Ana menü">
       ${links}
     </nav>
-    <a class="btn nav-cta" href="${site.whatsapp}" rel="noopener">WhatsApp</a>
+    <a class="btn nav-cta" href="${waLink("Merhaba, web sitem için yazıyorum.")}" rel="noopener">WhatsApp</a>
   </div>
 </header>`;
 }

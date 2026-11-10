@@ -9,12 +9,20 @@ CREATE TABLE IF NOT EXISTS leads (
   project_type        TEXT NOT NULL DEFAULT 'unsure',
   budget              TEXT NOT NULL DEFAULT '',
   msg                 TEXT NOT NULL DEFAULT '',
+  utm_source          TEXT NOT NULL DEFAULT '',
+  utm_campaign        TEXT NOT NULL DEFAULT '',
   ip                  TEXT NOT NULL,
   user_agent          TEXT NOT NULL DEFAULT '',
   page                TEXT NOT NULL DEFAULT '',
   notification_status TEXT NOT NULL DEFAULT 'pending',
   created_at          TEXT NOT NULL
 );
+
+-- Existing databases predate budget/utm_*. CREATE TABLE IF NOT EXISTS will not
+-- add them, so run these once against an already-created database:
+--   ALTER TABLE leads ADD COLUMN budget TEXT NOT NULL DEFAULT '';
+--   ALTER TABLE leads ADD COLUMN utm_source TEXT NOT NULL DEFAULT '';
+--   ALTER TABLE leads ADD COLUMN utm_campaign TEXT NOT NULL DEFAULT '';
 
 CREATE INDEX IF NOT EXISTS idx_leads_created_at
   ON leads(created_at DESC);

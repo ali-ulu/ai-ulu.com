@@ -103,6 +103,9 @@ async function handleLead(request, env) {
   const reach = sanitize(payload.reach, 160);
   const type = sanitize(payload.type, 40) || "unsure";
   const msg = sanitize(payload.msg, 2000);
+  const budget = sanitize(payload.budget, 40);
+  const utmSource = sanitize(payload.utm_source, 120);
+  const utmCampaign = sanitize(payload.utm_campaign, 120);
 
   if (name.length < 2) return json({ error: "Lütfen adınızı yazın." }, 422);
   if (!validReach(reach)) return json({ error: "Geçerli bir e-posta veya telefon girin." }, 422);
@@ -128,9 +131,9 @@ async function handleLead(request, env) {
 
   try {
     await env.DB.prepare(
-      `INSERT INTO leads (id, name, reach, project_type, msg, ip, user_agent, page, created_at)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)`
-    ).bind(id, name, reach, type, msg, ip, ua, page, createdAt).run();
+      `INSERT INTO leads (id, name, reach, project_type, budget, msg, utm_source, utm_campaign, ip, user_agent, page, created_at)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)`
+    ).bind(id, name, reach, type, budget, msg, utmSource, utmCampaign, ip, ua, page, createdAt).run();
   } catch (err) {
     console.error("lead insert failed", err);
     return json({ error: "Kayıt oluşturulamadı. Lütfen e-posta ile ulaşın." }, 500);
@@ -146,7 +149,9 @@ async function handleLead(request, env) {
         `Ad: ${name}`,
         `İletişim: ${reach}`,
         `Tür: ${type}`,
+        `Bütçe: ${budget || "-"}`,
         `Mesaj: ${msg || "-"}`,
+        `Kaynak: ${[utmSource, utmCampaign].filter(Boolean).join(" / ") || "-"}`,
         `IP: ${ip}`,
         `Sayfa: ${page}`,
         `Zaman: ${createdAt}`,
@@ -154,6 +159,32 @@ async function handleLead(request, env) {
     });
   } catch (err) {
     console.error("email send failed", err);
+  }
+
+  // Also ping Telegram, so a lead is seen within minutes even when e-mail is
+  // slow. Best effort: skipped entirely when the secrets are not set.
+  if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+    try {
+      await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          chat_id: env.TELEGRAM_CHAT_ID,
+          text: [
+            "🔔 Yeni teklif isteği",
+            `Ad: ${name}`,
+            `İletişim: ${reach}`,
+            `Tür: ${type}`,
+            `Bütçe: ${budget || "-"}`,
+            `Mesaj: ${msg || "-"}`,
+            `Kaynak: ${[utmSource, utmCampaign].filter(Boolean).join(" / ") || "-"}`,
+          ].join("\n"),
+          disable_web_page_preview: true,
+        }),
+      });
+    } catch (err) {
+      console.error("telegram send failed", err);
+    }
   }
 
   return json({ ok: true });

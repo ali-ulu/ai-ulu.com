@@ -19,6 +19,11 @@ const STILLER: PictureRailItem[] = [
 
 const LABELS: PictureRailGalleryLabels = { front: "Ön yüz", back: "Arka yüz", close: "Kapat", open: "Büyütmek için tıklayın" };
 
+// Single source for the WhatsApp handoff; the message names the style the
+// visitor is looking at, so the conversation starts with context.
+const WHATSAPP = "905079581642";
+const waLink = (text: string) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
+
 // Full-size view on top of the gallery's own detail dialog. Key events stop here so the dialog behind stays open.
 function FullView({ item, onClose }: { item: PictureRailItem; onClose: () => void }) {
   return (
@@ -71,7 +76,7 @@ export default function App() {
           onOpenChange={(index) => { setOpenIndex(index); if (index === null) setIsFull(false); }}
           action={
             <a
-              href="https://wa.me/905079581642"
+              href={waLink(openItem ? `${openItem.title} tarzında bir site istiyorum.` : "Örnek tasarımlarınızı gördüm, bir site istiyorum.")}
               rel="noopener"
               className="inline-flex min-h-11 items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background shadow-sm transition-transform hover:-translate-y-px focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none"
             >

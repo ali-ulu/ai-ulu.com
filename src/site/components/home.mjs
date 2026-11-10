@@ -1,8 +1,8 @@
-import { site } from "../config.mjs";
-import { faq, projectTypes } from "../content/site-content.mjs";
+import { site, waLink } from "../config.mjs";
+import { budgets, faq, projectTypes } from "../content/site-content.mjs";
 import { escapeHtml } from "../lib/html.mjs";
 
-const wa = `<a class="btn" href="${site.whatsapp}" rel="noopener">`;
+const wa = `<a class="btn" href="${waLink("Merhaba, web sitem için ücretsiz görüşme istiyorum.")}" rel="noopener">`;
 
 export const preloader = `<div id="pre" role="status" aria-live="polite" aria-label="Yükleniyor"><div class="in">
   <div class="mark" aria-hidden="true">ai-ulu</div>
@@ -200,10 +200,21 @@ const contact = () => `<section class="s" id="iletisim">
               <input id="reach" name="reach" type="text" autocomplete="email" required maxlength="160" placeholder="E-posta veya telefon">
             </div>
           </div>
+          <div class="pm-block">
+            <p class="pm-label">Bütçe</p>
+            <div class="pm-fields">
+              <label class="visually-hidden" for="budget">Bütçe aralığı</label>
+              <select id="budget" name="budget">
+                ${budgets.map((b) => `<option value="${b.value}">${escapeHtml(b.label)}</option>`).join("\n                ")}
+              </select>
+            </div>
+          </div>
           <div class="field--hp" aria-hidden="true">
             <label for="company">Şirket</label>
             <input id="company" name="company" type="text" tabindex="-1" autocomplete="off">
           </div>
+          <input type="hidden" id="utm_source" name="utm_source" value="">
+          <input type="hidden" id="utm_campaign" name="utm_campaign" value="">
         </div>
       </div>
       <div class="pm-foot">
@@ -219,7 +230,7 @@ const contact = () => `<section class="s" id="iletisim">
   </div>
   <aside class="pm-aside">
     <span>Form doldurmak istemezseniz:</span>
-    <a class="btn" href="${site.whatsapp}" rel="noopener">WhatsApp'tan yazın <span aria-hidden="true">→</span></a>
+    <a class="btn" href="${waLink("Merhaba, web sitem için yazıyorum.")}" rel="noopener">WhatsApp'tan yazın <span aria-hidden="true">→</span></a>
     <a class="btn ghost" href="tel:${site.phone}">${site.phoneDisplay}</a>
     <a href="mailto:${site.email}">${site.email}</a>
   </aside>
