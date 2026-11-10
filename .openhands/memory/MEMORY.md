@@ -1106,3 +1106,26 @@ commit'te `expectedHeadOid` OLMAMALI (yoksa "Expected value to not be null" ters
   `https://work-1-<host>.prod-runtime.all-hands.dev/`. İş bitince dev sunucuyu PID ile öldür.
 - **`gh` CLI token'ı düşebilir** (Bad credentials): `curl -H "Authorization: Bearer $GITHUB_TOKEN"
   https://api.github.com/...` ile REST'e geç. push için remote URL'e token göm.
+
+## Vortex site-geneli + cam navbar (PR #10, 2026-11-10, devam)
+
+- **Çok-sayfalı vortex:** canvas paylaşılan `src/site/components/layout.mjs`'e taşınır
+  (`<canvas id="vortex">` + `<script type="module" src="/vortex.js">`); `#vortex{position:fixed;
+  z-index:-1;pointer-events:none}`. `body` transparan olmalı, yoksa vortex'i kapatır. Opak yüzeyleri
+  (`body`, `.stage`, `.cell`, form alanları) yarı saydama çevir; başlık/metinlere `text-shadow` ekle.
+- **`/sablonlar/` ayrı React+Vite uygulaması** (`apps/sablonlar`, `base:"/sablonlar/"`, root build
+  `dist/sablonlar`'a kopyalar). Vite, `index.html`'deki `<script src="/vortex.js">`'i **çözmeye
+  çalışıp build'i kırar** ("Failed to resolve"). Çözüm: script'i `main.tsx`'te **runtime** ekle
+  (`document.createElement('script')`), index.html'de bırakma.
+- **Kritik tuzak:** React uygulamasında `<html>` arka planı yoksa tarayıcının **beyaz varsayılanı**
+  görünür (vortex onun üstünde kalır) → sayfa bembeyaz çıkar. Tailwind preflight `html`'e bg vermez.
+  Çözüm: `html{background:var(--background)}`. Bu hatayı ekran-görüntüsü mean parlaklığıyla yakala
+  (211 vs beklenen ~22).
+- **Navbar "cam gibi" = düz koyu dolgu DEĞİL.** `rgba(20,22,27,.55)` panel gibi durur. Doğrusu:
+  hafif beyaz `linear-gradient` + `backdrop-filter:blur(24px) saturate(190%)` + parlak üst kenar
+  (`inset 0 1px 0 rgba(255,255,255,.35)`) + `::before` specular. **Kanıt yöntemi:** navbar arkasına
+  `z-index:-1` kırmızı katman enjekte et → pill `(250,39,39)` olursa geçiriyor (cam); düz dolgu olsa
+  koyu `~(126,12,15)` çıkardı. Ayrıca vortex'i gizleyip pill piksellerini karşılaştır.
+- **Tarayıcı test notu:** Playwright `page.emulateMedia({reducedMotion:'reduce'})` ile reduced-motion
+  yolunu doğrula (canvas kalır, statik kare çizilir). Ekran görüntüsünü PIL ile analiz et
+  (`pip install pillow numpy`); headless FPS anlamsız (SwiftShader).
