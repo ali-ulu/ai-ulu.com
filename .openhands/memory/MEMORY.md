@@ -1072,3 +1072,80 @@ commit'te `expectedHeadOid` OLMAMALI (yoksa "Expected value to not be null" ters
   highlight gradyanı, inset+outer box-shadow). `@supports not (backdrop-filter…)` → opak fallback.
   `app.js` scroll ile `.site-header.is-stuck` ekler (koyulaştırır). CSP `'self'` olduğu için
   Framer bileşeni gömülemez; **kendi CSS'imizle yeniden üretildi**.
+
+## "main'de kırmızı commit" = genelde cancelled, hata değil (2026-11-10)
+
+- Ardışık merge'lerde main'de kırmızı/sarı görünen commit'ler çoğu zaman **`cancelled`**:
+  `concurrency.cancel-in-progress: true` koşulsuzsa her yeni push aynı gruptaki
+  (`deploy-refs/heads/main`) devam eden run'ı öldürür. `gh api .../commits/<sha>/check-runs`
+  ile `conclusion`'a bak: `cancelled` ≠ `failure`.
+- Teşhis: `gh run list --repo O/R --branch main --limit 12 --json conclusion,headSha,event`
+  → art arda `cancelled` + birkaç saniyelik süreler.
+- Düzeltme: `cancel-in-progress: ${{ github.event_name == 'pull_request' }}` → main'de sıraya girer,
+  yarıda deploy kesilmez. Regresyon testi: `test/ci-workflow.test.js`.
+- Not: bu repo'da PR'lar `ali-ulu` tarafından merge ediliyor; branch'i merge sonrası **main'e
+  rebase** etmek gerekebilir (çakışma: `src/site/config.mjs` gibi config dosyaları).
+
+## Vortex arka plan (PR #10, 2026-11-10)
+
+- **Referans efekt çözümleme yöntemi:** Framer/WebGL siteleri JS-render olduğu için HTML'de shader yok.
+  Playwright'ta `addInitScript` ile `WebGLRenderingContext.prototype.shaderSource`'u hook'la
+  (`page.addInitScript` → `page.goto` → `page.evaluate(() => window.__shaders)`) → tüm vertex/fragment
+  kaynakları çıkar. Ekran görüntüsü + `readPixels` swapchain sonrası çoğu zaman 0 döner; kullanma.
+- **Efekt özeti (vortexfield.framer.website):** tek WebGL canvas, `POINTS` ile bükülmüş tüp.
+  `radiusAt(t)` waist profili (top/waist/bottom, `uWp`), `a=phase+uTwist*t*π+…`, `y2/z2` sabit
+  döndürme (CT=0.961055,ST=0.276356), `k=1100/(1100+z2)*zoom` perspektif, `depth=clamp(.5-z2/(2·uDepthR))`.
+  3 katman: dust (akış), comet (baş + ~36 nokta kuyruk, `fract(phase+flow)`), fare itmesi (`uMouseS`).
+- **Kendi implementasyonumuz:** `src/site/assets/vortex.js` — three.js YOK, bağımlılıksız, ~9KB.
+  `#vortex` z-index:0, `#gl` z-index:1, `.ch` z-index:3 → ön yüz hiç değişmedi. `blendFunc(SRC_ALPHA,ONE)`
+  additive; `alpha:true, premultipliedAlpha:false`. `ALIASED_POINT_SIZE_RANGE` ile gl_PointSize clamp
+  (SwiftShader 1023'e izin verir, gerçek GPU'da daha düşük olabilir).
+- **Headless FPS anlamsız:** SwiftShader yazılım render → ~3-5 fps. Göreli ölçüm yap (vortex'i kaldır,
+  fark) — burada ~%20; asıl yük mevcut three.js katmanında.
+- **Önizleme:** `npx wrangler dev --port 12000 --ip 0.0.0.0` + public URL
+  `https://work-1-<host>.prod-runtime.all-hands.dev/`. İş bitince dev sunucuyu PID ile öldür.
+- **`gh` CLI token'ı düşebilir** (Bad credentials): `curl -H "Authorization: Bearer $GITHUB_TOKEN"
+  https://api.github.com/...` ile REST'e geç. push için remote URL'e token göm.
+
+## Vortex site-geneli + cam navbar (PR #10, 2026-11-10, devam)
+
+- **Çok-sayfalı vortex:** canvas paylaşılan `src/site/components/layout.mjs`'e taşınır
+  (`<canvas id="vortex">` + `<script type="module" src="/vortex.js">`); `#vortex{position:fixed;
+  z-index:-1;pointer-events:none}`. `body` transparan olmalı, yoksa vortex'i kapatır. Opak yüzeyleri
+  (`body`, `.stage`, `.cell`, form alanları) yarı saydama çevir; başlık/metinlere `text-shadow` ekle.
+- **`/sablonlar/` ayrı React+Vite uygulaması** (`apps/sablonlar`, `base:"/sablonlar/"`, root build
+  `dist/sablonlar`'a kopyalar). Vite, `index.html`'deki `<script src="/vortex.js">`'i **çözmeye
+  çalışıp build'i kırar** ("Failed to resolve"). Çözüm: script'i `main.tsx`'te **runtime** ekle
+  (`document.createElement('script')`), index.html'de bırakma.
+- **Kritik tuzak:** React uygulamasında `<html>` arka planı yoksa tarayıcının **beyaz varsayılanı**
+  görünür (vortex onun üstünde kalır) → sayfa bembeyaz çıkar. Tailwind preflight `html`'e bg vermez.
+  Çözüm: `html{background:var(--background)}`. Bu hatayı ekran-görüntüsü mean parlaklığıyla yakala
+  (211 vs beklenen ~22).
+- **Navbar "cam gibi" = düz koyu dolgu DEĞİL.** `rgba(20,22,27,.55)` panel gibi durur. Doğrusu:
+  hafif beyaz `linear-gradient` + `backdrop-filter:blur(24px) saturate(190%)` + parlak üst kenar
+  (`inset 0 1px 0 rgba(255,255,255,.35)`) + `::before` specular. **Kanıt yöntemi:** navbar arkasına
+  `z-index:-1` kırmızı katman enjekte et → pill `(250,39,39)` olursa geçiriyor (cam); düz dolgu olsa
+  koyu `~(126,12,15)` çıkardı. Ayrıca vortex'i gizleyip pill piksellerini karşılaştır.
+- **Tarayıcı test notu:** Playwright `page.emulateMedia({reducedMotion:'reduce'})` ile reduced-motion
+  yolunu doğrula (canvas kalır, statik kare çizilir). Ekran görüntüsünü PIL ile analiz et
+  (`pip install pillow numpy`); headless FPS anlamsız (SwiftShader).
+
+## ServiceCards tarzi cam kartlar (PR #10, 2026-11-10)
+
+- **Referans:** Framer "ServiceCards" (`servicecards.framer.website`). Özü: **ayrık kare cam kart**,
+  `gap` ile ayrı (bitişik hairline grid DEĞİL), yuvarlak köşe, köşe ışık yıkaması
+  (`linear-gradient(163deg, rgba(255,255,255,.06)…`), ince grain, üstten `radial-gradient` glow,
+  hover'da yükselme + glow. Kart içi: sol üstte numara etiketi, sağ altta büyük başlık.
+- **Bu sitedeki uyarlama** (`src/site/assets/site.css`, `.grid`/`.cell` bloğu): `.grid{gap:1.1rem}`
+  (eski `gap:1px;background:var(--line)` kaldırıldı), `.cell` 18px radius + glass + `::before` hover
+  glow + `::after` grain (SVG data-URI). Grain `img-src 'self' data:` ile CSP uyumlu.
+  `.cell.hi` amber kenar/glow. `.cell .n` pill etiket. `.cell .btn{margin-top:auto}` → alta hizalı.
+- **`.cell` `::before/::after` z-index:-1 + `isolation:isolate`** kullan (içeriği örtmez, kart
+  içinde kalır). `overflow:hidden` + radius grain/glow'u kırpar.
+- **vortex.js GERÇEK BUG (düzeltildi):** `let mx,my,mS,mTarget` içinde `mS` sayısal yumuşatma değeri;
+  pointermove handler zamanlayıcıyı `mS._t = setTimeout(...)` diye yazıyordu. ES modülü strict →
+  `Cannot create property '_t' on number` fırlatıyor, fare-decay timer hiç kurulmuyordu. Ayrı `mTimer`
+  değişkeni ekle. Modül strict-mode'da sayı üzerine prop yazımı sessiz değil, fırlatır.
+- **Tarayıcı önbelleği testi yanıltır:** `curl` yeni CSS gösterirken Playwright eski `site.css`'i
+  diskten okur → computed style eski kalır. Çözüm: `Network.clearBrowserCache` (CDP) VEYA
+  `?v=<ts>` + `page.context().newCDPSession`. Doğrulamadan önce daima cache temizle.

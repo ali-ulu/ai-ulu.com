@@ -9,7 +9,10 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--ink);color:var(--bone);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
-body{overflow-x:hidden;background:var(--ink)}
+body{overflow-x:hidden;background:transparent}
+/* Fixed vortex field behind every page; the vignette keeps text readable. */
+#vortex{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:-1;pointer-events:none}
+.vignette{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(130% 100% at 50% 38%,transparent 34%,rgba(4,5,7,.5) 72%,rgba(4,5,7,.86) 100%)}
 a{color:inherit}
 img{max-width:100%}
 :focus-visible{outline:2px solid var(--amber);outline-offset:3px}
@@ -36,11 +39,12 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 /* Liquid Glass navbar: a floating pill with backdrop blur and layered
    highlights. Falls back to a solid pill where backdrop-filter is unsupported. */
 .site-header{position:fixed;inset:0 0 auto;z-index:20;padding:calc(.7rem + env(safe-area-inset-top,0px)) var(--pad)}
-.nav-glass{position:relative;display:flex;align-items:center;gap:1.2rem;width:100%;max-width:76rem;margin:0 auto;height:58px;padding:.35rem .4rem .35rem 1.15rem;border-radius:999px;background:rgba(20,22,27,.55);border:1px solid rgba(236,231,222,.14);box-shadow:0 10px 30px -10px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);transition:background .35s,box-shadow .35s}
-.nav-glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,0) 42%,rgba(255,255,255,.06))}
-.site-header.is-stuck .nav-glass{background:rgba(12,13,16,.78);box-shadow:0 16px 40px -12px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.1)}
+.nav-glass{position:relative;display:flex;align-items:center;gap:1.2rem;width:100%;max-width:76rem;margin:0 auto;height:58px;padding:.35rem .4rem .35rem 1.15rem;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.02) 42%,rgba(255,255,255,0));border:1px solid rgba(255,255,255,.18);box-shadow:0 8px 32px -8px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(255,255,255,.06);-webkit-backdrop-filter:blur(24px) saturate(190%);backdrop-filter:blur(24px) saturate(190%);transition:background .35s,box-shadow .35s,border-color .35s}
+.nav-glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,0) 38%,rgba(255,255,255,0) 62%,rgba(255,255,255,.10))}
+.nav-glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.12),inset 0 8px 24px -12px rgba(255,255,255,.5)}
+.site-header.is-stuck .nav-glass{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.04) 46%,rgba(255,255,255,.01));border-color:rgba(255,255,255,.22);box-shadow:0 14px 44px -10px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(255,255,255,.08)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-  .nav-glass{background:rgba(12,13,16,.92)}
+  .nav-glass{background:rgba(14,16,20,.86)}
 }
 .logo{position:relative;z-index:1;font:400 1.35rem/1 var(--serif);text-decoration:none}
 .nav-glass nav{position:relative;z-index:1;display:flex;gap:1.8rem;margin-left:auto;font-size:.85rem;color:var(--dim)}
@@ -50,7 +54,7 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 
 /* home: scroll-scrubbed 3D film */
 #film{height:820vh;position:relative}
-.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:radial-gradient(70% 60% at 50% 55%,#1a1c21 0%,var(--ink) 75%)}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 #gl{position:absolute;inset:0;width:100%;height:100%;display:block}
 .ch{position:absolute;z-index:3;left:var(--pad);bottom:clamp(2rem,9vh,6rem);max-width:34rem;opacity:0;visibility:hidden;pointer-events:none;will-change:opacity,transform}
 .ch.on{pointer-events:auto}
@@ -83,19 +87,31 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 
 /* content sections */
 section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--line)}
-.s h1,.s h2{font:400 clamp(2.2rem,5vw,4.4rem)/1 var(--serif);letter-spacing:-.01em;max-width:18ch;margin:1rem 0 1.4rem;text-wrap:balance}
-.s .lead{color:var(--soft);max-width:36rem;font-size:1.08rem}
-.grid{display:grid;gap:1px;background:var(--line);margin-top:3.5rem;border:1px solid var(--line)}
+.s h1,.s h2{font:400 clamp(2.2rem,5vw,4.4rem)/1 var(--serif);letter-spacing:-.01em;max-width:18ch;margin:1rem 0 1.4rem;text-wrap:balance;text-shadow:0 2px 30px rgba(6,7,9,.85)}
+.s .lead{color:var(--soft);max-width:36rem;font-size:1.08rem;text-shadow:0 1px 18px rgba(6,7,9,.8)}
+/* Service cards: Framer "ServiceCards"-style glass tiles. Detached squares
+   (not a hairline grid) with a top light edge, faint grain, and a hover glow
+   that lights the card from above. */
+.grid{display:grid;gap:1.1rem;margin-top:3.5rem}
 .g4{grid-template-columns:repeat(4,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
-.cell{background:var(--ink);padding:2rem 1.6rem 2.2rem}
-.cell .n{font:500 .72rem/1 var(--mono);color:var(--amber);letter-spacing:.1em}
-.cell h3{font:400 1.8rem/1.05 var(--serif);margin:1.6rem 0 .8rem}
+.cell{position:relative;isolation:isolate;display:flex;flex-direction:column;gap:.65rem;padding:1.9rem 1.7rem;border-radius:18px;border:1px solid var(--line);background:linear-gradient(163deg,rgba(255,255,255,.06),rgba(255,255,255,0) 44%),rgba(14,16,20,.55);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 26px 60px -42px rgba(0,0,0,.95);overflow:hidden;transition:transform .45s cubic-bezier(.2,.7,.2,1),border-color .45s,box-shadow .45s}
+.cell::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .45s;background:radial-gradient(130% 90% at 50% 0%,rgba(255,255,255,.15),rgba(255,255,255,0) 62%)}
+.cell::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.15;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:140px}
+.cell:hover{transform:translateY(-4px);border-color:rgba(236,231,222,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 36px 72px -42px rgba(0,0,0,1)}
+.cell:hover::before{opacity:1}
+.cell .n{align-self:flex-start;font:500 .68rem/1 var(--mono);color:var(--amber);letter-spacing:.14em;padding:.34rem .6rem;border:1px solid rgba(224,164,88,.3);border-radius:999px}
+.cell h3{font:400 1.7rem/1.06 var(--serif);text-wrap:balance}
 .cell p{color:var(--dim);font-size:.95rem}
-.cell ul{list-style:none;margin:1.4rem 0 2rem;display:grid;gap:.55rem;font-size:.95rem;color:var(--soft)}
+.cell ul{list-style:none;margin:.35rem 0 0;display:grid;gap:.5rem;font-size:.95rem;color:var(--soft)}
 .cell ul li::before{content:"—  ";color:var(--amber)}
-.cell.hi{background:var(--ink2)}
-.cell .btn{padding:.8rem 1.1rem}
+.cell.hi{border-color:rgba(224,164,88,.42);background:linear-gradient(163deg,rgba(224,164,88,.15),rgba(255,255,255,0) 46%),rgba(22,25,30,.6)}
+.cell.hi::before{opacity:.55;background:radial-gradient(130% 90% at 50% 0%,rgba(224,164,88,.28),rgba(255,255,255,0) 62%)}
+.cell.hi:hover::before{opacity:1}
+.cell .btn{margin-top:auto;align-self:flex-start;padding:.8rem 1.1rem}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .cell{background:linear-gradient(163deg,rgba(255,255,255,.06),rgba(255,255,255,0) 44%),rgba(14,16,20,.9)}
+}
 .faq{margin-top:3rem;max-width:52rem}
 .faq details{border-top:1px solid var(--line);padding:1.4rem 0}
 .faq details:last-child{border-bottom:1px solid var(--line)}
@@ -110,7 +126,7 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .form{display:grid;gap:1.2rem}
 .field{display:grid;gap:.45rem}
 .field label{font-size:.85rem;color:var(--soft)}
-.field input,.field select,.field textarea{width:100%;min-height:48px;padding:.85rem 1rem;border:1px solid var(--line);border-radius:12px;background:var(--ink2);color:var(--bone);font:inherit}
+.field input,.field select,.field textarea{width:100%;min-height:48px;padding:.85rem 1rem;border:1px solid var(--line);border-radius:12px;background:rgba(14,16,19,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--bone);font:inherit}
 .field textarea{min-height:8rem;resize:vertical}
 .field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--amber);outline-offset:1px;border-color:transparent}
 .field--hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
@@ -119,15 +135,15 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .form__status{min-height:1.5em;font-size:.95rem}
 .form__status[data-state="ok"]{color:var(--ok)}
 .form__status[data-state="error"]{color:var(--danger)}
-.direct{display:grid;gap:1rem;padding:2rem;border:1px solid var(--line);border-radius:20px;background:var(--ink2)}
+.direct{display:grid;gap:1rem;padding:2rem;border:1px solid var(--line);border-radius:20px;background:rgba(14,16,19,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .direct h3{font:400 1.6rem/1.1 var(--serif)}
 .direct p{color:var(--dim);font-size:.95rem}
 .direct .btn{justify-content:space-between}
 
 /* long-form pages (privacy) */
 .prose{max-width:46rem}
-.prose h2{font:400 1.6rem/1.2 var(--serif);margin:2.4rem 0 .6rem;max-width:none}
-.prose p{color:var(--soft);margin-top:.6rem}
+.prose h2{font:400 1.6rem/1.2 var(--serif);margin:2.4rem 0 .6rem;max-width:none;text-shadow:0 2px 22px rgba(6,7,9,.8)}
+.prose p{color:var(--soft);margin-top:.6rem;text-shadow:0 1px 14px rgba(6,7,9,.7)}
 
 .site-footer{padding:2rem var(--pad) calc(2rem + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;color:var(--dim);font-size:.85rem;border-top:1px solid var(--line)}
 .site-footer nav{display:flex;flex-wrap:wrap;gap:1.4rem}

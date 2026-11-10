@@ -63,6 +63,8 @@ ${head({ title, description, path, jsonLd })}
 </head>
 <body>
 <a class="skip-link" href="#main">İçeriğe geç</a>
+<canvas id="vortex" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
 ${before}
 ${header()}
 <main id="main">
@@ -70,6 +72,7 @@ ${body}
 </main>
 ${footer(footerNote)}
 <script src="/app.js" defer></script>
+<script type="module" src="/vortex.js"></script>
 ${extra}
 </body>
 </html>`;
