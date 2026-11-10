@@ -86,6 +86,6 @@ export const blogTeaser = () => `<section class="s" id="blog" aria-labelledby="b
         </a>
       </li>`).join("\n      ")}
     </ul>
-    <p class="bl-more"><a class="btn ghost" href="/blog/">Tüm yazılar <span aria-hidden="true">→</span></a></p>
+    <p class="bl-more"><a href="/blog/">Tüm yazılar <span aria-hidden="true">→</span></a></p>
   </div>
 </section>`;
