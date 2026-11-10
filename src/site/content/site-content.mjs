@@ -43,11 +43,12 @@ export const faq = {
   ],
 };
 
+// The form's topic stamps reuse these labels; `glyph` is the symbol on the stamp.
 export const projectTypes = [
-  { value: "site", label: "Tanıtım sitesi" },
-  { value: "app", label: "Web uygulaması" },
-  { value: "both", label: "Site + uygulama" },
-  { value: "unsure", label: "Emin değilim" },
+  { value: "site", label: "Tanıtım sitesi", glyph: "⌂" },
+  { value: "app", label: "Web uygulaması", glyph: "▤" },
+  { value: "both", label: "Site + uygulama", glyph: "✦" },
+  { value: "unsure", label: "Emin değilim", glyph: "◌" },
 ];
 
 export const footerLinks = [
