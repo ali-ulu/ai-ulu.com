@@ -1171,3 +1171,24 @@ commit'te `expectedHeadOid` OLMAMALI (yoksa "Expected value to not be null" ters
   gecirmez → `./node_modules/.bin/wrangler dev --port 12000 --ip 0.0.0.0` kullan.
 - **sticky baslik:** site navbar'i `position:fixed` (~80px) → `.fq-head{position:sticky;top:96px}`.
   Ayrica `.s h2` margin/max-width override'i icin `.fq .fq-title{margin:0;max-width:none}`.
+
+## ai-ulu.com lead ölçümü + repo gerçekleri (2026-11-11, PR #13)
+
+- **`budget` sütunu tuzak:** `schema.sql`'de vardı ama `worker.js` INSERT'inde **bind edilmiyordu**
+  (ölü sütun). Benzer "şemada var, kodda yok" durumlarını `grep` ile doğrula.
+- **D1 `CREATE TABLE IF NOT EXISTS` sütun eklemez.** Yeni sütun (utm_*) için üretimde elle
+  `ALTER TABLE ... ADD COLUMN ... DEFAULT ''` gerekir; yerel DB de eskiyse aynı şekilde.
+- **Sahte D1 bind sırası konumsal:** `test/worker.test.js` `_args`'ı destructuring ile çözüyor;
+  INSERT'e sütun ekleyince sessizce kayar ve test "geçer" ama yanlış. Sütun eklerken testi de güncelle.
+- **wa.me tek kaynak:** `config.mjs` → `waLink(text)`; site (MJS) ve galeri (React `App.tsx`)
+  ayrı helper taşır (izole bundle, cross-import edilemez). Numara `App.tsx`'te de sabitti.
+- **Yerel uçtan uca:** `npx wrangler d1 execute ai-ulu-leads --local --file=schema.sql` →
+  Playwright form POST → `SELECT ... FROM leads` ile satırı doğrula (gerçek kanıt).
+- **Git kimliği:** `aliulu` / `aliulu@ai-ulu.com`; remote HTTPS, token gömülü değil →
+  `git remote set-url origin https://${GITHUB_TOKEN}@github.com/...` ile push (aksi halde
+  kullanıcı adı sorup timeout'a düşer).
+- **PR disiplini:** #12 zaten merge edilmişti (54d7e88). Merge edilmiş dala commit push etmek
+  hataydı → `git checkout -B <yeni> origin/main` + `cherry-pick`, eski dalı `--force-with-lease`
+  ile eski SHA'ya geri al, yeni PR (#13) aç.
+- **Rapor doğrulaması:** dış kod incelemesi raporundaki iddiaları `grep` ile doğrula; "100 müşteri
+  hedefi" ve LCP gibi maddeler **koddan kanıtlanamadı** (sahip beyanı / ölçüm ister).
