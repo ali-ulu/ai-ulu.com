@@ -6,6 +6,11 @@
   "upload_source_maps": true,
   "workers_dev": true,
 
+  "routes": [
+    { "pattern": "ai-ulu.com", "custom_domain": true },
+    { "pattern": "www.ai-ulu.com", "custom_domain": true }
+  ],
+
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
