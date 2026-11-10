@@ -67,6 +67,24 @@ async function rateLimited(env, ip) {
   return row && row.submissions > maxSubs;
 }
 
+// Page-view counter. Shares the rate_limits table but under a separate key, so a
+// visitor browsing many pages cannot exhaust the lead-submission budget.
+const HIT_MAX_PER_HOUR = 200;
+async function hitRateLimited(env, ip) {
+  const now = Date.now();
+  const windowStart = now - 60 * 60 * 1000;
+  const row = await env.DB.prepare(
+    `INSERT INTO rate_limits (ip, window_started_at, submissions, updated_at)
+     VALUES (?1, ?2, 1, ?2)
+     ON CONFLICT(ip) DO UPDATE SET
+       window_started_at = CASE WHEN rate_limits.window_started_at < ?3 THEN ?2 ELSE rate_limits.window_started_at END,
+       submissions = CASE WHEN rate_limits.window_started_at < ?3 THEN 1 ELSE rate_limits.submissions + 1 END,
+       updated_at = ?2
+     RETURNING submissions`
+  ).bind(`hit:${ip}`, now, windowStart).first();
+  return row && row.submissions > HIT_MAX_PER_HOUR;
+}
+
 const MAX_BODY_BYTES = 16 * 1024;
 const LEAD_RETENTION_DAYS = 365;
 
@@ -190,11 +208,59 @@ async function handleLead(request, env) {
   return json({ ok: true });
 }
 
+// Page-view beacon. Deliberately narrow: the client sends only the path, and
+// the server derives the day, the referrer host and the country itself. Nothing
+// here identifies a visitor, and a failure is swallowed — analytics must never
+// cost a page a request.
+async function handleHit(request, env) {
+  if (request.method !== "POST") return json({ error: "Yöntem desteklenmiyor." }, 405);
+  if (crossOrigin(request)) return json({ error: "Geçersiz istek." }, 403);
+
+  let payload = {};
+  try {
+    payload = JSON.parse((await request.text()).slice(0, 512)) || {};
+  } catch {
+    return json({ ok: true });
+  }
+
+  const path = sanitize(payload.path, 300) || "/";
+  if (!path.startsWith("/")) return json({ ok: true });
+
+  const ip = clientIp(request);
+  const day = new Date().toISOString().slice(0, 10);
+  const country = sanitize(request.headers.get("cf-ipcountry"), 8);
+  let referrerHost = "";
+  const referer = request.headers.get("referer");
+  if (referer) {
+    try {
+      const host = new URL(referer).host;
+      if (host && host !== new URL(request.url).host) referrerHost = host;
+    } catch {
+      /* a malformed referrer is simply not counted */
+    }
+  }
+
+  try {
+    if (await hitRateLimited(env, ip)) return json({ ok: true });
+    await env.DB.prepare(
+      `INSERT INTO hits (day, path, referrer_host, country, views)
+       VALUES (?1, ?2, ?3, ?4, 1)
+       ON CONFLICT(day, path, referrer_host, country) DO UPDATE SET views = views + 1`
+    ).bind(day, path, referrerHost, country).run();
+  } catch (err) {
+    console.error("hit insert failed", err);
+  }
+  return json({ ok: true });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === "/api/lead") {
       return handleLead(request, env);
+    }
+    if (url.pathname === "/api/hit") {
+      return handleHit(request, env);
     }
     return new Response("Not found", { status: 404 });
   },
@@ -206,10 +272,13 @@ export default {
     const leadCutoff = new Date(now - LEAD_RETENTION_DAYS * 24 * 60 * 60 * 1000).toISOString();
     const windowMs = Number(env.RATE_LIMIT_WINDOW_MINUTES || 15) * 60 * 1000;
     const rateCutoff = now - windowMs;
+    // Page views are anonymous, but they still do not need to live forever.
+    const hitCutoff = new Date(now - 400 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
     try {
       await env.DB.batch([
         env.DB.prepare("DELETE FROM leads WHERE created_at < ?1").bind(leadCutoff),
         env.DB.prepare("DELETE FROM rate_limits WHERE window_started_at < ?1").bind(rateCutoff),
+        env.DB.prepare("DELETE FROM hits WHERE day < ?1").bind(hitCutoff),
       ]);
     } catch (err) {
       console.error("retention cleanup failed", err);
