@@ -84,6 +84,10 @@ test("posts are ordered newest first and the home page teases the latest three",
     assert.ok(home.includes(`href="/blog/${p.slug}/"`), `home should link to ${p.slug}`);
   }
   assert.ok(home.includes('href="/blog/"'), "home links to the blog index");
+  // The teaser keeps a plain text link to the index, not a competing button.
+  const more = home.match(/<p class="bl-more">[\s\S]*?<\/p>/)?.[0] ?? "";
+  assert.match(more, /<a href="\/blog\/">Tüm yazılar/, "teaser more link is plain text");
+  assert.doesNotMatch(more, /class="btn/, "teaser more link is not a button");
 });
 
 test("the blog is reachable from the nav, the footer and the sitemap", async () => {
