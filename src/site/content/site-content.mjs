@@ -41,6 +41,16 @@ export const faq = {
       q: "Mevcut sitemi yenileyebilir misiniz?",
       a: "Evet. İşe yarayanı korur; yapıyı, hızı ve içeriği müşteri getirecek şekilde yeniden kurarız.",
     },
+    {
+      tab: "İletişim",
+      q: "Siteme WhatsApp butonu ve form nasıl eklenir?",
+      a: "Her sayfaya tek dokunuşla açılan WhatsApp bağlantısı ve size düşen bir iletişim formu kurarız. Ziyaretçi ayrı bir uygulama indirmez; yazar, mesaj doğrudan telefonunuza gelir.",
+    },
+    {
+      tab: "Randevu",
+      q: "Siteme online randevu sistemi ekleyebilir misiniz?",
+      a: "Evet. Takviminize bağlı randevu, sipariş veya başvuru formu kurarız; talepler size düşer, isterseniz otomatik onay da eklenir. Bu, özel web uygulaması paketinin kapsamındadır.",
+    },
   ],
 };
 
