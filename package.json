@@ -13,7 +13,8 @@
     "deploy": "npm run build && wrangler deploy",
     "preview": "npm run build && wrangler dev",
     "test": "node --test test/*.test.js",
-    "check": "node scripts/check.mjs"
+    "check": "node scripts/check.mjs",
+    "ping": "node scripts/indexnow.mjs"
   },
   "devDependencies": {
     "wrangler": "4.158.0"

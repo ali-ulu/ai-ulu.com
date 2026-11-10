@@ -22,7 +22,21 @@ npm run check      # verify build output
 npm test           # run unit tests
 npm run dev        # build + local preview (wrangler dev)
 npm run deploy     # build + deploy to Cloudflare
+npm run ping       # submit sitemap URLs to IndexNow (Bing, Yandex)
 ```
+
+## Search engines and AI crawlers
+
+- `robots.txt` allows every crawler and lists the sitemap; AI crawlers (GPTBot, PerplexityBot,
+  ClaudeBot, Google-Extended) are named so the site stays eligible for AI answers. `llms.txt` is
+  published for the same reason.
+- Deploying from `main` runs `npm run ping` after the Cloudflare deploy. It posts the sitemap
+  URLs to [IndexNow](https://www.indexnow.org/) (Bing, Yandex and partners) using the key in
+  `src/site/config.mjs`. The build serves the matching key file at `/<key>.txt`.
+- Google has retired its sitemap ping endpoint: submit `https://ai-ulu.com/sitemap.xml` once in
+  [Google Search Console](https://search.google.com/search-console) and in
+  [Bing Webmaster Tools](https://www.bing.com/webmasters). Use `npm run ping -- --dry-run` to see
+  what would be sent.
 
 ## Structure
 

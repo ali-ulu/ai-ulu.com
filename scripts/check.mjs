@@ -1,6 +1,7 @@
 import { access, readFile, readdir } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { site } from "../src/site/config.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
@@ -21,6 +22,7 @@ const required = [
   "sitemap.xml",
   "llms.txt",
   "_headers",
+  `${site.indexNowKey}.txt`,
 ];
 
 let failed = 0;

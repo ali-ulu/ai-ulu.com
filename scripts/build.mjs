@@ -3,6 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pages, renderPage } from "../src/site/pages.mjs";
 import { site } from "../src/site/config.mjs";
+import { robotsTxt } from "../src/site/robots.mjs";
 import { faq } from "../src/site/content/site-content.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -30,11 +31,10 @@ async function build() {
   await cp(assets, dist, { recursive: true });
   await cp(gallery, join(dist, "sablonlar"), { recursive: true });
 
-  await write("robots.txt", `User-agent: *
-Allow: /
+  await write("robots.txt", robotsTxt(site));
 
-Sitemap: ${site.url}/sitemap.xml
-`);
+  // IndexNow ownership proof: the file must be served at /<key>.txt.
+  await write(`${site.indexNowKey}.txt`, `${site.indexNowKey}\n`);
 
   const paths = [...pages.map((p) => p.path), "/sablonlar/"];
   await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>
