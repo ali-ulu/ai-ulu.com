@@ -2,10 +2,11 @@ import { site } from "../config.mjs";
 import { nav, footerLinks } from "../content/site-content.mjs";
 import { escapeHtml } from "../lib/html.mjs";
 
-function head({ title, description, path, jsonLd }) {
+function head({ title, description, path, jsonLd, styles = [] }) {
   const fullTitle = title ? `${title} · ${site.name}` : site.title;
   const url = `${site.url}${path}`;
   const ld = jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : "";
+  const css = styles.map((href) => `<link rel="stylesheet" href="${href}">`).join("\n");
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${escapeHtml(fullTitle)}</title>
@@ -27,6 +28,7 @@ function head({ title, description, path, jsonLd }) {
 <link rel="preload" href="/fonts/bodoni-moda-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/site.css">
+${css}
 ${ld}`;
 }
 
@@ -54,12 +56,12 @@ function footer(note) {
 }
 
 // before: markup placed ahead of the header (the home preloader); scripts: extra module scripts.
-export function page({ title, description = site.description, path, body, jsonLd = null, before = "", scripts = [], footerNote = "" }) {
+export function page({ title, description = site.description, path, body, jsonLd = null, before = "", scripts = [], styles = [], footerNote = "" }) {
   const extra = scripts.map((src) => `<script type="module" src="${src}"></script>`).join("\n");
   return `<!doctype html>
 <html lang="${site.lang}">
 <head>
-${head({ title, description, path, jsonLd })}
+${head({ title, description, path, jsonLd, styles })}
 </head>
 <body>
 <a class="skip-link" href="#main">İçeriğe geç</a>
