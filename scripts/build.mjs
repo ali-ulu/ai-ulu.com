@@ -39,7 +39,7 @@ Sitemap: ${site.url}/sitemap.xml
   const paths = [...pages.map((p) => p.path), "/sablonlar/"];
   await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${paths.map((p) => `  <url><loc>${site.url}${p}</loc></url>`).join("\n")}
+${paths.map((p) => `  <url><loc>${site.url}${p}</loc><lastmod>${site.updated}</lastmod></url>`).join("\n")}
 </urlset>
 `);
 

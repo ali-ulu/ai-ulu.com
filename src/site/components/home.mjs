@@ -64,6 +64,7 @@ const benefits = `<section class="s" id="nasil">
   <span class="eyebrow">Ne kazanırsınız</span>
   <h2>Ziyaretçi gelir, <em>müşteri</em> olarak kalır.</h2>
   <p class="lead">Çoğu site ilk kaydırmada ziyaretçiyi kaybeder. Sorun marka değil, kurulum. Biz kurulumu baştan doğru yaparız.</p>
+  <p class="lead">Nereden başlayacağınızdan emin değilseniz <a href="/sablonlar/">örnek tasarımlara</a> göz atın, kapsamı <a href="/#paketler">paketlerde</a> karşılaştırın, çalışma şeklimizi <a href="/#nasil">süreçte</a> görün.</p>
   <div class="grid g4">
     <div class="cell"><span class="n">01</span><h3>Özgün tasarım</h3><p>Şablon değil; sektörünüze ve markanıza göre çizilmiş bir site.</p></div>
     <div class="cell"><span class="n">02</span><h3>Google'da görünürlük</h3><p>Teknik SEO, hız ve yapılandırılmış veri ilk günden sitenin içinde.</p></div>
