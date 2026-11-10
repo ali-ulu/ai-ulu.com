@@ -18,7 +18,7 @@ export const site = {
   sameAs: [], // Google Business Profile, Instagram, LinkedIn
   // Bump when the site content changes; feeds dateModified in JSON-LD, the
   // og:updated_time meta tag and sitemap lastmod.
-  updated: "2026-11-10",
+  updated: "2026-11-11",
   // IndexNow key: the build writes /<key>.txt so Bing and Yandex accept our
   // submissions. Rotate by replacing this value.
   indexNowKey: "bec0a65e610429c17aa2c0cce8902c60",

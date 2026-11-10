@@ -1,5 +1,6 @@
 import { site, waLink } from "../config.mjs";
 import { budgets, faq, projectTypes } from "../content/site-content.mjs";
+import { blogTeaser } from "./blog.mjs";
 import { escapeHtml } from "../lib/html.mjs";
 
 const wa = `<a class="btn" href="${waLink("Merhaba, web sitem için ücretsiz görüşme istiyorum.")}" rel="noopener">`;
@@ -236,4 +237,4 @@ const contact = () => `<section class="s" id="iletisim">
   </aside>
 </section>`;
 
-export const homeBody = () => [film, benefits, process, packages, faqSection(), contact()].join("\n\n");
+export const homeBody = () => [film, benefits, process, packages, faqSection(), blogTeaser(), contact()].join("\n\n");

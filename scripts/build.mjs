@@ -5,6 +5,7 @@ import { pages, renderPage } from "../src/site/pages.mjs";
 import { site } from "../src/site/config.mjs";
 import { robotsTxt } from "../src/site/robots.mjs";
 import { faq } from "../src/site/content/site-content.mjs";
+import { byDateDesc } from "../src/site/components/blog.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
@@ -51,7 +52,11 @@ ${paths.map((p) => `  <url><loc>${site.url}${p}</loc><lastmod>${site.updated}</l
 ## Sayfalar
 - [Ana sayfa](${site.url}/): hizmetler, süreç, paketler, SSS ve iletişim formu
 - [Örnek tasarımlar](${site.url}/sablonlar/): sektöre göre site tarzı örnekleri
+- [Blog](${site.url}/blog/): web sitesi fiyatı, arama görünürlüğü ve müşteri kazanma üzerine yazılar
 - [Gizlilik ve KVKK](${site.url}/gizlilik/)
+
+## Blog yazıları
+${byDateDesc.map((p) => `- [${p.title}](${site.url}/blog/${p.slug}/): ${p.description}`).join("\n")}
 
 ## Hizmetler
 - Tanıtım sitesi: markaya özel tasarım, hızlı açılış, Google ve yapay zekâ aramalarına hazır yapı
