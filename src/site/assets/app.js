@@ -8,16 +8,69 @@
 })();
 
 // Progressive enhancement: the form works without JS only as a normal POST
-// fallback; here we submit via fetch for an inline status message.
+// fallback; here we submit via fetch for an inline status message, and the
+// postcard behaves like one — a counter, a live sign-off, a fly-away.
 (function () {
   const form = document.getElementById("lead-form");
   if (!form) return;
+  const pm = form.closest(".pm");
   const status = document.getElementById("form-status");
   const submit = form.querySelector('button[type="submit"]');
+  const msg = form.querySelector("#msg");
+  const count = document.getElementById("pm-count");
+  const sign = document.getElementById("pm-sign");
+  const nameField = form.querySelector("#name");
+  const thanks = document.getElementById("pm-thanks");
+
+  // The counter fills as you write, and the hand gets smaller so the card
+  // keeps fitting. The limit is the textarea's own maxlength.
+  const max = msg ? Number(msg.getAttribute("maxlength")) || 280 : 280;
+  function refreshWrite() {
+    if (!msg) return;
+    const len = msg.value.length;
+    if (count) count.textContent = `${len} / ${max}`;
+    msg.style.setProperty("--pm-size", `${(34 - Math.min(1, len / max) * 14).toFixed(1)}px`);
+  }
+  if (msg) {
+    msg.addEventListener("input", refreshWrite);
+    refreshWrite();
+  }
+
+  // The sender's name signs the card as they type it.
+  function refreshSign() {
+    if (!sign || !nameField) return;
+    sign.textContent = nameField.value.trim() || "imzanız";
+  }
+  if (nameField) {
+    nameField.addEventListener("input", refreshSign);
+    refreshSign();
+  }
 
   function setStatus(state, message) {
     status.dataset.state = state;
     status.textContent = message;
+  }
+
+  function sendAway() {
+    if (!pm) {
+      form.reset();
+      refreshWrite();
+      setStatus("ok", "Teşekkürler! Mesajınız alındı, en kısa sürede dönüş yapacağız.");
+      return;
+    }
+    let done = false;
+    const land = () => {
+      if (done) return;
+      done = true;
+      form.hidden = true;
+      if (thanks) thanks.hidden = false;
+    };
+    pm.classList.add("is-sent");
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) land();
+    else {
+      form.addEventListener("animationend", land, { once: true });
+      setTimeout(land, 1400); // fallback if the animation event is missed
+    }
   }
 
   form.addEventListener("submit", async (event) => {
@@ -37,8 +90,7 @@
       });
       const body = await res.json().catch(() => ({}));
       if (res.ok) {
-        form.reset();
-        setStatus("ok", "Teşekkürler! Mesajınız alındı, en kısa sürede dönüş yapacağız.");
+        sendAway();
       } else {
         setStatus("error", body.error || "Bir sorun oluştu. Lütfen tekrar deneyin veya e-posta gönderin.");
       }

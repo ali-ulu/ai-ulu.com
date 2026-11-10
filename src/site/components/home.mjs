@@ -145,45 +145,84 @@ const faqSection = () => {
 </section>`;
 };
 
-// Field names are the /api/lead contract in src/worker.js (company = honeypot).
+// Postcard contact form (adapted from the Framer "Postmark" block). The field
+// names, the ids (lead-form, form-status) and the JSON shape are the /api/lead
+// contract in src/worker.js — do not rename them. Stamps are the form's topics
+// and map onto the existing `type` field, so the endpoint is unchanged.
+const stampMarkup = (o, i) => `<label>
+        <input type="radio" name="type" value="${o.value}"${i === 0 ? " checked" : ""}>
+        <span class="pm-stamp" style="--pm-tilt-stamp:${["-2deg", "1.5deg", "-1deg", "2.5deg"][i % 4]}">
+          <i class="pm-glyph" aria-hidden="true">${escapeHtml(o.glyph)}</i>
+          <span>${escapeHtml(o.label)}</span>
+        </span>
+      </label>`;
+
+const postmarkSeal = `<svg class="pm-seal" viewBox="0 0 100 100" aria-hidden="true">
+      <defs><path id="pm-seal-arc" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+      <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.4"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" stroke-width="0.8"/>
+      <text><textPath href="#pm-seal-arc" startOffset="0%">AI-ULU · POSTA DAMGASI · WEB SITESI ·</textPath></text>
+      <text class="pm-seal-c" x="50" y="50" text-anchor="middle" dominant-baseline="central">✳</text>
+    </svg>`;
+
 const contact = () => `<section class="s" id="iletisim">
   <span class="eyebrow">İletişim</span>
   <h2>Siteniz için <em>ilk adım.</em></h2>
   <p class="lead">Ne kurmak istediğinizi birkaç cümleyle yazın; 24 saat içinde ücretsiz görüşme için dönelim.</p>
-  <div class="contact-grid">
-    <form class="form" id="lead-form" novalidate>
-      <div class="field">
-        <label for="name">Ad Soyad / Firma</label>
-        <input id="name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="120">
+  <div class="pm">
+    <form class="pm-card" id="lead-form" novalidate>
+      ${postmarkSeal}
+      <div class="pm-body">
+        <div class="pm-left">
+          <p class="pm-greet" aria-hidden="true">Sevgili ai-ulu,</p>
+          <div class="pm-write">
+            <label class="visually-hidden" for="msg">Kısaca projeniz</label>
+            <textarea id="msg" name="msg" maxlength="280" placeholder="Sektörünüz, istediğiniz sayfalar, beğendiğiniz bir site…"></textarea>
+            <span class="pm-count" id="pm-count" aria-hidden="true">0 / 280</span>
+          </div>
+          <p class="pm-sign" aria-hidden="true">— <b id="pm-sign">imzanız</b>, gönderen</p>
+        </div>
+        <div class="pm-right">
+          <fieldset class="pm-stamps">
+            <legend>Konu · bir pul seçin</legend>
+            ${projectTypes.map(stampMarkup).join("\n            ")}
+          </fieldset>
+          <div class="pm-block">
+            <p class="pm-label">Kime</p>
+            <p class="pm-addr"><strong>ai-ulu</strong>Stüdyo · web siteleri ve uygulamalar</p>
+          </div>
+          <div class="pm-block">
+            <p class="pm-label">Kimden</p>
+            <div class="pm-fields">
+              <label class="visually-hidden" for="name">Ad Soyad / Firma</label>
+              <input id="name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" placeholder="Ad Soyad / Firma">
+              <label class="visually-hidden" for="reach">E-posta veya telefon</label>
+              <input id="reach" name="reach" type="text" autocomplete="email" required maxlength="160" placeholder="E-posta veya telefon">
+            </div>
+          </div>
+          <div class="field--hp" aria-hidden="true">
+            <label for="company">Şirket</label>
+            <input id="company" name="company" type="text" tabindex="-1" autocomplete="off">
+          </div>
+        </div>
       </div>
-      <div class="field">
-        <label for="reach">E-posta veya telefon</label>
-        <input id="reach" name="reach" type="text" autocomplete="email" required maxlength="160">
+      <div class="pm-foot">
+        <button class="pm-btn" type="submit">Postayı at <span aria-hidden="true">↗</span></button>
+        <p class="form__note">Bilgileriniz yalnızca size dönüş yapmak için kullanılır. Ayrıntılar: <a href="/gizlilik/">Gizlilik ve KVKK</a>.</p>
+        <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
       </div>
-      <div class="field">
-        <label for="type">Ne istiyorsunuz?</label>
-        <select id="type" name="type">${projectTypes.map((o) => `<option value="${o.value}">${escapeHtml(o.label)}</option>`).join("")}</select>
-      </div>
-      <div class="field">
-        <label for="msg">Kısaca projeniz</label>
-        <textarea id="msg" name="msg" maxlength="2000" placeholder="Sektörünüz, istediğiniz sayfalar, beğendiğiniz bir site…"></textarea>
-      </div>
-      <div class="field field--hp" aria-hidden="true">
-        <label for="company">Şirket</label>
-        <input id="company" name="company" type="text" tabindex="-1" autocomplete="off">
-      </div>
-      <button class="btn" type="submit">Teklif isteyin <span aria-hidden="true">→</span></button>
-      <p class="form__note">Bilgileriniz yalnızca size dönüş yapmak için kullanılır. Ayrıntılar: <a href="/gizlilik/">Gizlilik ve KVKK</a>.</p>
-      <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
     </form>
-    <aside class="direct">
-      <h3>Doğrudan ulaşın</h3>
-      <p>Form doldurmak istemezseniz:</p>
-      ${wa}WhatsApp'tan yazın <span aria-hidden="true">→</span></a>
-      <a class="btn ghost" href="tel:${site.phone}">${site.phoneDisplay}</a>
-      <p>ya da <a href="mailto:${site.email}">${site.email}</a></p>
-    </aside>
+    <div class="pm-thanks" id="pm-thanks" hidden>
+      <b>Posta yola çıktı ✈</b>
+      <p>Teşekkürler! Mesajınız alındı, 24 saat içinde dönüş yapacağız.</p>
+    </div>
   </div>
+  <aside class="pm-aside">
+    <span>Form doldurmak istemezseniz:</span>
+    <a class="btn" href="${site.whatsapp}" rel="noopener">WhatsApp'tan yazın <span aria-hidden="true">→</span></a>
+    <a class="btn ghost" href="tel:${site.phone}">${site.phoneDisplay}</a>
+    <a href="mailto:${site.email}">${site.email}</a>
+  </aside>
 </section>`;
 
 export const homeBody = () => [film, benefits, process, packages, faqSection(), contact()].join("\n\n");
