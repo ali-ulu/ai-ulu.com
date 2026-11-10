@@ -15,6 +15,10 @@ export const site = {
   // placeholder data ever goes live.
   address: { streetAddress: "", addressLocality: "", postalCode: "", addressCountry: "TR" },
   priceRange: "", // e.g. "₺₺" or "25.000 ₺'den başlar"
+  // Shown on the packages section when set ("Tanıtım siteleri X'den başlar").
+  // Left empty on purpose: a real number beats a placeholder, so nothing ships
+  // until the owner fills it in.
+  priceFrom: "",
   sameAs: [], // Google Business Profile, Instagram, LinkedIn
   // Bump when the site content changes; feeds dateModified in JSON-LD, the
   // og:updated_time meta tag and sitemap lastmod.
