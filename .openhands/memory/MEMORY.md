@@ -1129,3 +1129,23 @@ commit'te `expectedHeadOid` OLMAMALI (yoksa "Expected value to not be null" ters
 - **Tarayıcı test notu:** Playwright `page.emulateMedia({reducedMotion:'reduce'})` ile reduced-motion
   yolunu doğrula (canvas kalır, statik kare çizilir). Ekran görüntüsünü PIL ile analiz et
   (`pip install pillow numpy`); headless FPS anlamsız (SwiftShader).
+
+## ServiceCards tarzi cam kartlar (PR #10, 2026-11-10)
+
+- **Referans:** Framer "ServiceCards" (`servicecards.framer.website`). Özü: **ayrık kare cam kart**,
+  `gap` ile ayrı (bitişik hairline grid DEĞİL), yuvarlak köşe, köşe ışık yıkaması
+  (`linear-gradient(163deg, rgba(255,255,255,.06)…`), ince grain, üstten `radial-gradient` glow,
+  hover'da yükselme + glow. Kart içi: sol üstte numara etiketi, sağ altta büyük başlık.
+- **Bu sitedeki uyarlama** (`src/site/assets/site.css`, `.grid`/`.cell` bloğu): `.grid{gap:1.1rem}`
+  (eski `gap:1px;background:var(--line)` kaldırıldı), `.cell` 18px radius + glass + `::before` hover
+  glow + `::after` grain (SVG data-URI). Grain `img-src 'self' data:` ile CSP uyumlu.
+  `.cell.hi` amber kenar/glow. `.cell .n` pill etiket. `.cell .btn{margin-top:auto}` → alta hizalı.
+- **`.cell` `::before/::after` z-index:-1 + `isolation:isolate`** kullan (içeriği örtmez, kart
+  içinde kalır). `overflow:hidden` + radius grain/glow'u kırpar.
+- **vortex.js GERÇEK BUG (düzeltildi):** `let mx,my,mS,mTarget` içinde `mS` sayısal yumuşatma değeri;
+  pointermove handler zamanlayıcıyı `mS._t = setTimeout(...)` diye yazıyordu. ES modülü strict →
+  `Cannot create property '_t' on number` fırlatıyor, fare-decay timer hiç kurulmuyordu. Ayrı `mTimer`
+  değişkeni ekle. Modül strict-mode'da sayı üzerine prop yazımı sessiz değil, fırlatır.
+- **Tarayıcı önbelleği testi yanıltır:** `curl` yeni CSS gösterirken Playwright eski `site.css`'i
+  diskten okur → computed style eski kalır. Çözüm: `Network.clearBrowserCache` (CDP) VEYA
+  `?v=<ts>` + `page.context().newCDPSession`. Doğrulamadan önce daima cache temizle.
