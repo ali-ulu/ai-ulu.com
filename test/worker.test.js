@@ -7,8 +7,11 @@ import worker from "../src/worker.js";
 function makeDb() {
   const leads = [];
   const rates = new Map();
-  return {
+  const deleted = { leads: 0, rates: 0 };
+  const db = {
     leads,
+    rates,
+    deleted,
     prepare(sql) {
       const stmt = {
         _args: [],
@@ -17,6 +20,18 @@ function makeDb() {
           if (sql.includes("INSERT INTO leads")) {
             const [id, name, reach, project_type, msg, ip, user_agent, page, created_at] = this._args;
             leads.push({ id, name, reach, project_type, msg, ip, user_agent, page, created_at });
+          }
+          if (sql.includes("DELETE FROM leads")) {
+            const [cutoff] = this._args;
+            for (let i = leads.length - 1; i >= 0; i--) {
+              if (leads[i].created_at < cutoff) { leads.splice(i, 1); deleted.leads++; }
+            }
+          }
+          if (sql.includes("DELETE FROM rate_limits")) {
+            const [cutoff] = this._args;
+            for (const [ip, row] of rates) {
+              if (row.window_started_at < cutoff) { rates.delete(ip); deleted.rates++; }
+            }
           }
           return { success: true };
         },
@@ -38,7 +53,12 @@ function makeDb() {
       };
       return stmt;
     },
+    async batch(statements) {
+      for (const s of statements) await s.run();
+      return [];
+    },
   };
+  return db;
 }
 
 function makeEnv() {
@@ -122,4 +142,73 @@ test("sanitizes control characters in message", async () => {
   const env = makeEnv();
   await worker.fetch(post({ name: "Ali", reach: "a@b.com", msg: "hello\u0000world" }), env);
   assert.ok(!env.DB.leads[0].msg.includes("\u0000"));
+});
+
+test("null JSON body returns 400, not 500", async () => {
+  const env = makeEnv();
+  const res = await worker.fetch(post(null), env);
+  assert.equal(res.status, 400);
+});
+
+test("array JSON body returns 400", async () => {
+  const env = makeEnv();
+  const res = await worker.fetch(post([1, 2, 3]), env);
+  assert.equal(res.status, 400);
+});
+
+test("cross-origin request is rejected", async () => {
+  const env = makeEnv();
+  const res = await worker.fetch(post({ name: "Ali", reach: "a@b.com" }, { origin: "https://evil.example" }), env);
+  assert.equal(res.status, 403);
+  assert.equal(env.DB.leads.length, 0);
+});
+
+test("same-origin request is accepted", async () => {
+  const env = makeEnv();
+  const res = await worker.fetch(post({ name: "Ali", reach: "a@b.com" }, { origin: "https://ai-ulu.com" }), env);
+  assert.equal(res.status, 200);
+});
+
+test("non-JSON content type is rejected with 415", async () => {
+  const env = makeEnv();
+  const req = new Request("https://ai-ulu.com/api/lead", {
+    method: "POST",
+    headers: { "content-type": "text/plain", "cf-connecting-ip": "1.2.3.4" },
+    body: JSON.stringify({ name: "Ali", reach: "a@b.com" }),
+  });
+  const res = await worker.fetch(req, env);
+  assert.equal(res.status, 415);
+});
+
+test("oversized body is rejected with 413", async () => {
+  const env = makeEnv();
+  const res = await worker.fetch(post({ name: "Ali", reach: "a@b.com", msg: "A".repeat(20_000) }), env);
+  assert.equal(res.status, 413);
+  assert.equal(env.DB.leads.length, 0);
+});
+
+test("CRLF in name cannot inject email headers", async () => {
+  const env = makeEnv();
+  await worker.fetch(post({ name: "A".repeat(130) + "\r\nBcc: victim@evil.com", reach: "a@b.com" }), env);
+  const stored = env.DB.leads[0].name;
+  assert.ok(!/[\r\n]/.test(stored), "stored name must not contain CR or LF");
+  const subject = env.EMAIL.sent[0].subject;
+  assert.ok(!/[\r\n]/.test(subject), "email subject must not contain CR or LF");
+});
+
+test("rate limit fails closed when the database is unavailable", async () => {
+  const env = makeEnv();
+  env.DB.prepare = () => { throw new Error("d1 down"); };
+  const res = await worker.fetch(post({ name: "Ali", reach: "a@b.com" }), env);
+  assert.equal(res.status, 503);
+});
+
+test("scheduled cleanup deletes leads and rate rows past retention", async () => {
+  const env = makeEnv();
+  const old = new Date(Date.now() - 400 * 24 * 60 * 60 * 1000).toISOString();
+  env.DB.leads.push({ id: "old", name: "x", reach: "a@b.com", project_type: "unsure", msg: "", ip: "1.1.1.1", user_agent: "", page: "", created_at: old });
+  env.DB.rates.set("9.9.9.9", { ip: "9.9.9.9", window_started_at: Date.now() - 60 * 60 * 1000, submissions: 3, updated_at: 0 });
+  await worker.scheduled({}, env);
+  assert.equal(env.DB.leads.length, 0);
+  assert.equal(env.DB.rates.size, 0);
 });
