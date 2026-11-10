@@ -10,4 +10,7 @@ export const site = {
   phone: "+905079581642",
   phoneDisplay: "+90 507 958 16 42",
   whatsapp: "https://wa.me/905079581642",
+  // Bump when the site content changes; feeds dateModified in JSON-LD, the
+  // og:updated_time meta tag and sitemap lastmod.
+  updated: "2026-11-10",
 };

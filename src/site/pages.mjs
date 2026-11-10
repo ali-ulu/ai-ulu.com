@@ -16,6 +16,23 @@ function organizationLd() {
     areaServed: "TR",
     knowsLanguage: ["tr"],
     serviceType: "Web sitesi tasarımı ve geliştirme",
+    dateModified: site.updated,
+  };
+}
+
+// Per-page freshness signals so crawlers and AI assistants can see when the
+// page last changed.
+function webPageLd(path, { title, description }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: title ? `${title} · ${site.name}` : site.title,
+    description,
+    url: `${site.url}${path}`,
+    inLanguage: site.lang,
+    isPartOf: { "@type": "WebSite", name: site.name, url: site.url },
+    datePublished: site.updated,
+    dateModified: site.updated,
   };
 }
 
@@ -69,5 +86,6 @@ export const pages = [
 ];
 
 export function renderPage(p) {
-  return page({ ...p, body: p.body() });
+  const jsonLd = [webPageLd(p.path, p), ...(p.jsonLd || [])];
+  return page({ ...p, jsonLd, body: p.body() });
 }
