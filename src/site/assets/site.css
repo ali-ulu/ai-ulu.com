@@ -33,12 +33,20 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 #pre .pct{font:500 .7rem/1 var(--mono);color:var(--dim);letter-spacing:.2em}
 @keyframes pre-out{to{opacity:0;visibility:hidden}}
 
-.site-header{position:fixed;inset:0 0 auto;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:calc(1rem + env(safe-area-inset-top,0px)) var(--pad) 1.6rem;background:linear-gradient(var(--ink) 35%,rgba(8,9,11,0))}
-.logo{font:400 1.6rem/1 var(--serif);text-decoration:none}
-.site-header nav{display:flex;gap:2rem;font-size:.85rem;color:var(--dim)}
-.site-header nav a{text-decoration:none;transition:color .2s}
-.site-header nav a:hover{color:var(--bone)}
-.site-header .btn{padding:.7rem 1.1rem}
+/* Liquid Glass navbar: a floating pill with backdrop blur and layered
+   highlights. Falls back to a solid pill where backdrop-filter is unsupported. */
+.site-header{position:fixed;inset:0 0 auto;z-index:20;padding:calc(.7rem + env(safe-area-inset-top,0px)) var(--pad)}
+.nav-glass{position:relative;display:flex;align-items:center;gap:1.2rem;width:100%;max-width:76rem;margin:0 auto;height:58px;padding:.35rem .4rem .35rem 1.15rem;border-radius:999px;background:rgba(20,22,27,.55);border:1px solid rgba(236,231,222,.14);box-shadow:0 10px 30px -10px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);transition:background .35s,box-shadow .35s}
+.nav-glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,0) 42%,rgba(255,255,255,.06))}
+.site-header.is-stuck .nav-glass{background:rgba(12,13,16,.78);box-shadow:0 16px 40px -12px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.1)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .nav-glass{background:rgba(12,13,16,.92)}
+}
+.logo{position:relative;z-index:1;font:400 1.35rem/1 var(--serif);text-decoration:none}
+.nav-glass nav{position:relative;z-index:1;display:flex;gap:1.8rem;margin-left:auto;font-size:.85rem;color:var(--dim)}
+.nav-glass nav a{text-decoration:none;transition:color .2s}
+.nav-glass nav a:hover{color:var(--bone)}
+.nav-cta{position:relative;z-index:1;padding:.7rem 1.1rem}
 
 /* home: scroll-scrubbed 3D film */
 #film{height:820vh;position:relative}
@@ -127,7 +135,11 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .site-footer a:hover{color:var(--bone)}
 
 @media (max-width:860px){
+  .site-header{padding:calc(.5rem + env(safe-area-inset-top,0px)) .7rem}
+  .nav-glass{gap:.6rem;padding:.3rem .35rem .3rem .9rem}
   .site-header nav a:not(.keep){display:none}
+  .nav-glass nav{gap:0;margin-left:auto}
+  .nav-cta{padding:.6rem .85rem}
   .g4,.g3,.contact-grid{grid-template-columns:1fr}
   .ch,.ch.right{left:var(--pad);right:var(--pad);text-align:left;bottom:2.2rem}
   .ch.right p{margin-left:0}

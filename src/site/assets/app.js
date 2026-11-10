@@ -1,3 +1,12 @@
+// Liquid Glass navbar: thicken the pill once the page is scrolled.
+(function () {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+  const onScroll = () => header.classList.toggle("is-stuck", window.scrollY > 24);
+  onScroll();
+  addEventListener("scroll", onScroll, { passive: true });
+})();
+
 // Progressive enhancement: the form works without JS only as a normal POST
 // fallback; here we submit via fetch for an inline status message.
 (function () {

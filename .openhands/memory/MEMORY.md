@@ -1038,3 +1038,37 @@ commit'te `expectedHeadOid` OLMAMALI (yoksa "Expected value to not be null" ters
   gerçek deploy ve `wrangler tail` ile cron doğrulaması.
 - **MEMORY.md paylaşımlı/karışık:** bu dosyada huqan'a ait notlar var (ai-ulu reposunda). Ekleme yaparken
   silme; yalnız append et.
+
+## SEO: tazelik sinyalleri + iç linkler (PR #7, 2026-11-10)
+
+- **Site build zinciri:** `src/site/config.mjs` (`site`) → `src/site/pages.mjs` (`pages[]`,
+  `renderPage`, `webPageLd`, `organizationLd`, `faqLd`) → `src/site/components/{layout,home}.mjs`
+  → `scripts/build.mjs` (dist/ + `sitemap.xml` + `llms.txt`). Sayfa `jsonLd` alanı varsa
+  `renderPage` başına `WebPage` düğümü ekler.
+- **Tazelik sinyalleri tek kaynaktan:** `site.updated` (ISO) → JSON-LD `dateModified`/
+  `datePublished`, `og:updated_time`, sitemap `<lastmod>`. İçerik güncellemesi = tek satır.
+- **file_editor Türkçe metinde eşleşmez:** `str_replace` Türkçe karakterli (ç,ş,ğ,ü,ö,ı) satırlarda
+  "did not appear verbatim" verir; `python3` + `io.open(encoding="utf-8")` + `str.replace` kullan.
+- **git push takılması:** `credential.helper` boşken push username sorup asılır. Çözüm: doğrudan
+  token URL'i ile push → `git push "https://x-access-token:${GITHUB_TOKEN}@github.com/OWNER/REPO.git"
+  branch:branch`. `git config credential.helper '!gh auth git-credential'` bu ortamda işe yaramadı.
+  Takılan süreci `ps aux | grep "git push"` + `kill <pid>` ile temizle.
+
+## robots.txt + IndexNow + Liquid Glass navbar (2026-11-10)
+
+- **Google sitemap ping emekli** (2025 sonu): `google.com/ping?sitemap=` ve `bing.com/ping?sitemap=`
+  kaldırıldı. Otomatik bildirim = **IndexNow** (`api.indexnow.org/indexnow`, POST JSON
+  `{host,key,keyLocation,urlList}`; 200/202 başarı). Google için tek yol GSC'ye sitemap gönderme.
+- **IndexNow key dosyası zorunlu:** `/<key>.txt` içeriği = key (32 hex). Key `src/site/config.mjs`'te;
+  build hem `/<key>.txt` yazar hem de ping script'i `keyLocation`'ı ona işaret eder.
+- **Yeni dist-dosyası doğrulaması testleri:** CI'da `npm test`'ten ÖNCE `npm run build` çalışmalı
+  (test'ler `dist/` okuyor). build-and-test sırası: build → test → check.
+- **robots.txt üreteci ayrı modül** (`src/site/robots.mjs`) → build'den bağımsız test edilebilir.
+- **Playwright MCP chrome'u `/opt/google/chrome`'da arar:** `npx -y playwright install chrome` ile
+  kurulur (chromium yeterli değil). Ekran görüntüsü yalnız `/workspace/project` altına yazılabilir;
+  `.playwright-mcp/` klasörünü iş sonunda sil (git'e girmesin).
+- **Glass navbar deseni (framer.com/m/Liquid-Glass-Navbar-6gh01a referans):** `.nav-glass` pill
+  (h=58, radius=999px, `backdrop-filter:blur(18px) saturate(180%)`, `::before` 135deg beyaz
+  highlight gradyanı, inset+outer box-shadow). `@supports not (backdrop-filter…)` → opak fallback.
+  `app.js` scroll ile `.site-header.is-stuck` ekler (koyulaştırır). CSP `'self'` olduğu için
+  Framer bileşeni gömülemez; **kendi CSS'imizle yeniden üretildi**.

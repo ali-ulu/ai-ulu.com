@@ -33,13 +33,15 @@ ${ld}`;
 function header() {
   const links = nav
     .map((n) => `<a href="${n.href}"${n.keep ? ' class="keep"' : ""}>${escapeHtml(n.label)}</a>`)
-    .join("\n    ");
+    .join("\n      ");
   return `<header class="site-header">
-  <a class="logo" href="/" aria-label="${site.name} ana sayfa">${site.name}</a>
-  <nav aria-label="Ana menü">
-    ${links}
-  </nav>
-  <a class="btn" href="${site.whatsapp}" rel="noopener">WhatsApp</a>
+  <div class="nav-glass">
+    <a class="logo" href="/" aria-label="${site.name} ana sayfa">${site.name}</a>
+    <nav aria-label="Ana menü">
+      ${links}
+    </nav>
+    <a class="btn nav-cta" href="${site.whatsapp}" rel="noopener">WhatsApp</a>
+  </div>
 </header>`;
 }
 
