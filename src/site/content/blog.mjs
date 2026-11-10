@@ -9,7 +9,7 @@ export const posts = [
     slug: "yapay-zeka-ile-web-sitesi-yapmak",
     title: "Yapay zekâ ile web sitesi yapmak: ne zaman yeter, ne zaman yetmez?",
     description: "ChatGPT, Gemini ya da hazır bir araçla ücretsiz site kurmak mümkün. Peki hangi iş için yeter, hangi iş için size müşteri kaybettirir? Tarafsız bir karşılaştırma.",
-    targetQuery: "yapay zeka ile web sitesi yapmak, chatgpt ile web sitesi yapmak, web sitesi yapan yapay zeka",
+    targetQuery: "yapay zeka ile web sitesi yapılır mı, chatgpt ile web sitesi yapmak, yapay zeka web sitesi oluşturucu",
     published: DATE,
     updated: DATE,
     body: [
@@ -48,7 +48,7 @@ export const posts = [
     slug: "web-sitesi-fiyatini-ne-belirler",
     title: "Web sitesi fiyatını ne belirler? Teklif almadan önce sormanız gereken 7 soru",
     description: "Aynı site için neden biri 10 bin, diğeri 100 bin lira diyor? Fiyatı belirleyen 7 kalem ve teklifleri karşılaştırmanın doğru yolu.",
-    targetQuery: "web sitesi fiyatları, web sitesi yaptırmak kaç para",
+    targetQuery: "web sitesi fiyatları 2026, web sitesi yaptırmak ne kadar, web sitesi kurma maliyeti",
     published: DATE,
     updated: DATE,
     body: [
@@ -77,7 +77,7 @@ export const posts = [
     slug: "instagram-varken-web-sitesi-gerekli-mi",
     title: "Instagram'ım var, web sitesine gerçekten ihtiyacım var mı?",
     description: "Instagram hesabı işinizi görüyorsa siteye gerek yok mu? Hangi işletme için yeterli, hangisi için müşteri kaybı — dürüst bir karşılaştırma.",
-    targetQuery: "instagram mı web sitesi mi, işletme için web sitesi şart mı",
+    targetQuery: "instagram mı web sitesi mi",
     published: DATE,
     updated: DATE,
     body: [
@@ -103,7 +103,7 @@ export const posts = [
     slug: "yapay-zeka-aramalarinda-gorunmek",
     title: "İşletmeniz ChatGPT'de çıkıyor mu? Yapay zekâ aramalarında görünmek için 6 adım",
     description: "Müşterileriniz artık ChatGPT ve Gemini'ye de soruyor. Sitenizin yapay zekâ yanıtlarında yer alabilmesi için yapılması gereken 6 teknik adım.",
-    targetQuery: "chatgpt'de çıkmak, yapay zeka seo, llms.txt nedir",
+    targetQuery: "web sitesi google'da nasıl üst sıralara çıkar, yapay zeka aramalarında görünmek, llms.txt nedir",
     published: DATE,
     updated: DATE,
     body: [
@@ -131,7 +131,7 @@ export const posts = [
     slug: "web-sitem-var-musteri-gelmiyor",
     title: "Siteniz var ama kimse aramıyor: 5 yaygın neden",
     description: "Siteye ziyaretçi geliyor ama telefon çalmıyor mu? Ziyaretçiyi müşteriye çevirmeyen sitelerde en sık görülen 5 hata ve düzeltmeleri.",
-    targetQuery: "web sitem var müşteri gelmiyor, web sitesi dönüşüm",
+    targetQuery: "web sitesi neden müşteri getirmiyor",
     published: DATE,
     updated: DATE,
     body: [
@@ -157,7 +157,7 @@ export const posts = [
     slug: "web-sitesi-sozlesmesinde-olmasi-gerekenler",
     title: "Web sitesi yaptırırken sözleşmede olması gereken 6 madde",
     description: "Alan adı kimin adına? Kodlar sizin mi? Site yaptırırken sonradan başınızı ağrıtmaması için yazılı olması gereken 6 madde.",
-    targetQuery: "web sitesi sözleşmesi, web sitesi yaptırırken dikkat edilmesi gerekenler",
+    targetQuery: "web tasarım sözleşmesinde nelere dikkat edilmeli",
     published: DATE,
     updated: DATE,
     body: [

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { faq } from "../src/site/content/site-content.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFile(join(root, rel), "utf8");
@@ -17,8 +18,8 @@ test("the FAQ is a card-index drawer, not a plain list", async () => {
   assert.match(html, /class="fq-key"/, "the ask key is present");
   // every question is a card, and the cards share one `name` so only one opens.
   const cards = html.match(/<details class="fq-card" name="faq-drawer"/g) || [];
-  assert.equal(cards.length, 6, "one card per question");
-  assert.equal((html.match(/<summary class="fq-edge"/g) || []).length, 6);
+  assert.equal(cards.length, faq.items.length, "one card per question");
+  assert.equal((html.match(/<summary class="fq-edge"/g) || []).length, faq.items.length);
 });
 
 test("the first card opens by default and carries its tab, index and mark", async () => {
