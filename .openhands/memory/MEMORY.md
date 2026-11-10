@@ -1085,3 +1085,24 @@ commit'te `expectedHeadOid` OLMAMALI (yoksa "Expected value to not be null" ters
   yarıda deploy kesilmez. Regresyon testi: `test/ci-workflow.test.js`.
 - Not: bu repo'da PR'lar `ali-ulu` tarafından merge ediliyor; branch'i merge sonrası **main'e
   rebase** etmek gerekebilir (çakışma: `src/site/config.mjs` gibi config dosyaları).
+
+## Vortex arka plan (PR #10, 2026-11-10)
+
+- **Referans efekt çözümleme yöntemi:** Framer/WebGL siteleri JS-render olduğu için HTML'de shader yok.
+  Playwright'ta `addInitScript` ile `WebGLRenderingContext.prototype.shaderSource`'u hook'la
+  (`page.addInitScript` → `page.goto` → `page.evaluate(() => window.__shaders)`) → tüm vertex/fragment
+  kaynakları çıkar. Ekran görüntüsü + `readPixels` swapchain sonrası çoğu zaman 0 döner; kullanma.
+- **Efekt özeti (vortexfield.framer.website):** tek WebGL canvas, `POINTS` ile bükülmüş tüp.
+  `radiusAt(t)` waist profili (top/waist/bottom, `uWp`), `a=phase+uTwist*t*π+…`, `y2/z2` sabit
+  döndürme (CT=0.961055,ST=0.276356), `k=1100/(1100+z2)*zoom` perspektif, `depth=clamp(.5-z2/(2·uDepthR))`.
+  3 katman: dust (akış), comet (baş + ~36 nokta kuyruk, `fract(phase+flow)`), fare itmesi (`uMouseS`).
+- **Kendi implementasyonumuz:** `src/site/assets/vortex.js` — three.js YOK, bağımlılıksız, ~9KB.
+  `#vortex` z-index:0, `#gl` z-index:1, `.ch` z-index:3 → ön yüz hiç değişmedi. `blendFunc(SRC_ALPHA,ONE)`
+  additive; `alpha:true, premultipliedAlpha:false`. `ALIASED_POINT_SIZE_RANGE` ile gl_PointSize clamp
+  (SwiftShader 1023'e izin verir, gerçek GPU'da daha düşük olabilir).
+- **Headless FPS anlamsız:** SwiftShader yazılım render → ~3-5 fps. Göreli ölçüm yap (vortex'i kaldır,
+  fark) — burada ~%20; asıl yük mevcut three.js katmanında.
+- **Önizleme:** `npx wrangler dev --port 12000 --ip 0.0.0.0` + public URL
+  `https://work-1-<host>.prod-runtime.all-hands.dev/`. İş bitince dev sunucuyu PID ile öldür.
+- **`gh` CLI token'ı düşebilir** (Bad credentials): `curl -H "Authorization: Bearer $GITHUB_TOKEN"
+  https://api.github.com/...` ile REST'e geç. push için remote URL'e token göm.

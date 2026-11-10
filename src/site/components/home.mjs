@@ -13,7 +13,6 @@ export const preloader = `<div id="pre" role="status" aria-live="polite" aria-la
 // data-a / data-b: scroll progress (0–1) where each chapter fades in and out (read by ora.js).
 const film = `<div id="film">
   <div class="stage">
-    <canvas id="vortex" aria-hidden="true"></canvas>
     <canvas id="gl" aria-hidden="true"></canvas>
 
     <div class="ch" id="c0" data-a="0" data-b=".085">
