@@ -22,3 +22,9 @@ test("deploy job runs only from main, never on pull requests", async () => {
   const yml = await read(".github/workflows/deploy.yml");
   assert.match(yml, /if:\s*github\.ref == 'refs\/heads\/main' && github\.event_name != 'pull_request'/);
 });
+
+test("the worker claims the custom domain and its www alias", async () => {
+  const cfg = await read("wrangler.jsonc");
+  assert.match(cfg, /"pattern":\s*"ai-ulu\.com",\s*"custom_domain":\s*true/, "apex route present");
+  assert.match(cfg, /"pattern":\s*"www\.ai-ulu\.com",\s*"custom_domain":\s*true/, "www route present");
+});
