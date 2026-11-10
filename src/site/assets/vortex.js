@@ -234,14 +234,14 @@ void main(){
   resize();
 
   // Pointer repulsion, eased in and out.
-  let mx = 0, my = 0, mS = 0, mTarget = 0;
+  let mx = 0, my = 0, mS = 0, mTarget = 0, mTimer = 0;
   addEventListener("pointermove", (e) => {
     const rect = canvas.getBoundingClientRect();
     mx = e.clientX - rect.left;
     my = e.clientY - rect.top;
     mTarget = 1;
-    clearTimeout(mS._t);
-    mS._t = setTimeout(() => { mTarget = 0; }, 1600);
+    clearTimeout(mTimer);
+    mTimer = setTimeout(() => { mTarget = 0; }, 1600);
   }, { passive: true });
 
   const bind = (buf, prog, name, size) => {
