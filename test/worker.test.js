@@ -18,8 +18,8 @@ function makeDb() {
         bind(...args) { this._args = args; return this; },
         async run() {
           if (sql.includes("INSERT INTO leads")) {
-            const [id, name, reach, project_type, msg, ip, user_agent, page, created_at] = this._args;
-            leads.push({ id, name, reach, project_type, msg, ip, user_agent, page, created_at });
+            const [id, name, reach, project_type, budget, msg, utm_source, utm_campaign, ip, user_agent, page, created_at] = this._args;
+            leads.push({ id, name, reach, project_type, budget, msg, utm_source, utm_campaign, ip, user_agent, page, created_at });
           }
           if (sql.includes("DELETE FROM leads")) {
             const [cutoff] = this._args;
@@ -61,7 +61,7 @@ function makeDb() {
   return db;
 }
 
-function makeEnv() {
+function makeEnv(extra = {}) {
   return {
     DB: makeDb(),
     EMAIL: { sent: [], async send(m) { this.sent.push(m); return { ok: true }; } },
@@ -69,6 +69,7 @@ function makeEnv() {
     FROM_EMAIL: "noreply@ai-ulu.com",
     RATE_LIMIT_WINDOW_MINUTES: "15",
     RATE_LIMIT_MAX_SUBMISSIONS: "5",
+    ...extra,
   };
 }
 
@@ -211,4 +212,74 @@ test("scheduled cleanup deletes leads and rate rows past retention", async () =>
   await worker.scheduled({}, env);
   assert.equal(env.DB.leads.length, 0);
   assert.equal(env.DB.rates.size, 0);
+});
+
+test("stores budget and campaign attribution when the form sends them", async () => {
+  const env = makeEnv();
+  const res = await worker.fetch(
+    post({ name: "Ayşe Yılmaz", reach: "ayse@example.com", type: "both", budget: "25-50", msg: "Klinik", utm_source: "instagram", utm_campaign: "kasim" }),
+    env
+  );
+  assert.equal(res.status, 200);
+  const lead = env.DB.leads[0];
+  assert.equal(lead.budget, "25-50");
+  assert.equal(lead.utm_source, "instagram");
+  assert.equal(lead.utm_campaign, "kasim");
+  assert.match(env.EMAIL.sent[0].text, /Bütçe: 25-50/);
+  assert.match(env.EMAIL.sent[0].text, /Kaynak: instagram \/ kasim/);
+});
+
+test("budget and attribution default to empty strings when absent", async () => {
+  const env = makeEnv();
+  await worker.fetch(post({ name: "Ali", reach: "a@b.com" }), env);
+  assert.equal(env.DB.leads[0].budget, "");
+  assert.equal(env.DB.leads[0].utm_source, "");
+  assert.equal(env.DB.leads[0].utm_campaign, "");
+});
+
+test("telegram is notified when the secrets are configured", async () => {
+  const calls = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init) => {
+    calls.push({ url, body: JSON.parse(init.body) });
+    return { ok: true };
+  };
+  try {
+    const env = makeEnv({ TELEGRAM_BOT_TOKEN: "bot-token", TELEGRAM_CHAT_ID: "42" });
+    const res = await worker.fetch(post({ name: "Ayşe", reach: "ayse@example.com", budget: "100+" }), env);
+    assert.equal(res.status, 200);
+    assert.equal(calls.length, 1);
+    assert.match(calls[0].url, /api\.telegram\.org\/botbot-token\/sendMessage/);
+    assert.equal(calls[0].body.chat_id, "42");
+    assert.match(calls[0].body.text, /Bütçe: 100\+/);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test("telegram is skipped when the secrets are missing", async () => {
+  const calls = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (...args) => { calls.push(args); return { ok: true }; };
+  try {
+    const env = makeEnv();
+    const res = await worker.fetch(post({ name: "Ali", reach: "a@b.com" }), env);
+    assert.equal(res.status, 200);
+    assert.equal(calls.length, 0);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test("a telegram failure never fails the request", async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error("network down"); };
+  try {
+    const env = makeEnv({ TELEGRAM_BOT_TOKEN: "bot-token", TELEGRAM_CHAT_ID: "42" });
+    const res = await worker.fetch(post({ name: "Ali", reach: "a@b.com" }), env);
+    assert.equal(res.status, 200);
+    assert.equal((await res.json()).ok, true);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
 });

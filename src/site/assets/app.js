@@ -46,6 +46,13 @@
     refreshSign();
   }
 
+  // Campaign attribution: carry utm_source/utm_campaign from the landing URL into
+  // the hidden fields, so the worker can record where the lead came from.
+  for (const key of ["utm_source", "utm_campaign"]) {
+    const field = form.elements[key];
+    if (field) field.value = new URLSearchParams(location.search).get(key) || "";
+  }
+
   function setStatus(state, message) {
     status.dataset.state = state;
     status.textContent = message;

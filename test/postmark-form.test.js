@@ -73,3 +73,46 @@ test("the postcard is one stylesheet, loaded only on the home page", async () =>
   assert.match(css, /@container pm \(max-width: 780px\)/, "it recomposes by container width");
   assert.match(css, /prefers-reduced-motion: reduce/, "it respects reduced motion");
 });
+
+test("the form asks for a budget range and carries campaign attribution", async () => {
+  const html = await read("dist/index.html");
+  assert.match(html, /<select id="budget" name="budget">/, "budget is a range select");
+  assert.match(html, /<label class="visually-hidden" for="budget">/, "budget has a label");
+  assert.match(html, /name="utm_source"/, "utm_source rides along");
+  assert.match(html, /name="utm_campaign"/, "utm_campaign rides along");
+  assert.doesNotMatch(html, /name="utm_source"[^>]*required/, "attribution is never required");
+  const js = await read("src/site/assets/app.js");
+  assert.match(js, /new URLSearchParams\(location\.search\)\.get\(key\)/, "the hidden fields fill from the URL");
+});
+
+test("every WhatsApp link opens with a prefilled message", async () => {
+  const html = await read("dist/index.html");
+  const links = html.match(/href="https:\/\/wa\.me\/[^"]+"/g) || [];
+  assert.ok(links.length >= 2, "the site has WhatsApp links");
+  for (const link of links) {
+    assert.match(link, /\?text=/, `link carries a message: ${link}`);
+  }
+  const config = await read("src/site/config.mjs");
+  assert.match(config, /export function waLink\(text\)/, "one helper builds them");
+  assert.match(config, /encodeURIComponent\(text\)/, "the message is encoded");
+});
+
+test("the gallery hands the chosen style to WhatsApp", async () => {
+  const app = await read("apps/sablonlar/src/App.tsx");
+  assert.match(app, /const waLink = \(text: string\)/, "the gallery builds its own link");
+  assert.match(app, /openItem \? `\$\{openItem\.title\} tarzında bir site istiyorum\.`/, "the message names the style");
+  assert.doesNotMatch(app, /href="https:\/\/wa\.me\/905079581642"/, "the number is no longer hard-coded in the markup");
+});
+
+test("local SEO signals are emitted only when configured", async () => {
+  const html = await read("dist/index.html");
+  const ld = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
+  const org = Array.isArray(ld) ? ld.find((o) => o["@type"] === "ProfessionalService") : ld;
+  assert.equal(org.address, undefined, "no placeholder address ships");
+  assert.equal(org.priceRange, undefined, "no placeholder price ships");
+  assert.equal(org.sameAs, undefined, "no placeholder profile links ship");
+  assert.equal(org.areaServed, "TR", "the existing signal is untouched");
+  const pages = await read("src/site/pages.mjs");
+  assert.match(pages, /\.\.\.\(hasAddress \?/, "address is emitted when set");
+  assert.match(pages, /\.\.\.\(site\.priceRange \?/, "priceRange is emitted when set");
+});

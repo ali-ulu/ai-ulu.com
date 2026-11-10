@@ -4,6 +4,8 @@ import { site } from "./config.mjs";
 import { faq } from "./content/site-content.mjs";
 
 function organizationLd() {
+  const { streetAddress, addressLocality, postalCode, addressCountry } = site.address;
+  const hasAddress = Boolean(streetAddress || addressLocality || postalCode);
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
@@ -16,6 +18,11 @@ function organizationLd() {
     areaServed: "TR",
     knowsLanguage: ["tr"],
     serviceType: "Web sitesi tasarımı ve geliştirme",
+    // Only emitted when the config actually carries the value, so no placeholder
+    // address or price ever ships.
+    ...(hasAddress ? { address: { "@type": "PostalAddress", streetAddress, addressLocality, postalCode, addressCountry } } : {}),
+    ...(site.priceRange ? { priceRange: site.priceRange } : {}),
+    ...(site.sameAs.length ? { sameAs: site.sameAs } : {}),
     dateModified: site.updated,
   };
 }

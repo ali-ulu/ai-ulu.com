@@ -51,6 +51,17 @@ export const projectTypes = [
   { value: "unsure", label: "Emin değilim", glyph: "◌" },
 ];
 
+// The form asks for a range, never an exact number: business owners answer
+// ranges more readily, and it lets us route the lead. Edit the brackets to
+// match real pricing before this goes live.
+export const budgets = [
+  { value: "", label: "Belirtmek istemiyorum" },
+  { value: "0-25", label: "25.000 ₺ altı" },
+  { value: "25-50", label: "25.000 – 50.000 ₺" },
+  { value: "50-100", label: "50.000 – 100.000 ₺" },
+  { value: "100+", label: "100.000 ₺ üzeri" },
+];
+
 export const footerLinks = [
   { href: "/sablonlar/", label: "Örnek tasarımlar" },
   { href: "/#iletisim", label: "İletişim" },

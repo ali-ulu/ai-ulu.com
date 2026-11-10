@@ -10,6 +10,12 @@ export const site = {
   phone: "+905079581642",
   phoneDisplay: "+90 507 958 16 42",
   whatsapp: "https://wa.me/905079581642",
+  // Local SEO signals. Left empty on purpose: fill them and they appear in the
+  // ProfessionalService JSON-LD (see pages.mjs). Empty values are omitted, so no
+  // placeholder data ever goes live.
+  address: { streetAddress: "", addressLocality: "", postalCode: "", addressCountry: "TR" },
+  priceRange: "", // e.g. "₺₺" or "25.000 ₺'den başlar"
+  sameAs: [], // Google Business Profile, Instagram, LinkedIn
   // Bump when the site content changes; feeds dateModified in JSON-LD, the
   // og:updated_time meta tag and sitemap lastmod.
   updated: "2026-11-10",
@@ -17,3 +23,9 @@ export const site = {
   // submissions. Rotate by replacing this value.
   indexNowKey: "bec0a65e610429c17aa2c0cce8902c60",
 };
+
+// wa.me with a prefilled message. Every WhatsApp link on the site goes through
+// this, so the number and the opening line live in one place.
+export function waLink(text) {
+  return text ? `${site.whatsapp}?text=${encodeURIComponent(text)}` : site.whatsapp;
+}
