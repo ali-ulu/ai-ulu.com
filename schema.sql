@@ -38,3 +38,18 @@ CREATE TABLE IF NOT EXISTS rate_limits (
 
 CREATE INDEX IF NOT EXISTS idx_rate_limits_updated_at
   ON rate_limits(updated_at);
+
+-- Page views. No cookie and no identifier: a row is (day, path, referrer host,
+-- country). That is enough to answer "how many people come and where from"
+-- without tracking anyone across requests.
+CREATE TABLE IF NOT EXISTS hits (
+  day           TEXT NOT NULL,
+  path          TEXT NOT NULL,
+  referrer_host TEXT NOT NULL DEFAULT '',
+  country       TEXT NOT NULL DEFAULT '',
+  views         INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (day, path, referrer_host, country)
+);
+
+CREATE INDEX IF NOT EXISTS idx_hits_day
+  ON hits(day DESC);

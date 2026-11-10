@@ -134,6 +134,16 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .site-footer a{text-decoration:none}
 .site-footer a:hover{color:var(--bone)}
 
+/* Sticky call/WhatsApp bar. Below 860px the nav hides its links, so the two
+   actions a phone visitor wants most sit within thumb reach; the footer gains
+   the matching bottom padding below. */
+.callbar{display:none}
+.callbar-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.95rem 1rem;text-decoration:none;font-weight:600;font-size:.95rem;color:var(--ink)}
+.callbar-btn.tel{background:var(--bone)}
+.callbar-btn.wa{background:var(--amber)}
+.callbar-btn:active{opacity:.85}
+
+
 @media (max-width:860px){
   .site-header{padding:calc(.5rem + env(safe-area-inset-top,0px)) .7rem}
   .nav-glass{gap:.6rem;padding:.3rem .35rem .3rem .9rem}
@@ -145,5 +155,9 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
   .ch.right p{margin-left:0}
   .ch.right .cta{justify-content:flex-start}
   .prog,.tag{display:none}
+  .callbar{display:flex;gap:.6rem;position:fixed;left:.7rem;right:.7rem;bottom:calc(.7rem + env(safe-area-inset-bottom,0px));z-index:30}
+  .callbar-btn{border-radius:999px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+  .site-footer{padding-bottom:calc(5.4rem + env(safe-area-inset-bottom,0px))}
+
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation-duration:0s!important}}

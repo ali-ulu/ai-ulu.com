@@ -72,6 +72,10 @@ ${header()}
 <main id="main">
 ${body}
 </main>
+<div class="callbar" role="group" aria-label="Hızlı iletişim">
+<a class="callbar-btn tel" href="tel:${site.phone}">Ara</a>
+<a class="callbar-btn wa" href="${waLink("Merhaba, web sitem için yazıyorum.")}" rel="noopener">WhatsApp</a>
+</div>
 ${footer(footerNote)}
 <script src="/app.js" defer></script>
 <script type="module" src="/vortex.js"></script>

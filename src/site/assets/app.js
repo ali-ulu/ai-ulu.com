@@ -7,6 +7,20 @@
   addEventListener("scroll", onScroll, { passive: true });
 })();
 
+// Page-view beacon: one anonymous request per page, no cookie and no stored
+// identifier. The worker records day, path, referrer host and country.
+(function () {
+  try {
+    const body = JSON.stringify({ path: location.pathname });
+    const send = () =>
+      fetch("/api/hit", { method: "POST", headers: { "content-type": "application/json" }, body, keepalive: true }).catch(() => {});
+    if (document.readyState === "complete") send();
+    else addEventListener("load", send, { once: true });
+  } catch {
+    /* never let analytics break the page */
+  }
+})();
+
 // Progressive enhancement: the form works without JS only as a normal POST
 // fallback; here we submit via fetch for an inline status message, and the
 // postcard behaves like one — a counter, a live sign-off, a fly-away.

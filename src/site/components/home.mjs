@@ -22,7 +22,7 @@ const film = `<div id="film">
       <p>Harika tasarım, Google'da ve yapay zekâ aramalarında görünen, ziyaretçiyi müşteriye çeviren siteler kuruyoruz.</p>
       <div class="cta">
         ${wa}Ücretsiz görüşme <span aria-hidden="true">→</span></a>
-        <a class="btn ghost" href="#nasil">Nasıl kuruyoruz</a>
+        <a class="btn ghost" href="tel:${site.phone}">${site.phoneDisplay}</a>
       </div>
     </div>
 
