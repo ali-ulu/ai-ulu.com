@@ -116,7 +116,7 @@ export const pages = [
     jsonLd: [organizationLd(), faqLd()],
     before: preloader,
     scripts: ["/ora.js"],
-    styles: ["/faq-drawer.css", "/postmark-form.css"],
+    styles: ["/faq-drawer.css", "/postmark-form.css", "/blog.css"],
     footerNote: "Ekrandaki klinik sitesi örnek tasarımdır",
     body: homeBody,
   },

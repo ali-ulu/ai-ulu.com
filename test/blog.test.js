@@ -109,3 +109,13 @@ test("blog styles ship and the CSP stays self-only", async () => {
   const headers = await read("dist/_headers");
   assert.match(headers, /Content-Security-Policy: default-src 'self'/, "CSP unchanged");
 });
+
+// The teaser markup is on the home page but its stylesheet is per-page: without
+// the link, .bl-list falls back to display:block and the cards collide with the
+// "Tüm yazılar" button. Pin the link so the teaser cannot ship unstyled again.
+test("the home page loads blog.css for its teaser", async () => {
+  const home = await read("dist/index.html");
+  assert.match(home, /<link rel="stylesheet" href="\/blog\.css">/, "home links blog.css");
+  const blogIndex = await read("dist/blog/index.html");
+  assert.match(blogIndex, /<link rel="stylesheet" href="\/blog\.css">/, "blog index links blog.css");
+});
