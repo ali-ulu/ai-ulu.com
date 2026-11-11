@@ -85,5 +85,4 @@ export const footerLinks = [
 // belong here: a link to someone else's work under our name misleads visitors.
 export const socials = [
   { href: "https://www.linkedin.com/in/aliulu777/", label: "LinkedIn", icon: "linkedin" },
-  { href: "https://dribbble.com/shots/26952968-Letter-H-3D-Icon", label: "Dribbble", icon: "dribbble" },
 ];
