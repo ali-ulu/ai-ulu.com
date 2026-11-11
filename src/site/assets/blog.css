@@ -5,6 +5,7 @@
 .bl-head h1{font:400 clamp(2rem,4.6vw,3.4rem)/1.05 var(--serif);letter-spacing:-.01em;margin:1rem 0 1.2rem;text-wrap:balance;text-shadow:0 2px 30px rgba(6,7,9,.85)}
 .bl-head .lead{color:var(--soft);font-size:1.08rem;text-shadow:0 1px 18px rgba(6,7,9,.8)}
 .bl-meta{margin-top:1rem;font:500 .72rem/1 var(--mono);letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.bl-meta .bl-author{color:var(--soft)}
 
 /* index + teaser share one card list */
 .bl-list{list-style:none;margin:2.6rem 0 0;display:grid;gap:1rem}

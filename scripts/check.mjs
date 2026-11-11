@@ -2,23 +2,20 @@ import { access, readFile, readdir } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { site } from "../src/site/config.mjs";
+import { pages, notFoundPage } from "../src/site/pages.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
 
+// Pages come from the generator itself, so a new page is checked the moment it
+// is added instead of when someone remembers to update this list.
 const required = [
-  "index.html",
-  "gizlilik/index.html",
-  "calismalar/index.html",
+  ...pages.map((p) => p.file),
+  notFoundPage.file,
   "sablonlar/index.html",
-  "blog/index.html",
-  "blog/web-sitesi-fiyatini-ne-belirler/index.html",
-  "blog/instagram-varken-web-sitesi-gerekli-mi/index.html",
-  "blog/yapay-zeka-aramalarinda-gorunmek/index.html",
-  "blog/web-sitem-var-musteri-gelmiyor/index.html",
-  "blog/web-sitesi-sozlesmesinde-olmasi-gerekenler/index.html",
   "blog.css",
   "site.css",
+  "work.css",
   "vortex.js",
   "ora.js",
   "app.js",
@@ -27,6 +24,12 @@ const required = [
   "img/gulus.webp",
   "og.png",
   "favicon.svg",
+  "favicon.ico",
+  "apple-touch-icon.png",
+  "icon-192.png",
+  "icon-512.png",
+  "manifest.webmanifest",
+  "print.css",
   "robots.txt",
   "sitemap.xml",
   "llms.txt",
@@ -60,7 +63,7 @@ for await (const file of files(dist)) {
   const text = await readFile(file, "utf8");
   for (const match of text.match(external) ?? []) {
     if (allowedLink.test(match)) continue;
-    const isAsset = !/^href=/.test(match) || /\.(css|js|woff2?|png|jpe?g|webp|svg)["']/.test(match);
+    const isAsset = !match.startsWith("href=") || /\.(css|js|woff2?|png|jpe?g|webp|svg)["']/.test(match);
     if (isAsset) fail(`dış kaynak (CSP bunu engeller): ${match} → ${file.slice(dist.length + 1)}`);
   }
 }

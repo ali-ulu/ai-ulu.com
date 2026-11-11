@@ -2,34 +2,62 @@ import { site, waLink } from "../config.mjs";
 import { nav, footerLinks, socials } from "../content/site-content.mjs";
 import { escapeHtml } from "../lib/html.mjs";
 
-function head({ title, description, path, jsonLd, styles = [] }) {
+function head({ title, description, path, jsonLd, styles = [], noscript = "", canonical = true, noindex = false }) {
   const fullTitle = title ? `${title} · ${site.name}` : site.title;
   const url = `${site.url}${path}`;
   const ld = jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : "";
   const css = styles.map((href) => `<link rel="stylesheet" href="${href}">`).join("\n");
+  // The 404 has no canonical: it is served for many unknown URLs, so naming one
+  // would be a lie. Everything else points at its own absolute URL.
+  const canonicalTag = canonical ? `<link rel="canonical" href="${url}">\n` : "";
+  const robotsTag = noindex ? `<meta name="robots" content="noindex">\n` : "";
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${escapeHtml(fullTitle)}</title>
 <meta name="description" content="${escapeHtml(description)}">
-<link rel="canonical" href="${url}">
-<meta name="theme-color" content="#08090b">
+${canonicalTag}${robotsTag}<meta name="theme-color" content="#08090b">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${site.name}">
 <meta property="og:title" content="${escapeHtml(fullTitle)}">
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta property="og:url" content="${url}">
 <meta property="og:image" content="${site.url}/og.png">
+<meta property="og:image:alt" content="${escapeHtml(fullTitle)}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="tr_TR">
 <meta property="og:updated_time" content="${site.updated}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${escapeHtml(fullTitle)}">
+<meta name="twitter:description" content="${escapeHtml(description)}">
+<meta name="twitter:image" content="${site.url}/og.png">
+<meta name="twitter:image:alt" content="${escapeHtml(fullTitle)}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="preload" href="/fonts/bodoni-moda-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preload" href="/fonts/bodoni-moda-normal-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/print.css" media="print">
 ${css}
-${ld}`;
+${ld}${noscript}`;
+}
+
+// Visible breadcrumb trail. Google shows it in the result and the BreadcrumbList
+// JSON-LD (built in pages.mjs) mirrors the same order.
+function breadcrumbNav(crumbs) {
+  if (!crumbs?.length) return "";
+  const items = crumbs
+    .map((c, i) => {
+      const last = i === crumbs.length - 1;
+      const inner = last
+        ? `<span aria-current="page">${escapeHtml(c.label)}</span>`
+        : `<a href="${c.href}">${escapeHtml(c.label)}</a>`;
+      return `<li>${inner}</li>`;
+    })
+    .join("");
+  return `<nav class="crumbs" aria-label="Site yolu"><ol>${items}</ol></nav>`;
 }
 
 function header() {
@@ -67,12 +95,12 @@ function footer(note) {
 }
 
 // before: markup placed ahead of the header (the home preloader); scripts: extra module scripts.
-export function page({ title, description = site.description, path, body, jsonLd = null, before = "", scripts = [], styles = [], footerNote = "" }) {
+export function page({ title, description = site.description, path, body, jsonLd = null, before = "", scripts = [], styles = [], footerNote = "", crumbs = [], noscript = "", canonical = true, noindex = false }) {
   const extra = scripts.map((src) => `<script type="module" src="${src}"></script>`).join("\n");
   return `<!doctype html>
 <html lang="${site.lang}">
 <head>
-${head({ title, description, path, jsonLd, styles })}
+${head({ title, description, path, jsonLd, styles, noscript, canonical, noindex })}
 </head>
 <body>
 <a class="skip-link" href="#main">İçeriğe geç</a>
@@ -81,12 +109,13 @@ ${head({ title, description, path, jsonLd, styles })}
 ${before}
 ${header()}
 <main id="main">
+${breadcrumbNav(crumbs)}
 ${body}
 </main>
-<div class="callbar" role="group" aria-label="Hızlı iletişim">
+<nav class="callbar" aria-label="Hızlı iletişim">
 <a class="callbar-btn tel" href="tel:${site.phone}">Ara</a>
 <a class="callbar-btn wa" href="${waLink("Merhaba, web sitem için yazıyorum.")}" rel="noopener">WhatsApp</a>
-</div>
+</nav>
 ${footer(footerNote)}
 <script src="/app.js" defer></script>
 <script type="module" src="/vortex.js"></script>

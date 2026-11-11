@@ -4,6 +4,9 @@ dist/
 .dev.vars
 *.log
 .DS_Store
+playwright-report/
+test-results/
+.openhands/
 .env
 .env.*
 !.env.example

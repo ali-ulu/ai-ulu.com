@@ -301,13 +301,12 @@ void main(){
   const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
   io.observe(canvas);
 
-  let raf = 0;
   function loop(now) {
-    raf = requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
     if (document.hidden || !visible) return;
     frame(now);
   }
-  raf = requestAnimationFrame(loop);
+  requestAnimationFrame(loop);
 
   addEventListener("resize", resize, { passive: true });
 })();

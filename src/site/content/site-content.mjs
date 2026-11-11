@@ -80,6 +80,7 @@ export const footerLinks = [
   { href: "/blog/", label: "Blog" },
   { href: "/#iletisim", label: "İletişim" },
   { href: "/gizlilik/", label: "Gizlilik ve KVKK" },
+  { href: "/kullanim-sartlari/", label: "Kullanım şartları" },
 ];
 
 // Profile links shown as icons in the footer. Kept in one place so the footer
