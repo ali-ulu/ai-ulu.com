@@ -1,7 +1,6 @@
-// Blog posts. Text lives as blocks so the renderer owns the markup and can
-// escape every string (only **bold** and `code` are added back). No invented
-// statistics or prices: the claims match the site's own FAQ (2–4 weeks, code is
-// the client's, no ranking guarantee).
+// Blog posts. Text lives as blocks so the renderer owns the markup and escapes
+// prose. Inline formatting is limited to **bold** and `code`; source links are
+// rendered separately from HTTPS-only URLs. No invented statistics or prices.
 const DATE = "2026-11-11";
 
 export const posts = [
