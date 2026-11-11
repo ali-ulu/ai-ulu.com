@@ -34,6 +34,7 @@ const required = [
   "sitemap.xml",
   "llms.txt",
   "_headers",
+  "_redirects",
   `${site.indexNowKey}.txt`,
 ];
 

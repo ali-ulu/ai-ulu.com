@@ -50,6 +50,23 @@ async function build() {
   for (const rel of MINIFY_CSS) await minify(rel, "css");
   for (const rel of MINIFY_JS) await minify(rel, "js");
 
+  // Permanent redirects. There is no separate "about" page: the studio's story
+  // is the work it has shipped, so /hakkimizda/ (and its English spelling, which
+  // people guess) lands on Çalışmalar. Cloudflare's assets binding reads this.
+  await write(
+    "_redirects",
+    `# from                to            status
+/hakkimizda          /calismalar/  301
+/hakkimizda/         /calismalar/  301
+/about               /calismalar/  301
+/about/              /calismalar/  301
+/iletisim            /#iletisim    301
+/iletisim/           /#iletisim    301
+/contact             /#iletisim    301
+/contact/            /#iletisim    301
+`,
+  );
+
   await write("robots.txt", robotsTxt(site));
 
   // Web app manifest: installable shell and the icons browsers expect.

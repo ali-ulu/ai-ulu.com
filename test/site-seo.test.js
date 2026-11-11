@@ -22,3 +22,11 @@ test("home page has at least 3 contextual links in the body", () => {
   const internal = (body.match(/<a [^>]*href="(\/[^"]*|#[\w-]+)"/g) || []).length;
   assert.ok(internal >= 3, `expected >= 3 contextual body links, found ${internal}`);
 });
+
+test("the WebSite schema advertises no search that cannot run", () => {
+  const home = renderPage(pages.find((p) => p.path === "/"));
+  // Google retired the Sitelinks Searchbox, and the site has no search endpoint,
+  // so a SearchAction would promise a feature that is not there.
+  assert.doesNotMatch(home, /SearchAction/, "no SearchAction should ship");
+  assert.doesNotMatch(home, /search_term_string/, "no search placeholder should ship");
+});

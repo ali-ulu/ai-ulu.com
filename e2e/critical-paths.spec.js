@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 // Critical paths a visitor takes. These run against the built site, so a change
 // that breaks the form, the WhatsApp handoff or the 404 page fails here.
 
-test("home loads with a working lead form that submits and confirms", async ({ page }) => {
+test("@crossbrowser home loads with a working lead form that submits and confirms", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle(/ai-ulu/);
 
@@ -34,7 +34,7 @@ test("the lead form will not submit while required fields are empty", async ({ p
   expect(posted).toBe(false);
 });
 
-test("WhatsApp links point at wa.me with the number", async ({ page }) => {
+test("@crossbrowser WhatsApp links point at wa.me with the number", async ({ page }) => {
   await page.goto("/");
   const links = page.locator('a[href^="https://wa.me/"]');
   expect(await links.count()).toBeGreaterThan(0);
@@ -62,9 +62,44 @@ test("blog post shows a visible author byline and date", async ({ page }) => {
   await expect(page.locator(".bl-meta time")).toBeVisible();
 });
 
-test("breadcrumbs are visible and marked up", async ({ page }) => {
+test("@crossbrowser breadcrumbs are visible and marked up", async ({ page }) => {
   await page.goto("/blog/");
   const crumbs = page.locator(".crumbs");
   await expect(crumbs).toBeVisible();
   await expect(crumbs.locator('[aria-current="page"]')).toHaveText("Blog");
+});
+
+// Responsive behaviour: the site swaps the desktop WebGL hero for a static,
+// readable column under 768px and must never scroll sideways. These run on the
+// mobile viewport projects as well as the desktop ones.
+test("no horizontal overflow at any common viewport", async ({ page }) => {
+  for (const [w, h] of [[320, 640], [390, 844], [768, 1024], [1350, 940]]) {
+    await page.setViewportSize({ width: w, height: h });
+    for (const path of ["/", "/calismalar/", "/sablonlar/", "/blog/", "/gizlilik/"]) {
+      await page.goto(path);
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, `${path} overflows ${overflow}px at ${w}px wide`).toBeLessThanOrEqual(1);
+    }
+  }
+});
+
+test("the hero falls back to a readable static column on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  // Below 768px the film must not run; the .no-3d fallback lays the copy out.
+  await expect(page.locator("html")).toHaveClass(/no-3d/, { timeout: 5000 });
+  const h1 = page.locator("h1").first();
+  await expect(h1).toBeVisible();
+  const box = await h1.boundingBox();
+  expect(box.width).toBeLessThanOrEqual(390);
+});
+
+test("the mobile call bar reaches a visitor without a hover", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const bar = page.locator(".callbar");
+  await expect(bar).toBeVisible();
+  await expect(bar.locator('a[href^="tel:"]')).toHaveAttribute("href", "tel:+905079581642");
 });

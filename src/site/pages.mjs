@@ -8,6 +8,10 @@ import { faq } from "./content/site-content.mjs";
 function organizationLd() {
   const { streetAddress, addressLocality, postalCode, addressCountry } = site.address;
   const hasAddress = Boolean(streetAddress || addressLocality || postalCode);
+  // A service-area business has no shopfront, so `address` stays empty and the
+  // places it serves carry the local signal instead. With nothing configured the
+  // country is the honest fallback; add real areas to config to narrow it.
+  const areas = site.serviceAreas.length ? site.serviceAreas : ["TR"];
   return {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
@@ -17,7 +21,7 @@ function organizationLd() {
     telephone: site.phone,
     description: site.description,
     image: `${site.url}/og.png`,
-    areaServed: "TR",
+    areaServed: areas.map((name) => ({ "@type": "AdministrativeArea", name })),
     knowsLanguage: ["tr"],
     serviceType: "Web sitesi tasarımı ve geliştirme",
     // Only emitted when the config actually carries the value, so no placeholder
@@ -57,9 +61,9 @@ function webPageLd(path, { title, description }) {
   };
 }
 
-// The WebSite entity, emitted on the home page only, with the SearchAction that
-// enables the Sitelinks Searchbox. Search is anchored on the FAQ/blog since the
-// site itself has no search endpoint.
+// The WebSite entity, emitted on the home page only. It carries no SearchAction:
+// Google retired the Sitelinks Searchbox and this site has no search endpoint, so
+// pointing one at /blog/?q= would advertise a search that cannot run.
 function webSiteLd() {
   return {
     "@context": "https://schema.org",
@@ -68,11 +72,6 @@ function webSiteLd() {
     url: site.url,
     inLanguage: site.lang,
     publisher: { "@type": "Organization", name: site.name, url: site.url },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: { "@type": "EntryPoint", urlTemplate: `${site.url}/blog/?q={search_term_string}` },
-      "query-input": "required name=search_term_string",
-    },
   };
 }
 

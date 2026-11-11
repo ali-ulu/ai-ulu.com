@@ -79,3 +79,22 @@ test("the built site exposes no inline event handlers", async () => {
     assert.doesNotMatch(html, /\son(click|load|error|mouseover|submit)=/i, `${rel} has an inline handler`);
   }
 });
+
+test("guessed about/contact URLs redirect instead of 404ing", async () => {
+  if (!built) return;
+  const redirects = await read("dist/_redirects");
+  // There is no separate about page: the work stands in for it. The English
+  // spelling and the bare contact URL people type must still land somewhere.
+  for (const from of ["/hakkimizda", "/hakkimizda/", "/about", "/about/"]) {
+    assert.match(redirects, new RegExp(`^${from}\\s+/calismalar/\\s+301$`, "m"), `${from} must 301 to /calismalar/`);
+  }
+  for (const from of ["/iletisim", "/iletisim/", "/contact", "/contact/"]) {
+    assert.match(redirects, new RegExp(`^${from}\\s+/#iletisim\\s+301$`, "m"), `${from} must 301 to the contact section`);
+  }
+});
+
+test("the sitemap never lists a page that only redirects", async () => {
+  if (!built) return;
+  const sitemap = await read("dist/sitemap.xml");
+  assert.doesNotMatch(sitemap, /hakkimizda|\/about\/?<|iletisim/, "redirect-only URLs stay out of the sitemap");
+});
