@@ -8,7 +8,7 @@ export const posts = [
   {
     slug: "web-sitesi-fiyatlari-2026",
     title: "Web sitesi fiyatları 2026: aralıklar, kim ne istiyor, siz ne ödemelisiniz?",
-    description: "2026'da yayınlanan ajans fiyat rehberlerinden derlenen gerçek aralıklar: tek sayfa, kurumsal, e-ticaret ve özel yazılım. Aynı işe neden 8.000 de 180.000 de deniyor?",
+    description: "2026 ajans fiyat rehberlerinden gerçek aralıklar: tek sayfa, kurumsal, e-ticaret ve özel yazılım. Aynı işe neden 8.000 de 180.000 de deniyor?",
     targetQuery: "web sitesi fiyatları 2026, web sitesi kurma maliyeti",
     published: DATE,
     updated: DATE,
@@ -43,7 +43,7 @@ export const posts = [
   {
     slug: "yapay-zeka-ile-web-sitesi-yapmak",
     title: "Yapay zekâ ile web sitesi yapmak: ne zaman yeter, ne zaman yetmez?",
-    description: "ChatGPT, Gemini ya da hazır bir araçla ücretsiz site kurmak mümkün. Peki hangi iş için yeter, hangi iş için size müşteri kaybettirir? Tarafsız bir karşılaştırma.",
+    description: "ChatGPT, Gemini ya da hazır araçla ücretsiz site kurmak mümkün. Hangi iş için yeter, hangisinde müşteri kaybettirir? Tarafsız bir karşılaştırma.",
     targetQuery: "yapay zeka ile web sitesi yapılır mı, chatgpt ile web sitesi yapmak, yapay zeka web sitesi oluşturucu",
     published: DATE,
     updated: DATE,
