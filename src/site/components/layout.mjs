@@ -36,7 +36,10 @@ ${canonicalTag}${robotsTag}<meta name="theme-color" content="#08090b">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
+<link rel="preload" href="/fonts/bodoni-moda-normal-latin-ext.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
 <link rel="preload" href="/fonts/bodoni-moda-normal-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
+<link rel="preload" href="/fonts/hanken-grotesk-normal-latin-ext.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
+<link rel="preload" href="/fonts/hanken-grotesk-normal-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="/print.css" media="print">

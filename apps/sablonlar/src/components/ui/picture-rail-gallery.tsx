@@ -843,7 +843,22 @@ export function PictureRailGallery({
       {layout.carousel && count > 1 && (
         <div className="relative z-10 mt-1 flex justify-center gap-1.5" role="group" aria-label={heading ?? "Prints"}>
           {items.map((item, i) => (
-            <button key={item.id} type="button" aria-label={item.title} aria-current={carouselIndex === i} onClick={() => { stop(); choose(i); }} className={`h-1.5 rounded-full outline-none transition-[width,background-color] duration-300 focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none ${carouselIndex === i ? "w-6 bg-foreground" : "w-1.5 bg-foreground/25 hover:bg-foreground/45"}`} />
+            // The dot stays 6px, but the button is padded to a 24x24 tap target
+            // (WCAG 2.5.8). The visible dot is the inner span, so padding does
+            // not enlarge it; -my-2 keeps the row from growing.
+            <button
+              key={item.id}
+              type="button"
+              aria-label={item.title}
+              aria-current={carouselIndex === i}
+              onClick={() => { stop(); choose(i); }}
+              className="group -my-2 flex size-6 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
+            >
+              <span
+                aria-hidden="true"
+                className={`h-1.5 rounded-full transition-[width,background-color] duration-300 motion-reduce:transition-none ${carouselIndex === i ? "w-6 bg-foreground" : "w-1.5 bg-foreground/25 group-hover:bg-foreground/45"}`}
+              />
+            </button>
           ))}
         </div>
       )}

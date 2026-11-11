@@ -13,6 +13,13 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--ink);color:var(--bone);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
 body{overflow-x:hidden;background:transparent}
+/* The WebGL vortex canvas sits on top of this. When JS is off, or WebGL is
+   missing, that canvas is empty, so this fixed layer keeps a layered backdrop
+   instead of a flat fill. It sits one level below the canvas (z-index -2 vs -1). */
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:
+  radial-gradient(60% 42% at 50% 6%,rgba(224,164,88,.10),transparent 62%),
+  radial-gradient(90% 60% at 50% 0%,rgba(236,231,222,.06),transparent 58%),
+  radial-gradient(120% 90% at 50% 100%,rgba(6,7,9,.9),transparent 60%)}
 /* Fixed vortex field behind every page; the vignette keeps text readable. */
 #vortex{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:-1;pointer-events:none}
 .vignette{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(130% 100% at 50% 38%,transparent 34%,rgba(4,5,7,.5) 72%,rgba(4,5,7,.86) 100%)}
@@ -81,13 +88,27 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 .prog{position:absolute;z-index:3;right:var(--pad);top:50%;transform:translateY(-50%);display:grid;gap:.9rem}
 .prog i{width:1.6rem;height:1px;background:var(--line);transition:background .3s,width .3s}
 .prog i.on{background:var(--bone);width:2.6rem}
-/* no WebGL / script failed: chapters become a plain readable column */
+/* no WebGL / script failed / small screen: chapters become a plain readable column.
+   The same flattening is applied by a media query below so a phone gets it before
+   the first paint (a class added later would shift the layout — CLS). Keep the two
+   blocks in sync; test/vortex-background.test.js checks both. */
 .no-3d #film{height:auto}
 .no-3d .stage{position:static;height:auto;padding:8rem 0 4rem;background:none}
 .no-3d #gl,.no-3d .tag,.no-3d .prog,.no-3d .hint{display:none}
 .no-3d .ch,.no-3d #c0{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 var(--pad) 5rem;text-align:left;max-width:40rem;width:auto}
 .no-3d .ch.right .cta,.no-3d #c0 .cta{justify-content:flex-start}
 .no-3d .ch.right p,.no-3d #c0 p{margin:0}
+@media (max-width:767px){
+  /* Phones skip the 3D film (see ora.js/vortex.js), so show the column at once:
+     no loader overlay, no post-paint layout shift. */
+  #pre{display:none}
+  #film{height:auto}
+  .stage{position:static;height:auto;padding:8rem 0 4rem;background:none}
+  #gl,.tag,.prog,.hint{display:none}
+  .ch,#c0{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 var(--pad) 5rem;text-align:left;max-width:40rem;width:auto}
+  .ch.right .cta,#c0 .cta{justify-content:flex-start}
+  .ch.right p,#c0 p{margin:0}
+}
 
 /* content sections */
 section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--line)}
