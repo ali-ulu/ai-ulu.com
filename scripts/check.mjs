@@ -68,8 +68,19 @@ for await (const file of files(dist)) {
   }
 }
 
+// Ship-blockers: an unfilled [EKSİK] marker, leftover placeholder copy or a
+// lorem ipsum blob must never reach production. See
+// docs/musteri-sitesi-kurulum-promptu.md ("ASLA UYDURMA").
+const placeholders = /\[EKSİK|lorem ipsum|example\.com|your-domain|TODO:/gi;
+for await (const file of files(dist)) {
+  const text = await readFile(file, "utf8");
+  for (const match of text.match(placeholders) ?? []) {
+    fail(`yayın engelleyici metin (${match}) → ${file.slice(dist.length + 1)}`);
+  }
+}
+
 if (failed) {
   console.error(`\n${failed} sorun var. Önce "npm run build" çalıştırın ve düzeltin.`);
   process.exit(1);
 }
-console.log("\n✓ Tüm beklenen çıktılar mevcut, dış kaynak yok.");
+console.log("\n✓ Tüm beklenen çıktılar mevcut, dış kaynak yok, [EKSİK]/placeholder yok.");
