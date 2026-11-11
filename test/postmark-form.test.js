@@ -131,7 +131,7 @@ test("local SEO signals are emitted only when configured", async () => {
 test("the footer carries the owner's profiles as labelled icons", async () => {
   const html = await read("dist/index.html");
   assert.match(html, /class="footer-social"/, "the footer has a profile row");
-  assert.match(html, /<nav class="footer-social"[^>]*>[\s\S]*?<svg/, "icons render inline, no extra request");
+  assert.match(html, /<a class="social-btn"[^>]*>[\s\S]*?<svg/, "each profile is a button with an inline icon");
   for (const s of socials) {
     assert.ok(html.includes(`href="${s.href}"`), `footer links ${s.label}`);
     assert.ok(html.includes(`aria-label="${s.label}"`), `${s.label} icon is labelled for screen readers`);

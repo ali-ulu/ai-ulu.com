@@ -132,12 +132,17 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .site-footer{padding:2rem var(--pad) calc(2rem + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;color:var(--dim);font-size:.85rem;border-top:1px solid var(--line)}
 .site-footer nav{display:flex;flex-wrap:wrap;gap:1.4rem}
 .site-footer a{text-decoration:none}
-.site-footer a:hover{color:var(--bone)}
+.site-footer a:not(.social-btn):hover{color:var(--bone)}
 .footer-end{display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap}
 .site-footer .footer-social{gap:.9rem}
-.site-footer .footer-social a{display:inline-flex;color:var(--dim)}
-.site-footer .footer-social a:hover{color:var(--bone)}
 .footer-social svg{display:block}
+
+/* Profile button built as a physical key: a glossy raised face over an
+   extruded dark edge, so it reads as 3D on the flat dark ground. Hover lifts
+   it; press sinks it into the edge. Colours come from the site palette. */
+.social-btn{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:14px;color:var(--ink);background:linear-gradient(180deg,#f7f3eb,var(--bone) 62%,#ddd6c8);box-shadow:0 4px 0 rgba(146,136,120,.6),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -2px 3px rgba(120,110,95,.4),0 9px 20px rgba(0,0,0,.45);transition:transform .18s ease,box-shadow .18s ease}
+.social-btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 rgba(146,136,120,.6),inset 0 1px 0 rgba(255,255,255,1),inset 0 -2px 3px rgba(120,110,95,.4),0 13px 24px rgba(0,0,0,.5)}
+.social-btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(146,136,120,.6),inset 0 1px 0 rgba(255,255,255,.85),inset 0 -1px 2px rgba(120,110,95,.4),0 4px 10px rgba(0,0,0,.4)}
 
 /* Sticky call/WhatsApp bar. Below 860px the nav hides its links, so the two
    actions a phone visitor wants most sit within thumb reach; the footer gains
