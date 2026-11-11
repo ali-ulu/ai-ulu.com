@@ -56,6 +56,20 @@ async function loadFilm() {
 if (canRunFilm) whenIdle(loadFilm);
 else fallback();
 
+// A software rasteriser (SwiftShader/llvmpipe — headless Chrome, a VM or a
+// machine with no GPU acceleration) shades image-based lighting on the CPU: the
+// environment map alone blocks the main thread for ~3 s at start-up and on
+// every scroll frame. Real GPUs do this for free, so only those renderers skip
+// the env map and get lifted base colours to keep the aluminium from going black.
+function softwareGL(renderer) {
+  try {
+    const gl = renderer.getContext();
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const name = String((dbg && gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) || gl.getParameter(gl.RENDERER) || '');
+    return /swiftshader|llvmpipe|software|basic render/i.test(name);
+  } catch { return false; }
+}
+
 function start(THREE, RoundedBoxGeometry, RoomEnvironment, photo, renderer) {
   step(88);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -167,12 +181,17 @@ function start(THREE, RoundedBoxGeometry, RoomEnvironment, photo, renderer) {
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
   const scene = new THREE.Scene();
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), .04).texture;
+  const soft = softwareGL(renderer);
+  if (!soft) {
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), .04).texture;
+  }
   const camera = new THREE.PerspectiveCamera(32, 1, .1, 100);
 
-  const alu = new THREE.MeshPhysicalMaterial({ color: 0x3a3d43, metalness: 1, roughness: .34, clearcoat: .35, clearcoatRoughness: .4 });
-  const aluDark = new THREE.MeshPhysicalMaterial({ color: 0x1d1f23, metalness: .9, roughness: .45 });
+  const alu = new THREE.MeshPhysicalMaterial(soft
+    ? { color: 0x3a3d43, metalness: .45, roughness: .42 }
+    : { color: 0x3a3d43, metalness: 1, roughness: .34, clearcoat: .35, clearcoatRoughness: .4 });
+  const aluDark = new THREE.MeshPhysicalMaterial({ color: 0x1d1f23, metalness: soft ? .45 : .9, roughness: .45 });
   const black = new THREE.MeshStandardMaterial({ color: 0x050506, roughness: .25, metalness: .2 });
   const keyMat = new THREE.MeshStandardMaterial({ color: 0x0b0c0e, roughness: .7 });
 

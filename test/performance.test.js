@@ -64,3 +64,13 @@ test("the vignette keeps the hero text legible over the WebGL field", async () =
   assert.match(vignette, /position:fixed/, "the vignette must cover the whole viewport");
   assert.match(vignette, /z-index:-1/, "the vignette must sit behind the content");
 });
+
+test("the env map is skipped on a software rasteriser", async () => {
+  const js = await read("src/site/assets/ora.js");
+  // SwiftShader/llvmpipe shade image-based lighting on the CPU, where the
+  // environment map alone blocks the desktop main thread for ~3 s at start-up
+  // and on every scroll frame. It must be detected and the env map dropped.
+  assert.match(js, /swiftshader\|llvmpipe/i, "ora.js must recognise a software rasteriser");
+  assert.match(js, /if \(!soft\)[\s\S]*?PMREMGenerator/, "the PMREM env map must be skipped when the rasteriser is software");
+  assert.match(js, /metalness: soft \?/, "software GL needs a lifted metalness so unlit metal does not go black");
+});
