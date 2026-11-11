@@ -19,6 +19,13 @@ function inline(text) {
 function block(b) {
   if (b.h) return `<h2>${inline(b.h)}</h2>`;
   if (b.ul) return `<ul>${b.ul.map((li) => `<li>${inline(li)}</li>`).join("")}</ul>`;
+  if (b.links) {
+    const items = b.links.map(({ label, href }) => {
+      const safeHref = typeof href === "string" && href.startsWith("https://") ? escapeHtml(href) : "";
+      return safeHref ? `<li><a href="${safeHref}" target="_blank" rel="noopener noreferrer">${inline(label)}</a></li>` : "";
+    }).filter(Boolean).join("");
+    return `<ul class="bl-sources">${items}</ul>`;
+  }
   if (b.note) return `<p class="bl-note">${inline(b.note)}</p>`;
   return `<p>${inline(b.p)}</p>`;
 }

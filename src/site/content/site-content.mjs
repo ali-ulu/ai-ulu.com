@@ -38,6 +38,31 @@ export const faq = {
       a: "Her site, yapay zekâ asistanlarının okuduğu yapıyla gelir: temiz HTML, yapılandırılmış veri, llms.txt özeti, site haritası ve yapay zekâ tarayıcılarına açık erişim. Belirli bir sıralama garanti edilemez.",
     },
     {
+          "tab": "ChatGPT",
+          "q": "ChatGPT Business Hub ile ChatGPT Business aynı mı?",
+          "a": "Hayır. ChatGPT Business ekiplerin kullandığı ücretli çalışma alanıdır. Business Hub ise uygun işletmelerin ChatGPT'deki profilini talep edip bilgilerini yönetebildiği ayrı bir arayüzdür. Uygun bir profili talep etmek için reklam hesabı veya ChatGPT Enterprise sözleşmesi gerekmez; sahiplik ve kimlik doğrulaması gerekir."
+    },
+    {
+          "tab": "ChatGPT",
+          "q": "Türkiye'deki işletmeler ChatGPT'de profil talep edebilir mi?",
+          "a": "Uygun çevrimiçi işletmeler, gerekli doğrulama yöntemleri destekleniyorsa profil talep edebilir veya yeni profil ekleme seçeneği görebilir. OpenAI'nin güncel rehberine göre yerel mağaza ve restoranlar şu anda yalnızca mevcut ABD listelemelerini talep edebiliyor. Uygunluk işletme türüne ve konumuna bağlıdır."
+    },
+    {
+          "tab": "ChatGPT",
+          "q": "Business Agent Türkiye'de kullanılabiliyor mu?",
+          "a": "Şu anda Business Agent, web sitesi bulunan uygun e-ticaret ve çevrimiçi hizmet işletmeleri için ABD'de sunuluyor. Türkiye'den Business Hub işletme profili talep edebilmek, Business Agent özelliğine de erişilebileceği anlamına gelmez."
+    },
+    {
+          "tab": "Görünürlük",
+          "q": "ChatGPT'de işletme profili açmak daha üst sırada çıkmamı sağlar mı?",
+          "a": "Hayır. Profil talebi işletme bilgilerinizi yönetmenizi ve toplulaştırılmış etkileşim verilerini görmenizi sağlar; ChatGPT'nin bağımsız önerilerini kontrol etmez. OpenAI daha yüksek görünürlük veya satış garantisi vermiyor."
+    },
+    {
+          "tab": "Gizlilik",
+          "q": "İşletmeler ChatGPT kullanıcılarının sorularını ve sohbetlerini görebilir mi?",
+          "a": "Hayır. Business Hub, yeterli veri olduğunda anılmalar, web sitesi tıklamaları ve ortak keşif konuları gibi toplulaştırılmış içgörüler gösterir. Bireysel kullanıcı istemleri veya Business Agent sohbetleri işletmelerle paylaşılmaz."
+    },
+    {
       tab: "Yenileme",
       q: "Mevcut sitemi yenileyebilir misiniz?",
       a: "Evet. İşe yarayanı korur; yapıyı, hızı ve içeriği müşteri getirecek şekilde yeniden kurarız.",

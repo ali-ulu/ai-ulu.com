@@ -1,7 +1,6 @@
-// Blog posts. Text lives as blocks so the renderer owns the markup and can
-// escape every string (only **bold** and `code` are added back). No invented
-// statistics or prices: the claims match the site's own FAQ (2–4 weeks, code is
-// the client's, no ranking guarantee).
+// Blog posts. Text lives as blocks so the renderer owns the markup and escapes
+// prose. Inline formatting is limited to **bold** and `code`; source links are
+// rendered separately from HTTPS-only URLs. No invented statistics or prices.
 const DATE = "2026-11-11";
 
 export const posts = [
@@ -220,4 +219,156 @@ export const posts = [
     ],
     cta: { text: "Elinizdeki teklifi WhatsApp'tan gönderin, altı maddeye göre birlikte bakalım →", message: "Merhaba, elimdeki web sitesi teklifini birlikte değerlendirebilir miyiz?" },
   },
+  {
+    "slug": "chatgpt-business-hub-nedir",
+  "title": "ChatGPT Business Hub Nedir? İşletme Kaydı ve Görünürlük Rehberi",
+  "metaTitle": "ChatGPT Business Hub Nedir? İşletme Rehberi",
+  "description": "ChatGPT Business Hub ile işletme profili talebi, doğrulama, Türkiye'deki uygunluk ve Business Agent hakkında bilmeniz gerekenler.",
+  "targetQuery": "ChatGPT Business Hub, ChatGPT işletme profili, ChatGPT işletme kaydı, Google İşletme Profili alternatifi",
+  "published": "2026-11-12",
+  "updated": "2026-11-12",
+  "body": [
+    {
+      "p": "İşletmeler artık yalnızca Google'da değil, ChatGPT gibi yapay zekâ asistanlarında da keşfediliyor. Kullanıcılar bir ihtiyacını tarif ediyor, seçenekleri karşılaştırıyor ve işletmeler hakkında doğrudan soru soruyor. OpenAI, 10 Kasım 2026'da bu süreci işletmeler açısından yönetilebilir hâle getirmeyi amaçlayan Businesses in ChatGPT sistemini beta olarak duyurdu."
+    },
+    {
+      "p": "Sistemin işletme yönetim alanı Business Hub. İşletmeler, uygunluk ve doğrulama koşullarını karşılamaları hâlinde ChatGPT'deki profillerini talep edebiliyor, bilgilerini güncelleyebiliyor ve kendileriyle ilgili toplu etkileşim verilerini inceleyebiliyor."
+    },
+    {
+      "h": "ChatGPT Business Hub nedir?"
+    },
+    {
+      "p": "Business Hub, Businesses in ChatGPT içindeki işletme yönetim arayüzüdür. İşletmenin sahibi veya yetkili temsilcisi, işletme profilini talep ederek doğrulama sürecini başlatabilir. Talep onaylandıktan ve gerekli kimlik doğrulaması tamamlandıktan sonra işletme bilgileri yönetilebilir."
+    },
+    {
+      "p": "Bu sistem, ChatGPT Business aboneliğiyle aynı şey değildir. ChatGPT Business ekipler için ücretli bir çalışma alanıdır; Business Hub ise işletmelerin ChatGPT'de nasıl temsil edildiğini yönetmeye yönelik ayrı bir üründür. Uygun bir işletme profilini talep etmek için ayrıca reklam hesabı veya ChatGPT Enterprise sözleşmesi gerekmez."
+    },
+    {
+      "h": "Google İşletme Profili'nin yerini alacak mı?"
+    },
+    {
+      "p": "Doğrudan değil. Google İşletme Profili; Google Arama ve Haritalar'da adres, çalışma saatleri, telefon, fotoğraf ve yorumlar üzerinden yerel keşfe odaklanır. Business Hub ise ChatGPT'deki işletme bilgilerini yönetmeye ve konuşmalı keşif sırasında işletmenin nasıl temsil edildiğini anlamaya yarar."
+    },
+    {
+      "p": "Bu nedenle iki hizmeti birbirinin alternatifi olarak görmek yerine, farklı keşif kanallarını tamamlayan araçlar olarak değerlendirmek daha doğru. ChatGPT Business Hub, Google Haritalar'ın veya Google İşletme Profili'nin yerine geçen bir harita ve yorum yönetimi sistemi değildir."
+    },
+    {
+      "h": "Business Hub üzerinden neler yapılabilir?"
+    },
+    {
+      "ul": [
+        "**İşletme profilini talep etme:** ChatGPT'de bulunan ve işletmeyle eşleşen listeleme için sahiplik talebi gönderilebilir. Uygun çevrimiçi işletmeler için yeni profil ekleme seçeneği de sunulabilir.",
+        "**İşletme bilgilerini yönetme:** Onay ve kimlik doğrulamasından sonra web sitesi, açıklama, kategori, logo, iletişim ve politika bilgileri güncellenebilir.",
+        "**Ürün feed'i bağlama:** Uygun perakendeciler ürün adı, fiyat ve stok durumunu CSV feed'i veya Shopify bağlantısıyla paylaşabilir.",
+        "**Etkileşim verilerini inceleme:** İşletme anılmaları, web sitesi tıklamaları ve keşif konuları gibi toplulaştırılmış veriler görülebilir.",
+        "**Business Agent oluşturma:** Yalnızca ayrı uygunluk koşullarını karşılayan işletmeler, müşterilerin soru sorabileceği bir yapay zekâ temsilcisi hazırlayabilir."
+      ]
+    },
+    {
+      "h": "Türkiye'deki işletmeler kayıt olabilir mi?"
+    },
+    {
+      "p": "OpenAI'nin güncel kurulum rehberi, ChatGPT'nin sunulduğu bölgelerdeki uygun işletmelerin mevcut bir profili talep edebileceğini veya desteklenen durumlarda yeni profil ekleyebileceğini belirtiyor. Ancak uygunluk; işletmenin türüne, bulunduğu yere ve kullanılabilir doğrulama yöntemlerine bağlı."
+    },
+    {
+      "p": "Burada fiziksel işletmeler ile çevrimiçi işletmeleri ayırmak gerekiyor. Rehbere göre uygun bir çevrimiçi işletme, listede bulunmuyorsa yeni profil ekleme seçeneği görebilir. Yerel mağaza ve restoranlar ise şu anda yalnızca mevcut ABD listelemelerini talep edebiliyor. Bu nedenle Türkiye'deki fiziksel bir mağaza veya restoranın yeni profil oluşturabileceği varsayılmamalı."
+    },
+    {
+      "p": "Türkiye'de faaliyet gösteren ve web sitesi bulunan çevrimiçi hizmet işletmeleri Business Hub üzerinden uygunluk kontrolü yapabilir. Başvurunun kabulü veya tüm yönetim özelliklerine erişim garanti değildir."
+    },
+    {
+      "h": "İşletme profili nasıl talep edilir ve doğrulanır?"
+    },
+    {
+      "p": "İlk adım, ChatGPT web arayüzündeki Business Hub bölümünde işletme adını aramaktır. İşletmeyle eşleşen mevcut bir listeleme varsa onu seçerek talep başlatılır. Yeni profil ekleme seçeneği yalnızca uygun işletmelerde görünür."
+    },
+    {
+      "ul": [
+        "İşletmeyi temsil etmeye yetkili olduğunuzu doğrulamak için sunulan yöntemlerden birini seçin: işletme telefonu, işletme e-postası, web alan adı veya Shopify bağlantısı.",
+        "OpenAI'nin sahiplik talebini incelemesini ve e-posta ile kararını bildirmesini bekleyin.",
+        "Profil üzerinde değişiklik yapmak, içgörüleri görmek veya ürün feed'i bağlamak için Persona üzerinden ayrı kimlik doğrulamasını tamamlayın.",
+        "Persona doğrulaması onaylandıktan sonra profil bilgilerini güncelleyin ve uygun özellikleri kullanın."
+      ]
+    },
+    {
+      "p": "Persona aşamasında devlet tarafından verilmiş kimlik, işletme kayıt bilgileri ve işletmeyi temsil etme yetkisini gösteren belgeler istenebilir. Mavi doğrulama işareti, yalnızca ilk sahiplenme talebi onaylandığında değil, Persona kimlik doğrulaması da onaylandıktan sonra gösterilir."
+    },
+    {
+      "note": "Sahiplik talebi, Persona kimlik doğrulaması ve Business Agent'ı yayımlama birbirinden ayrı adımlardır. İşletme profili yönetmek için Business Agent yayımlamak veya reklam vermek zorunlu değildir."
+    },
+    {
+      "h": "ChatGPT işletme görünürlüğü nasıl ölçülüyor?"
+    },
+    {
+      "p": "Business Hub'ın Insights alanı, onaylı işletme profilleri için son 28 güne ilişkin toplulaştırılmış veriler sunar. Bu veriler işletmenin ChatGPT içinde nasıl keşfedildiğine dair fikir verebilir; ancak tek tek kullanıcıların ne yazdığını göstermez."
+    },
+    {
+      "ul": [
+        "**Anılmalar:** Çevrimiçi işletmelerde ChatGPT'nin işletmenin web sitesine referans vermesi; yerel işletmelerde ise ilgili konum için işletme sonucunun gösterilmesi sayılır.",
+        "**Web sitesi tıklamaları:** ChatGPT'den işletmenin web sitesine yapılan tıklamaları gösterir.",
+        "**Keşif konuları:** İşletmenin web sitesi veya listelemesiyle birlikte görülen yanıtların ortak konu başlıklarını özetler. Bunlar tek tek kullanıcı soruları veya doğrudan satın alma niyeti ölçümü değildir."
+      ]
+    },
+    {
+      "p": "OpenAI, işletmelere bireysel istemleri veya Business Agent sohbetleri de dâhil olmak üzere kullanıcı konuşmalarını vermediğini belirtiyor. Bazı istatistiklerin boş görünmesi de mutlaka sıfır etkinlik olduğu anlamına gelmez; veri eşiği, raporlama gecikmesi veya kullanılabilirlik koşulları etkili olabilir."
+    },
+    {
+      "h": "Business Agent nedir, Türkiye'de kullanılabiliyor mu?"
+    },
+    {
+      "p": "Business Agent, uygun işletmelerin ürünleri, hizmetleri ve politikaları hakkında müşterilerin soru sorabileceği, işletme adına çalışan yapay zekâ deneyimidir. İşletme kendi ürün ve politika bilgilerini sağlar, yönergeleri belirler, temsilciyi test eder ve yayımlamadan önce inceler."
+    },
+    {
+      "p": "Business Agent, işletme profilinden ayrı ve isteğe bağlı bir özelliktir. OpenAI'nin güncel rehberine göre şu anda web sitesi bulunan, uygun e-ticaret ve çevrimiçi hizmet işletmeleri için ABD'de sunuluyor. Türkiye'deki işletmeler profil yönetimi için uygun olsa bile Business Agent özelliğine erişebilecekleri anlamına gelmez."
+    },
+    {
+      "h": "Profil açmak ChatGPT önerilerinde üst sıraya çıkarır mı?"
+    },
+    {
+      "p": "Hayır. İşletme profilini talep etmek, bilgilerinizi yönetmenizi ve bazı etkileşim verilerini görmenizi sağlar; ChatGPT'nin bağımsız önerilerini kontrol etmenizi sağlamaz. OpenAI, profil sahiplenmenin daha yüksek görünürlük veya satış garantisi vermediğini açıkça belirtiyor."
+    },
+    {
+      "p": "İşletmelerin yapabileceği en yararlı çalışma, Business Hub profilini doğru tutmanın yanında kendi web sitelerindeki bilgileri de açık ve tutarlı hâle getirmek. Hizmet sayfaları, doğru iletişim bilgileri, güncel ürün ve politika açıklamaları, erişilebilir HTML ve uygun yapılandırılmış veriler bu temel çalışmanın parçalarıdır. Bunlar da tek başına ChatGPT'de görünme garantisi değildir."
+    },
+    {
+      "h": "İşletmeler için sonuç"
+    },
+    {
+      "p": "Businesses in ChatGPT, işletmelerin yapay zekâ üzerinden keşfedilme sürecinde daha doğru bilgi sunabilmesi için yeni bir yönetim kanalı açıyor. Şimdilik beta aşamasında; profil talebi, Persona doğrulaması ve Business Agent uygunluğu ayrı değerlendirilmelidir."
+    },
+    {
+      "p": "En doğru yaklaşım, önce işletmenizin Business Hub'da bulunup bulunmadığını kontrol etmek, sunulan doğrulama seçeneklerini incelemek ve web sitenizdeki temel bilgileri güncel tutmaktır. Google İşletme Profili'ni kapatmak veya mevcut SEO çalışmalarını bırakmak için bir neden yok."
+    },
+    {
+      "note": "**ai-ulu'da:** Web sitenizin arama motorları ve yapay zekâ asistanları tarafından doğru okunabilmesi için teknik yapı, içerik ve işletme bilgilerini birlikte değerlendirebiliriz. Belirli bir platformda görünürlük veya sıralama garantisi vermiyoruz."
+    },
+    {
+      "h": "Resmî kaynaklar"
+    },
+    {
+      "links": [
+        {
+          "label": "OpenAI: Introducing Businesses in ChatGPT (10 Kasım 2026)",
+          "href": "https://openai.com/index/introducing-businesses-chatgpt/"
+        },
+        {
+          "label": "OpenAI Help Center: Setting up your business on ChatGPT",
+          "href": "https://help.openai.com/en/articles/20001635-setting-up-your-business-on-chatgpt"
+        },
+        {
+          "label": "OpenAI: Businesses in ChatGPT Policy",
+          "href": "https://openai.com/policies/businesses-in-chatgpt/"
+        },
+        {
+          "label": "OpenAI: Business Agents Policy",
+          "href": "https://openai.com/policies/business-agents-policy/"
+        }
+      ]
+    }
+  ],
+  "cta": {
+    "text": "Web sitenizin AI aramalarına uygunluğunu birlikte değerlendirelim →",
+    "message": "Merhaba, web sitemin ChatGPT ve yapay zekâ aramalarındaki görünürlüğünü değerlendirmek istiyorum."
+  }
+}
 ];
