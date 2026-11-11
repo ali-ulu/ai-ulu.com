@@ -112,10 +112,13 @@ test("local SEO signals are emitted only when configured", async () => {
   const org = Array.isArray(ld) ? ld.find((o) => o["@type"] === "ProfessionalService") : ld;
   assert.equal(org.address, undefined, "no placeholder address ships");
   assert.equal(org.priceRange, undefined, "no placeholder price ships");
-  assert.equal(org.areaServed, "TR", "the existing signal is untouched");
+  // A service-area business: the served places carry the local signal. With
+  // nothing configured the country is the fallback, and it is structured.
+  assert.deepEqual(org.areaServed, [{ "@type": "AdministrativeArea", name: "TR" }], "the country fallback is emitted");
   const pages = await read("src/site/pages.mjs");
   assert.match(pages, /\.\.\.\(hasAddress \?/, "address is emitted when set");
   assert.match(pages, /\.\.\.\(site\.priceRange \?/, "priceRange is emitted when set");
+  assert.match(pages, /site\.serviceAreas\.length \? site\.serviceAreas/, "configured service areas replace the fallback");
   // sameAs carries only real profiles: emitted when set, absent when not, and
   // never a placeholder host that would ship a dead or foreign link.
   if (site.sameAs.length) {
