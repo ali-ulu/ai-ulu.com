@@ -5,6 +5,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pages, renderPage } from "../src/site/pages.mjs";
 import { posts } from "../src/site/content/blog.mjs";
+import { site } from "../src/site/config.mjs";
 import { byDateDesc, postBody } from "../src/site/components/blog.mjs";
 import { escapeHtml } from "../src/site/lib/html.mjs";
 
@@ -40,6 +41,23 @@ test("each post renders as a BlogPosting with its own meta", () => {
     assert.ok(html.includes(`<meta name="description" content="${escapeHtml(p.description)}"`), `${p.slug} meta description`);
     assert.ok(html.includes(`"datePublished":"${p.published}"`), `${p.slug} datePublished`);
     assert.ok(html.includes(`"keywords":"${p.targetQuery}"`), `${p.slug} target query as keywords`);
+  }
+});
+
+test("meta descriptions fit the search snippet limit", () => {
+  // Google truncates the snippet near 155 characters. A longer description
+  // loses its closing words, which is where the hook lives. Measure the
+  // rendered text (HTML entities count as one visible character) so a
+  // description that only fits before escaping still fails.
+  const visible = (s) => s.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+  const limit = 155;
+  const subjects = [{ name: "home", description: site.description }].concat(
+    posts.map((p) => ({ name: p.slug, description: p.description })),
+  );
+  for (const { name, description } of subjects) {
+    const length = [...visible(escapeHtml(description))].length;
+    assert.ok(length <= limit, `${name} meta description is ${length} chars, over ${limit}`);
+    assert.ok(length >= 70, `${name} meta description is only ${length} chars, too thin to be useful`);
   }
 });
 
