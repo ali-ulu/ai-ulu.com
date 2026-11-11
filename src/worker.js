@@ -17,6 +17,37 @@ function sanitize(value, max = 2000) {
     .trim();
 }
 
+// Reads at most `max` bytes of the request body and stops there. Trusting the
+// Content-Length header is not enough: a chunked request omits it, so without a
+// streaming cap the whole body would be buffered into the isolate first.
+async function readCappedBody(request, max) {
+  if (!request.body) return { tooLarge: false, text: "" };
+  const reader = request.body.getReader();
+  const chunks = [];
+  let total = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > max) {
+        await reader.cancel();
+        return { tooLarge: true, text: "" };
+      }
+      chunks.push(value);
+    }
+  } catch {
+    return { tooLarge: true, text: "" };
+  }
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return { tooLarge: false, text: new TextDecoder().decode(bytes) };
+}
+
 // Same-origin guard: a cross-site page must not be able to post leads or burn
 // the rate limit. Requests without an Origin header (curl, same-origin form
 // fallback) are allowed; browsers always send Origin on cross-origin POSTs.
@@ -105,7 +136,29 @@ async function hitRateLimited(env, ip) {
   return row && row.submissions > HIT_MAX_PER_HOUR;
 }
 
+// Client-error reports. Same shape as the page-view budget, under its own key,
+// so a broken page cannot fill the log without limit while a limiter outage
+// still lets the report through (handleError swallows a thrown error).
+const ERROR_MAX_PER_HOUR = 60;
+async function errorRateLimited(env, ip) {
+  const now = Date.now();
+  const windowStart = now - 60 * 60 * 1000;
+  const row = await env.DB.prepare(
+    `INSERT INTO rate_limits (ip, window_started_at, submissions, updated_at)
+     VALUES (?1, ?2, 1, ?2)
+     ON CONFLICT(ip) DO UPDATE SET
+       window_started_at = CASE WHEN rate_limits.window_started_at < ?3 THEN ?2 ELSE rate_limits.window_started_at END,
+       submissions = CASE WHEN rate_limits.window_started_at < ?3 THEN 1 ELSE rate_limits.submissions + 1 END,
+       updated_at = ?2
+     RETURNING submissions`
+  ).bind(`err:${ip}`, now, windowStart).first();
+  return row && row.submissions > ERROR_MAX_PER_HOUR;
+}
+
 const MAX_BODY_BYTES = 16 * 1024;
+// The page-view and error beacons carry a few short fields; 2 KB is generous.
+const MAX_HIT_BODY_BYTES = 2 * 1024;
+const MAX_ERROR_BODY_BYTES = 4 * 1024;
 const LEAD_RETENTION_DAYS = 365;
 
 async function handleLead(request, env) {
@@ -121,12 +174,12 @@ async function handleLead(request, env) {
   const declared = Number(request.headers.get("content-length") || 0);
   if (declared > MAX_BODY_BYTES) return json({ error: "İstek çok büyük." }, 413);
 
-  const raw = await request.text();
-  if (raw.length > MAX_BODY_BYTES) return json({ error: "İstek çok büyük." }, 413);
+  const body = await readCappedBody(request, MAX_BODY_BYTES);
+  if (body.tooLarge) return json({ error: "İstek çok büyük." }, 413);
 
   let payload;
   try {
-    payload = JSON.parse(raw);
+    payload = JSON.parse(body.text);
   } catch {
     return json({ error: "Geçersiz istek." }, 400);
   }
@@ -241,9 +294,15 @@ async function handleHit(request, env) {
   if (request.method !== "POST") return json({ error: "Yöntem desteklenmiyor." }, 405);
   if (crossOrigin(request)) return json({ error: "Geçersiz istek." }, 403);
 
+  const declared = Number(request.headers.get("content-length") || 0);
+  if (declared > MAX_HIT_BODY_BYTES) return json({ ok: true });
+
+  const body = await readCappedBody(request, MAX_HIT_BODY_BYTES);
+  if (body.tooLarge) return json({ ok: true });
+
   let payload = {};
   try {
-    payload = JSON.parse((await request.text()).slice(0, 512)) || {};
+    payload = JSON.parse(body.text) || {};
   } catch {
     return json({ ok: true });
   }
@@ -258,7 +317,9 @@ async function handleHit(request, env) {
   const referer = request.headers.get("referer");
   if (referer) {
     try {
-      const host = new URL(referer).host;
+      // Capped like every other hits key component: the host is part of the
+      // primary key, so an unbounded value would let one caller mint rows.
+      const host = sanitize(new URL(referer).host, 253);
       if (host && host !== new URL(request.url).host) referrerHost = host;
     } catch {
       /* a malformed referrer is simply not counted */
@@ -281,14 +342,31 @@ async function handleHit(request, env) {
 // Client-side error sink. Browsers post uncaught errors and rejections here and
 // they land in Cloudflare Workers Logs (Workers → Logs), so a broken deploy is
 // visible without a third-party SDK. Nothing is stored in D1: the log line is
-// the record, and it is deliberately capped so a noisy client cannot flood it.
-async function handleError(request) {
+// the record, bounded by a per-IP hourly budget and a small body cap so a noisy
+// client cannot flood the log.
+async function handleError(request, env) {
   if (request.method !== "POST") return json({ error: "Yöntem desteklenmiyor." }, 405);
   if (crossOrigin(request)) return json({ error: "Geçersiz istek." }, 403);
 
+  // Without a per-IP budget one client can write unbounded log volume into
+  // Workers Logs, so this path gets the same fail-open-on-error treatment as
+  // the page-view counter: a limiter outage must not drop error reports.
+  const declared = Number(request.headers.get("content-length") || 0);
+  if (declared > MAX_ERROR_BODY_BYTES) return json({ ok: true });
+
+  const ip = clientIp(request);
+  try {
+    if (await errorRateLimited(env, ip)) return json({ ok: true });
+  } catch {
+    /* never let the limiter block error reporting */
+  }
+
+  const body = await readCappedBody(request, MAX_ERROR_BODY_BYTES);
+  if (body.tooLarge) return json({ ok: true });
+
   let payload = {};
   try {
-    payload = JSON.parse((await request.text()).slice(0, 2048)) || {};
+    payload = JSON.parse(body.text) || {};
   } catch {
     return json({ ok: true });
   }
@@ -318,7 +396,7 @@ export default {
       return handleHit(request, env);
     }
     if (url.pathname === "/api/error") {
-      return handleError(request);
+      return handleError(request, env);
     }
     return new Response("Not found", { status: 404 });
   },

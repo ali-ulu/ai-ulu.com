@@ -446,3 +446,149 @@ test("client error endpoint ignores junk and cross-origin posts", async () => {
   });
   assert.equal((await worker.fetch(cross, env)).status, 403);
 });
+
+// --- request-body bounding (streaming, not header-trusting) ------------------
+
+// A chunked request has no Content-Length, so the handler must cap what it
+// reads. This body produces many small chunks and records how many were pulled,
+// so a test can prove the handler stopped early instead of buffering it all.
+function countingBody(size, chunk = 1024) {
+  let pulled = 0;
+  const state = { pulled: () => pulled };
+  const stream = new ReadableStream({
+    pull(controller) {
+      if (pulled * chunk >= size) {
+        controller.close();
+        return;
+      }
+      pulled += 1;
+      controller.enqueue(new Uint8Array(chunk).fill(0x41));
+    },
+  });
+  return { stream, state };
+}
+
+function chunkedRequest(url, size) {
+  const { stream, state } = countingBody(size);
+  const req = new Request(url, {
+    method: "POST",
+    headers: { "content-type": "application/json", "cf-connecting-ip": "1.2.3.4" },
+    body: stream,
+    duplex: "half",
+  });
+  return { req, state };
+}
+
+test("a chunked lead body larger than the cap stops reading at the cap", async () => {
+  const env = makeEnv();
+  const { req, state } = chunkedRequest("https://ai-ulu.com/api/lead", 1024 * 1024);
+  const res = await worker.fetch(req, env);
+  assert.equal(res.status, 413);
+  assert.equal(env.DB.leads.length, 0);
+  // 1 MB offered in 1 KB chunks; the 16 KB cap must cancel after ~17 pulls,
+  // not buffer all 1024. Allow a little slack for buffering.
+  assert.ok(state.pulled() <= 20, `handler pulled ${state.pulled()} chunks; expected it to stop near the cap`);
+});
+
+test("a chunked hit body larger than the cap stops reading at the cap", async () => {
+  const env = makeEnv();
+  const { req, state } = chunkedRequest("https://ai-ulu.com/api/hit", 1024 * 1024);
+  const res = await worker.fetch(req, env);
+  assert.equal(res.status, 200);
+  assert.equal(env.DB.hits.length, 0);
+  assert.ok(state.pulled() <= 6, `handler pulled ${state.pulled()} chunks; expected it to stop near the 2 KB cap`);
+});
+
+test("a chunked error body larger than the cap is dropped without logging", async () => {
+  const logged = [];
+  const realError = console.error;
+  console.error = (...args) => logged.push(args);
+  try {
+    const env = makeEnv();
+    const { req } = chunkedRequest("https://ai-ulu.com/api/error", 1024 * 1024);
+    const res = await worker.fetch(req, env);
+    assert.equal(res.status, 200);
+    assert.equal(logged.length, 0);
+  } finally {
+    console.error = realError;
+  }
+});
+
+test("a hit body just under the cap is still counted", async () => {
+  const env = makeEnv();
+  const body = JSON.stringify({ path: "/", pad: "x".repeat(1500) });
+  const req = new Request("https://ai-ulu.com/api/hit", {
+    method: "POST",
+    headers: { "content-type": "application/json", "cf-connecting-ip": "1.2.3.4" },
+    body,
+  });
+  const res = await worker.fetch(req, env);
+  assert.equal(res.status, 200);
+  assert.equal(env.DB.hits.length, 1);
+  assert.equal(env.DB.hits[0].path, "/");
+});
+
+test("an oversized declared content-length is dropped before the body is read", async () => {
+  const env = makeEnv();
+  const req = new Request("https://ai-ulu.com/api/hit", {
+    method: "POST",
+    headers: { "content-type": "application/json", "cf-connecting-ip": "1.2.3.4", "content-length": String(1024 * 1024) },
+    body: JSON.stringify({ path: "/" }),
+  });
+  const res = await worker.fetch(req, env);
+  assert.equal(res.status, 200);
+  assert.equal(env.DB.hits.length, 0);
+});
+
+// --- bounded referrer host ---------------------------------------------------
+
+test("an overlong referrer host is capped before it reaches the hits key", async () => {
+  const env = makeEnv();
+  const longHost = "a".repeat(5000);
+  await worker.fetch(hit({ path: "/" }, { referer: `https://${longHost}/x` }), env);
+  assert.equal(env.DB.hits.length, 1);
+  assert.ok(env.DB.hits[0].referrer_host.length <= 253, "stored referrer host must be capped");
+});
+
+// --- error-log budget --------------------------------------------------------
+
+test("the client error log is rate limited per IP", async () => {
+  const logged = [];
+  const realError = console.error;
+  console.error = (...args) => logged.push(args);
+  try {
+    const env = makeEnv();
+    for (let i = 0; i < 80; i++) {
+      const req = new Request("https://ai-ulu.com/api/error", {
+        method: "POST",
+        headers: { "content-type": "application/json", "cf-connecting-ip": "1.2.3.4" },
+        body: JSON.stringify({ message: `boom ${i}` }),
+      });
+      await worker.fetch(req, env);
+    }
+    assert.equal(logged.length, 60, "at most 60 error reports are logged per IP per hour");
+  } finally {
+    console.error = realError;
+  }
+});
+
+test("an error-rate-limit database failure still logs the report", async () => {
+  const logged = [];
+  const realError = console.error;
+  console.error = (...args) => logged.push(args);
+  try {
+    const env = makeEnv();
+    env.DB.prepare = () => { throw new Error("d1 down"); };
+    const req = new Request("https://ai-ulu.com/api/error", {
+      method: "POST",
+      headers: { "content-type": "application/json", "cf-connecting-ip": "1.2.3.4" },
+      body: JSON.stringify({ message: "boom" }),
+    });
+    const res = await worker.fetch(req, env);
+    assert.equal(res.status, 200);
+    assert.ok(logged.some((l) => l[0] === "client error"), "report is still logged when the limiter is down");
+  } finally {
+    console.error = realError;
+  }
+});
+
