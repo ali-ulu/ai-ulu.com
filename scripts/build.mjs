@@ -51,6 +51,7 @@ ${paths.map((p) => `  <url><loc>${site.url}${p}</loc><lastmod>${site.updated}</l
 
 ## Sayfalar
 - [Ana sayfa](${site.url}/): hizmetler, süreç, paketler, SSS ve iletişim formu
+- [Çalışmalar](${site.url}/calismalar/): ai-ulu'nun kendi geliştirdiği açık kaynak yazılımlar ve başka platformlarda yayınlanmış yazılar
 - [Örnek tasarımlar](${site.url}/sablonlar/): sektöre göre site tarzı örnekleri
 - [Blog](${site.url}/blog/): web sitesi fiyatı, arama görünürlüğü ve müşteri kazanma üzerine yazılar
 - [Gizlilik ve KVKK](${site.url}/gizlilik/)

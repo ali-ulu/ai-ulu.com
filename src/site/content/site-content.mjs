@@ -2,6 +2,7 @@
 
 export const nav = [
   { href: "/#nasil", label: "Nasıl çalışır" },
+  { href: "/calismalar/", label: "Çalışmalar", keep: true },
   { href: "/sablonlar/", label: "Örnek tasarımlar", keep: true },
   { href: "/#paketler", label: "Paketler" },
   { href: "/blog/", label: "Blog", keep: true },
@@ -74,6 +75,7 @@ export const budgets = [
 ];
 
 export const footerLinks = [
+  { href: "/calismalar/", label: "Çalışmalar" },
   { href: "/sablonlar/", label: "Örnek tasarımlar" },
   { href: "/blog/", label: "Blog" },
   { href: "/#iletisim", label: "İletişim" },

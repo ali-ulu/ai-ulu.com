@@ -1,6 +1,7 @@
 import { page } from "./components/layout.mjs";
 import { homeBody, preloader } from "./components/home.mjs";
 import { blogIndexBody, byDateDesc, postBody } from "./components/blog.mjs";
+import { workBody, workLd } from "./components/work.mjs";
 import { site } from "./config.mjs";
 import { faq } from "./content/site-content.mjs";
 
@@ -138,6 +139,16 @@ export const pages = [
     styles: ["/blog.css"],
     body: () => postBody(post.slug),
   })),
+  {
+    path: "/calismalar/",
+    file: "calismalar/index.html",
+    title: "Çalışmalar",
+    description:
+      "ai-ulu'nun kendi geliştirdiği yazılımlar: AI ajanları için doğrulama katmanı HUQAN, yerel hafıza aracı LEVH ve satış sistemi LeadScout.",
+    jsonLd: workLd(),
+    styles: ["/work.css"],
+    body: workBody,
+  },
   {
     path: "/gizlilik/",
     file: "gizlilik/index.html",

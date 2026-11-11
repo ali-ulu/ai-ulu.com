@@ -9,6 +9,7 @@ const dist = join(root, "dist");
 const required = [
   "index.html",
   "gizlilik/index.html",
+  "calismalar/index.html",
   "sablonlar/index.html",
   "blog/index.html",
   "blog/web-sitesi-fiyatini-ne-belirler/index.html",
