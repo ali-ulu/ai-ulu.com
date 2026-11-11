@@ -102,7 +102,7 @@ const process = `<section class="s">
 const packages = `<section class="s" id="paketler">
   <span class="eyebrow">Paketler</span>
   <h2>Paketi seçin, <em>net teklif</em> alın.</h2>
-  <p class="lead">${site.priceFrom ? `Tanıtım siteleri ${escapeHtml(site.priceFrom)} başlar; kalan kapsam projeye göre netleşir.` : "Fiyat listesi yok; her proje kendi kapsamıyla fiyatlanır."} Görüşmeden sonra 24 saat içinde yazılı teklif gelir. Fiyatı neyin belirlediğini <a href="/blog/web-sitesi-fiyatini-ne-belirler/">yazıda</a> anlattık; tarzlar için <a href="/sablonlar/">örnek tasarımlara</a> bakabilirsiniz.</p>
+  <p class="lead">${site.priceFrom ? `Tanıtım siteleri ${escapeHtml(site.priceFrom)} başlar; kalan kapsam projeye göre netleşir.` : "Fiyat listesi yok; her proje kendi kapsamıyla fiyatlanır."} Görüşmeden sonra 24 saat içinde yazılı teklif gelir. 2026 pazar aralıklarını <a href="/blog/web-sitesi-fiyatlari-2026/">fiyat yazısında</a>, fiyatı neyin belirlediğini <a href="/blog/web-sitesi-fiyatini-ne-belirler/">rehberde</a> anlattık; tarzlar için <a href="/sablonlar/">örnek tasarımlara</a> bakabilirsiniz.</p>
   <div class="grid g3">
     <div class="cell"><span class="n">Web sitesi</span><h3>Tanıtım sitesi</h3><ul><li>Markanıza özel tasarım</li><li>Hızlı açılış, akıcı hareket</li><li>Google ve YZ aramalarına hazır</li><li>Yayın ve sonrası destek</li></ul><a class="btn ghost" href="#iletisim">Teklif al</a></div>
     <div class="cell"><span class="n">Uygulama</span><h3>Özel web uygulaması</h3><ul><li>Panel, portal, otomasyon</li><li>İş akışınıza göre kurulur</li><li>Randevu, sipariş, form</li><li>Yayın ve sonrası destek</li></ul><a class="btn ghost" href="#iletisim">Teklif al</a></div>

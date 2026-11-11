@@ -6,6 +6,41 @@ const DATE = "2026-11-11";
 
 export const posts = [
   {
+    slug: "web-sitesi-fiyatlari-2026",
+    title: "Web sitesi fiyatları 2026: aralıklar, kim ne istiyor, siz ne ödemelisiniz?",
+    description: "2026'da yayınlanan ajans fiyat rehberlerinden derlenen gerçek aralıklar: tek sayfa, kurumsal, e-ticaret ve özel yazılım. Aynı işe neden 8.000 de 180.000 de deniyor?",
+    targetQuery: "web sitesi fiyatları 2026, web sitesi kurma maliyeti",
+    published: DATE,
+    updated: DATE,
+    body: [
+      { p: "Bu yazıda kendi fiyatımızı değil, 2026'da yayınlanmış ajans ve yazılım rehberlerinden derlenen aralıkları bulacaksınız. Amaç basit: teklif aldığınızda rakamın nereye oturduğunu görmeniz." },
+      { p: "Kısa cevap: \"web sitesi\" tek bir ürün değil. Aynı işe 8.000 lira da deniyor, 180.000 lira da. Aradaki fark keyfi değil; işin kapsamı ve kimin yaptığı belirliyor." },
+      { h: "2026 aralıkları" },
+      { ul: [
+        "**Tek sayfa / landing page:** 6.000 – 40.000 ₺",
+        "**Şablon temelli kurumsal site:** 8.000 – 25.000 ₺",
+        "**Freelancer kurumsal site (WordPress):** 20.000 – 60.000 ₺",
+        "**Ajans, özel tasarım kurumsal:** 35.000 – 250.000 ₺",
+        "**E-ticaret sitesi:** 40.000 – 450.000 ₺",
+        "**Kuruma özel yazılım:** 150.000 ₺ ve üzeri",
+      ] },
+      { note: "Aralıklar 2026'da yayınlanan sektör rehberlerinden derlendi (Kod16, Tasarlab, Comsuite, İşinn, Piksel & Co). Bunlar tahmini bantlardır; her proje kendi kapsamıyla fiyatlanır. Sizin teklifinizin bu bandın neresinde olduğu, kapsam konuşulunca netleşir." },
+      { h: "Neden bu kadar geniş?" },
+      { p: "Çünkü fiyatı yedi kalem belirler: sayfa sayısı, metin ve fotoğrafın kimden çıktığı, tasarımın hazır mı özel mi olduğu, özellikler, revizyon hakkı, yayın sonrası destek ve siteyi kimin sahiplendiği. Teklifleri bu yedi soruyla karşılaştırdığınızda fark kendiliğinden açıklanır." },
+      { h: "Fiyatı düşüren ve yükselten şeyler" },
+      { ul: [
+        "**Düşürür:** hazır tema, metni sizin yazmanız, az sayfa, standart özellikler.",
+        "**Yükseltir:** özel tasarım, sizin için yazılmış metin, çoklu dil, randevu ve ödeme gibi özellikler, hızlı teslim.",
+      ] },
+      { h: "Ucuz teklif ne zaman pahalı olur?" },
+      { p: "Alan adı satıcının adına kayıtlıysa, kod teslim edilmiyorsa, ikinci yıl barındırma faturası ilk yılın kat kat üstündeyse... Ucuz başlayan iş pahalı bitebilir. Tek bir soru çoğunu açığa çıkarır: **\"Yarın başka biriyle çalışmak istersem siteyi alıp gidebilir miyim?\"** Cevap net bir \"evet\" değilse, teklifi yeniden okuyun." },
+      { h: "ai-ulu nerede duruyor?" },
+      { p: "Şablon kullanmayız; her site özgün tasarımla ve işinize göre yazılmış metinle kurulur. Bu yüzden şablon bandında değiliz. Kapsamı ücretsiz görüşmede konuşur, 24 saat içinde yazılı teklif göndeririz; alan adı, kod ve içerik yayında size teslim edilir." },
+      { note: "**ai-ulu'da:** İlk görüşme ücretsiz. Kapsam, takvim ve teslim edilecekler teklifte yazılıdır. Belirli bir sıralama garanti edilmez." },
+    ],
+    cta: { text: "Kapsamınızı konuşalım, yazılı teklif alın →", message: "Merhaba, web sitesi için fiyat ve kapsam konuşmak istiyorum." },
+  },
+  {
     slug: "yapay-zeka-ile-web-sitesi-yapmak",
     title: "Yapay zekâ ile web sitesi yapmak: ne zaman yeter, ne zaman yetmez?",
     description: "ChatGPT, Gemini ya da hazır bir araçla ücretsiz site kurmak mümkün. Peki hangi iş için yeter, hangi iş için size müşteri kaybettirir? Tarafsız bir karşılaştırma.",
