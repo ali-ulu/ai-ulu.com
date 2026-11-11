@@ -21,6 +21,8 @@
 .bl-post{margin-top:2.6rem}
 .bl-post h2{font-size:1.7rem;margin-top:2.6rem}
 .bl-post ul{margin:.9rem 0 0 1.1rem;color:var(--soft);display:grid;gap:.4rem}
+.bl-sources a{color:var(--soft);text-decoration-thickness:1px;text-underline-offset:.2em}
+.bl-sources a:hover{color:var(--bone)}
 .bl-post code{font:400 .92em/1 var(--mono);background:rgba(236,231,222,.08);padding:.15em .4em;border-radius:5px;color:var(--bone)}
 .bl-post strong{color:var(--bone);font-weight:600}
 .bl-note{margin-top:1.6rem;padding:1.1rem 1.3rem;border-left:2px solid var(--amber);background:rgba(236,231,222,.04);border-radius:0 12px 12px 0;color:var(--soft)}

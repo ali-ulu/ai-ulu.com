@@ -8,6 +8,7 @@ import { posts } from "../src/site/content/blog.mjs";
 import { site } from "../src/site/config.mjs";
 import { byDateDesc, postBody } from "../src/site/components/blog.mjs";
 import { escapeHtml } from "../src/site/lib/html.mjs";
+import { faq } from "../src/site/content/site-content.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFile(join(root, rel), "utf8");
@@ -140,4 +141,26 @@ test("the home page loads blog.css for its teaser", async () => {
   assert.match(home, /<link rel="stylesheet" href="\/blog\.css">/, "home links blog.css");
   const blogIndex = await read("dist/blog/index.html");
   assert.match(blogIndex, /<link rel="stylesheet" href="\/blog\.css">/, "blog index links blog.css");
+});
+
+
+test("ChatGPT Business Hub article uses current eligibility details and links to official sources", () => {
+  const post = posts.find((p) => p.slug === "chatgpt-business-hub-nedir");
+  assert.ok(post, "Business Hub article is registered");
+  assert.equal(post.published, "2026-11-12");
+  const html = postBody(post.slug);
+  assert.match(html, /Persona kimlik doğrulaması/);
+  assert.match(html, /yalnızca mevcut ABD listelemelerini/);
+  assert.match(html, /Business Agent/);
+  assert.match(html, /daha yüksek görünürlük veya satış garantisi vermediğini/);
+  assert.match(html, /target="_blank" rel="noopener noreferrer"/);
+  assert.match(html, /https:\/\/openai\.com\/index\/introducing-businesses-chatgpt\//);
+  for (const question of [
+    "ChatGPT Business Hub ile ChatGPT Business aynı mı?",
+    "Türkiye'deki işletmeler ChatGPT'de profil talep edebilir mi?",
+    "Business Agent Türkiye'de kullanılabiliyor mu?",
+    "İşletmeler ChatGPT kullanıcılarının sorularını ve sohbetlerini görebilir mi?"
+  ]) {
+    assert.ok(faq.items.some((item) => item.q === question), `FAQ should include: ${question}`);
+  }
 });
