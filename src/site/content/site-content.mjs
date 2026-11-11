@@ -79,3 +79,11 @@ export const footerLinks = [
   { href: "/#iletisim", label: "İletişim" },
   { href: "/gizlilik/", label: "Gizlilik ve KVKK" },
 ];
+
+// Profile links shown as icons in the footer. Kept in one place so the footer
+// and the JSON-LD sameAs stay in step. Only profiles the owner actually owns
+// belong here: a link to someone else's work under our name misleads visitors.
+export const socials = [
+  { href: "https://www.linkedin.com/in/aliulu777/", label: "LinkedIn", icon: "linkedin" },
+  { href: "https://dribbble.com/shots/26952968-Letter-H-3D-Icon", label: "Dribbble", icon: "dribbble" },
+];

@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { site } from "../src/site/config.mjs";
+import { socials } from "../src/site/content/site-content.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFile(join(root, rel), "utf8");
@@ -110,9 +112,32 @@ test("local SEO signals are emitted only when configured", async () => {
   const org = Array.isArray(ld) ? ld.find((o) => o["@type"] === "ProfessionalService") : ld;
   assert.equal(org.address, undefined, "no placeholder address ships");
   assert.equal(org.priceRange, undefined, "no placeholder price ships");
-  assert.equal(org.sameAs, undefined, "no placeholder profile links ship");
   assert.equal(org.areaServed, "TR", "the existing signal is untouched");
   const pages = await read("src/site/pages.mjs");
   assert.match(pages, /\.\.\.\(hasAddress \?/, "address is emitted when set");
   assert.match(pages, /\.\.\.\(site\.priceRange \?/, "priceRange is emitted when set");
+  // sameAs carries only real profiles: emitted when set, absent when not, and
+  // never a placeholder host that would ship a dead or foreign link.
+  if (site.sameAs.length) {
+    assert.deepEqual(org.sameAs, site.sameAs, "configured profiles reach the JSON-LD");
+    for (const href of site.sameAs) {
+      assert.doesNotMatch(href, /example\.(com|org)|your-|placeholder/i, `no placeholder profile ships: ${href}`);
+    }
+  } else {
+    assert.equal(org.sameAs, undefined, "no profile links ship when unset");
+  }
+});
+
+test("the footer carries the owner's profiles as labelled icons", async () => {
+  const html = await read("dist/index.html");
+  assert.match(html, /class="footer-social"/, "the footer has a profile row");
+  assert.match(html, /<nav class="footer-social"[^>]*>[\s\S]*?<svg/, "icons render inline, no extra request");
+  for (const s of socials) {
+    assert.ok(html.includes(`href="${s.href}"`), `footer links ${s.label}`);
+    assert.ok(html.includes(`aria-label="${s.label}"`), `${s.label} icon is labelled for screen readers`);
+  }
+  // The identity profiles feed the JSON-LD, so footer and schema cannot drift.
+  for (const href of site.sameAs) {
+    assert.ok(socials.some((s) => s.href === href), `footer shows the configured profile ${href}`);
+  }
 });
