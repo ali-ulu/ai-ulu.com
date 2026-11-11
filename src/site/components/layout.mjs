@@ -70,7 +70,6 @@ function header() {
   return `<header class="site-header">
   <div class="nav-glass">
     <a class="logo" href="/" aria-label="${site.name} ana sayfa">
-      <span class="logo-mark" aria-hidden="true"></span>
       <span class="logo-word">${escapeHtml(site.name)}</span>
     </a>
     <nav aria-label="Ana menü">
