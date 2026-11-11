@@ -23,16 +23,26 @@ function block(b) {
   return `<p>${inline(b.p)}</p>`;
 }
 
+// "2026-11-11" → "11 Kasım 2026" (Turkish month names, no Intl dependency).
+const MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+function trDate(iso) {
+  const [y, m, d] = String(iso).split("-").map(Number);
+  return m >= 1 && m <= 12 ? `${d} ${MONTHS[m - 1]} ${y}` : iso;
+}
+
 export function postBody(slug) {
   const post = findPost(slug);
   const cta = post.cta;
+  const updated = post.updated && post.updated !== post.published
+    ? ` · <span class="bl-updated">Güncellendi: <time datetime="${post.updated}">${trDate(post.updated)}</time></span>`
+    : "";
   return `<section class="s bl">
     <div class="bl-wrap">
       <header class="bl-head">
         <p class="eyebrow">Blog</p>
         <h1>${escapeHtml(post.title)}</h1>
         <p class="lead">${escapeHtml(post.description)}</p>
-        <p class="bl-meta"><time datetime="${post.published}">${post.published}</time></p>
+        <p class="bl-meta"><span class="bl-author">${escapeHtml(site.owner)}</span> · <time datetime="${post.published}">${trDate(post.published)}</time>${updated}</p>
       </header>
       <article class="prose bl-post">
         ${post.body.map(block).join("\n        ")}
@@ -59,7 +69,7 @@ export const blogIndexBody = () => `<section class="s bl">
           <span class="bl-card-eyebrow">${escapeHtml(p.targetQuery.split(",")[0].trim())}</span>
           <h2>${escapeHtml(p.title)}</h2>
           <p>${escapeHtml(p.description)}</p>
-          <time datetime="${p.published}">${p.published}</time>
+          <time datetime="${p.published}">${trDate(p.published)}</time>
         </a>
       </li>`).join("\n      ")}
     </ul>

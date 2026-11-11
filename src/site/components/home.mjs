@@ -5,11 +5,31 @@ import { escapeHtml } from "../lib/html.mjs";
 
 const wa = `<a class="btn" href="${waLink("Merhaba, web sitem için ücretsiz görüşme istiyorum.")}" rel="noopener">`;
 
+// Cloudflare Turnstile, rendered only when a site key is configured. Empty key
+// means no third-party script, no iframe, and the CSP stays 'self'-only.
+function turnstileWidget() {
+  if (!site.turnstileSiteKey) return "";
+  return `<div class="cf-turnstile" data-sitekey="${escapeHtml(site.turnstileSiteKey)}" data-theme="light"></div>
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>`;
+}
+
 export const preloader = `<div id="pre" role="status" aria-live="polite" aria-label="Yükleniyor"><div class="in">
   <div class="mark" aria-hidden="true">ai-ulu</div>
   <div class="bar"><i id="preBar"></i></div>
   <div class="pct" id="prePct" aria-hidden="true">000</div>
 </div></div>`;
+
+// Without JS the 3D film never runs, so every chapter stays at opacity:0 and the
+// page reads as empty. These rules (a static copy of the `.no-3d` fallback)
+// flatten the chapters into a plain, scrollable column.
+export const noJsStyles = `<noscript><style>
+#pre,#vortex,.vignette,#gl,.tag,.prog,.hint,.callbar{display:none}
+#film{height:auto}
+.stage{position:static;height:auto;padding:8rem 0 4rem;background:none}
+.ch,#c0{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 auto 5rem;padding:0 var(--pad);text-align:left;max-width:44rem;width:auto}
+.ch.right{left:auto;right:auto;text-align:left}
+.ch.right p,.ch.right .cta{margin-left:0;justify-content:flex-start}
+</style></noscript>`;
 
 // data-a / data-b: scroll progress (0–1) where each chapter fades in and out (read by ora.js).
 const film = `<div id="film">
@@ -234,7 +254,7 @@ const contact = () => `<section class="s" id="iletisim">
         </div>
       </div>
       <div class="pm-foot">
-        <button class="pm-btn" type="submit">Postayı at <span aria-hidden="true">↗</span></button>
+        ${turnstileWidget()}<button class="pm-btn" type="submit">Postayı at <span aria-hidden="true">↗</span></button>
         <p class="form__note">Bilgileriniz yalnızca size dönüş yapmak için kullanılır. Ayrıntılar: <a href="/gizlilik/">Gizlilik ve KVKK</a>.</p>
         <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
       </div>

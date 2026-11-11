@@ -23,6 +23,11 @@
 }
 
 /* ------------------------------------------------------------------ the card */
+/* display:flex would otherwise beat the [hidden] attribute, leaving the sent card
+   on screen after submit. */
+.pm-card[hidden] {
+  display: none;
+}
 .pm-card {
   position: relative;
   display: flex;

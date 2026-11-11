@@ -40,6 +40,26 @@ function validReach(value) {
   return email.test(v) || phone.test(v);
 }
 
+// Cloudflare Turnstile check. Skipped entirely when TURNSTILE_SECRET is not set,
+// so the form keeps working (honeypot + rate limit) until the secret is added.
+// Fails closed: a verification error is treated as a failed challenge.
+async function turnstileOk(env, request, token) {
+  if (!env.TURNSTILE_SECRET) return true;
+  if (!token) return false;
+  try {
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ secret: env.TURNSTILE_SECRET, response: token, remoteip: clientIp(request) }),
+    });
+    const data = await res.json();
+    return Boolean(data.success);
+  } catch (err) {
+    console.error("turnstile verify failed", err);
+    return false;
+  }
+}
+
 function clientIp(request) {
   // Cloudflare always sets cf-connecting-ip and overwrites any client-supplied
   // value, so it is trustworthy at the edge. x-forwarded-for is attacker
@@ -116,6 +136,11 @@ async function handleLead(request, env) {
 
   // Honeypot: bots fill hidden fields.
   if (sanitize(payload.company)) return json({ ok: true });
+
+  // CAPTCHA (only when configured): a human must have solved the widget.
+  if (!(await turnstileOk(env, request, payload["cf-turnstile-response"]))) {
+    return json({ error: "Güvenlik doğrulaması başarısız. Lütfen tekrar deneyin." }, 403);
+  }
 
   const name = sanitize(payload.name, 120);
   const reach = sanitize(payload.reach, 160);
@@ -253,6 +278,36 @@ async function handleHit(request, env) {
   return json({ ok: true });
 }
 
+// Client-side error sink. Browsers post uncaught errors and rejections here and
+// they land in Cloudflare Workers Logs (Workers → Logs), so a broken deploy is
+// visible without a third-party SDK. Nothing is stored in D1: the log line is
+// the record, and it is deliberately capped so a noisy client cannot flood it.
+async function handleError(request) {
+  if (request.method !== "POST") return json({ error: "Yöntem desteklenmiyor." }, 405);
+  if (crossOrigin(request)) return json({ error: "Geçersiz istek." }, 403);
+
+  let payload = {};
+  try {
+    payload = JSON.parse((await request.text()).slice(0, 2048)) || {};
+  } catch {
+    return json({ ok: true });
+  }
+
+  const message = sanitize(payload.message, 300);
+  if (!message) return json({ ok: true });
+
+  console.error("client error", {
+    message,
+    source: sanitize(payload.source, 200),
+    line: sanitize(payload.line, 20),
+    col: sanitize(payload.col, 20),
+    stack: sanitize(payload.stack, 800),
+    path: sanitize(payload.path, 300),
+    ua: sanitize(request.headers.get("user-agent"), 300),
+  });
+  return json({ ok: true });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -261,6 +316,9 @@ export default {
     }
     if (url.pathname === "/api/hit") {
       return handleHit(request, env);
+    }
+    if (url.pathname === "/api/error") {
+      return handleError(request);
     }
     return new Response("Not found", { status: 404 });
   },

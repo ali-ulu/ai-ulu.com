@@ -13,6 +13,13 @@ export interface PictureRailItem {
   year?: string;
   /** Artwork shown behind the glass. */
   image: string;
+  /** Responsive candidates for `image`, e.g. "photo-480.webp 480w, photo-960.webp 960w". */
+  srcSet?: string;
+  /** Layout width hint for `srcSet`. Defaults to the viewport width. */
+  sizes?: string;
+  /** Intrinsic pixel size of `image`, used to reserve layout space (CLS). */
+  imageWidth?: number;
+  imageHeight?: number;
   /** Width ÷ height of the artwork. Defaults to 0.8 (a 4:5 portrait). */
   aspect?: number;
   /** Frame moulding. Defaults to "black". */
@@ -39,6 +46,8 @@ export interface PictureRailGalleryProps extends React.ComponentProps<"section">
   items: PictureRailItem[];
   eyebrow?: string;
   heading?: string;
+  /** Heading element for the gallery title. Defaults to h2. */
+  headingAs?: "h1" | "h2";
   /** Shown under the wall while no print is lit. */
   caption?: string;
   /** Call to action rendered under the caption. */
@@ -244,6 +253,7 @@ export function PictureRailGallery({
   items,
   eyebrow,
   heading,
+  headingAs: HeadingTag = "h2",
   caption,
   action,
   autoplay = false,
@@ -722,7 +732,7 @@ export function PictureRailGallery({
       {(eyebrow || heading) && (
         <header className="relative z-10 flex flex-col items-center gap-2 px-6 pt-7 text-center">
           {eyebrow && <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">{eyebrow}</p>}
-          {heading && <h2 className="text-balance text-2xl font-medium tracking-tight sm:text-3xl">{heading}</h2>}
+          {heading && <HeadingTag className="text-balance text-2xl font-medium tracking-tight sm:text-3xl">{heading}</HeadingTag>}
         </header>
       )}
 
@@ -937,9 +947,14 @@ function FrameArt({ item, shape, unit, lit, lightRef, glareRef, dimRef }: {
           <span className="absolute block overflow-hidden bg-muted" style={{ backgroundImage: "radial-gradient(120% 90% at 28% 18%, color-mix(in oklab, var(--color-foreground) 9%, transparent), transparent 70%)", left: mat, right: mat, top: mat, bottom: mat + matB, boxShadow: mat ? `0 0 0 ${bevel}px color-mix(in oklab, white 97%, wheat), 0 0 0 ${bevel + 0.6}px color-mix(in oklab, black 16%, transparent), ${bevel * 0.6}px ${bevel}px ${bevel * 1.6}px ${bevel}px color-mix(in oklab, black 9%, transparent)` : undefined }}>
             <img
               src={item.image}
+              srcSet={item.srcSet}
+              sizes={item.sizes}
               alt=""
+              width={item.imageWidth}
+              height={item.imageHeight}
               draggable={false}
               decoding="async"
+              loading="lazy"
               ref={(node) => { if (node?.complete && node.naturalWidth > 0) node.dataset.loaded = "true"; }}
               onLoad={(event) => { event.currentTarget.dataset.loaded = "true"; }}
               onError={(event) => { event.currentTarget.dataset.failed = "true"; }}

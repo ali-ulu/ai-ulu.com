@@ -43,7 +43,7 @@ const topCountries = query(
 );
 
 const line = (label, value) => console.log(`${label.padEnd(22)} ${value}`);
-const table = (title, rows, key, label) => {
+const table = (title, rows, key) => {
   console.log(`\n${title}`);
   if (!rows.length) return console.log("  (veri yok)");
   for (const r of rows) console.log(`  ${String(r[key] ?? "-").padEnd(26)} ${r.n ?? r.views}`);

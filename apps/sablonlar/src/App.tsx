@@ -4,17 +4,22 @@ import { ArrowLeft, ArrowUpRight, Maximize2, X } from "lucide-react";
 import { useState } from "react";
 
 const img = (name: string) => `${import.meta.env.BASE_URL}stiller/${name}.webp`;
+// Two smaller encodings of each 1400px original. The rail draws frames ~150px
+// wide and the full-screen view ~1400px, so the browser picks per device.
+const srcSet = (name: string) => `${import.meta.env.BASE_URL}stiller/${name}-480.webp 480w, ${import.meta.env.BASE_URL}stiller/${name}-960.webp 960w, ${img(name)} 1400w`;
+// Rail frames are small; the full-screen view is the only place the 1400px file is needed.
+const RAIL_SIZES = "(max-width: 640px) 45vw, 220px";
 
 // Style references we can build in; shown as "örnek tasarım", never as ai-ulu client work.
 const STILLER: PictureRailItem[] = [
-  { id: "ic-mimarlik", title: "İç Mimarlık Stüdyosu", artist: "Sade, fotoğraf odaklı", image: img("interiia"), aspect: 4 / 3, frame: "black", mat: true, drop: 0.04, tag: "Örnek tasarım", details: ["Proje galerisi", "Hizmetler ve süreç", "Keşif randevusu formu"] },
-  { id: "ajans", title: "Dijital Ajans", artist: "Cesur tipografi", image: img("rekolet"), aspect: 4 / 3, frame: "white", mat: true, drop: 0.12, tag: "Örnek tasarım", details: ["Vaka çalışmaları", "Hizmet paketleri", "Teklif formu"] },
-  { id: "kuafor", title: "Kuaför ve Berber", artist: "Sıcak, samimi", image: img("scissor"), aspect: 4 / 3, frame: "oak", drop: -0.02, tag: "Örnek tasarım", details: ["Hizmet ve fiyat listesi", "Ekip tanıtımı", "WhatsApp randevu"] },
-  { id: "hukuk", title: "Hukuk Bürosu", artist: "Ciddi, güven veren", image: img("kafka"), aspect: 4 / 3, frame: "black", mat: true, drop: 0.16, tag: "Örnek tasarım", details: ["Uzmanlık alanları", "Avukat profilleri", "Ön görüşme formu"] },
-  { id: "spor", title: "Spor Salonu", artist: "Enerjik, koyu tema", image: img("flexfitness"), aspect: 1400 / 950, frame: "oak", drop: 0.06, tag: "Örnek tasarım", details: ["Ders programı", "Üyelik paketleri", "Deneme dersi kaydı"] },
-  { id: "dis", title: "Diş Kliniği", artist: "Temiz, ferah", image: img("eviadental"), aspect: 4 / 3, frame: "white", mat: true, drop: 0, tag: "Örnek tasarım", details: ["Tedaviler", "Hekim kadrosu", "Online randevu"] },
-  { id: "konaklama", title: "Butik Konaklama", artist: "İskandinav sadeliği", image: img("skandic"), aspect: 4 / 3, frame: "black", drop: 0.1, tag: "Örnek tasarım", details: ["Oda galerisi", "Müsaitlik ve fiyat", "Rezervasyon talebi"] },
-  { id: "restoran", title: "Restoran", artist: "Atmosferik, iştah açan", image: img("tallow"), aspect: 4 / 3, frame: "oak", mat: true, drop: 0.03, tag: "Örnek tasarım", details: ["Menü", "Şef ve hikâye", "Masa rezervasyonu"] },
+  { id: "ic-mimarlik", title: "İç Mimarlık Stüdyosu", artist: "Sade, fotoğraf odaklı", image: img("interiia"), srcSet: srcSet("interiia"), sizes: RAIL_SIZES, imageWidth: 1400, imageHeight: 1050, aspect: 4 / 3, frame: "black", mat: true, drop: 0.04, tag: "Örnek tasarım", details: ["Proje galerisi", "Hizmetler ve süreç", "Keşif randevusu formu"] },
+  { id: "ajans", title: "Dijital Ajans", artist: "Cesur tipografi", image: img("rekolet"), srcSet: srcSet("rekolet"), sizes: RAIL_SIZES, imageWidth: 1400, imageHeight: 1050, aspect: 4 / 3, frame: "white", mat: true, drop: 0.12, tag: "Örnek tasarım", details: ["Vaka çalışmaları", "Hizmet paketleri", "Teklif formu"] },
+  { id: "kuafor", title: "Kuaför ve Berber", artist: "Sıcak, samimi", image: img("scissor"), srcSet: srcSet("scissor"), sizes: RAIL_SIZES, imageWidth: 1400, imageHeight: 1050, aspect: 4 / 3, frame: "oak", drop: -0.02, tag: "Örnek tasarım", details: ["Hizmet ve fiyat listesi", "Ekip tanıtımı", "WhatsApp randevu"] },
+  { id: "hukuk", title: "Hukuk Bürosu", artist: "Ciddi, güven veren", image: img("kafka"), srcSet: srcSet("kafka"), sizes: RAIL_SIZES, imageWidth: 1400, imageHeight: 1050, aspect: 4 / 3, frame: "black", mat: true, drop: 0.16, tag: "Örnek tasarım", details: ["Uzmanlık alanları", "Avukat profilleri", "Ön görüşme formu"] },
+  { id: "spor", title: "Spor Salonu", artist: "Enerjik, koyu tema", image: img("flexfitness"), srcSet: srcSet("flexfitness"), sizes: RAIL_SIZES, imageWidth: 1400, imageHeight: 950, aspect: 1400 / 950, frame: "oak", drop: 0.06, tag: "Örnek tasarım", details: ["Ders programı", "Üyelik paketleri", "Deneme dersi kaydı"] },
+  { id: "dis", title: "Diş Kliniği", artist: "Temiz, ferah", image: img("eviadental"), srcSet: srcSet("eviadental"), sizes: RAIL_SIZES, imageWidth: 1400, imageHeight: 1050, aspect: 4 / 3, frame: "white", mat: true, drop: 0, tag: "Örnek tasarım", details: ["Tedaviler", "Hekim kadrosu", "Online randevu"] },
+  { id: "konaklama", title: "Butik Konaklama", artist: "İskandinav sadeliği", image: img("skandic"), srcSet: srcSet("skandic"), sizes: RAIL_SIZES, imageWidth: 1400, imageHeight: 1050, aspect: 4 / 3, frame: "black", drop: 0.1, tag: "Örnek tasarım", details: ["Oda galerisi", "Müsaitlik ve fiyat", "Rezervasyon talebi"] },
+  { id: "restoran", title: "Restoran", artist: "Atmosferik, iştah açan", image: img("tallow"), srcSet: srcSet("tallow"), sizes: RAIL_SIZES, imageWidth: 1400, imageHeight: 1050, aspect: 4 / 3, frame: "oak", mat: true, drop: 0.03, tag: "Örnek tasarım", details: ["Menü", "Şef ve hikâye", "Masa rezervasyonu"] },
 ];
 
 const LABELS: PictureRailGalleryLabels = { front: "Ön yüz", back: "Arka yüz", close: "Kapat", open: "Büyütmek için tıklayın" };
@@ -38,7 +43,15 @@ function FullView({ item, onClose }: { item: PictureRailItem; onClose: () => voi
         if (event.key === "Tab") { event.stopPropagation(); event.preventDefault(); }
       }}
     >
-      <img src={item.image} alt={`${item.title} örnek tasarımı`} className="max-h-[92svh] max-w-full rounded-lg object-contain shadow-2xl" />
+      <img
+        src={item.image}
+        srcSet={item.srcSet}
+        sizes="100vw"
+        alt={`${item.title} örnek tasarımı`}
+        width={item.imageWidth}
+        height={item.imageHeight}
+        className="max-h-[92svh] max-w-full rounded-lg object-contain shadow-2xl"
+      />
       <button
         type="button"
         autoFocus
@@ -57,7 +70,13 @@ export default function App() {
   const openItem = openIndex === null ? null : STILLER[openIndex];
 
   return (
-    <main className="flex min-h-svh flex-col bg-background text-foreground">
+    <main id="main" className="flex min-h-svh flex-col bg-background text-foreground">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[80] focus:rounded-md focus:bg-card focus:px-4 focus:py-2 focus:text-card-foreground focus:ring-2 focus:ring-ring"
+      >
+        İçeriğe geç
+      </a>
       <nav className="flex items-center justify-between px-6 py-5 sm:px-10">
         <a href="/" className="inline-flex min-h-11 items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
           <ArrowLeft className="size-4" aria-hidden="true" /> ai-ulu
@@ -71,6 +90,7 @@ export default function App() {
           labels={LABELS}
           eyebrow="Örnek tasarımlar · Sektöre göre"
           heading="Hangi tarz sizin işinize uyar?"
+          headingAs="h1"
           caption="Çerçevelerin üzerinde gezinin, birine tıklayıp yakından bakın, arkasını çevirip içeriği görün."
           autoplay
           onOpenChange={(index) => { setOpenIndex(index); if (index === null) setIsFull(false); }}

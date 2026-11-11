@@ -21,6 +21,36 @@
   }
 })();
 
+// Error monitoring: report uncaught errors and unhandled rejections to the
+// worker, which logs them (Cloudflare Workers Logs). One report per page load
+// keeps a broken loop from hammering the endpoint, and the request is
+// fire-and-forget so reporting can never break the page it is reporting on.
+(function () {
+  let sent = false;
+  function report(detail) {
+    if (sent) return;
+    sent = true;
+    try {
+      fetch("/api/error", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...detail, path: location.pathname }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch {
+      /* never let monitoring break the page */
+    }
+  }
+  addEventListener("error", (e) => {
+    if (e.target && e.target !== window) return; // ignore failed <img>/<script> loads
+    report({ message: e.message, source: e.filename, line: e.lineno, col: e.colno, stack: e.error && e.error.stack });
+  });
+  addEventListener("unhandledrejection", (e) => {
+    const r = e.reason;
+    report({ message: (r && r.message) || String(r), stack: r && r.stack });
+  });
+})();
+
 // Progressive enhancement: the form works without JS only as a normal POST
 // fallback; here we submit via fetch for an inline status message, and the
 // postcard behaves like one — a counter, a live sign-off, a fly-away.

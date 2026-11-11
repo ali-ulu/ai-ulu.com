@@ -8,6 +8,7 @@ export const posts = [
   {
     slug: "web-sitesi-fiyatlari-2026",
     title: "Web sitesi fiyatları 2026: aralıklar, kim ne istiyor, siz ne ödemelisiniz?",
+    metaTitle: "Web sitesi fiyatları 2026: aralıklar ve ne ödemelisiniz?",
     description: "2026 ajans fiyat rehberlerinden gerçek aralıklar: tek sayfa, kurumsal, e-ticaret ve özel yazılım. Aynı işe neden 8.000 de 180.000 de deniyor?",
     targetQuery: "web sitesi fiyatları 2026, web sitesi kurma maliyeti",
     published: DATE,
@@ -43,6 +44,7 @@ export const posts = [
   {
     slug: "yapay-zeka-ile-web-sitesi-yapmak",
     title: "Yapay zekâ ile web sitesi yapmak: ne zaman yeter, ne zaman yetmez?",
+    metaTitle: "Yapay zekâ ile web sitesi yapmak: ne zaman yeter?",
     description: "ChatGPT, Gemini ya da hazır araçla ücretsiz site kurmak mümkün. Hangi iş için yeter, hangisinde müşteri kaybettirir? Tarafsız bir karşılaştırma.",
     targetQuery: "yapay zeka ile web sitesi yapılır mı, chatgpt ile web sitesi yapmak, yapay zeka web sitesi oluşturucu",
     published: DATE,
@@ -82,6 +84,7 @@ export const posts = [
   {
     slug: "web-sitesi-fiyatini-ne-belirler",
     title: "Web sitesi fiyatını ne belirler? Teklif almadan önce sormanız gereken 7 soru",
+    metaTitle: "Web sitesi fiyatını ne belirler? Sormanız gereken 7 soru",
     description: "Aynı site için neden biri 10 bin, diğeri 100 bin lira diyor? Fiyatı belirleyen 7 kalem ve teklifleri karşılaştırmanın doğru yolu.",
     targetQuery: "web sitesi fiyatları 2026, web sitesi yaptırmak ne kadar, web sitesi kurma maliyeti",
     published: DATE,
@@ -111,6 +114,7 @@ export const posts = [
   {
     slug: "instagram-varken-web-sitesi-gerekli-mi",
     title: "Instagram'ım var, web sitesine gerçekten ihtiyacım var mı?",
+    metaTitle: "Instagram'ım var, web sitesine ihtiyacım var mı?",
     description: "Instagram hesabı işinizi görüyorsa siteye gerek yok mu? Hangi işletme için yeterli, hangisi için müşteri kaybı — dürüst bir karşılaştırma.",
     targetQuery: "instagram mı web sitesi mi",
     published: DATE,
@@ -137,6 +141,7 @@ export const posts = [
   {
     slug: "yapay-zeka-aramalarinda-gorunmek",
     title: "İşletmeniz ChatGPT'de çıkıyor mu? Yapay zekâ aramalarında görünmek için 6 adım",
+    metaTitle: "İşletmeniz ChatGPT'de çıkıyor mu? Görünmek için 6 adım",
     description: "Müşterileriniz artık ChatGPT ve Gemini'ye de soruyor. Sitenizin yapay zekâ yanıtlarında yer alabilmesi için yapılması gereken 6 teknik adım.",
     targetQuery: "web sitesi google'da nasıl üst sıralara çıkar, yapay zeka aramalarında görünmek, llms.txt nedir",
     published: DATE,

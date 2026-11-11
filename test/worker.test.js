@@ -364,3 +364,85 @@ test("a telegram failure never fails the request", async () => {
     globalThis.fetch = realFetch;
   }
 });
+
+// ---------------------------------------------------------------- Turnstile
+test("turnstile is skipped when no secret is configured", async () => {
+  const env = makeEnv();
+  const res = await worker.fetch(post({ name: "Ali", reach: "a@b.com" }), env);
+  assert.equal(res.status, 200);
+  assert.equal(env.DB.leads.length, 1);
+});
+
+test("turnstile blocks a submission with no token when configured", async () => {
+  const env = makeEnv({ TURNSTILE_SECRET: "s3cret" });
+  const res = await worker.fetch(post({ name: "Ali", reach: "a@b.com" }), env);
+  assert.equal(res.status, 403);
+  assert.equal(env.DB.leads.length, 0);
+});
+
+test("turnstile accepts a submission when the challenge passes", async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    assert.match(String(url), /siteverify/);
+    return new Response(JSON.stringify({ success: true }), { headers: { "content-type": "application/json" } });
+  };
+  try {
+    const env = makeEnv({ TURNSTILE_SECRET: "s3cret" });
+    const res = await worker.fetch(post({ name: "Ali", reach: "a@b.com", "cf-turnstile-response": "token" }), env);
+    assert.equal(res.status, 200);
+    assert.equal(env.DB.leads.length, 1);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test("turnstile fails closed when verification errors", async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async () => { throw new Error("network down"); };
+  try {
+    const env = makeEnv({ TURNSTILE_SECRET: "s3cret" });
+    const res = await worker.fetch(post({ name: "Ali", reach: "a@b.com", "cf-turnstile-response": "token" }), env);
+    assert.equal(res.status, 403);
+    assert.equal(env.DB.leads.length, 0);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+// ------------------------------------------------------------ error logging
+test("client error endpoint logs and always returns ok", async () => {
+  const logged = [];
+  const realError = console.error;
+  console.error = (...args) => logged.push(args);
+  try {
+    const env = makeEnv();
+    const req = new Request("https://ai-ulu.com/api/error", {
+      method: "POST",
+      headers: { "content-type": "application/json", "cf-connecting-ip": "1.2.3.4" },
+      body: JSON.stringify({ message: "boom", source: "/app.js", line: 10, path: "/" }),
+    });
+    const res = await worker.fetch(req, env);
+    assert.equal(res.status, 200);
+    assert.equal((await res.json()).ok, true);
+    assert.ok(logged.some((l) => l[0] === "client error" && l[1].message === "boom"), "error is logged");
+  } finally {
+    console.error = realError;
+  }
+});
+
+test("client error endpoint ignores junk and cross-origin posts", async () => {
+  const env = makeEnv();
+  const junk = new Request("https://ai-ulu.com/api/error", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: "not json",
+  });
+  assert.equal((await worker.fetch(junk, env)).status, 200);
+
+  const cross = new Request("https://ai-ulu.com/api/error", {
+    method: "POST",
+    headers: { "content-type": "application/json", origin: "https://evil.example" },
+    body: JSON.stringify({ message: "x" }),
+  });
+  assert.equal((await worker.fetch(cross, env)).status, 403);
+});

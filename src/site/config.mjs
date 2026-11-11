@@ -8,7 +8,8 @@ export const site = {
   description:
     "ai-ulu, işletmeler için müşteri getiren web siteleri kurar: özgün tasarım, Google'da ve yapay zekâ aramalarında görünürlük, WhatsApp'a bağlı iletişim.",
   phone: "+905079581642",
-  phoneDisplay: "+90 507 958 16 42",
+  // Non-breaking spaces keep the number on one line; a telephone should never wrap.
+  phoneDisplay: "+90\u00a0507\u00a0958\u00a016\u00a042",
   whatsapp: "https://wa.me/905079581642",
   // Local SEO signals. Left empty on purpose: fill them and they appear in the
   // ProfessionalService JSON-LD (see pages.mjs). Empty values are omitted, so no
@@ -20,6 +21,10 @@ export const site = {
   // until the owner fills it in.
   priceFrom: "",
   sameAs: ["https://www.linkedin.com/in/aliulu777/"], // Google Business Profile, Instagram, LinkedIn
+  // Cloudflare Turnstile site key. Empty = the widget is not rendered and the CSP
+  // stays 'self'-only. Set it (and the worker's TURNSTILE_SECRET) to switch on
+  // the CAPTCHA on the lead form.
+  turnstileSiteKey: "",
   // Bump when the site content changes; feeds dateModified in JSON-LD, the
   // og:updated_time meta tag and sitemap lastmod.
   updated: "2026-11-11",
