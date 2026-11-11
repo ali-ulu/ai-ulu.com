@@ -19,7 +19,7 @@ export const site = {
   // Left empty on purpose: a real number beats a placeholder, so nothing ships
   // until the owner fills it in.
   priceFrom: "",
-  sameAs: [], // Google Business Profile, Instagram, LinkedIn
+  sameAs: ["https://www.linkedin.com/in/aliulu777/"], // Google Business Profile, Instagram, LinkedIn
   // Bump when the site content changes; feeds dateModified in JSON-LD, the
   // og:updated_time meta tag and sitemap lastmod.
   updated: "2026-11-11",

@@ -133,6 +133,11 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .site-footer nav{display:flex;flex-wrap:wrap;gap:1.4rem}
 .site-footer a{text-decoration:none}
 .site-footer a:hover{color:var(--bone)}
+.footer-end{display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap}
+.site-footer .footer-social{gap:.9rem}
+.site-footer .footer-social a{display:inline-flex;color:var(--dim)}
+.site-footer .footer-social a:hover{color:var(--bone)}
+.footer-social svg{display:block}
 
 /* Sticky call/WhatsApp bar. Below 860px the nav hides its links, so the two
    actions a phone visitor wants most sit within thumb reach; the footer gains
