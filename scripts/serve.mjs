@@ -11,6 +11,27 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "dist");
 const port = Number(process.env.PORT || 4173);
 
+// The assets binding applies dist/_redirects before serving files. Mirror the
+// static rules the build writes (`<from> <to> [status]`), so a guessed URL lands
+// on its target here exactly as it will in production.
+async function redirects() {
+  const table = new Map();
+  try {
+    const text = await readFile(join(root, "_redirects"), "utf8");
+    for (const line of text.split("\n")) {
+      const row = line.trim();
+      if (!row || row.startsWith("#")) continue;
+      const [from, to, status] = row.split(/\s+/);
+      if (from && to) table.set(from, { to, status: Number(status) || 302 });
+    }
+  } catch {
+    // No _redirects yet (older build): fall through to normal file serving.
+  }
+  return table;
+}
+
+const redirectTable = await redirects();
+
 const TYPES = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -51,6 +72,13 @@ createServer(async (req, res) => {
     for await (const chunk of req) body += chunk;
     res.writeHead(200, { "content-type": "application/json" });
     res.end(JSON.stringify({ ok: true }));
+    return;
+  }
+
+  const hit = redirectTable.get(url.pathname);
+  if (hit) {
+    res.writeHead(hit.status, { location: hit.to });
+    res.end();
     return;
   }
 
