@@ -219,9 +219,9 @@ export const posts = [
       { note: "**ai-ulu'da:** Tasarım, kod ve içerik yayında size teslim edilir. Kapsam ve takvim teklifte yazılıdır." },
     ],
     cta: { text: "Elinizdeki teklifi WhatsApp'tan gönderin, altı maddeye göre birlikte bakalım →", message: "Merhaba, elimdeki web sitesi teklifini birlikte değerlendirebilir miyiz?" },
-  },,
-{
-  "slug": "chatgpt-business-hub-nedir",
+  },
+  {
+    "slug": "chatgpt-business-hub-nedir",
   "title": "ChatGPT Business Hub Nedir? İşletme Kaydı ve Görünürlük Rehberi",
   "metaTitle": "ChatGPT Business Hub Nedir? İşletme Rehberi",
   "description": "ChatGPT Business Hub ile işletme profili talebi, doğrulama, Türkiye'deki uygunluk ve Business Agent hakkında bilmeniz gerekenler.",
