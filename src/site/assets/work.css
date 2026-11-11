@@ -24,7 +24,9 @@
 .wk-links{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:.5rem}
 .wk-link{display:inline-flex;align-items:center;gap:.5rem;min-height:44px;padding:.7rem 1.1rem;border-radius:999px;background:var(--bone);color:var(--ink);text-decoration:none;font:600 .8rem/1 var(--sans);letter-spacing:.02em;transition:transform .3s,background .3s}
 .wk-link:hover{background:#fff;transform:translateY(-1px)}
-.wk-link-kind{font:500 .62rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.55}
+/* Muted, but not translucent: 55% opacity over --bone came out at 4.18:1.
+   This solid colour keeps the secondary look and clears 4.5:1 (5.3:1). */
+.wk-link-kind{font:500 .62rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#605d59}
 
 .wk-articles{margin-top:4rem}
 .wk-articles > h2{font:400 clamp(1.5rem,3vw,2.1rem)/1.15 var(--serif);margin:0 0 .8rem;text-wrap:balance}

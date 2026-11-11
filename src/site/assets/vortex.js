@@ -5,6 +5,17 @@
   const canvas = document.getElementById("vortex");
   if (!canvas) return;
 
+  // Same budget as the film: the particle field is decoration, so phones, Data
+  // Saver and low-memory devices keep the static backdrop (body::before in
+  // site.css) instead of paying for a full-screen WebGL loop.
+  const canRun = matchMedia("(min-width: 768px)").matches
+    && !(navigator.connection && navigator.connection.saveData)
+    && (navigator.deviceMemory ?? 8) >= 4;
+  if (!canRun) {
+    canvas.remove();
+    return;
+  }
+
   const gl = canvas.getContext("webgl", {
     alpha: true,
     antialias: false,
@@ -233,12 +244,13 @@ void main(){
   }
   resize();
 
-  // Pointer repulsion, eased in and out.
+  // Pointer repulsion, eased in and out. The canvas is position:fixed, so the
+  // pointer's client coordinates are already canvas coordinates: no per-move
+  // getBoundingClientRect (which forced a layout on every mouse event).
   let mx = 0, my = 0, mS = 0, mTarget = 0, mTimer = 0;
   addEventListener("pointermove", (e) => {
-    const rect = canvas.getBoundingClientRect();
-    mx = e.clientX - rect.left;
-    my = e.clientY - rect.top;
+    mx = e.clientX;
+    my = e.clientY;
     mTarget = 1;
     clearTimeout(mTimer);
     mTimer = setTimeout(() => { mTarget = 0; }, 1600);
@@ -251,6 +263,10 @@ void main(){
     gl.vertexAttribPointer(loc, size, gl.FLOAT, false, 0, 0);
   };
 
+  // ALIASED_POINT_SIZE_RANGE never changes for a context, so query it once at
+  // start-up instead of every frame (a synchronous GPU round trip).
+  const maxPt = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE)[1] || 64;
+
   function frame(now) {
     mS += (mTarget - mS) * 0.06;
     const t = reduce ? 0 : now / 1000;
@@ -259,8 +275,6 @@ void main(){
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-
-    const maxPt = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE)[1] || 64;
 
     gl.useProgram(dust.p);
     shared(dust.u);
@@ -301,9 +315,15 @@ void main(){
   const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
   io.observe(canvas);
 
+  // The field drifts slowly, so 30 fps is indistinguishable from 60 here and
+  // halves the GPU work on a phone.
+  const MIN_FRAME = 1000 / 30;
+  let last = 0;
   function loop(now) {
     requestAnimationFrame(loop);
     if (document.hidden || !visible) return;
+    if (now - last < MIN_FRAME) return;
+    last = now;
     frame(now);
   }
   requestAnimationFrame(loop);

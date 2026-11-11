@@ -1,39 +1,62 @@
 // Home page film: a procedural laptop types real code, turns it into a site and comes apart, scrubbed by scroll.
 const root = document.documentElement;
+const pre = document.getElementById('pre');
 const preBar = document.getElementById('preBar');
 const prePct = document.getElementById('prePct');
 let loaded = 0;
-const step = (n) => { loaded = Math.max(loaded, n); preBar.style.width = loaded + '%'; prePct.textContent = String(Math.round(loaded)).padStart(3, '0'); };
-const finishPre = () => { step(100); document.getElementById('pre').classList.add('done'); };
-// No WebGL or a failed download: show the chapters as a plain column instead of an empty stage.
+const step = (n) => { loaded = Math.max(loaded, n); if (preBar) preBar.style.width = loaded + '%'; if (prePct) prePct.textContent = String(Math.round(loaded)).padStart(3, '0'); };
+// The hero is static HTML and paints on its own, so the loader must not wait on
+// the 3D bundle (670 KB) or on web fonts. Hide it after the first paint: that is
+// what makes the hero the LCP element instead of a screen-covering overlay.
+const finishPre = () => { if (pre) pre.classList.add('done'); };
 const fallback = (err) => { root.classList.add('no-3d'); finishPre(); if (err) console.error('3D scene disabled:', err); };
+requestAnimationFrame(() => requestAnimationFrame(() => { step(100); finishPre(); }));
 
-let THREE, RoundedBoxGeometry, RoomEnvironment;
-try {
-  [THREE, { RoundedBoxGeometry }, { RoomEnvironment }] = await Promise.all([
-    import('/vendor/three/three.module.min.js').then((m) => (step(45), m)),
-    import('/vendor/three/RoundedBoxGeometry.js').then((m) => (step(60), m)),
-    import('/vendor/three/RoomEnvironment.js').then((m) => (step(70), m)),
-  ]);
-  await document.fonts.ready;
-  step(80);
-} catch (err) {
-  fallback(err);
-}
+// The film loads after the first paint so its parse, WebGL context and shader
+// compiles stay out of the critical path. The hero is already visible and the
+// stage fades in underneath it when the scene is ready.
+const whenIdle = (fn) => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 200));
 
-// Mock-site photo (Unsplash licence, see img/KAYNAK.txt); the screen still draws without it.
-const photo = THREE ? await (async () => { const im = new Image(); im.src = '/img/gulus.webp'; try { await im.decode(); return im; } catch { return null; } })() : null;
-let renderer = null;
-if (THREE) {
+// A 670 KB WebGL scene is not worth its main-thread cost on a phone: on a
+// mobile trace it alone blocks the thread for over 15 s. Small screens, Data
+// Saver and low-memory devices get the static, readable chapter column instead
+// (.no-3d), which the CSS already lays out; the hero is identical either way.
+const canRunFilm = matchMedia('(min-width: 768px)').matches
+  && !(navigator.connection && navigator.connection.saveData)
+  && (navigator.deviceMemory ?? 8) >= 4;
+
+async function loadFilm() {
+  let THREE, RoundedBoxGeometry, RoomEnvironment;
+  try {
+    [THREE, { RoundedBoxGeometry }, { RoomEnvironment }] = await Promise.all([
+      import('/vendor/three/three.module.min.js').then((m) => (step(45), m)),
+      import('/vendor/three/RoundedBoxGeometry.js').then((m) => (step(60), m)),
+      import('/vendor/three/RoomEnvironment.js').then((m) => (step(70), m)),
+    ]);
+    await document.fonts.ready;
+    step(80);
+  } catch (err) {
+    fallback(err);
+    return;
+  }
+
+  // Mock-site photo (Unsplash licence, see img/KAYNAK.txt); the screen still draws without it.
+  const photo = await (async () => { const im = new Image(); im.src = '/img/gulus.webp'; try { await im.decode(); return im; } catch { return null; } })();
+  let renderer = null;
   try {
     renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gl'), antialias: true, alpha: true, powerPreference: 'high-performance' });
   } catch (err) {
     fallback(err);
+    return;
   }
+  start(THREE, RoundedBoxGeometry, RoomEnvironment, photo, renderer);
 }
-if (renderer) start();
 
-function start() {
+// Desktop: keep the film. Everywhere else: fall back to the static column.
+if (canRunFilm) whenIdle(loadFilm);
+else fallback();
+
+function start(THREE, RoundedBoxGeometry, RoomEnvironment, photo, renderer) {
   step(88);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));

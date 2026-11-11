@@ -430,7 +430,9 @@
   font-size: 0.9rem;
   color: var(--dim);
 }
-.pm-aside a {
+/* Buttons carry their own colours (.btn / .btn.ghost); tinting them here made
+   the WhatsApp button bone-on-bone (1.47:1). Only plain links get --soft. */
+.pm-aside a:not(.btn) {
   color: var(--soft);
 }
 @container pm (max-width: 780px) {
