@@ -69,8 +69,7 @@ test("@crossbrowser breadcrumbs are visible and marked up", async ({ page }) => 
   await expect(crumbs.locator('[aria-current="page"]')).toHaveText("Blog");
 });
 
-// Responsive behaviour: the site swaps the desktop WebGL hero for a static,
-// readable column under 768px and must never scroll sideways. These run on the
+// Responsive behaviour: the page must never scroll sideways. These run on the
 // mobile viewport projects as well as the desktop ones.
 test("no horizontal overflow at any common viewport", async ({ page }) => {
   for (const [w, h] of [[320, 640], [390, 844], [768, 1024], [1350, 940]]) {
@@ -85,15 +84,39 @@ test("no horizontal overflow at any common viewport", async ({ page }) => {
   }
 });
 
-test("the hero falls back to a readable static column on a phone", async ({ page }) => {
+test("a phone gets the 3D film and the two-tap funnel", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  // Below 768px the film must not run; the .no-3d fallback lays the copy out.
-  await expect(page.locator("html")).toHaveClass(/no-3d/, { timeout: 5000 });
   const h1 = page.locator("h1").first();
   await expect(h1).toBeVisible();
-  const box = await h1.boundingBox();
-  expect(box.width).toBeLessThanOrEqual(390);
+  expect((await h1.boundingBox()).width).toBeLessThanOrEqual(390);
+  // The scene is a lazy chunk; it either runs or the page falls back to the column.
+  await expect(page.locator("html")).toHaveClass(/has-3d|no-3d/, { timeout: 8000 });
+  // Tap one: a sector. Every WhatsApp link now carries a message that names it.
+  await page.locator(".sector", { hasText: "Diş kliniği" }).click();
+  const wa = page.locator(".callbar .wa");
+  await expect(wa).toHaveAttribute("href", /wa\.me\/905079581642\?text=.*di%C5%9F%20klini/);
+  await expect(page.locator("#msg")).toHaveValue(/Diş kliniği/);
+});
+
+test("the rail walks the film one tap at a time and then leaves it", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveClass(/has-3d|no-3d/, { timeout: 8000 });
+  test.skip(await page.locator("html.no-3d").count() > 0, "no WebGL here: the film is a static column");
+  const next = page.locator('.rail [data-step="1"]');
+  for (const title of ["Tasarım", "Hız", "Görünürlük", "Dönüşüm"]) {
+    await next.click();
+    await expect(page.locator(`.rail [aria-label="${title}"]`)).toHaveAttribute("aria-current", "step", { timeout: 5000 });
+  }
+  await next.click();
+  await expect(page.locator("#nasil")).toBeInViewport({ timeout: 5000 });
+});
+
+test("reduced motion gets the film as an ordinary readable column", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveClass(/no-3d/);
+  await expect(page.locator("#c3 h2")).toBeVisible();
 });
 
 test("the mobile call bar reaches a visitor without a hover", async ({ page }) => {

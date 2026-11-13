@@ -37,16 +37,6 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 .btn.ghost{background:transparent;color:var(--bone);box-shadow:inset 0 0 0 1px var(--line)}
 .btn.ghost:hover{box-shadow:inset 0 0 0 1px var(--bone)}
 
-/* preloader: hides itself after 8 s even if the 3D script never runs */
-#pre{position:fixed;inset:0;z-index:50;background:var(--ink);display:grid;place-items:center;transition:opacity .9s .2s,visibility 0s 1.1s;animation:pre-out .6s 8s forwards}
-#pre.done{opacity:0;visibility:hidden;pointer-events:none}
-#pre .in{width:min(22rem,70vw);text-align:center}
-#pre .mark{font:400 2.4rem/1 var(--serif)}
-#pre .bar{height:1px;background:var(--line);margin:1.6rem 0 .8rem;overflow:hidden}
-#pre .bar i{display:block;height:100%;width:0;background:var(--bone);transition:width .25s}
-#pre .pct{font:500 .7rem/1 var(--mono);color:var(--dim);letter-spacing:.2em}
-@keyframes pre-out{to{opacity:0;visibility:hidden}}
-
 /* Liquid Glass navbar: a floating pill with backdrop blur and layered
    highlights. Falls back to a solid pill where backdrop-filter is unsupported. */
 .site-header{position:fixed;inset:0 0 auto;z-index:20;padding:calc(.7rem + env(safe-area-inset-top,0px)) var(--pad)}
@@ -64,51 +54,72 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 .nav-glass nav a:hover{color:var(--bone)}
 .nav-cta{position:relative;z-index:1;padding:.7rem 1.1rem}
 
-/* home: scroll-scrubbed 3D film */
-#film{height:820vh;position:relative}
+/* home: the film. Five chapters laid over one 3D object, scrubbed by native
+   scroll. In film mode the chapters' opacity, visibility and transform are
+   written by client/home/chapters.js alone; nothing here animates them. */
+#film{height:460vh;position:relative}
 .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
-#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
-.ch{position:absolute;z-index:3;left:var(--pad);bottom:clamp(2rem,9vh,6rem);max-width:34rem;opacity:0;visibility:hidden;pointer-events:none;will-change:opacity,transform}
-.ch.on{pointer-events:auto}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .8s}
+.has-3d #gl{opacity:1}
+.ch{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:1.2rem;padding:6.5rem calc(var(--pad) + 2.4rem) 4rem var(--pad);opacity:0;visibility:hidden;pointer-events:none}
+.ch.on>*{pointer-events:auto}
+.ch.right{align-items:flex-end;text-align:right}
 .ch h1,.ch h2,.ch p,.ch .eyebrow{text-shadow:0 2px 28px rgba(8,9,11,.85),0 0 2px rgba(8,9,11,.6)}
-.ch.right{left:auto;right:var(--pad);text-align:right}
-.ch h1,.ch h2{font:400 clamp(2.6rem,6.4vw,6rem)/.95 var(--serif);letter-spacing:-.015em;margin:1rem 0 1.2rem;text-wrap:balance}
-.ch h2{font-size:clamp(2.2rem,4.6vw,4.2rem)}
-.ch p{color:var(--soft);font-size:clamp(1rem,1.25vw,1.12rem);max-width:30rem}
-.ch.right p{margin-left:auto}
-.ch .cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.8rem}
+.ch h1,.ch h2{font:400 clamp(2.5rem,6.2vw,6.4rem)/.94 var(--serif);letter-spacing:-.02em;max-width:12ch;text-wrap:balance}
+.ch h2{font-size:clamp(2.4rem,5.6vw,5.4rem);max-width:10ch}
+.ch p{color:var(--soft);font-size:clamp(1rem,1.25vw,1.14rem);max-width:28rem}
+.ch .eyebrow b{font:500 .78rem/1 var(--mono);letter-spacing:.1em;color:var(--amber);margin-right:.9rem}
+.ch .cta{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:.6rem}
 .ch.right .cta{justify-content:flex-end}
-/* the hero is visible before any script runs, so it can be the LCP element */
-#c0{bottom:auto;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;max-width:56rem;width:calc(100% - 2*var(--pad));opacity:1;visibility:visible;pointer-events:auto}
-#c0 p{margin:0 auto}
-#c0 .cta{justify-content:center}
-.tag{position:absolute;left:0;top:0;z-index:3;font:500 .78rem/1.3 var(--sans);letter-spacing:.01em;color:var(--bone);opacity:0;white-space:nowrap;pointer-events:none;will-change:transform,opacity}
-.tag b{display:block;font:400 1.35rem/1 var(--serif);letter-spacing:0;margin-bottom:.3rem;color:var(--amber)}
-.tag::before{content:"";position:absolute;left:-1.6rem;top:.55rem;width:1.1rem;height:1px;background:var(--amber)}
-.hint{position:absolute;z-index:3;left:var(--pad);bottom:1.6rem;font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--dim)}
-.prog{position:absolute;z-index:3;right:var(--pad);top:50%;transform:translateY(-50%);display:grid;gap:.9rem}
-.prog i{width:1.6rem;height:1px;background:var(--line);transition:background .3s,width .3s}
-.prog i.on{background:var(--bone);width:2.6rem}
-/* no WebGL / script failed / small screen: chapters become a plain readable column.
-   The same flattening is applied by a media query below so a phone gets it before
-   the first paint (a class added later would shift the layout — CLS). Keep the two
-   blocks in sync; test/vortex-background.test.js checks both. */
+/* The hero is plain HTML, visible before any script runs: it is the LCP element. */
+#c0{display:grid;grid-template-rows:1fr auto auto 1fr auto;justify-content:stretch;align-items:stretch;gap:0;padding-bottom:1.4rem;opacity:1;visibility:visible}
+#c0>*{pointer-events:auto}
+.hero-copy{grid-row:2;display:grid;gap:1.2rem;max-width:46rem}
+.hero-act{grid-row:3;display:grid;gap:1.4rem;margin-top:2rem;max-width:36rem}
+/* Sector picker: native radios, so it is keyboard- and screen-reader-ready as is. */
+.sectors{border:0;min-width:0}
+.sectors legend{font:500 .72rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:.8rem}
+.sector-row{display:flex;flex-wrap:wrap;gap:.5rem}
+.sector input{position:absolute;opacity:0;pointer-events:none}
+.sector span{display:flex;align-items:center;min-height:44px;padding:0 1rem;border:1px solid var(--line);border-radius:4px;background:rgba(8,9,11,.55);font:500 .84rem/1.1 var(--sans);color:var(--soft);cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.sector span:hover{border-color:var(--bone);color:var(--bone)}
+.sector input:checked+span{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.sector input:focus-visible+span{outline:2px solid var(--amber);outline-offset:3px}
+.facts{grid-row:5;list-style:none;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);max-width:60rem}
+.facts li{padding:1rem 1.2rem 0 0;font-size:.8rem;line-height:1.35;color:var(--dim)}
+.facts b{display:block;font:400 1.5rem/1.1 var(--serif);color:var(--bone);margin-bottom:.25rem}
+/* Rail: one tap moves one chapter; the last step leaves the film. */
+.rail{position:absolute;z-index:4;right:.9rem;top:50%;transform:translateY(-50%);display:grid;justify-items:center;gap:.1rem}
+.rail button{display:grid;place-items:center;width:32px;height:30px;border:0;background:none;color:var(--soft);font:400 1rem/1 var(--sans);cursor:pointer}
+.rail button:disabled{opacity:.25;cursor:default}
+.rail i{width:8px;height:8px;border-radius:50%;background:rgba(236,231,222,.28);transition:background .3s,transform .3s}
+.rail [aria-current] i{background:var(--amber);transform:scale(1.5)}
+.rail button:hover:not(:disabled){color:var(--amber)}
+/* No WebGL, reduced motion, Data Saver or a failed script: the chapters become
+   a plain column. The hero keeps its exact box, so nothing shifts when the
+   class lands. home.mjs carries a copy of these rules for no-JS; keep in sync. */
 .no-3d #film{height:auto}
-.no-3d .stage{position:static;height:auto;padding:8rem 0 4rem;background:none}
-.no-3d #gl,.no-3d .tag,.no-3d .prog,.no-3d .hint{display:none}
-.no-3d .ch,.no-3d #c0{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 var(--pad) 5rem;text-align:left;max-width:40rem;width:auto}
-.no-3d .ch.right .cta,.no-3d #c0 .cta{justify-content:flex-start}
-.no-3d .ch.right p,.no-3d #c0 p{margin:0}
-@media (max-width:767px){
-  /* Phones skip the 3D film (see ora.js/vortex.js), so show the column at once:
-     no loader overlay, no post-paint layout shift. */
-  #pre{display:none}
-  #film{height:auto}
-  .stage{position:static;height:auto;padding:8rem 0 4rem;background:none}
-  #gl,.tag,.prog,.hint{display:none}
-  .ch,#c0{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 var(--pad) 5rem;text-align:left;max-width:40rem;width:auto}
-  .ch.right .cta,#c0 .cta{justify-content:flex-start}
-  .ch.right p,#c0 p{margin:0}
+.no-3d .stage{position:static;height:auto;overflow:visible}
+.no-3d #gl,.no-3d .rail{display:none}
+.no-3d .ch{position:static;opacity:1;visibility:visible;pointer-events:auto;min-height:0;padding:0 var(--pad) 5rem;align-items:flex-start;text-align:left}
+.no-3d .ch.right .cta{justify-content:flex-start}
+.no-3d #c0{position:relative;min-height:100svh;padding:6.5rem var(--pad) 1.4rem}
+@media (max-width:860px){
+  /* Phone: copy on top, the object in the middle, the picker in thumb reach.
+     The call bar is the call to action here, so the hero's own buttons go. */
+  .ch{justify-content:flex-end;padding:5.5rem 2.6rem 6.4rem var(--pad);background:linear-gradient(180deg,transparent 50%,rgba(8,9,11,.82) 78%)}
+  .ch.right{align-items:flex-start;text-align:left}
+  .ch.right .cta{justify-content:flex-start}
+  #c0{grid-template-rows:auto 1fr auto;padding:5.6rem var(--pad) 5.6rem;background:none}
+  .hero-copy{grid-row:1;gap:.8rem}
+  .hero-act{grid-row:3;margin-top:0}
+  .hero-copy p{font-size:.98rem}
+  .ch .cta,.facts{display:none}
+  .sector-row{display:grid;grid-template-columns:1fr 1fr}
+  .sectors legend{font-size:.66rem}
+  .rail{right:.15rem}
+  .no-3d .ch{background:none}
+  .no-3d #c0{padding:5.6rem var(--pad) 5.6rem}
 }
 
 /* content sections */
@@ -203,16 +214,15 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
   .site-header{padding:calc(.5rem + env(safe-area-inset-top,0px)) .7rem}
   .nav-glass{gap:.6rem;padding:.3rem .35rem .3rem .9rem}
   .site-header nav a:not(.keep){display:none}
-  .nav-glass nav{gap:0;margin-left:auto}
+  .nav-glass nav{gap:.9rem;margin-left:auto;white-space:nowrap;font-size:.8rem}
   .nav-cta{padding:.6rem .85rem}
   .g4,.g3,.contact-grid{grid-template-columns:1fr}
-  .ch,.ch.right{left:var(--pad);right:var(--pad);text-align:left;bottom:2.2rem}
-  .ch.right p{margin-left:0}
-  .ch.right .cta{justify-content:flex-start}
-  .prog,.tag{display:none}
   .callbar{display:flex;gap:.6rem;position:fixed;left:.7rem;right:.7rem;bottom:calc(.7rem + env(safe-area-inset-bottom,0px));z-index:30}
   .callbar-btn{border-radius:999px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
   .site-footer{padding-bottom:calc(5.4rem + env(safe-area-inset-bottom,0px))}
 
 }
+/* Short desktop windows: the hero keeps its headline, picker and action. */
+@media (max-height:720px) and (min-width:861px){.facts{display:none}.ch h1{font-size:clamp(2.4rem,9vh,4.4rem)}.hero-act{margin-top:1.2rem}}
+@media (max-width:480px){.site-header nav a[href="/sablonlar/"]{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation-duration:0s!important}}

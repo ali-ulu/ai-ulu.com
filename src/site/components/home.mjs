@@ -1,5 +1,7 @@
 import { site, waLink } from "../config.mjs";
 import { budgets, faq, projectTypes } from "../content/site-content.mjs";
+import { sectors } from "../content/sectors.mjs";
+import { RANGES } from "../client/home/scene/pose.js";
 import { blogTeaser } from "./blog.mjs";
 import { escapeHtml } from "../lib/html.mjs";
 
@@ -13,71 +15,85 @@ function turnstileWidget() {
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>`;
 }
 
-export const preloader = `<div id="pre" role="status" aria-live="polite" aria-label="Yükleniyor"><div class="in">
-  <div class="mark" aria-hidden="true">ai-ulu</div>
-  <div class="bar"><i id="preBar"></i></div>
-  <div class="pct" id="prePct" aria-hidden="true">000</div>
-</div></div>`;
-
-// Without JS the 3D film never runs, so every chapter stays at opacity:0 and the
-// page reads as empty. These rules (a static copy of the `.no-3d` fallback)
-// flatten the chapters into a plain, scrollable column.
+// Without JS the film never runs, so every chapter after the hero would stay
+// hidden. These rules (a static copy of the `.no-3d` fallback in site.css)
+// lay the chapters out as a plain column. The sector picker needs JS, so it goes.
 export const noJsStyles = `<noscript><style>
-#pre,#vortex,.vignette,#gl,.tag,.prog,.hint,.callbar{display:none}
+#vortex,.vignette,#gl,.rail,.sectors,.callbar{display:none}
 #film{height:auto}
-.stage{position:static;height:auto;padding:8rem 0 4rem;background:none}
-.ch,#c0{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 auto 5rem;padding:0 var(--pad);text-align:left;max-width:44rem;width:auto}
-.ch.right{left:auto;right:auto;text-align:left}
-.ch.right p,.ch.right .cta{margin-left:0;justify-content:flex-start}
+.stage{position:static;height:auto;overflow:visible}
+.ch{position:static;opacity:1;visibility:visible;pointer-events:auto;min-height:0;padding:0 var(--pad) 5rem;text-align:left}
+#c0{position:relative;min-height:100svh}
 </style></noscript>`;
 
-// data-a / data-b: scroll progress (0–1) where each chapter fades in and out (read by ora.js).
+const sectorChip = (s) => `<label class="sector"><input type="radio" name="sector" value="${s.id}"><span>${escapeHtml(s.label)}</span></label>`;
+
+// The film: five chapters over one 3D object (a site cut into its four layers).
+// data-a / data-b: scroll progress (0–1) where each chapter fades in and out;
+// they mirror RANGES in client/home/scene/pose.js (test/home-scene.test.js checks).
+// Everything the scene illustrates is stated here as real, crawlable HTML.
+const chapter = (i, side, inner) => {
+  const [a, b] = RANGES[i];
+  return `<div class="ch${side ? ` ${side}` : ""}" id="c${i}" data-a="${a}" data-b="${b}">${inner}</div>`;
+};
+
 const film = `<div id="film">
+  <a class="skip-link" href="#nasil">Filmi geç</a>
   <div class="stage">
     <canvas id="gl" aria-hidden="true"></canvas>
 
-    <div class="ch" id="c0" data-a="0" data-b=".085">
-      <span class="eyebrow">Web sitesi · Tasarım · Görünürlük</span>
-      <h1>Müşteri getiren bir web sitesi <em>ister misiniz?</em></h1>
-      <p>Harika tasarım, Google'da ve yapay zekâ aramalarında görünen, ziyaretçiyi müşteriye çeviren siteler kuruyoruz.</p>
-      <div class="cta">
-        ${wa}Ücretsiz görüşme <span aria-hidden="true">→</span></a>
-        <a class="btn ghost" href="tel:${site.phone}">${site.phoneDisplay}</a>
+    ${chapter(0, "", `
+      <div class="hero-copy">
+        <span class="eyebrow">Web sitesi · Tasarım · Görünürlük</span>
+        <h1>Müşteri getiren bir web sitesi <em>ister misiniz?</em></h1>
+        <p>Google'da ve yapay zekâ aramalarında görünen, ziyaretçiyi müşteriye çeviren siteler kuruyoruz.</p>
       </div>
-    </div>
+      <div class="hero-act">
+        <fieldset class="sectors" id="sectors">
+          <legend>İşiniz ne? Seçin, sitenizi görün.</legend>
+          <div class="sector-row">${sectors.map(sectorChip).join("")}</div>
+        </fieldset>
+        <div class="cta">
+          ${wa}<span data-cta-label>Ücretsiz görüşme</span> <span aria-hidden="true">→</span></a>
+          <a class="btn ghost" href="tel:${site.phone}">${site.phoneDisplay}</a>
+        </div>
+      </div>
+      <ul class="facts">
+        <li><b>2–4 hafta</b>ilk görüşmeden yayına</li>
+        <li><b>24 saat</b>içinde yazılı teklif</li>
+        <li><b>Sizin</b>alan adı, kod ve içerik</li>
+        <li><b>Ücretsiz</b>ilk görüşme</li>
+      </ul>`)}
 
-    <div class="ch" id="c1" data-a=".14" data-b=".36">
-      <span class="eyebrow">01 — Kod</span>
-      <h2>Her satır <em>sizin için</em> yazılır.</h2>
-      <p>Hazır şablon yok. Siteniz sıfırdan, işletmenizin hedefine göre kodlanır: hızlı, temiz ve size ait.</p>
-    </div>
+    ${chapter(1, "", `
+      <span class="eyebrow"><b>01</b> Tasarım</span>
+      <h2>İlk bakışta <em>güven.</em></h2>
+      <p>En üstteki katman vitrininiz. Hazır şablon değil: sektörünüze ve markanıza göre çizilir, sıfırdan kodlanır.</p>`)}
 
-    <div class="ch right" id="c2" data-a=".42" data-b=".58">
-      <span class="eyebrow">02 — Tasarım</span>
-      <h2>Kod, <em>vitrininize</em> dönüşür.</h2>
-      <p>Sektörünüze özel, ilk saniyede güven veren bir tasarım. Rakiplerinizden ayrışırsınız.</p>
-    </div>
+    ${chapter(2, "right", `
+      <span class="eyebrow"><b>02</b> Hız</span>
+      <h2>Beklemeden <em>açılır.</em></h2>
+      <p>Altındaki katman hız. Sayfa, ziyaretçi vazgeçmeden telefonda açılır; ağır ne varsa ilk boyamadan sonraya kalır.</p>`)}
 
-    <div class="ch" id="c3" data-a=".64" data-b=".8">
-      <span class="eyebrow">03 — İçinde ne var</span>
-      <h2>Güzel görünmesi <em>yetmez.</em></h2>
-      <p>Her katman tek bir iş için çalışır: sizi bulduran, ikna eden ve aratan bir site.</p>
-    </div>
+    ${chapter(3, "", `
+      <span class="eyebrow"><b>03</b> Görünürlük</span>
+      <h2>Arayan sizi <em>bulur.</em></h2>
+      <p>Yapılandırılmış veri, site haritası ve llms.txt: Google'ın ve yapay zekâ asistanlarının okuduğu yapı ilk günden sitenin içinde.</p>`)}
 
-    <div class="ch right" id="c4" data-a=".88" data-b="1.01">
-      <span class="eyebrow">04 — Yayında</span>
-      <h2>Müşteriniz sizi <em>bulsun.</em></h2>
-      <p>Telefonda kusursuz, saniyeler içinde açılan, tek dokunuşla WhatsApp'tan size ulaştıran siteniz hazır.</p>
-      <div class="cta"><a class="btn" href="#iletisim">Projeyi başlatalım <span aria-hidden="true">→</span></a></div>
-    </div>
+    ${chapter(4, "right", `
+      <span class="eyebrow"><b>04</b> Dönüşüm</span>
+      <h2>Tek dokunuşla <em>size ulaşır.</em></h2>
+      <p>Her sayfada WhatsApp ve arama. Ziyaretçi aklındayken yazar, mesaj doğrudan telefonunuza düşer.</p>
+      <div class="cta">
+        ${wa}<span data-cta-label>Ücretsiz görüşme</span> <span aria-hidden="true">→</span></a>
+        <a class="btn ghost" href="#iletisim">Formu doldurun</a>
+      </div>`)}
 
-    <div class="tag" aria-hidden="true"><b>Tasarım</b>Markanıza özel arayüz</div>
-    <div class="tag" aria-hidden="true"><b>Hız</b>Saniyeler içinde açılış</div>
-    <div class="tag" aria-hidden="true"><b>Görünürlük</b>Google + yapay zekâ aramaları</div>
-    <div class="tag" aria-hidden="true"><b>Dönüşüm</b>Tek dokunuşla WhatsApp</div>
-
-    <div class="prog" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-    <div class="hint" id="hint" aria-hidden="true">Kaydırın</div>
+    <nav class="rail" aria-label="Film bölümleri">
+      <button type="button" data-step="-1" aria-label="Önceki bölüm" disabled><span aria-hidden="true">↑</span></button>
+      ${["Giriş", "Tasarım", "Hız", "Görünürlük", "Dönüşüm"].map((n, i) => `<button type="button" data-stop="${i}" aria-label="${n}"${i === 0 ? ' aria-current="step"' : ""}><i></i></button>`).join("")}
+      <button type="button" data-step="1" aria-label="Sonraki bölüm"><span aria-hidden="true">↓</span></button>
+    </nav>
   </div>
 </div>`;
 

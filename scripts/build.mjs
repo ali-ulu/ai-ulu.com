@@ -1,7 +1,7 @@
 import { mkdir, writeFile, rm, cp, access, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { transform } from "esbuild";
+import { build as bundle, transform } from "esbuild";
 import { pages, renderPage, notFoundPage } from "../src/site/pages.mjs";
 import { site } from "../src/site/config.mjs";
 import { robotsTxt } from "../src/site/robots.mjs";
@@ -20,11 +20,11 @@ async function write(rel, content) {
   await writeFile(target, content, "utf8");
 }
 
-// Minify the hand-written CSS and JS in place. Files that ship already minified
-// (three.js, the Vite bundle) are left alone, as is fonts.css, whose @font-face
-// rules are tiny and read better unminified.
+// Minify the hand-written CSS and JS in place. The Vite bundle ships already
+// minified and is left alone, as is fonts.css, whose @font-face rules are tiny
+// and read better unminified.
 const MINIFY_CSS = ["site.css", "blog.css", "faq-drawer.css", "postmark-form.css", "print.css", "work.css"];
-const MINIFY_JS = ["app.js", "vortex.js", "ora.js"];
+const MINIFY_JS = ["app.js", "vortex.js"];
 
 async function minify(rel, loader) {
   const target = join(dist, rel);
@@ -49,6 +49,23 @@ async function build() {
 
   for (const rel of MINIFY_CSS) await minify(rel, "css");
   for (const rel of MINIFY_JS) await minify(rel, "js");
+
+  // Home page modules (src/site/client/home). The entry stays small; the 3D
+  // scene and the WebGL library it imports are split into a chunk that the
+  // entry fetches after the first paint. Everything is served from /js/, so
+  // the CSP stays 'self'-only.
+  await bundle({
+    entryPoints: [join(root, "src", "site", "client", "home", "main.js")],
+    outdir: join(dist, "js"),
+    entryNames: "home",
+    chunkNames: "[name]-[hash]",
+    bundle: true,
+    splitting: true,
+    format: "esm",
+    minify: true,
+    target: "es2022",
+    legalComments: "none",
+  });
 
   // Permanent redirects. There is no separate "about" page: the studio's story
   // is the work it has shipped, so /hakkimizda/ (and its English spelling, which
@@ -167,9 +184,6 @@ ${faq.items.map((f) => `- ${f.q} ${f.a}`).join("\n")}
 /fonts/*
 ${immutable}
 
-/vendor/*
-${immutable}
-
 /sablonlar/assets/*
 ${immutable}
 
@@ -197,11 +211,8 @@ ${revalidate}
 /vortex.js
 ${revalidate}
 
-/ora.js
+/js/*
 ${revalidate}
-
-/img/*
-${week}
 
 /sablonlar/stiller/*
 ${week}
