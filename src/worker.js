@@ -178,7 +178,7 @@ async function checkupRateLimited(env, ip) {
 async function handleCheckup(request, env) {
   if (request.method !== "GET") return json({ error: "Yöntem desteklenmiyor." }, 405);
   const host = parseHost(new URL(request.url).searchParams.get("site"));
-  if (!host) return json({ error: "Geçerli bir site adresi yazın (örnek: klinik.com)." }, 422);
+  if (!host) return json({ error: "Geçerli bir site adresi yazın (örnek: siteniz.com)." }, 422);
   let limited;
   try {
     limited = await checkupRateLimited(env, clientIp(request));

@@ -1,4 +1,4 @@
-// Free site checkup: measures where a clinic site loses patients and AI assistants.
+// Free site checkup: measures where a business site loses visitors and AI assistants.
 // Same checks as Desktop/ai-ulu/araclar/checkup/checkup.mjs, run from the Worker.
 
 const TIMEOUT_MS = 8000;
@@ -91,22 +91,22 @@ const errText = (x) => x.error || ([525, 526].includes(x.status) ? "sertifika ha
 
 export function findings(r) {
   if (r.reachable && r.placeholder) {
-    return [`Adres açılıyor ama site yok: hostingin boş varsayılan sayfası geliyor${r.https.ok ? "" : `, https de çalışmıyor (${errText(r.https)})`}. Google'dan gelen hasta klinik yerine boş sayfa görüyor.`];
+    return [`Adres açılıyor ama site yok: hostingin boş varsayılan sayfası geliyor${r.https.ok ? "" : `, https de çalışmıyor (${errText(r.https)})`}. Google'dan gelen ziyaretçi işletmeniz yerine boş sayfa görüyor.`];
   }
   const up = r.reachable;
   // JS-rendered pages hide their links from raw HTML; claiming "missing" there would be false.
   const measurable = up && r.visibleChars >= 300;
   return [
-    [!up, `Site açılmıyor (https: ${errText(r.https)}, http: ${errText(r.http)}). Google'dan tıklayan hasta hata görüyor.`],
+    [!up, `Site açılmıyor (https: ${errText(r.https)}, http: ${errText(r.http)}). Google'dan tıklayan ziyaretçi hata görüyor.`],
     [up && !r.https.ok, `Güvenli bağlantı (https) çalışmıyor (${errText(r.https)}). Tarayıcı "güvenli değil" uyarısı gösterir.`],
     [r.http.ok && r.https.ok && !r.http.redirectsToHttps, "http adresi güvenli adrese (https) yönlenmiyor."],
     [up && r.visibleChars < 300, `Sunucunun verdiği sayfada yalnız ${r.visibleChars} karakter yazı var; içerik sonradan JavaScript ile çiziliyor. Google ve yapay zekâ asistanları sayfayı neredeyse boş görür.`],
-    [up && r.loadMs > 3000, `Sayfa ${(r.loadMs / 1000).toFixed(1)} saniyede yanıt verdi; telefonda hasta beklemeden çıkar.`],
+    [up && r.loadMs > 3000, `Sayfa ${(r.loadMs / 1000).toFixed(1)} saniyede yanıt verdi; telefonda ziyaretçi beklemeden çıkar.`],
     [up && !r.title, "Sayfa başlığı yok."],
     [up && !r.description, "Google sonucunda görünen açıklama metni yok."],
     [up && !r.viewport, "Telefon ayarı (viewport) yok; sayfa telefonda küçük görünür."],
     [up && !r.schema.some((t) => LOCAL_TYPES.includes(t)), "İşletme bilgisi (schema) yok. Google ve yapay zekâ adres, saat ve telefonu sayfadan güvenle çekemiyor."],
-    [up && !r.llmsTxt, "llms.txt yok: ChatGPT ve Gemini gibi asistanlara kliniği özetleyen dosya yok."],
+    [up && !r.llmsTxt, "llms.txt yok: ChatGPT ve Gemini gibi asistanlara işletmenizi özetleyen dosya yok."],
     [r.aiBotsBlocked.length > 0, `Site yapay zekâ tarayıcılarını engelliyor: ${r.aiBotsBlocked.join(", ")}.`],
     [measurable && !r.whatsapp, "Sayfada WhatsApp ile yazma bağlantısı yok."],
     [measurable && !r.tel, "Telefona dokununca arayan bağlantı yok."],

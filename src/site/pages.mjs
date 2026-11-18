@@ -201,12 +201,12 @@ const notFoundBody = () => `<section class="s nf">
 const checkupBody = () => `<section class="s ck">
   <div class="ck-wrap">
     <p class="eyebrow">Ücretsiz checkup</p>
-    <h1>Kliniğinizin sitesi Google'da ve <em>ChatGPT'de</em> nasıl görünüyor?</h1>
-    <p class="lead">Adresi yazın; sitenin açılıp açılmadığını, telefonda ve arama motorlarında nasıl okunduğunu, yapay zekâ asistanlarının kliniği bulup bulamadığını ölçelim. Kayıt yok.</p>
+    <h1>Siteniz Google'da ve <em>ChatGPT'de</em> nasıl görünüyor?</h1>
+    <p class="lead">Adresi yazın; sitenin açılıp açılmadığını, telefonda ve arama motorlarında nasıl okunduğunu, yapay zekâ asistanlarının sizi bulup bulamadığını ölçelim. Kayıt yok.</p>
     <form id="ck-form" class="ck-form" novalidate>
       <label for="ck-site">Site adresi</label>
       <div class="ck-row">
-        <input id="ck-site" name="site" type="text" inputmode="url" autocomplete="url" required maxlength="253" placeholder="klinikadi.com">
+        <input id="ck-site" name="site" type="text" inputmode="url" autocomplete="url" required maxlength="253" placeholder="siteniz.com">
         <button class="btn" type="submit">Test et</button>
       </div>
     </form>
@@ -218,7 +218,7 @@ const checkupBody = () => `<section class="s ck">
       <a id="ck-wa" class="btn" data-base="${site.whatsapp}" href="${waLink("Merhaba, sitem için ücretsiz checkup istiyorum.")}" target="_blank" rel="noopener">WhatsApp'tan tam raporu iste</a>
       <form id="ck-lead" class="ck-lead" novalidate>
         <p>ya da iletişim bilginizi bırakın:</p>
-        <input name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" placeholder="Ad / Klinik" aria-label="Ad veya klinik adı">
+        <input name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" placeholder="Ad / Firma" aria-label="Ad veya firma adı">
         <input name="reach" type="text" autocomplete="tel" required maxlength="160" placeholder="WhatsApp numarası veya e-posta" aria-label="WhatsApp numarası veya e-posta">
         <div class="field--hp" aria-hidden="true"><input name="company" type="text" tabindex="-1" autocomplete="off"></div>
         <p class="ck-kvkk">Bilginizi yalnız bu raporu göndermek için kullanırım; <a href="/gizlilik/">KVKK bilgilendirmesi</a>.</p>
@@ -281,8 +281,8 @@ export const pages = [
   {
     path: "/checkup/",
     file: "checkup/index.html",
-    title: "Ücretsiz klinik sitesi checkup",
-    description: "Kliniğinizin sitesi açılıyor mu, Google ve ChatGPT onu okuyabiliyor mu? Adresi yazın, ücretsiz ölçelim.",
+    title: "Ücretsiz site checkup",
+    description: "Siteniz açılıyor mu, Google ve ChatGPT onu okuyabiliyor mu? Adresi yazın, ücretsiz ölçelim.",
     scripts: ["/checkup.js"],
     crumbs: [{ href: "/", label: "Ana sayfa" }, { href: "/checkup/", label: "Checkup" }],
     body: checkupBody,
