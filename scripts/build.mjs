@@ -24,7 +24,7 @@ async function write(rel, content) {
 // (three.js, the Vite bundle) are left alone, as is fonts.css, whose @font-face
 // rules are tiny and read better unminified.
 const MINIFY_CSS = ["site.css", "blog.css", "faq-drawer.css", "postmark-form.css", "print.css", "work.css"];
-const MINIFY_JS = ["app.js", "vortex.js", "ora.js"];
+const MINIFY_JS = ["app.js", "vortex.js", "ora.js", "checkup.js"];
 
 async function minify(rel, loader) {
   const target = join(dist, rel);
