@@ -35,3 +35,8 @@ test("JS-rendered page does not claim contact links are missing", () => {
   assert.equal(f.length, 1);
   assert.match(f[0], /JavaScript/);
 });
+
+test("Cloudflare TLS codes read as a certificate error", () => {
+  const f = findings({ ...base, https: { ok: false, status: 526 } });
+  assert.match(f[0], /sertifika hatası/);
+});
