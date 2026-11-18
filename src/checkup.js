@@ -86,7 +86,8 @@ export async function runCheckup(host) {
   };
 }
 
-const errText = (x) => x.error || `HTTP ${x.status}`;
+// 525/526 are Cloudflare's codes for a broken TLS certificate on the target site.
+const errText = (x) => x.error || ([525, 526].includes(x.status) ? "sertifika hatası" : `HTTP ${x.status}`);
 
 export function findings(r) {
   if (r.reachable && r.placeholder) {
