@@ -595,7 +595,7 @@ test("an error-rate-limit database failure still logs the report", async () => {
 
 test("checkup reports an unresolvable host as a typo, not a broken site", async () => {
   const realFetch = globalThis.fetch;
-  globalThis.fetch = async (url) => new Response("", { status: 530 });
+  globalThis.fetch = async () => new Response("", { status: 530 });
   try {
     const res = await worker.fetch(new Request("https://ai-ulu.com/api/checkup?site=ai.ulu.com"), makeEnv());
     assert.equal(res.status, 422);
