@@ -1,6 +1,8 @@
 // Cloudflare Worker: handles /api/lead only. All other routes are served
 // by the static assets binding (see wrangler.jsonc -> run_worker_first).
 
+import { parseHost, runCheckup, findings } from "./checkup.js";
+
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
   "cache-control": "no-store",
@@ -153,6 +155,40 @@ async function errorRateLimited(env, ip) {
      RETURNING submissions`
   ).bind(`err:${ip}`, now, windowStart).first();
   return row && row.submissions > ERROR_MAX_PER_HOUR;
+}
+
+// Each checkup makes four outbound requests, so it gets a tight per-IP budget
+// under its own key, separate from the lead form.
+const CHECKUP_MAX_PER_HOUR = 10;
+async function checkupRateLimited(env, ip) {
+  const now = Date.now();
+  const windowStart = now - 60 * 60 * 1000;
+  const row = await env.DB.prepare(
+    `INSERT INTO rate_limits (ip, window_started_at, submissions, updated_at)
+     VALUES (?1, ?2, 1, ?2)
+     ON CONFLICT(ip) DO UPDATE SET
+       window_started_at = CASE WHEN rate_limits.window_started_at < ?3 THEN ?2 ELSE rate_limits.window_started_at END,
+       submissions = CASE WHEN rate_limits.window_started_at < ?3 THEN 1 ELSE rate_limits.submissions + 1 END,
+       updated_at = ?2
+     RETURNING submissions`
+  ).bind(`chk:${ip}`, now, windowStart).first();
+  return row && row.submissions > CHECKUP_MAX_PER_HOUR;
+}
+
+async function handleCheckup(request, env) {
+  if (request.method !== "GET") return json({ error: "Yöntem desteklenmiyor." }, 405);
+  const host = parseHost(new URL(request.url).searchParams.get("site"));
+  if (!host) return json({ error: "Geçerli bir site adresi yazın (örnek: klinik.com)." }, 422);
+  let limited;
+  try {
+    limited = await checkupRateLimited(env, clientIp(request));
+  } catch (err) {
+    console.error("checkup rate limit failed", err);
+    return json({ error: "Şu anda test yapılamıyor. Lütfen biraz sonra tekrar deneyin." }, 503);
+  }
+  if (limited) return json({ error: "Bir saatte en fazla 10 test yapılabilir. Lütfen sonra tekrar deneyin." }, 429);
+  const result = await runCheckup(host);
+  return json({ host, findings: findings(result) });
 }
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -391,6 +427,9 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === "/api/lead") {
       return handleLead(request, env);
+    }
+    if (url.pathname === "/api/checkup") {
+      return handleCheckup(request, env);
     }
     if (url.pathname === "/api/hit") {
       return handleHit(request, env);

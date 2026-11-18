@@ -2,7 +2,7 @@ import { page } from "./components/layout.mjs";
 import { homeBody, preloader, noJsStyles } from "./components/home.mjs";
 import { blogIndexBody, byDateDesc, postBody } from "./components/blog.mjs";
 import { workBody, workLd } from "./components/work.mjs";
-import { site } from "./config.mjs";
+import { site, waLink } from "./config.mjs";
 import { faq } from "./content/site-content.mjs";
 
 function organizationLd() {
@@ -196,6 +196,39 @@ const notFoundBody = () => `<section class="s nf">
   </div>
 </section>`;
 
+// Free checkup: the visitor types a site, sees the first findings, and can ask
+// for the full report (posted to /api/lead as type "checkup").
+const checkupBody = () => `<section class="s ck">
+  <div class="ck-wrap">
+    <p class="eyebrow">Ücretsiz checkup</p>
+    <h1>Kliniğinizin sitesi Google'da ve <em>ChatGPT'de</em> nasıl görünüyor?</h1>
+    <p class="lead">Adresi yazın; sitenin açılıp açılmadığını, telefonda ve arama motorlarında nasıl okunduğunu, yapay zekâ asistanlarının kliniği bulup bulamadığını ölçelim. Kayıt yok.</p>
+    <form id="ck-form" class="ck-form" novalidate>
+      <label for="ck-site">Site adresi</label>
+      <div class="ck-row">
+        <input id="ck-site" name="site" type="text" inputmode="url" autocomplete="url" required maxlength="253" placeholder="klinikadi.com">
+        <button class="btn" type="submit">Test et</button>
+      </div>
+    </form>
+    <p id="ck-status" class="ck-status" role="status" aria-live="polite"></p>
+    <div id="ck-out" hidden>
+      <ol id="ck-list" class="ck-list"></ol>
+      <p id="ck-more" class="ck-more"></p>
+      <p>Tam raporda Google Haritalar puanınız, ChatGPT'de görünüp görünmediğiniz ve WhatsApp cevap hızınız da var. Bunlara elle bakıyorum.</p>
+      <a id="ck-wa" class="btn" data-base="${site.whatsapp}" href="${waLink("Merhaba, sitem için ücretsiz checkup istiyorum.")}" target="_blank" rel="noopener">WhatsApp'tan tam raporu iste</a>
+      <form id="ck-lead" class="ck-lead" novalidate>
+        <p>ya da iletişim bilginizi bırakın:</p>
+        <input name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" placeholder="Ad / Klinik" aria-label="Ad veya klinik adı">
+        <input name="reach" type="text" autocomplete="tel" required maxlength="160" placeholder="WhatsApp numarası veya e-posta" aria-label="WhatsApp numarası veya e-posta">
+        <div class="field--hp" aria-hidden="true"><input name="company" type="text" tabindex="-1" autocomplete="off"></div>
+        <p class="ck-kvkk">Bilginizi yalnız bu raporu göndermek için kullanırım; <a href="/gizlilik/">KVKK bilgilendirmesi</a>.</p>
+        <button class="btn ghost" type="submit">Tam raporu gönder</button>
+        <p id="ck-lead-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>`;
+
 export const pages = [
   {
     path: "/",
@@ -244,6 +277,15 @@ export const pages = [
     styles: ["/work.css"],
     crumbs: [{ href: "/", label: "Ana sayfa" }, { href: "/calismalar/", label: "Çalışmalar" }],
     body: workBody,
+  },
+  {
+    path: "/checkup/",
+    file: "checkup/index.html",
+    title: "Ücretsiz klinik sitesi checkup",
+    description: "Kliniğinizin sitesi açılıyor mu, Google ve ChatGPT onu okuyabiliyor mu? Adresi yazın, ücretsiz ölçelim.",
+    scripts: ["/checkup.js"],
+    crumbs: [{ href: "/", label: "Ana sayfa" }, { href: "/checkup/", label: "Checkup" }],
+    body: checkupBody,
   },
   {
     path: "/gizlilik/",
