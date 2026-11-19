@@ -31,6 +31,11 @@ function render(d) {
   $("ck-sum").textContent = graded
     ? `${d.host}: ${SUMMARY[d.grade]}`
     : `${d.host}: bu siteyi otomatik ölçemedim.`;
+  const basis = $("ck-basis");
+  basis.hidden = !d.basis || d.basis.skipped === 0;
+  if (d.basis && d.basis.skipped > 0) {
+    basis.textContent = `Puan ${d.basis.covered}% kapsama üzerinden: ${d.basis.skipped} kontrol ölçülemedi, o puanlar alınmadı.`;
+  }
   $("ck-cats").replaceChildren(...d.categories.filter((c) => c.max).map((c) => {
     const li = el("li");
     const bar = el("span", "ck-bar");
