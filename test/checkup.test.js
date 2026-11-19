@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseHost, robotsAllows, evaluate, grade } from "../src/checkup.js";
+import { parseHost, robotsAllows, evaluate, grade, collect } from "../src/checkup.js";
 
 test("parseHost accepts public domains, our own site, and strips URL parts", () => {
   assert.equal(parseHost("https://www.Klinik.com.tr/iletisim?x=1"), "www.klinik.com.tr");
@@ -30,7 +30,7 @@ test("robotsAllows: empty or missing robots.txt allows everything, empty Disallo
   assert.equal(robotsAllows("User-agent: *\nDisallow:", "Googlebot"), true);
 });
 
-const res = (over = {}) => ({ ok: true, status: 200, finalUrl: "https://x.com/", ms: 300, body: "", headers: new Headers(), ...over });
+const res = (over = {}) => ({ ok: true, status: 200, finalUrl: "https://x.com/", ttfb: 250, ms: 300, body: "", headers: new Headers(), ...over });
 const goodHtml = `<html><head><title>Klinik</title><meta name="description" content="d"><meta property="og:title" content="t">
 <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="canonical" href="https://x.com/">
 <script type="application/ld+json">{"@type":"Dentist"}</script></head>
@@ -258,4 +258,56 @@ test("an empty H1 fails even when the count is one", () => {
   const h1 = evaluate(site({ page: res({ body }) })).checks.find((c) => c.label.includes("H1"));
   assert.equal(h1.status, "fail");
   assert.match(h1.detail, /içi boş/);
+});
+
+// "Fast first response" used to time the whole body download, so a 400 KB page
+// with a 100 ms server looked slow and a 5 KB page with a 3 s server looked fast.
+// It now reads time-to-first-byte, which is what the label says.
+test("speed is judged on time to first byte, not on body size", () => {
+  const fastBig = evaluate(site({ page: res({ ttfb: 200, ms: 4000 }) }));
+  assert.equal(fastBig.checks.find((c) => c.label.includes("Hızlı")).status, "pass",
+    "a fast server serving a big page must pass");
+
+  const slowSmall = evaluate(site({ page: res({ ttfb: 3200, ms: 3300 }) }));
+  const slow = slowSmall.checks.find((c) => c.label.includes("Hızlı"));
+  assert.notEqual(slow.status, "pass", "a slow first byte must not pass just because the page is small");
+  assert.match(slow.detail, /ilk baytı 3\.2/);
+});
+
+// Lighthouse is a ~20 s, metered call. It used to run inside Promise.all on every
+// checkup, so a 25 s timeout sat in the response path and its result was never
+// even scored. It is now opt-in, and only when a key is configured.
+test("PageSpeed is not called unless the caller opts in", async () => {
+  const calls = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (req) => {
+    const url = typeof req === "string" ? req : req.url;
+    calls.push(url);
+    return new Response("<html><head><title>t</title></head><body><h1>x</h1></body></html>",
+      { status: 200, headers: { "content-type": "text/html" } });
+  };
+  try {
+    await collect("example.com", { PSI_KEY: "k" });
+    assert.equal(calls.some((u) => u.includes("pagespeedonline")), false,
+      "a checkup must not call Lighthouse by default");
+
+    calls.length = 0;
+    await collect("example.com", { PSI_KEY: "k", withSpeed: true });
+    assert.equal(calls.some((u) => u.includes("pagespeedonline")), true,
+      "withSpeed must ask for the speed score");
+
+    calls.length = 0;
+    await collect("example.com", { withSpeed: true });
+    assert.equal(calls.some((u) => u.includes("pagespeedonline")), false,
+      "without a key the call is skipped even when asked");
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test("a missing first-byte time is unmeasured, not a NaN verdict", () => {
+  const r = evaluate(site({ page: res({ ttfb: undefined, ms: 300 }) }));
+  const c = r.checks.find((x) => x.label.includes("Hızlı"));
+  assert.equal(c.status, "unknown");
+  assert.equal(/NaN/.test(c.detail), false, "never show a NaN to the visitor");
 });

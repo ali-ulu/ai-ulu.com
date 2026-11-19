@@ -46,10 +46,15 @@ async function get(url, env, ua = UA) {
     const own = SELF_HOSTS.has(new URL(url).hostname) && env?.ASSETS;
     const req = new Request(url, { redirect: "follow", headers: { "user-agent": ua } });
     const res = own ? await env.ASSETS.fetch(req) : await fetch(req, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+    // Time to first byte is when the response headers land; reading the body is a
+    // separate cost. Measuring only after `text()` made "fast first response"
+    // really mean "small page", which rewards short HTML instead of a fast server.
+    const ttfb = Date.now() - t0;
     const body = (await res.text()).slice(0, MAX_BODY_CHARS);
-    return { ok: res.ok, status: res.status, finalUrl: own ? null : res.url, own: Boolean(own), ms: Date.now() - t0, body, headers: res.headers };
+    return { ok: res.ok, status: res.status, finalUrl: own ? null : res.url, own: Boolean(own), ttfb, ms: Date.now() - t0, body, headers: res.headers };
   } catch (e) {
-    return { ok: false, status: 0, error: e?.name === "TimeoutError" ? "zaman aşımı" : "bağlantı hatası", ms: Date.now() - t0, body: "", headers: new Headers() };
+    const ms = Date.now() - t0;
+    return { ok: false, status: 0, error: e?.name === "TimeoutError" ? "zaman aşımı" : "bağlantı hatası", ttfb: ms, ms, body: "", headers: new Headers() };
   }
 }
 
@@ -132,6 +137,9 @@ export function robotsAllows(robots, bot) {
   return !best || best.allow;
 }
 
+// Lighthouse is a ~20 s round trip and a metered API. It runs only when asked
+// for, and never inside the response's critical path: a visitor waiting on a
+// speed number should not wait 25 s for the other checks to be written out.
 async function pageSpeed(host, env) {
   if (!env?.PSI_KEY) return null;
   try {
@@ -151,7 +159,10 @@ export async function collect(host, env) {
   const base = https.ok ? `https://${host}` : `http://${host}`;
   const [robots, llms, sitemap, asOai, speed] = await Promise.all([
     get(`${base}/robots.txt`, env), get(`${base}/llms.txt`, env), get(`${base}/sitemap.xml`, env),
-    get(`${base}/`, env, OAI_UA), pageSpeed(host, env),
+    get(`${base}/`, env, OAI_UA),
+    // `withSpeed` is set by the caller; without it the 25 s Lighthouse call is
+    // skipped entirely instead of being raced and thrown away.
+    env?.withSpeed ? pageSpeed(host, env) : null,
   ]);
   return { host, https, http, page, robots, llms, sitemap, asOai, speed };
 }
@@ -220,7 +231,11 @@ export function evaluate(d) {
   const checks = [
     check("erisim", "Güvenli bağlantı (https)", 7, https.ok, https.ok ? "https çalışıyor." : `https çalışmıyor (${errText(https)}); tarayıcı "güvenli değil" uyarısı gösterir.`, "Hosting panelinden SSL sertifikasını (ücretsiz Let's Encrypt) etkinleştirin."),
     check("erisim", "http adresi https'e yönleniyor", 4, http.own ? null : !http.ok || Boolean(http.finalUrl?.startsWith("https://")), http.own ? "Kendi sitemizin yönlendirmesi bu araçla ölçülemiyor." : "Eski http bağlantıları güvenli adrese gitmeli.", "Sunucuda http → https kalıcı (301) yönlendirmesi açın."),
-    check("erisim", "Hızlı ilk yanıt", 4, page.own ? null : page.ms < 1500, page.own ? "Kendi sitemizin yanıt süresi bu araçla ölçülemiyor." : `Sunucu ${(page.ms / 1000).toFixed(1)} saniyede yanıt verdi.`, "Önbellek (cache) ve daha hızlı bir sunucu/CDN kullanın.", page.ms < 3000 ? 2 : 0),
+    check("erisim", "Hızlı ilk yanıt", 4, page.own || !Number.isFinite(page.ttfb) ? null : page.ttfb < 1500,
+      page.own ? "Kendi sitemizin yanıt süresi bu araçla ölçülemiyor."
+        : !Number.isFinite(page.ttfb) ? "Yanıt süresi ölçülemedi."
+        : `Sunucu ilk baytı ${(page.ttfb / 1000).toFixed(1)} saniyede gönderdi.`,
+      "Önbellek (cache) ve daha hızlı bir sunucu/CDN kullanın.", page.ttfb < 3000 ? 2 : 0),
     check("erisim", "Arama motorlarına açık (noindex yok)", 3, !noindex, noindex ? "Sayfa noindex ile arama sonuçlarından gizlenmiş." : "Sayfa dizine eklenebilir.", "Sayfadaki noindex etiketini kaldırın."),
     check("erisim", "Telefonda düzgün açılıyor (viewport)", 2, mobileOk,
       mobileOk === null ? "Sayfada viewport etiketi yok; telefon tarayıcısı sayfayı masaüstü genişliğinde çizip küçültür, yazı okunmaz hale gelir."
