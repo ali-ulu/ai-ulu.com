@@ -23,10 +23,14 @@ function checkItem(c) {
 }
 
 function render(d) {
-  $("ck-grade").textContent = d.grade;
-  $("ck-grade").dataset.g = d.grade;
-  $("ck-num").textContent = d.score;
-  $("ck-sum").textContent = `${d.host}: ${SUMMARY[d.grade]}`;
+  const graded = typeof d.score === "number";
+  $("ck-grade").textContent = graded ? d.grade : "?";
+  $("ck-grade").dataset.g = graded ? d.grade : "?";
+  $("ck-num").textContent = graded ? d.score : "—";
+  $("ck-num").parentElement.hidden = !graded;
+  $("ck-sum").textContent = graded
+    ? `${d.host}: ${SUMMARY[d.grade]}`
+    : `${d.host}: bu siteyi otomatik ölçemedim.`;
   $("ck-cats").replaceChildren(...d.categories.filter((c) => c.max).map((c) => {
     const li = el("li");
     const bar = el("span", "ck-bar");
@@ -42,7 +46,10 @@ function render(d) {
   $("ck-fix").replaceChildren(...(todo.length ? todo.map(checkItem) : [el("li", "", "Otomatik kontrollerde düzeltilecek bir şey çıkmadı.")]));
   $("ck-ok").replaceChildren(...rest.map(checkItem));
   $("ck-pass-sum").textContent = `Geçen ve ölçülemeyen kontroller (${rest.length})`;
-  $("ck-wa").href = `${$("ck-wa").dataset.base}?text=${encodeURIComponent(`Merhaba, ${d.host} için checkup yaptım (${d.score}/100, ${todo.length} düzeltme). Tam raporu alabilir miyim?`)}`;
+  const note = graded
+    ? `Merhaba, ${d.host} için checkup yaptım (${d.score}/100, ${todo.length} düzeltme). Tam raporu alabilir miyim?`
+    : `Merhaba, ${d.host} için otomatik checkup engellendi (bot koruması). Tam raporu elle alabilir miyim?`;
+  $("ck-wa").href = `${$("ck-wa").dataset.base}?text=${encodeURIComponent(note)}`;
   $("ck-out").hidden = false;
 }
 
@@ -88,6 +95,9 @@ lead.addEventListener("submit", async (e) => {
   btn.disabled = true;
   status.textContent = "Gönderiliyor…";
   const todo = last.checks.filter((c) => c.status === "fail" || c.status === "warn");
+  const headline = typeof last.score === "number"
+    ? `Checkup: ${last.host} — ${last.score}/100 (${last.grade})`
+    : `Checkup: ${last.host} — otomatik ölçüm engellendi (bot koruması)`;
   try {
     const res = await fetch("/api/lead", {
       method: "POST",
@@ -97,7 +107,7 @@ lead.addEventListener("submit", async (e) => {
         reach: lead.reach.value,
         company: lead.company.value,
         type: "checkup",
-        msg: `Checkup: ${last.host} — ${last.score}/100 (${last.grade})\n${todo.map((c, i) => `${i + 1}. ${c.label}: ${c.detail}`).join("\n")}`.slice(0, 2000),
+        msg: `${headline}\n${todo.map((c, i) => `${i + 1}. ${c.label}: ${c.detail}`).join("\n")}`.slice(0, 2000),
         page: location.pathname,
       }),
     });

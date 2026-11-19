@@ -57,6 +57,33 @@ const visibleText = (html) => html
   .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<noscript[\s\S]*?<\/noscript>/gi, " ")
   .replace(/<[^>]+>/g, " ").replace(/&\w+;/g, " ").replace(/\s+/g, " ").trim();
 
+// Status codes that mean "a live server answered, but it refused us" rather than
+// "there is no site here". Bot protection and rate limiting both look like this,
+// and reporting them as a dead site is wrong: real visitors see the page fine.
+const REFUSED = new Set([401, 403, 405, 406, 429, 503]);
+const isRefusal = (r) => !r.ok && REFUSED.has(r.status);
+
+// A hosting placeholder page, not a word search: "parked" alone matches Turkish
+// "parkedebileceğiniz" and "parkederek", which condemned every site with a car
+// park to 0/F. These are phrases a parked-domain page actually prints.
+const PLACEHOLDER_RE = /defaultwebpage\.cgi|cgi-sys\/suspendedpage|this domain (is|may be) for sale|domain (is )?for sale|buy this domain|domain parking|parked (domain|free|by)|site (is )?parked|hesabınız askıya alındı|bu alan adı satılıktır/i;
+
+// Meta tags are matched attribute-order-independently: WordPress themes and
+// hand-written HTML both emit <meta content="..." name="description">, and the
+// old single-order regex silently failed those pages.
+function metaContent(html, name) {
+  for (const tag of html.matchAll(/<meta\b[^>]*>/gi)) {
+    const t = tag[0];
+    const key = (t.match(/\b(?:name|property)\s*=\s*["']([^"']+)["']/i) || [])[1];
+    if (!key || key.toLowerCase() !== name.toLowerCase()) continue;
+    const val = (t.match(/\bcontent\s*=\s*["']([^"']*)["']/i) || [])[1];
+    if (val != null) return val.trim();
+  }
+  return "";
+}
+
+const hasMeta = (html, name) => metaContent(html, name) !== "";
+
 function schemaTypes(html) {
   const types = new Set();
   for (const m of html.matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
@@ -131,8 +158,19 @@ function check(cat, label, max, ok, detail, fix, partial = 0) {
 export function evaluate(d) {
   const { page, https, http, robots, llms, sitemap, asOai } = d;
   const html = page.body;
-  const placeholder = /defaultwebpage\.cgi|cgi-sys\/suspendedpage|domain (is )?for sale|parked/i.test(html);
+  const placeholder = PLACEHOLDER_RE.test(html);
   if (!page.ok || placeholder) {
+    const refused = isRefusal(https) || isRefusal(http);
+    // A refusal is not a verdict. Bot protection blocks our agent while letting
+    // real visitors through, so the honest answer is "could not measure", never
+    // "your site is dead" — that would be a false accusation against a working site.
+    if (!placeholder && refused) {
+      const code = [https, http].find(isRefusal)?.status;
+      return { reachable: null, score: null, grade: null, categories: [], speed: null,
+        checks: [check("erisim", "Site ölçülemedi", 0, null,
+          `Sunucu isteğimizi ${code} ile reddetti. Bu genelde bot koruması (Cloudflare, WAF) ya da hız sınırıdır; site tarayıcıda açılıyor olabilir. Otomatik test yapamadım.`,
+          "Bu bir hata değil, ölçüm engeli. Güvenlik duvarınızın arama botlarına izin verdiğini kontrol edin ya da tam raporu elle isteyin.")] };
+    }
     const detail = placeholder
       ? `Adres açılıyor ama site yok: hostingin boş varsayılan sayfası geliyor${https.ok ? "" : `, https de çalışmıyor (${errText(https)})`}.`
       : `Site açılmıyor (https: ${errText(https)}, http: ${errText(http)}).`;
@@ -144,7 +182,7 @@ export function evaluate(d) {
   const readable = text >= 300;
   const types = schemaTypes(html);
   const robotsTxt = robots.ok && !/<html/i.test(robots.body.slice(0, 300)) ? robots.body : "";
-  const noindex = /<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(html) || /noindex/i.test(page.headers.get("x-robots-tag") || "");
+  const noindex = /noindex/i.test(metaContent(html, "robots")) || /noindex/i.test(page.headers.get("x-robots-tag") || "");
   const h1 = (html.match(/<h1[\s>]/gi) || []).length;
   const oaiBlocked = page.ok && [401, 402, 403, 429, 503].includes(asOai.status);
   // Contact links live in raw HTML only when the page is server-rendered.
@@ -162,12 +200,12 @@ export function evaluate(d) {
     check("yz", "Güvenlik duvarı yapay zekâyı engellemiyor", 5, !oaiBlocked, oaiBlocked ? `Site tarayıcıya açılıyor ama ChatGPT'nin arama tarayıcısına ${asOai.status} hatası veriyor.` : "ChatGPT'nin arama tarayıcısı sayfayı alabiliyor.", "Cloudflare/hosting güvenlik ayarlarında OAI-SearchBot'a izin verin."),
     check("okunur", "İçerik JavaScript olmadan okunuyor", 12, readable, readable ? `Sayfada ${text} karakter okunabilir yazı var.` : `Sunucunun verdiği sayfada yalnız ${text} karakter yazı var; içerik sonradan JavaScript ile çiziliyor. Google ve yapay zekâ sayfayı neredeyse boş görür.`, "Sayfayı sunucuda oluşturun (SSR/statik HTML) ya da ana metni HTML'e koyun.", text >= 100 ? 5 : 0),
     check("okunur", "Sayfa başlığı", 3, Boolean(pick(/<title[^>]*>([\s\S]*?)<\/title>/i)), "Google sonucunda görünen başlık.", "Her sayfaya işletme adı + hizmet + şehir içeren bir başlık (title) yazın."),
-    check("okunur", "Arama açıklaması", 3, Boolean(pick(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)/i)), "Google sonucunda başlığın altındaki metin.", "150-160 karakterlik bir meta description ekleyin."),
+    check("okunur", "Arama açıklaması", 3, hasMeta(html, "description"), "Google sonucunda başlığın altındaki metin.", "150-160 karakterlik bir meta description ekleyin."),
     check("okunur", "Tek ana başlık (H1)", 2, h1 === 1, `Sayfada ${h1} adet H1 var.`, "Sayfada tek bir H1 olsun; konuyu açıkça söylesin."),
     check("veri", "İşletme bilgisi (schema)", 10, types.some((t) => LOCAL_TYPES.includes(t)), types.length ? `Bulunan türler: ${types.join(", ")}.` : "Sayfada yapılandırılmış veri (JSON-LD) yok.", "Adres, telefon, çalışma saatleri ve konumu içeren LocalBusiness JSON-LD ekleyin.", types.length ? 4 : 0),
     check("veri", "llms.txt", 3, llms.ok && !/<html|<!doctype/i.test(llms.body.slice(0, 300)), "Yapay zekâ asistanlarına işletmeyi özetleyen dosya.", "Sitenin köküne işletmeyi ve ana sayfaları anlatan bir llms.txt koyun."),
     check("veri", "Site haritası (sitemap)", 3, (sitemap.ok && /<urlset|<sitemapindex/i.test(sitemap.body)) || /^sitemap:/im.test(robotsTxt), "Google'a sayfaların listesini veren dosya.", "sitemap.xml oluşturup robots.txt'e ekleyin."),
-    check("veri", "Paylaşım önizlemesi (Open Graph)", 2, /<meta[^>]+property=["']og:(title|image)/i.test(html), "WhatsApp ve sosyal medyada link paylaşılınca çıkan kart.", "og:title, og:description ve og:image etiketlerini ekleyin."),
+    check("veri", "Paylaşım önizlemesi (Open Graph)", 2, hasMeta(html, "og:title") || hasMeta(html, "og:image"), "WhatsApp ve sosyal medyada link paylaşılınca çıkan kart.", "og:title, og:description ve og:image etiketlerini ekleyin."),
     check("veri", "Asıl adres (canonical)", 2, /<link[^>]+rel=["']canonical/i.test(html), "Aynı sayfanın birden çok adresi varsa Google'a doğrusunu söyler.", "Sayfaya canonical bağlantısı ekleyin."),
     check("donusum", "Dokununca arayan telefon", 5, contact(/href=["']tel:/i), readable ? "Telefondan tek dokunuşla arama." : "İçerik JavaScript ile çizildiği için ölçülemedi.", "Telefon numarasını tel: bağlantısı yapın."),
     check("donusum", "WhatsApp bağlantısı", 5, contact(/wa\.me|api\.whatsapp\.com/i), readable ? "Ziyaretçinin tek dokunuşla yazabilmesi." : "İçerik JavaScript ile çizildiği için ölçülemedi.", "wa.me bağlantılı bir WhatsApp düğmesi ekleyin."),

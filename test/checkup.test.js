@@ -76,3 +76,79 @@ test("noindex caps the score at 20", () => {
 test("grade boundaries", () => {
   assert.deepEqual([90, 89, 70, 50, 49].map(grade), ["A", "B", "C", "E", "F"]);
 });
+
+// A site whose server refuses our agent (bot protection, WAF, rate limit) is not
+// a dead site. Reporting 403 as "site yok" accused every Cloudflare-protected
+// business — koton.com, hepsiburada.com, otelz.com all scored 0/F this way.
+test("a refusal (403/429/503) is unmeasured, not a dead site", () => {
+  for (const status of [401, 403, 405, 429, 503]) {
+    const r = evaluate(site({
+      https: res({ ok: false, status }), http: res({ ok: false, status }),
+      page: res({ ok: false, status }), asOai: res({ ok: false, status }),
+    }));
+    assert.equal(r.reachable, null, `status ${status}`);
+    assert.equal(r.score, null, `status ${status}`);
+    assert.equal(r.checks.length, 1);
+    assert.equal(r.checks[0].status, "unknown");
+    assert.match(r.checks[0].detail, new RegExp(String(status)));
+    assert.doesNotMatch(r.checks[0].detail, /site yok|hata ya da boş sayfa/i);
+  }
+});
+
+test("a genuine outage (5xx/connection failure) still fails the site", () => {
+  const r = evaluate(site({
+    https: res({ ok: false, status: 522 }), http: res({ ok: false, status: 522 }),
+    page: res({ ok: false, status: 522 }), asOai: res({ ok: false, status: 522 }),
+  }));
+  assert.equal(r.reachable, false);
+  assert.equal(r.score, 0);
+});
+
+// Turkish "park" words are everywhere ("parkedebileceğiniz", "parkederek").
+// The old /parked/ test condemned any site with a car park to 0/F.
+test("Turkish park words do not look like a parked domain", () => {
+  for (const phrase of [
+    "Aracınızı güvenle parkedebileceğiniz kapalı otoparkımız var.",
+    "Müşterilerimiz aracını parkederek alışverişe devam edebilir.",
+    "Otoparkımızda 50 araç parkedilebilir.",
+  ]) {
+    const body = goodHtml.replace("Afyon diş kliniği. ".repeat(30), `${phrase} `.repeat(20));
+    const r = evaluate(site({ page: res({ body }) }));
+    assert.equal(r.reachable, true, phrase);
+    assert.ok(r.score > 50, `${phrase} scored ${r.score}`);
+  }
+});
+
+test("a real parked-domain page is still caught", () => {
+  for (const body of [
+    "<h1>This domain is for sale</h1>",
+    "<h1>Bu alan adı satılıktır</h1>",
+    '<meta http-equiv="refresh" content="0;URL=/cgi-sys/defaultwebpage.cgi">',
+  ]) {
+    const r = evaluate(site({ page: res({ body }) }));
+    assert.equal(r.reachable, false, body);
+    assert.equal(r.score, 0, body);
+  }
+});
+
+// WordPress and hand-written HTML both emit <meta content="..." name="description">.
+// The old regex only matched name-before-content and failed those pages silently.
+test("meta tags are read regardless of attribute order", () => {
+  const body = goodHtml
+    .replace('<meta name="description" content="d">', '<meta content="Afyon diş kliniği." name="description">')
+    .replace('<meta property="og:title" content="t">', '<meta content="Klinik" property="og:title">');
+  const r = evaluate(site({ page: res({ body }) }));
+  assert.equal(r.checks.find((c) => c.label === "Arama açıklaması").status, "pass");
+  assert.equal(r.checks.find((c) => c.label.startsWith("Paylaşım")).status, "pass");
+  assert.equal(r.score, 100);
+});
+
+test("noindex is caught regardless of attribute order", () => {
+  const body = goodHtml.replace("<head>", '<head><meta content="noindex, follow" name="robots">');
+  assert.equal(evaluate(site({ page: res({ body }) })).score, 20);
+});
+
+test("og:image alone satisfies the share-preview check", () => {
+  const body = goodHtml.replace('<meta property="og:title" content="t">', '<meta property="og:image" content="/a.png">');
+  assert.equal(evaluate(site({ page: res({ body }) })).checks.find((c) => c.label.startsWith("Paylaşım")).status, "pass");
+});
