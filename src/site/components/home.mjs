@@ -48,25 +48,25 @@ const film = `<div id="film">
     </div>
 
     <div class="ch" id="c1" data-a=".14" data-b=".36">
-      <span class="eyebrow">01 — Kod</span>
+      <span class="eyebrow">01 · Kod</span>
       <h2>Her satır <em>sizin için</em> yazılır.</h2>
       <p>Hazır şablon yok. Siteniz sıfırdan, işletmenizin hedefine göre kodlanır: hızlı, temiz ve size ait.</p>
     </div>
 
     <div class="ch right" id="c2" data-a=".42" data-b=".58">
-      <span class="eyebrow">02 — Tasarım</span>
+      <span class="eyebrow">02 · Tasarım</span>
       <h2>Kod, <em>vitrininize</em> dönüşür.</h2>
       <p>Sektörünüze özel, ilk saniyede güven veren bir tasarım. Rakiplerinizden ayrışırsınız.</p>
     </div>
 
     <div class="ch" id="c3" data-a=".64" data-b=".8">
-      <span class="eyebrow">03 — İçinde ne var</span>
+      <span class="eyebrow">03 · İçinde ne var</span>
       <h2>Güzel görünmesi <em>yetmez.</em></h2>
       <p>Her katman tek bir iş için çalışır: sizi bulduran, ikna eden ve aratan bir site.</p>
     </div>
 
     <div class="ch right" id="c4" data-a=".88" data-b="1.01">
-      <span class="eyebrow">04 — Yayında</span>
+      <span class="eyebrow">04 · Yayında</span>
       <h2>Müşteriniz sizi <em>bulsun.</em></h2>
       <p>Telefonda kusursuz, saniyeler içinde açılan, tek dokunuşla WhatsApp'tan size ulaştıran siteniz hazır.</p>
       <div class="cta"><a class="btn" href="#iletisim">Projeyi başlatalım <span aria-hidden="true">→</span></a></div>
@@ -87,8 +87,8 @@ const benefits = `<section class="s" id="nasil">
   <h2>Ziyaretçi gelir, <em>müşteri</em> olarak kalır.</h2>
   <p class="lead">Çoğu site ilk kaydırmada ziyaretçiyi kaybeder. Sorun marka değil, kurulum. Biz kurulumu baştan doğru yaparız.</p>
   <p class="lead">Nereden başlayacağınızdan emin değilseniz <a href="/sablonlar/">örnek tasarımlara</a> göz atın, kapsamı <a href="/#paketler">paketlerde</a> karşılaştırın, çalışma şeklimizi <a href="/#nasil">süreçte</a> görün. "Yapay zekâ ile bedava yaparım" diyenler için dürüst cevabımız <a href="/#neden">aşağıda</a>.</p>
-  <div class="grid g4">
-    <div class="cell"><span class="n">01</span><h3>Özgün tasarım</h3><p>Şablon değil; sektörünüze ve markanıza göre çizilmiş bir site.</p></div>
+  <div class="grid g-lead">
+    <div class="cell cell--lead"><span class="n">01</span><h3>Özgün tasarım</h3><p>Şablon değil; sektörünüze ve markanıza göre çizilmiş bir site. Aynı şablonu binlerce işletmeye satan araçların tersine, sizin işinizin dilini taşıyan tek bir tasarım.</p></div>
     <div class="cell"><span class="n">02</span><h3>Google'da görünürlük</h3><p>Teknik SEO, hız ve yapılandırılmış veri ilk günden sitenin içinde.</p></div>
     <div class="cell"><span class="n">03</span><h3>Yapay zekâ aramaları</h3><p>ChatGPT, Gemini ve Google'ın yapay zekâ yanıtlarının okuyabildiği yapı: llms.txt, şema, temiz HTML.</p></div>
     <div class="cell"><span class="n">04</span><h3>Doğrudan iletişim</h3><p>Her sayfada tek dokunuşla WhatsApp ve arama. Ziyaretçi aklındayken size ulaşır.</p></div>
@@ -217,7 +217,7 @@ const contact = () => `<section class="s" id="iletisim">
             <textarea id="msg" name="msg" maxlength="280" placeholder="Sektörünüz, istediğiniz sayfalar, beğendiğiniz bir site…"></textarea>
             <span class="pm-count" id="pm-count" aria-hidden="true">0 / 280</span>
           </div>
-          <p class="pm-sign" aria-hidden="true">— <b id="pm-sign">imzanız</b>, gönderen</p>
+          <p class="pm-sign" aria-hidden="true"><b id="pm-sign">imzanız</b>, gönderen</p>
         </div>
         <div class="pm-right">
           <fieldset class="pm-stamps">

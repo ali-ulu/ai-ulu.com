@@ -95,8 +95,8 @@ export const projectTypes = [
 export const budgets = [
   { value: "", label: "Belirtmek istemiyorum" },
   { value: "0-25", label: "25.000 ₺ altı" },
-  { value: "25-50", label: "25.000 – 50.000 ₺" },
-  { value: "50-100", label: "50.000 – 100.000 ₺" },
+  { value: "25-50", label: "25.000-50.000 ₺" },
+  { value: "50-100", label: "50.000-100.000 ₺" },
   { value: "100+", label: "100.000 ₺ üzeri" },
 ];
 
