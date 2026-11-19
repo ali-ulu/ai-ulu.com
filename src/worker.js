@@ -188,6 +188,10 @@ async function handleCheckup(request, env) {
   }
   if (limited) return json({ error: "Bir saatte en fazla 10 test yapılabilir. Lütfen sonra tekrar deneyin." }, 429);
   const result = await runCheckup(host);
+  // Cloudflare answers 530 when the hostname does not resolve: almost always a typo.
+  if (!result.reachable && result.https.status === 530 && result.http.status === 530) {
+    return json({ error: `${host} adresi bulunamadı. Yazımı kontrol edin (örnek: siteniz.com).` }, 422);
+  }
   return json({ host, findings: findings(result) });
 }
 
