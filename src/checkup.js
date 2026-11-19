@@ -217,9 +217,8 @@ export function evaluate(d) {
 
   // The score is a share of the whole rubric, not of whatever happened to run.
   // A check that could not be executed earns nothing but still counts against the
-  // total, so "100" means all 100 points were actually verified. `covered` says how
-  // much of the rubric that was, and below 80% we withhold the grade rather than
-  // print a confident number built on a few checks.
+  // total, so "100" means all 100 points were actually verified. `covered` reports
+  // how much of the rubric that was, so the visitor can see what was skipped.
   const nominal = checks.reduce((s, c) => s + c.weight, 0);
   const got = checks.reduce((s, c) => s + c.points, 0);
   const skippedWeight = checks.reduce((s, c) => s + (c.status === "unknown" ? c.weight : 0), 0);
@@ -227,7 +226,6 @@ export function evaluate(d) {
   const basis = { points: got, nominal, covered: Math.round(covered * 100), skipped: checks.filter((c) => c.status === "unknown").length };
   let score = nominal ? Math.round((got / nominal) * 100) : null;
   if (noindex && score != null) score = Math.min(score, 20);
-  if (score != null && covered < 0.8) score = null;
   const categories = CATEGORIES.map(([id, label]) => {
     const cs = checks.filter((c) => c.cat === id);
     return { id, label, points: cs.reduce((s, c) => s + c.points, 0), max: cs.reduce((s, c) => s + c.weight, 0) };

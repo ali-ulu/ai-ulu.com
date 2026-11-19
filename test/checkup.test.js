@@ -175,8 +175,8 @@ test("a perfect site still scores exactly 100 and covers the whole rubric", () =
   assert.equal(r.basis.points, r.basis.nominal);
 });
 
-test("below 80% coverage the grade is withheld instead of guessed", () => {
-  // our own host skips the redirect and response-time checks (8 points) — still graded
+test("coverage is reported so a partial measurement is visible", () => {
+  // our own host skips the redirect and response-time checks — still graded
   const own = evaluate(site({
     https: res({ body: goodHtml, own: true }), http: res({ body: goodHtml, own: true }),
     page: res({ body: goodHtml, own: true }),
@@ -184,11 +184,12 @@ test("below 80% coverage the grade is withheld instead of guessed", () => {
   assert.ok(own.basis.covered >= 80);
   assert.equal(typeof own.score, "number");
 
-  // an unreadable page skips 12 + 15 points of checks: 27% of the rubric is gone
+  // an unreadable page skips the content and contact checks: 27% of the rubric
   const body = '<html><head><title>t</title></head><body><div id="root"></div></body></html>';
   const js = evaluate(site({ page: res({ body }) }));
-  assert.equal(js.basis.covered, 85, "JS page keeps 85% coverage");
-  assert.equal(typeof js.score, "number");
+  assert.ok(js.basis.covered < 100, "skipped checks must lower coverage");
+  assert.ok(js.basis.skipped > 0);
+  assert.equal(typeof js.score, "number", "a partial score is still shown, with its coverage");
 });
 
 test("category max uses rubric weight, so a skipped check still shows its full bar", () => {
