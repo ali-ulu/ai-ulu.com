@@ -39,7 +39,7 @@ function FullView({ item, onClose }: { item: PictureRailItem; onClose: () => voi
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={`${item.title} — tam ekran`}
+      aria-label={`${item.title}, tam ekran`}
       className="fixed inset-0 z-[70] flex items-center justify-center bg-background/95 p-4 backdrop-blur-sm"
       onClick={onClose}
       onKeyDown={(event) => {
