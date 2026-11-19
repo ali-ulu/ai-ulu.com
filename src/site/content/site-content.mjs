@@ -6,6 +6,7 @@ export const nav = [
   { href: "/sablonlar/", label: "Örnek tasarımlar", keep: true },
   { href: "/#paketler", label: "Paketler" },
   { href: "/blog/", label: "Blog", keep: true },
+  { href: "/checkup/", label: "Ücretsiz test" },
   { href: "/#sss", label: "SSS" },
 ];
 
@@ -103,6 +104,7 @@ export const footerLinks = [
   { href: "/calismalar/", label: "Çalışmalar" },
   { href: "/sablonlar/", label: "Örnek tasarımlar" },
   { href: "/blog/", label: "Blog" },
+  { href: "/checkup/", label: "Ücretsiz site testi" },
   { href: "/#iletisim", label: "İletişim" },
   { href: "/gizlilik/", label: "Gizlilik ve KVKK" },
   { href: "/kullanim-sartlari/", label: "Kullanım şartları" },
