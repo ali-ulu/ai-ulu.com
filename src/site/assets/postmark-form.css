@@ -117,7 +117,7 @@
   right: 0;
   font: 500 0.7rem/1 var(--pm-mono);
   letter-spacing: 0.08em;
-  color: rgba(35, 50, 74, 0.5);
+  color: rgba(35, 50, 74, 0.72);
   font-variant-numeric: tabular-nums;
 }
 .pm-sign {
@@ -220,10 +220,11 @@
   padding-top: 0;
 }
 .pm-label {
+  display: block;
   font: 500 0.62rem/1 var(--pm-mono);
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(35, 50, 74, 0.55);
+  color: rgba(35, 50, 74, 0.72);
   margin-bottom: 0.4rem;
 }
 .pm-addr {
