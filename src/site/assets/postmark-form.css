@@ -11,6 +11,7 @@
   --pm-line: rgba(35, 50, 74, 0.16);
   --pm-rule: rgba(35, 50, 74, 0.42);
   --pm-post: #ff7a4d;
+  --pm-post-ink: #a83c0c;
   --pm-stamp: #b4552f;
   --pm-hand: "Caveat", "Segoe Script", cursive;
   --pm-sans: var(--sans);
@@ -101,7 +102,7 @@
   caret-color: var(--pm-post);
 }
 .pm textarea::placeholder {
-  color: rgba(35, 50, 74, 0.34);
+  color: rgba(35, 50, 74, 0.72);
 }
 .pm textarea:focus {
   outline: none;
@@ -150,7 +151,7 @@
   font: 500 0.62rem/1 var(--pm-mono);
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(35, 50, 74, 0.55);
+  color: rgba(35, 50, 74, 0.72);
   margin-bottom: 0.5rem;
 }
 .pm-stamps label {
@@ -261,7 +262,7 @@
   background-repeat: no-repeat;
 }
 .pm-fields input::placeholder {
-  color: rgba(35, 50, 74, 0.36);
+  color: rgba(35, 50, 74, 0.72);
   font-family: var(--pm-hand);
 }
 .pm-fields input:focus,
@@ -413,7 +414,7 @@
 .pm-thanks b {
   font-size: clamp(1.8rem, 3.4cqi, 2.4rem);
   font-weight: 600;
-  color: var(--pm-post);
+  color: var(--pm-post-ink);
 }
 .pm-thanks p {
   font-size: 1.25rem;
