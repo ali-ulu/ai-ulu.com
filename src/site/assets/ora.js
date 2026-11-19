@@ -178,7 +178,7 @@ function start(THREE, RoundedBoxGeometry, RoomEnvironment, photo, renderer) {
   }
 
   /* ---------- 3D laptop ---------- */
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); // 2x retina doubles fill cost for no visible gain on a moving scene
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
   const scene = new THREE.Scene();
   const soft = softwareGL(renderer);
