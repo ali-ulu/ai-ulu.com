@@ -152,7 +152,10 @@ const errText = (x) => x.error || ([525, 526].includes(x.status) ? "sertifika ha
 function check(cat, label, max, ok, detail, fix, partial = 0) {
   const status = ok === null ? "unknown" : ok ? "pass" : partial ? "warn" : "fail";
   const points = ok === null ? 0 : ok ? max : partial;
-  return { cat, label, max: ok === null ? 0 : max, points, status, detail, fix };
+  // `weight` keeps the rubric value even when the check could not run. Without it
+  // `max` collapsed to 0 and the score divided by a shrunken total, so a site
+  // measured on half the rubric still looked like a 100.
+  return { cat, label, max: ok === null ? 0 : max, weight: max, points, status, detail, fix };
 }
 
 export function evaluate(d) {
@@ -212,15 +215,24 @@ export function evaluate(d) {
     check("donusum", "Randevu / iletişim formu", 5, contact(/<form/i), readable ? "Arayamayan ziyaretçi için ikinci kanal." : "İçerik JavaScript ile çizildiği için ölçülemedi.", "Kısa bir randevu ya da iletişim formu ekleyin."),
   ];
 
-  const max = checks.reduce((s, c) => s + c.max, 0);
+  // The score is a share of the whole rubric, not of whatever happened to run.
+  // A check that could not be executed earns nothing but still counts against the
+  // total, so "100" means all 100 points were actually verified. `covered` says how
+  // much of the rubric that was, and below 80% we withhold the grade rather than
+  // print a confident number built on a few checks.
+  const nominal = checks.reduce((s, c) => s + c.weight, 0);
   const got = checks.reduce((s, c) => s + c.points, 0);
-  let score = Math.round((got / max) * 100);
-  if (noindex) score = Math.min(score, 20);
+  const skippedWeight = checks.reduce((s, c) => s + (c.status === "unknown" ? c.weight : 0), 0);
+  const covered = nominal ? (nominal - skippedWeight) / nominal : 0;
+  const basis = { points: got, nominal, covered: Math.round(covered * 100), skipped: checks.filter((c) => c.status === "unknown").length };
+  let score = nominal ? Math.round((got / nominal) * 100) : null;
+  if (noindex && score != null) score = Math.min(score, 20);
+  if (score != null && covered < 0.8) score = null;
   const categories = CATEGORIES.map(([id, label]) => {
     const cs = checks.filter((c) => c.cat === id);
-    return { id, label, points: cs.reduce((s, c) => s + c.points, 0), max: cs.reduce((s, c) => s + c.max, 0) };
+    return { id, label, points: cs.reduce((s, c) => s + c.points, 0), max: cs.reduce((s, c) => s + c.weight, 0) };
   });
-  return { reachable: true, score, grade: grade(score), categories, checks, speed: d.speed };
+  return { reachable: true, score, grade: score == null ? null : grade(score), basis, categories, checks, speed: d.speed };
 }
 
 export const grade = (s) => (s >= 90 ? "A" : s >= 80 ? "B" : s >= 70 ? "C" : s >= 60 ? "D" : s >= 50 ? "E" : "F");

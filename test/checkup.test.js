@@ -152,3 +152,48 @@ test("og:image alone satisfies the share-preview check", () => {
   const body = goodHtml.replace('<meta property="og:title" content="t">', '<meta property="og:image" content="/a.png">');
   assert.equal(evaluate(site({ page: res({ body }) })).checks.find((c) => c.label.startsWith("Paylaşım")).status, "pass");
 });
+
+// The score used to divide by whatever checks happened to run. A JS-rendered page
+// skipped the 12-point content check, so its total shrank and 100 stayed reachable
+// on a partial rubric — two sites "out of 100" were not comparable.
+test("the score is a share of the whole rubric, not of what ran", () => {
+  const body = '<html><head><title>t</title></head><body><div id="root"></div></body></html>';
+  const r = evaluate(site({ page: res({ body }) }));
+  assert.equal(r.basis.nominal, 100);
+  assert.ok(r.basis.skipped > 0);
+  assert.ok(r.basis.covered < 100);
+  assert.ok(r.score < 100, `partial rubric must not reach 100, got ${r.score}`);
+  // points / nominal, not points / (nominal - skipped)
+  assert.equal(r.score, Math.round((r.basis.points / r.basis.nominal) * 100));
+});
+
+test("a perfect site still scores exactly 100 and covers the whole rubric", () => {
+  const r = evaluate(site());
+  assert.equal(r.score, 100);
+  assert.equal(r.basis.covered, 100);
+  assert.equal(r.basis.skipped, 0);
+  assert.equal(r.basis.points, r.basis.nominal);
+});
+
+test("below 80% coverage the grade is withheld instead of guessed", () => {
+  // our own host skips the redirect and response-time checks (8 points) — still graded
+  const own = evaluate(site({
+    https: res({ body: goodHtml, own: true }), http: res({ body: goodHtml, own: true }),
+    page: res({ body: goodHtml, own: true }),
+  }));
+  assert.ok(own.basis.covered >= 80);
+  assert.equal(typeof own.score, "number");
+
+  // an unreadable page skips 12 + 15 points of checks: 27% of the rubric is gone
+  const body = '<html><head><title>t</title></head><body><div id="root"></div></body></html>';
+  const js = evaluate(site({ page: res({ body }) }));
+  assert.equal(js.basis.covered, 85, "JS page keeps 85% coverage");
+  assert.equal(typeof js.score, "number");
+});
+
+test("category max uses rubric weight, so a skipped check still shows its full bar", () => {
+  const body = '<html><head><title>t</title></head><body><div id="root"></div></body></html>';
+  const r = evaluate(site({ page: res({ body }) }));
+  const okunur = r.categories.find((c) => c.id === "okunur");
+  assert.equal(okunur.max, 20, "okunur category is out of 20 even when the 12-point check is skipped");
+});

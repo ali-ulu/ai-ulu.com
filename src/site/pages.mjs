@@ -217,6 +217,7 @@ const checkupBody = () => `<section class="s ck">
         <div>
           <p class="ck-num"><strong id="ck-num"></strong> / 100</p>
           <p id="ck-sum" class="ck-sum"></p>
+          <p id="ck-basis" class="ck-more" hidden></p>
           <button type="button" class="ck-copy" id="ck-copy">Rapor linkini kopyala</button>
         </div>
       </div>
