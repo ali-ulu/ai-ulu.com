@@ -37,6 +37,11 @@ function render(d) {
   const speed = $("ck-speed");
   speed.hidden = d.speed == null;
   if (d.speed != null) speed.textContent = `Google telefon hız puanı: ${d.speed}/100`;
+  const maps = $("ck-maps");
+  maps.hidden = !d.maps?.url;
+  if (d.maps?.url) {
+    maps.replaceChildren(`Google Haritalar'da bulunan profil: `, Object.assign(el("a", "", d.maps.name), { href: d.maps.url, target: "_blank", rel: "noopener" }));
+  }
   const todo = d.checks.filter((c) => c.status === "fail" || c.status === "warn").sort((a, b) => (b.max - b.points) - (a.max - a.points));
   const rest = d.checks.filter((c) => !todo.includes(c));
   $("ck-fix").replaceChildren(...(todo.length ? todo.map(checkItem) : [el("li", "", "Otomatik kontrollerde düzeltilecek bir şey çıkmadı.")]));
@@ -46,18 +51,20 @@ function render(d) {
   $("ck-out").hidden = false;
 }
 
-async function run(site) {
+async function run(site, name = "") {
   const btn = form.querySelector("button");
   btn.disabled = true;
   $("ck-status").textContent = "Siteniz ölçülüyor, 10-30 saniye sürebilir…";
   $("ck-out").hidden = true;
   try {
-    const res = await fetch(`/api/checkup?site=${encodeURIComponent(site)}`);
+    const q = new URLSearchParams({ site });
+    if (name) q.set("name", name);
+    const res = await fetch(`/api/checkup?${q}`);
     const data = await res.json();
     if (!res.ok) { $("ck-status").textContent = data.error || "Test yapılamadı."; return; }
     last = data;
     $("ck-status").textContent = "";
-    history.replaceState(null, "", `?site=${encodeURIComponent(data.host)}`);
+    history.replaceState(null, "", `?${new URLSearchParams(name ? { site: data.host, name } : { site: data.host })}`);
     render(data);
   } catch {
     $("ck-status").textContent = "Bağlantı hatası. Lütfen tekrar deneyin.";
@@ -68,7 +75,7 @@ async function run(site) {
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  run(form.site.value.trim());
+  run(form.site.value.trim(), form.name.value.trim());
 });
 
 $("ck-copy").addEventListener("click", async () => {
@@ -111,8 +118,10 @@ lead.addEventListener("submit", async (e) => {
   }
 });
 
-const preset = new URLSearchParams(location.search).get("site");
+const params = new URLSearchParams(location.search);
+const preset = params.get("site");
 if (preset) {
   form.site.value = preset;
-  run(preset);
+  form.name.value = params.get("name") || "";
+  run(preset, form.name.value);
 }

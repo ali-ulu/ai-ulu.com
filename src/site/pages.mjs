@@ -209,6 +209,10 @@ const checkupBody = () => `<section class="s ck">
         <input id="ck-site" name="site" type="text" inputmode="url" autocomplete="url" required maxlength="253" placeholder="siteniz.com">
         <button class="btn" type="submit">Test et</button>
       </div>
+      <label for="ck-name">İşletme adı ve şehir <span class="ck-opt">(isteğe bağlı, Google Haritalar profiliniz için)</span></label>
+      <div class="ck-row">
+        <input id="ck-name" name="name" type="text" autocomplete="organization" maxlength="120" placeholder="Örnek: Gürel Diş Polikliniği Afyon">
+      </div>
     </form>
     <p id="ck-status" class="ck-status" role="status" aria-live="polite"></p>
     <div id="ck-out" hidden>
@@ -222,6 +226,7 @@ const checkupBody = () => `<section class="s ck">
       </div>
       <ul id="ck-cats" class="ck-cats"></ul>
       <p id="ck-speed" class="ck-more" hidden></p>
+      <p id="ck-maps" class="ck-more" hidden></p>
       <h2 class="ck-h">Düzeltilecekler</h2>
       <ol id="ck-fix" class="ck-list"></ol>
       <details class="ck-passed"><summary id="ck-pass-sum"></summary><ul id="ck-ok" class="ck-list"></ul></details>
