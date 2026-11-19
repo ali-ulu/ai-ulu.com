@@ -70,6 +70,7 @@ function header() {
   return `<header class="site-header">
   <div class="nav-glass">
     <a class="logo" href="/" aria-label="${site.name} ana sayfa">
+      <svg class="logo-mark" viewBox="0 0 108 100" aria-hidden="true" focusable="false" fill="currentColor"><path d="M46.7 33.4A27 27 0 1 0 60 80" fill="none" stroke="currentColor" stroke-width="11"/><path d="M52 29.1C70 38 67 70 81 93H67C58 80 56 55 48.6 39.6Z"/><path d="M86 40H97V79Q97 89 106 93H90Q86 93 86 88Z"/><circle cx="91.5" cy="24" r="7"/></svg>
       <span class="logo-word">${escapeHtml(site.name)}</span>
     </a>
     <nav aria-label="Ana menü">
