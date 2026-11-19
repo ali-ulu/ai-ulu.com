@@ -434,6 +434,9 @@
    the WhatsApp button bone-on-bone (1.47:1). Only plain links get --soft. */
 .pm-aside a:not(.btn) {
   color: var(--soft);
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
 }
 @container pm (max-width: 780px) {
   .pm-body {
