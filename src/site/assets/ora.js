@@ -21,7 +21,10 @@ const whenIdle = (fn) => ('requestIdleCallback' in window ? requestIdleCallback(
 // mobile trace it alone blocks the thread for over 15 s. Small screens, Data
 // Saver and low-memory devices get the static, readable chapter column instead
 // (.no-3d), which the CSS already lays out; the hero is identical either way.
-const canRunFilm = matchMedia('(min-width: 768px)').matches
+// Reduced motion gets the same readable column: a scroll-scrubbed film hides
+// its chapters until scrolled to, which leaves text invisible for these visitors.
+const canRunFilm = !matchMedia('(prefers-reduced-motion: reduce)').matches
+  && matchMedia('(min-width: 768px)').matches
   && !(navigator.connection && navigator.connection.saveData)
   && (navigator.deviceMemory ?? 8) >= 4;
 

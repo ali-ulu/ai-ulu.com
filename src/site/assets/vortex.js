@@ -8,7 +8,8 @@
   // Same budget as the film: the particle field is decoration, so phones, Data
   // Saver and low-memory devices keep the static backdrop (body::before in
   // site.css) instead of paying for a full-screen WebGL loop.
-  const canRun = matchMedia("(min-width: 768px)").matches
+  const canRun = !matchMedia("(prefers-reduced-motion: reduce)").matches
+    && matchMedia("(min-width: 768px)").matches
     && !(navigator.connection && navigator.connection.saveData)
     && (navigator.deviceMemory ?? 8) >= 4;
   if (!canRun) {
