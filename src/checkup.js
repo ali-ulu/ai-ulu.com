@@ -4,6 +4,7 @@
 
 const TIMEOUT_MS = 8000;
 const PSI_TIMEOUT_MS = 25000;
+const MAPS_FIELDS = "places.displayName,places.rating,places.userRatingCount,places.websiteUri,places.googleMapsUri";
 // shortcut: bodies are cut at 1 MB after download; fine for business sites, stream if abused.
 const MAX_BODY_CHARS = 1_000_000;
 const UA = "Mozilla/5.0 (compatible; ai-ulu-checkup/2.0; +https://ai-ulu.com/checkup/)";
@@ -21,6 +22,7 @@ export const CATEGORIES = [
   ["okunur", "Okunabilirlik"],
   ["veri", "İşletme bilgisi"],
   ["donusum", "Müşteriye dönüşüm"],
+  ["harita", "Google Haritalar"],
 ];
 
 // Only public hostnames: no IP literals, no single-label or internal names.
@@ -97,9 +99,9 @@ export function robotsAllows(robots, bot) {
 }
 
 async function pageSpeed(host, env) {
-  if (!env?.PSI_KEY) return null;
+  if (!env?.GOOGLE_KEY) return null;
   try {
-    const q = new URLSearchParams({ url: `https://${host}/`, strategy: "mobile", category: "performance", key: env.PSI_KEY });
+    const q = new URLSearchParams({ url: `https://${host}/`, strategy: "mobile", category: "performance", key: env.GOOGLE_KEY });
     const res = await fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?${q}`, { signal: AbortSignal.timeout(PSI_TIMEOUT_MS) });
     if (!res.ok) return null;
     const score = (await res.json())?.lighthouseResult?.categories?.performance?.score;
@@ -109,7 +111,36 @@ async function pageSpeed(host, env) {
   }
 }
 
-export async function collect(host, env) {
+// Google Places (New) Text Search, only when the visitor typed a business name.
+// Returns undefined when not asked, null when not found or unavailable.
+async function mapsProfile(name, env) {
+  if (!name) return undefined;
+  if (!env?.GOOGLE_KEY) return undefined;
+  try {
+    const res = await fetch("https://places.googleapis.com/v1/places:searchText", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-goog-api-key": env.GOOGLE_KEY, "x-goog-fieldmask": MAPS_FIELDS },
+      body: JSON.stringify({ textQuery: name, languageCode: "tr", regionCode: "TR", pageSize: 1 }),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!res.ok) return undefined;
+    const p = (await res.json())?.places?.[0];
+    if (!p) return null;
+    return { name: p.displayName?.text || name, rating: p.rating ?? null, reviews: p.userRatingCount ?? 0, website: p.websiteUri || "", url: p.googleMapsUri || "" };
+  } catch {
+    return undefined;
+  }
+}
+
+const bareHost = (u) => {
+  try {
+    return new URL(u).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+};
+
+export async function collect(host, env, name = "") {
   const [https, http] = await Promise.all([get(`https://${host}/`, env), get(`http://${host}/`, env)]);
   const page = https.ok ? https : http;
   const base = https.ok ? `https://${host}` : `http://${host}`;
@@ -117,7 +148,8 @@ export async function collect(host, env) {
     get(`${base}/robots.txt`, env), get(`${base}/llms.txt`, env), get(`${base}/sitemap.xml`, env),
     get(`${base}/`, env, OAI_UA), pageSpeed(host, env),
   ]);
-  return { host, https, http, page, robots, llms, sitemap, asOai, speed };
+  const maps = await mapsProfile(name, env);
+  return { host, https, http, page, robots, llms, sitemap, asOai, speed, maps };
 }
 
 const errText = (x) => x.error || ([525, 526].includes(x.status) ? "sertifika hatası" : `HTTP ${x.status}`);
@@ -172,6 +204,7 @@ export function evaluate(d) {
     check("donusum", "Dokununca arayan telefon", 5, contact(/href=["']tel:/i), readable ? "Telefondan tek dokunuşla arama." : "İçerik JavaScript ile çizildiği için ölçülemedi.", "Telefon numarasını tel: bağlantısı yapın."),
     check("donusum", "WhatsApp bağlantısı", 5, contact(/wa\.me|api\.whatsapp\.com/i), readable ? "Ziyaretçinin tek dokunuşla yazabilmesi." : "İçerik JavaScript ile çizildiği için ölçülemedi.", "wa.me bağlantılı bir WhatsApp düğmesi ekleyin."),
     check("donusum", "Randevu / iletişim formu", 5, contact(/<form/i), readable ? "Arayamayan ziyaretçi için ikinci kanal." : "İçerik JavaScript ile çizildiği için ölçülemedi.", "Kısa bir randevu ya da iletişim formu ekleyin."),
+    ...mapsChecks(d.maps, d.host),
   ];
 
   const max = checks.reduce((s, c) => s + c.max, 0);
@@ -182,11 +215,26 @@ export function evaluate(d) {
     const cs = checks.filter((c) => c.cat === id);
     return { id, label, points: cs.reduce((s, c) => s + c.points, 0), max: cs.reduce((s, c) => s + c.max, 0) };
   });
-  return { reachable: true, score, grade: grade(score), categories, checks, speed: d.speed };
+  return { reachable: true, score, grade: grade(score), categories, checks, speed: d.speed, maps: d.maps ?? null };
+}
+
+function mapsChecks(m, host) {
+  if (m === undefined) return [];
+  if (m === null) {
+    return [check("harita", "Google Haritalar profili", 5, false, "Yazdığınız adla bir Google Haritalar profili bulunamadı.", "Adı ve şehri tam yazıp tekrar deneyin; profil yoksa Google İşletme Profili açın.")];
+  }
+  const linked = bareHost(m.website);
+  const same = linked && linked === host.replace(/^www\./, "");
+  return [
+    check("harita", "Google Haritalar profili", 5, true, `Profil bulundu: ${m.name}.`, ""),
+    check("harita", "Haritalar puanı", 5, m.rating !== null && m.rating >= 4.3, m.rating === null ? "Henüz puan yok." : `Puan ${m.rating} / 5.`, "Memnun müşterilerden yorum isteyin; olumsuz yorumlara kibarca cevap verin.", m.rating !== null && m.rating >= 4 ? 2 : 0),
+    check("harita", "Yorum sayısı", 5, m.reviews >= 30, `${m.reviews} yorum var.`, "Her işlemden sonra yorum linkini WhatsApp'tan gönderin.", m.reviews >= 10 ? 2 : 0),
+    check("harita", "Profildeki site linki bu siteye gidiyor", 5, Boolean(same), !m.website ? "Profilde site linki yok; Haritalar'dan gelen ziyaretçi sitenize ulaşamıyor." : same ? "Profil bu siteye bağlı." : `Profildeki link başka bir adrese gidiyor: ${linked}.`, "Google İşletme Profili'nde web sitesi alanını bu adresle güncelleyin."),
+  ];
 }
 
 export const grade = (s) => (s >= 90 ? "A" : s >= 80 ? "B" : s >= 70 ? "C" : s >= 60 ? "D" : s >= 50 ? "E" : "F");
 
-export async function runCheckup(host, env) {
-  return { host, ...evaluate(await collect(host, env)) };
+export async function runCheckup(host, env, name = "") {
+  return { host, ...evaluate(await collect(host, env, name)) };
 }

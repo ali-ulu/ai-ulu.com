@@ -76,3 +76,30 @@ test("noindex caps the score at 20", () => {
 test("grade boundaries", () => {
   assert.deepEqual([90, 89, 70, 50, 49].map(grade), ["A", "B", "C", "E", "F"]);
 });
+
+test("no business name: no Google Maps category is scored", () => {
+  const r = evaluate(site());
+  assert.equal(r.checks.some((c) => c.cat === "harita"), false);
+});
+
+test("Maps profile linking to another domain is caught (Dentepol case)", () => {
+  const r = evaluate(site({ host: "dentepol.com", maps: { name: "Dentepol", rating: 4.9, reviews: 40, website: "https://www.dentopol.com/", url: "https://maps.google.com/x" } }));
+  const link = r.checks.find((c) => c.label.startsWith("Profildeki site linki"));
+  assert.equal(link.status, "fail");
+  assert.match(link.detail, /dentopol\.com/);
+  assert.equal(r.checks.find((c) => c.label === "Haritalar puanı").status, "pass");
+});
+
+test("Maps profile matching the site with few reviews gets partial credit", () => {
+  const r = evaluate(site({ host: "x.com", maps: { name: "X", rating: 4.1, reviews: 12, website: "https://www.x.com/", url: "" } }));
+  assert.equal(r.checks.find((c) => c.label.startsWith("Profildeki site linki")).status, "pass");
+  assert.equal(r.checks.find((c) => c.label === "Haritalar puanı").status, "warn");
+  assert.equal(r.checks.find((c) => c.label === "Yorum sayısı").status, "warn");
+});
+
+test("business name given but no profile found", () => {
+  const r = evaluate(site({ host: "x.com", maps: null }));
+  const maps = r.checks.filter((c) => c.cat === "harita");
+  assert.equal(maps.length, 1);
+  assert.equal(maps[0].status, "fail");
+});

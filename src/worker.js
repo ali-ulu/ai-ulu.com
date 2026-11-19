@@ -187,7 +187,8 @@ async function handleCheckup(request, env) {
     return json({ error: "Şu anda test yapılamıyor. Lütfen biraz sonra tekrar deneyin." }, 503);
   }
   if (limited) return json({ error: "Bir saatte en fazla 10 test yapılabilir. Lütfen sonra tekrar deneyin." }, 429);
-  const data = await collect(host, env);
+  const name = sanitize(new URL(request.url).searchParams.get("name"), 120);
+  const data = await collect(host, env, name);
   // Cloudflare answers 530 when the hostname does not resolve: almost always a typo.
   if (!data.page.ok && data.https.status === 530 && data.http.status === 530) {
     return json({ error: `${host} adresi bulunamadı. Yazımı kontrol edin (örnek: siteniz.com).` }, 422);

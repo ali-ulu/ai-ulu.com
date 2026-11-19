@@ -227,6 +227,7 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .ck-wrap{max-width:46rem}
 .ck-form label{display:block;margin:1.6rem 0 .5rem;color:var(--soft)}
 .ck-row{display:flex;flex-wrap:wrap;gap:.6rem}
+.ck-opt{font-size:.85rem}
 .ck-row input,.ck-lead input{flex:1 1 14rem;min-height:44px;padding:.8rem 1rem;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--bone);font:inherit}
 .ck-status{min-height:1.5em;margin-top:1rem}
 .ck-list{margin:1rem 0;padding:0;list-style:none}
