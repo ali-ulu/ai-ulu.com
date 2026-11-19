@@ -100,7 +100,7 @@ function footer(note) {
 }
 
 // before: markup placed ahead of the header (the home preloader); scripts: extra module scripts.
-export function page({ title, description = site.description, path, body, jsonLd = null, before = "", scripts = [], styles = [], footerNote = "", crumbs = [], noscript = "", canonical = true, noindex = false }) {
+export function page({ title, description = site.description, path, body, jsonLd = null, before = "", scripts = [], styles = [], footerNote = "", crumbs = [], trail = null, noscript = "", canonical = true, noindex = false }) {
   const extra = scripts.map((src) => `<script type="module" src="${src}"></script>`).join("\n");
   return `<!doctype html>
 <html lang="${site.lang}">
@@ -114,7 +114,7 @@ ${head({ title, description, path, jsonLd, styles, noscript, canonical, noindex 
 ${before}
 ${header()}
 <main id="main">
-${breadcrumbNav(crumbs)}
+${breadcrumbNav(trail ?? crumbs)}
 ${body}
 </main>
 <nav class="callbar" aria-label="Hızlı iletişim">

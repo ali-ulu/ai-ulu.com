@@ -278,6 +278,12 @@ export const pages = [
       { href: "/blog/", label: "Blog" },
       { href: `/blog/${post.slug}/`, label: post.title },
     ],
+    // The h1 already names the post, so the visible trail ends at "Blog" instead of
+    // printing the headline twice. `crumbs` stays complete for the BreadcrumbList JSON-LD.
+    trail: [
+      { href: "/", label: "Ana sayfa" },
+      { href: "/blog/", label: "Blog" },
+    ],
     body: () => postBody(post.slug),
   })),
   {

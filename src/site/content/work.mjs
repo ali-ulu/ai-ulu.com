@@ -49,7 +49,7 @@ export const products = [
     summary:
       "OpenStreetMap ve Overture verisinden yerel işletmeleri bulur, web siteleri olup olmadığını çapraz kontrol eder, iletişim bilgilerini toplar ve site denetimi yapar. Sonuç: hangi işletmenin gerçekten ihtiyacı olduğunu gösteren sıralı bir satış listesi.",
     detail:
-      "Lighthouse ile performans ve erişilebilirlik ölçer; SEO, AEO ve yapay zekâ görünürlüğü için gerekçesi görülebilir 0–100 hazırlık puanı üretir. Baştan sona yerelde çalışır, veriyi buluta taşımaz.",
+      "Lighthouse ile performans ve erişilebilirlik ölçer; SEO, AEO ve yapay zekâ görünürlüğü için gerekçesi görülebilir 0-100 hazırlık puanı üretir. Baştan sona yerelde çalışır, veriyi buluta taşımaz.",
     stack: ["Python", "MCP", "Lighthouse"],
     links: [{ label: "Kaynak kod", href: "https://github.com/ali-ulu/lead", kind: "repo" }],
     featured: false,
@@ -71,7 +71,7 @@ export const articles = [
     date: "2026-07-31",
   },
   {
-    title: "Let's Support Each Other's Projects — Why Shouldn't DEV Be Our Product Hunt?",
+    title: "Let's Support Each Other's Projects: Why Shouldn't DEV Be Our Product Hunt?",
     platform: "dev.to",
     href: "https://dev.to/aliulu/lets-support-each-others-projects-why-shouldnt-dev-be-our-product-hunt-2ja",
     date: "2026-08-02",
