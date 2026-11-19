@@ -12,7 +12,9 @@
 (function () {
   try {
     const body = JSON.stringify({ path: location.pathname });
+    // sendBeacon survives the visitor leaving the page; fetch is only the fallback.
     const send = () =>
+      navigator.sendBeacon?.("/api/hit", new Blob([body], { type: "application/json" })) ||
       fetch("/api/hit", { method: "POST", headers: { "content-type": "application/json" }, body, keepalive: true }).catch(() => {});
     if (document.readyState === "complete") send();
     else addEventListener("load", send, { once: true });

@@ -73,6 +73,8 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 .ch.on{pointer-events:auto}
 .ch h1,.ch h2,.ch p,.ch .eyebrow{text-shadow:0 2px 28px rgba(8,9,11,.85),0 0 2px rgba(8,9,11,.6)}
 .ch.right{left:auto;right:var(--pad);text-align:right}
+/* A soft dark pool behind each film chapter, so the heading stays readable where it crosses the laptop. */
+@media (min-width:768px){html:not(.no-3d) .ch:not(#c0)::before{content:"";position:absolute;inset:-4rem -5rem;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(8,9,11,.86),rgba(8,9,11,.5) 60%,transparent)}}
 .ch h1,.ch h2{font:400 clamp(2.6rem,6.4vw,6rem)/.95 var(--serif);letter-spacing:-.015em;margin:1rem 0 1.2rem;text-wrap:balance}
 .ch h2{font-size:clamp(2.2rem,4.6vw,4.2rem)}
 .ch p{color:var(--soft);font-size:clamp(1rem,1.25vw,1.12rem);max-width:30rem}
