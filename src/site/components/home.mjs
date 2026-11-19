@@ -44,6 +44,7 @@ const film = `<div id="film">
         ${wa}Ücretsiz görüşme <span aria-hidden="true">→</span></a>
         <a class="btn ghost" href="tel:${site.phone}">${site.phoneDisplay}</a>
       </div>
+      <p class="hero-test"><a href="/checkup/">Siteniz Google ve ChatGPT'de görünüyor mu? Ücretsiz test edin <span aria-hidden="true">→</span></a></p>
     </div>
 
     <div class="ch" id="c1" data-a=".14" data-b=".36">
