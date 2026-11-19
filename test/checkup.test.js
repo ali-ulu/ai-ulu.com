@@ -32,8 +32,10 @@ test("robotsAllows: empty or missing robots.txt allows everything, empty Disallo
 
 const res = (over = {}) => ({ ok: true, status: 200, finalUrl: "https://x.com/", ms: 300, body: "", headers: new Headers(), ...over });
 const goodHtml = `<html><head><title>Klinik</title><meta name="description" content="d"><meta property="og:title" content="t">
-<link rel="canonical" href="https://x.com/"><script type="application/ld+json">{"@type":"Dentist"}</script></head>
-<body><h1>Diş</h1><p>${"Afyon diş kliniği. ".repeat(30)}</p><a href="tel:1">ara</a><a href="https://wa.me/1">wa</a><form></form></body></html>`;
+<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="canonical" href="https://x.com/">
+<script type="application/ld+json">{"@type":"Dentist"}</script></head>
+<body><h1>Diş</h1><p>${"Afyon diş kliniği. ".repeat(30)}</p><img src="a.png" alt="Klinik girişi">
+<a href="tel:1">ara</a><a href="https://wa.me/1">wa</a><form></form></body></html>`;
 const site = (over = {}) => ({
   https: res({ body: goodHtml }), http: res(), page: res({ body: goodHtml }),
   robots: res({ body: "User-agent: *\nAllow: /\nSitemap: https://x.com/sitemap.xml" }),
@@ -176,25 +178,84 @@ test("a perfect site still scores exactly 100 and covers the whole rubric", () =
 });
 
 test("coverage is reported so a partial measurement is visible", () => {
-  // our own host skips the redirect and response-time checks — still graded
+  // our own host skips the redirect and response-time checks — full-ish coverage
   const own = evaluate(site({
     https: res({ body: goodHtml, own: true }), http: res({ body: goodHtml, own: true }),
     page: res({ body: goodHtml, own: true }),
   }));
-  assert.ok(own.basis.covered >= 80);
-  assert.equal(typeof own.score, "number");
+  assert.equal(own.basis.covered, 92);
+  assert.equal(own.basis.skipped, 2);
 
-  // an unreadable page skips the content and contact checks: 27% of the rubric
-  const body = '<html><head><title>t</title></head><body><div id="root"></div></body></html>';
+  // A JS-rendered page skips the content check and the three contact checks:
+  // 17 points of the rubric. The score is still shown, but the gap is stated.
+  const body = '<html><head><title>t</title><meta name="viewport" content="width=device-width"></head><body><div id="root"></div></body></html>';
   const js = evaluate(site({ page: res({ body }) }));
-  assert.ok(js.basis.covered < 100, "skipped checks must lower coverage");
-  assert.ok(js.basis.skipped > 0);
-  assert.equal(typeof js.score, "number", "a partial score is still shown, with its coverage");
+  assert.equal(js.basis.covered, 83);
+  assert.equal(js.basis.skipped, 4);
+  assert.equal(typeof js.score, "number");
+});
+
+// A page that cannot be read is a failure, not an unknown: Google sees an empty
+// page too. So it is scored, never skipped — the floor that would have withheld
+// the grade here can never be reached, which is why it does not exist.
+test("an unreadable page is scored, not withheld", () => {
+  const bare = evaluate(site({ page: res({ body: '<html><body><div id="root"></div></body></html>' }) }));
+  assert.equal(bare.checks.find((c) => c.label.startsWith("İçerik")).status, "fail");
+  assert.equal(typeof bare.score, "number");
+  assert.equal(bare.grade, "F");
 });
 
 test("category max uses rubric weight, so a skipped check still shows its full bar", () => {
   const body = '<html><head><title>t</title></head><body><div id="root"></div></body></html>';
   const r = evaluate(site({ page: res({ body }) }));
   const okunur = r.categories.find((c) => c.id === "okunur");
-  assert.equal(okunur.max, 20, "okunur category is out of 20 even when the 12-point check is skipped");
+  assert.equal(okunur.max, 20, "okunur category is out of 20 even when the content check is skipped");
+});
+
+test("microdata counts as business data, not just JSON-LD", () => {
+  const body = goodHtml.replace('<script type="application/ld+json">{"@type":"Dentist"}</script>',
+    '<div itemscope itemtype="https://schema.org/Dentist"><span itemprop="name">Klinik</span></div>');
+  const r = evaluate(site({ page: res({ body }) }));
+  const schema = r.checks.find((c) => c.label.startsWith("İşletme bilgisi"));
+  assert.equal(schema.status, "pass");
+  assert.match(schema.detail, /Dentist/);
+});
+
+test("a missing viewport tag is a real fail, not an unknown", () => {
+  const body = goodHtml.replace('<meta name="viewport" content="width=device-width, initial-scale=1">', "");
+  const r = evaluate(site({ page: res({ body }) }));
+  const vp = r.checks.find((c) => c.label.includes("viewport"));
+  assert.equal(vp.status, "fail");
+  assert.equal(r.score, 98);
+});
+
+test("viewport is still judged on a JS-rendered page (it lives in head)", () => {
+  const body = '<html><head><title>t</title><meta name="viewport" content="width=device-width"></head><body><div id="root"></div></body></html>';
+  const r = evaluate(site({ page: res({ body }) }));
+  assert.equal(r.checks.find((c) => c.label.includes("viewport")).status, "pass");
+});
+
+test("images without alt text are caught, near-complete alt earns partial credit", () => {
+  const noAlt = goodHtml.replace('alt="Klinik girişi"', "");
+  assert.equal(evaluate(site({ page: res({ body: noAlt }) })).checks.find((c) => c.label.includes("alt metin")).status, "fail");
+
+  // One of six images missing alt is under the 20% bar: partial credit, not a fail.
+  const mostly = goodHtml.replace("</p>", '</p><img src="b.png" alt="b"><img src="c.png" alt="c"><img src="d.png" alt="d"><img src="e.png" alt="e"><img src="f.png">');
+  const partial = evaluate(site({ page: res({ body: mostly }) })).checks.find((c) => c.label.includes("alt metin"));
+  assert.equal(partial.status, "warn");
+  assert.match(partial.detail, /1 tanesinde alt metin yok/);
+
+  // Half the images missing alt is a fail.
+  const half = goodHtml.replace("</p>", '</p><img src="b.png"><img src="c.png" alt="c">');
+  assert.equal(evaluate(site({ page: res({ body: half }) })).checks.find((c) => c.label.includes("alt metin")).status, "fail");
+
+  const clean = evaluate(site({ page: res({ body: goodHtml }) })).checks.find((c) => c.label.includes("alt metin"));
+  assert.equal(clean.status, "pass");
+});
+
+test("an empty H1 fails even when the count is one", () => {
+  const body = goodHtml.replace("<h1>Diş</h1>", "<h1>   </h1>");
+  const h1 = evaluate(site({ page: res({ body }) })).checks.find((c) => c.label.includes("H1"));
+  assert.equal(h1.status, "fail");
+  assert.match(h1.detail, /içi boş/);
 });
