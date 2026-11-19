@@ -234,13 +234,12 @@ const contact = () => `<section class="s" id="iletisim">
               <label class="visually-hidden" for="name">Ad Soyad / Firma</label>
               <input id="name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" placeholder="Ad Soyad / Firma">
               <label class="visually-hidden" for="reach">E-posta veya telefon</label>
-              <input id="reach" name="reach" type="text" autocomplete="email" required maxlength="160" placeholder="E-posta veya telefon">
+              <input id="reach" name="reach" type="text" autocomplete="off" inputmode="text" required maxlength="160" placeholder="E-posta veya telefon">
             </div>
           </div>
           <div class="pm-block">
-            <p class="pm-label">Bütçe</p>
+            <label class="pm-label" for="budget">Bütçe</label>
             <div class="pm-fields">
-              <label class="visually-hidden" for="budget">Bütçe aralığı</label>
               <select id="budget" name="budget">
                 ${budgets.map((b) => `<option value="${b.value}">${escapeHtml(b.label)}</option>`).join("\n                ")}
               </select>

@@ -79,7 +79,7 @@ test("the postcard is one stylesheet, loaded only on the home page", async () =>
 test("the form asks for a budget range and carries campaign attribution", async () => {
   const html = await read("dist/index.html");
   assert.match(html, /<select id="budget" name="budget">/, "budget is a range select");
-  assert.match(html, /<label class="visually-hidden" for="budget">/, "budget has a label");
+  assert.match(html, /<label class="pm-label" for="budget">Bütçe<\/label>/, "budget has a visible label");
   assert.match(html, /name="utm_source"/, "utm_source rides along");
   assert.match(html, /name="utm_campaign"/, "utm_campaign rides along");
   assert.doesNotMatch(html, /name="utm_source"[^>]*required/, "attribution is never required");

@@ -123,15 +123,24 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .g4{grid-template-columns:repeat(4,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
 /* Services read as one lead statement plus three supporting cards, not four equal
-   tiles. The lead card spans two columns and drops its own glass tint for a hairline
-   rule, so the block has a rhythm instead of a uniform grid. */
+   tiles. The lead card spans two columns and two rows and drops its own glass tint
+   for a hairline rule; the fourth card closes the second row across both remaining
+   columns. Every cell of the 4x2 area is used, so no row trails off half empty. */
 .g-lead{grid-template-columns:repeat(4,1fr)}
-.g-lead .cell--lead{grid-column:span 2;justify-content:center;background:none;border:0;border-left:1px solid rgba(224,164,88,.45);border-radius:0;padding-left:1.6rem;box-shadow:none}
+.g-lead .cell--lead{grid-column:span 2;grid-row:span 2;justify-content:center;background:none;border:0;border-left:1px solid rgba(224,164,88,.45);border-radius:0;padding-left:1.6rem;box-shadow:none}
 .g-lead .cell--lead::after{display:none}
 .g-lead .cell--lead h3{font-size:clamp(1.7rem,2.6vw,2.35rem)}
 .g-lead .cell--lead p{font-size:1rem;max-width:34ch;color:var(--soft)}
-@media (max-width:1100px){.g-lead{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:860px){.g-lead{grid-template-columns:1fr}.g-lead .cell--lead{grid-column:span 1}}
+.g-lead .cell:last-child{grid-column:span 2}
+@media (max-width:1100px){
+  .g-lead{grid-template-columns:repeat(2,1fr)}
+  .g-lead .cell--lead{grid-row:auto}
+  .g-lead .cell:last-child{grid-column:span 2}
+}
+@media (max-width:860px){
+  .g-lead{grid-template-columns:1fr}
+  .g-lead .cell--lead,.g-lead .cell:last-child{grid-column:span 1}
+}
 .cell{position:relative;isolation:isolate;display:flex;flex-direction:column;gap:.65rem;padding:1.9rem 1.7rem;border-radius:18px;border:1px solid var(--line);background:linear-gradient(163deg,rgba(255,255,255,.06),rgba(255,255,255,0) 44%),rgba(14,16,20,.84);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 26px 60px -42px rgba(0,0,0,.95);overflow:hidden;transition:transform .45s cubic-bezier(.2,.7,.2,1),border-color .45s,box-shadow .45s}
 .cell::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .45s;background:radial-gradient(130% 90% at 50% 0%,rgba(255,255,255,.15),rgba(255,255,255,0) 62%)}
 .cell::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.15;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:140px}
