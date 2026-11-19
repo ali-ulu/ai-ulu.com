@@ -72,7 +72,6 @@ const PLACEHOLDER_RE = /defaultwebpage\.cgi|cgi-sys\/suspendedpage|this domain (
 // hand-written HTML both emit <meta content="..." name="description">, and the
 // old single-order regex silently failed those pages.
 function metaContent(html, name) {
-  const n = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   for (const tag of html.matchAll(/<meta\b[^>]*>/gi)) {
     const t = tag[0];
     const key = (t.match(/\b(?:name|property)\s*=\s*["']([^"']+)["']/i) || [])[1];
