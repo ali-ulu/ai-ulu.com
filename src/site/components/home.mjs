@@ -46,6 +46,7 @@ const film = `<div id="film">
       </div>
       <p class="hero-test"><a href="/checkup/">Siteniz Google ve ChatGPT'de görünüyor mu? Ücretsiz test edin <span aria-hidden="true">→</span></a></p>
     </div>
+    <img class="poster" src="/img/laptop.webp" width="920" height="700" alt="" decoding="async">
 
     <div class="ch" id="c1" data-a=".14" data-b=".36">
       <span class="eyebrow">01 · Kod</span>

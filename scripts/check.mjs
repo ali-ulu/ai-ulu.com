@@ -22,6 +22,7 @@ const required = [
   "fonts/fonts.css",
   "vendor/three/three.module.min.js",
   "img/gulus.webp",
+  "img/laptop.webp",
   "og.png",
   "favicon.svg",
   "favicon.ico",

@@ -103,6 +103,9 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 .no-3d .ch,.no-3d #c0{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 var(--pad) 5rem;text-align:left;max-width:40rem;width:auto}
 .no-3d .ch.right .cta,.no-3d #c0 .cta{justify-content:flex-start}
 .no-3d .ch.right p,.no-3d #c0 p{margin:0}
+/* Where the film does not run (phone, reduced motion, low memory) a still of the laptop keeps the hero visual. */
+.poster{display:none}
+.no-3d .poster{display:block;width:min(46rem,calc(100% - 2 * var(--pad)));height:auto;margin:0 auto 5rem;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
 @media (max-width:767px){
   /* Phones skip the 3D film (see ora.js/vortex.js), so show the column at once:
      no loader overlay, no post-paint layout shift. */
@@ -113,6 +116,7 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
   .ch,#c0{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 var(--pad) 5rem;text-align:left;max-width:40rem;width:auto}
   .ch.right .cta,#c0 .cta{justify-content:flex-start}
   .ch.right p,#c0 p{margin:0}
+  .poster{display:block;width:calc(100% - 2 * var(--pad));height:auto;margin:0 auto 5rem;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
 }
 
 /* content sections */
