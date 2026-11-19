@@ -157,9 +157,12 @@ async function errorRateLimited(env, ip) {
   return row && row.submissions > ERROR_MAX_PER_HOUR;
 }
 
-// Each checkup makes four outbound requests, so it gets a tight per-IP budget
-// under its own key, separate from the lead form.
-const CHECKUP_MAX_PER_HOUR = 10;
+// Each checkup makes four outbound requests, so it keeps its own per-IP budget,
+// separate from the lead form. Ten was too tight for the tool's own audience: a
+// single office trying three domains locks itself out, and someone comparing
+// their site with a competitor's hits the wall on the third try. Thirty still
+// bounds the outbound fan-out at 120 requests per IP per hour.
+const CHECKUP_MAX_PER_HOUR = 30;
 async function checkupRateLimited(env, ip) {
   const now = Date.now();
   const windowStart = now - 60 * 60 * 1000;
@@ -186,7 +189,7 @@ async function handleCheckup(request, env) {
     console.error("checkup rate limit failed", err);
     return json({ error: "Şu anda test yapılamıyor. Lütfen biraz sonra tekrar deneyin." }, 503);
   }
-  if (limited) return json({ error: "Bir saatte en fazla 10 test yapılabilir. Lütfen sonra tekrar deneyin." }, 429);
+  if (limited) return json({ error: `Bir saatte en fazla ${CHECKUP_MAX_PER_HOUR} test yapılabilir. Lütfen sonra tekrar deneyin.` }, 429);
   const data = await collect(host, env);
   // Cloudflare answers 530 when the hostname does not resolve: almost always a typo.
   if (!data.page.ok && data.https.status === 530 && data.http.status === 530) {
