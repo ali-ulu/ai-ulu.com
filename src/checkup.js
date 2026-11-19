@@ -84,11 +84,20 @@ function metaContent(html, name) {
 
 const hasMeta = (html, name) => metaContent(html, name) !== "";
 
+// JSON-LD is the recommended format, but microdata (itemscope/itemtype) is still
+// common on hand-built and older WordPress sites. Reading only JSON-LD scored
+// those pages as having no business data at all.
 function schemaTypes(html) {
   const types = new Set();
   for (const m of html.matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
     for (const t of m[1].matchAll(/"@type"\s*:\s*(\[[^\]]*\]|"[^"]+")/g)) {
       t[1].replace(/[[\]"]/g, "").split(",").forEach((x) => x.trim() && types.add(x.trim()));
+    }
+  }
+  for (const m of html.matchAll(/\bitemtype\s*=\s*["']([^"']+)["']/gi)) {
+    for (const raw of m[1].split(/\s+/)) {
+      const t = raw.replace(/^.*schema\.org\//, "").replace(/\/$/, "").trim();
+      if (t) types.add(t);
     }
   }
   return [...types];
@@ -188,23 +197,49 @@ export function evaluate(d) {
   const noindex = /noindex/i.test(metaContent(html, "robots")) || /noindex/i.test(page.headers.get("x-robots-tag") || "");
   const h1 = (html.match(/<h1[\s>]/gi) || []).length;
   const oaiBlocked = page.ok && [401, 402, 403, 429, 503].includes(asOai.status);
+  // Most visitors to a small business site are on a phone. Without a viewport tag
+  // the page renders at desktop width and they have to pinch-zoom to read it.
+  // The viewport tag lives in <head>, so it is in the raw HTML even when the body
+  // is rendered by JavaScript. It is measurable either way; absence is a real fail.
+  const mobileOk = /width\s*=\s*device-width/i.test(metaContent(html, "viewport"));
+  // Images without alt text are invisible to Google Images, to screen readers and
+  // to the text extraction AI assistants do. Only judged when the page is readable.
+  const imgs = [...html.matchAll(/<img\b[^>]*>/gi)].map((m) => m[0]);
+  const noAlt = imgs.filter((t) => !/\balt\s*=/i.test(t)).length;
+  // A handful of missing alt attributes is a warning, not a fail: pass a boolean
+  // here and the partial points through check()'s `partial` argument. Returning 1
+  // from this expression made `1` truthy and the check passed outright.
+  const altMissingRatio = imgs.length ? noAlt / imgs.length : 0;
+  const altOk = !readable ? null : noAlt === 0;
+  const altPartial = readable && noAlt > 0 && altMissingRatio < 0.2 ? 1 : 0;
+  const h1Text = (html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i) || [])[1];
+  const h1Empty = h1 === 1 && h1Text != null && visibleText(h1Text).length < 3;
   // Contact links live in raw HTML only when the page is server-rendered.
   const contact = (re) => (readable ? re.test(html) : null);
 
   const checks = [
-    check("erisim", "Güvenli bağlantı (https)", 8, https.ok, https.ok ? "https çalışıyor." : `https çalışmıyor (${errText(https)}); tarayıcı "güvenli değil" uyarısı gösterir.`, "Hosting panelinden SSL sertifikasını (ücretsiz Let's Encrypt) etkinleştirin."),
+    check("erisim", "Güvenli bağlantı (https)", 7, https.ok, https.ok ? "https çalışıyor." : `https çalışmıyor (${errText(https)}); tarayıcı "güvenli değil" uyarısı gösterir.`, "Hosting panelinden SSL sertifikasını (ücretsiz Let's Encrypt) etkinleştirin."),
     check("erisim", "http adresi https'e yönleniyor", 4, http.own ? null : !http.ok || Boolean(http.finalUrl?.startsWith("https://")), http.own ? "Kendi sitemizin yönlendirmesi bu araçla ölçülemiyor." : "Eski http bağlantıları güvenli adrese gitmeli.", "Sunucuda http → https kalıcı (301) yönlendirmesi açın."),
     check("erisim", "Hızlı ilk yanıt", 4, page.own ? null : page.ms < 1500, page.own ? "Kendi sitemizin yanıt süresi bu araçla ölçülemiyor." : `Sunucu ${(page.ms / 1000).toFixed(1)} saniyede yanıt verdi.`, "Önbellek (cache) ve daha hızlı bir sunucu/CDN kullanın.", page.ms < 3000 ? 2 : 0),
-    check("erisim", "Arama motorlarına açık (noindex yok)", 4, !noindex, noindex ? "Sayfa noindex ile arama sonuçlarından gizlenmiş." : "Sayfa dizine eklenebilir.", "Sayfadaki noindex etiketini kaldırın."),
+    check("erisim", "Arama motorlarına açık (noindex yok)", 3, !noindex, noindex ? "Sayfa noindex ile arama sonuçlarından gizlenmiş." : "Sayfa dizine eklenebilir.", "Sayfadaki noindex etiketini kaldırın."),
+    check("erisim", "Telefonda düzgün açılıyor (viewport)", 2, mobileOk,
+      mobileOk === null ? "Sayfada viewport etiketi yok; telefon tarayıcısı sayfayı masaüstü genişliğinde çizip küçültür, yazı okunmaz hale gelir."
+        : mobileOk ? "viewport etiketi width=device-width olarak ayarlı." : "viewport etiketi var ama genişliği cihaza uyarlamıyor.",
+      'Sayfa başına <meta name="viewport" content="width=device-width, initial-scale=1"> ekleyin.'),
     ...SEARCH_BOTS.map(([bot, pts]) => {
       const ok = robotsAllows(robotsTxt, bot);
       return check("yz", `${bot} siteye girebiliyor`, pts, ok, ok ? "robots.txt izin veriyor." : "robots.txt bu tarayıcıyı engelliyor; bu kanaldaki aramalarda görünmezsiniz.", `robots.txt'e "User-agent: ${bot}" ve "Allow: /" ekleyin.`);
     }),
     check("yz", "Güvenlik duvarı yapay zekâyı engellemiyor", 5, !oaiBlocked, oaiBlocked ? `Site tarayıcıya açılıyor ama ChatGPT'nin arama tarayıcısına ${asOai.status} hatası veriyor.` : "ChatGPT'nin arama tarayıcısı sayfayı alabiliyor.", "Cloudflare/hosting güvenlik ayarlarında OAI-SearchBot'a izin verin."),
-    check("okunur", "İçerik JavaScript olmadan okunuyor", 12, readable, readable ? `Sayfada ${text} karakter okunabilir yazı var.` : `Sunucunun verdiği sayfada yalnız ${text} karakter yazı var; içerik sonradan JavaScript ile çiziliyor. Google ve yapay zekâ sayfayı neredeyse boş görür.`, "Sayfayı sunucuda oluşturun (SSR/statik HTML) ya da ana metni HTML'e koyun.", text >= 100 ? 5 : 0),
+    check("okunur", "İçerik JavaScript olmadan okunuyor", 10, readable, readable ? `Sayfada ${text} karakter okunabilir yazı var.` : `Sunucunun verdiği sayfada yalnız ${text} karakter yazı var; içerik sonradan JavaScript ile çiziliyor. Google ve yapay zekâ sayfayı neredeyse boş görür.`, "Sayfayı sunucuda oluşturun (SSR/statik HTML) ya da ana metni HTML'e koyun.", text >= 100 ? 5 : 0),
     check("okunur", "Sayfa başlığı", 3, Boolean(pick(/<title[^>]*>([\s\S]*?)<\/title>/i)), "Google sonucunda görünen başlık.", "Her sayfaya işletme adı + hizmet + şehir içeren bir başlık (title) yazın."),
     check("okunur", "Arama açıklaması", 3, hasMeta(html, "description"), "Google sonucunda başlığın altındaki metin.", "150-160 karakterlik bir meta description ekleyin."),
-    check("okunur", "Tek ana başlık (H1)", 2, h1 === 1, `Sayfada ${h1} adet H1 var.`, "Sayfada tek bir H1 olsun; konuyu açıkça söylesin."),
+    check("okunur", "Tek ana başlık (H1)", 2, h1 === 1 && !h1Empty, h1Empty ? "H1 var ama içi boş; başlık metni yok." : `Sayfada ${h1} adet H1 var.`, "Sayfada tek bir H1 olsun; konuyu açıkça söylesin."),
+    check("okunur", "Görsellerde alt metin", 2, altOk,
+      altOk === null ? "İçerik JavaScript ile çizildiği için görseller okunamadı."
+        : imgs.length === 0 ? "Sayfada görsel yok, kontrol atlandı."
+        : `Sayfadaki ${imgs.length} görselin ${noAlt} tanesinde alt metin yok.`,
+      "Her görsele ne gösterdiğini anlatan kısa bir alt metin yazın (süs görseller için alt=\"\").", altPartial),
     check("veri", "İşletme bilgisi (schema)", 10, types.some((t) => LOCAL_TYPES.includes(t)), types.length ? `Bulunan türler: ${types.join(", ")}.` : "Sayfada yapılandırılmış veri (JSON-LD) yok.", "Adres, telefon, çalışma saatleri ve konumu içeren LocalBusiness JSON-LD ekleyin.", types.length ? 4 : 0),
     check("veri", "llms.txt", 3, llms.ok && !/<html|<!doctype/i.test(llms.body.slice(0, 300)), "Yapay zekâ asistanlarına işletmeyi özetleyen dosya.", "Sitenin köküne işletmeyi ve ana sayfaları anlatan bir llms.txt koyun."),
     check("veri", "Site haritası (sitemap)", 3, (sitemap.ok && /<urlset|<sitemapindex/i.test(sitemap.body)) || /^sitemap:/im.test(robotsTxt), "Google'a sayfaların listesini veren dosya.", "sitemap.xml oluşturup robots.txt'e ekleyin."),
