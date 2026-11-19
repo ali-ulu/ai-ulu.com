@@ -212,10 +212,23 @@ const checkupBody = () => `<section class="s ck">
     </form>
     <p id="ck-status" class="ck-status" role="status" aria-live="polite"></p>
     <div id="ck-out" hidden>
-      <ol id="ck-list" class="ck-list"></ol>
-      <p id="ck-more" class="ck-more"></p>
-      <p>Tam raporda Google Haritalar puanınız, ChatGPT'de görünüp görünmediğiniz ve WhatsApp cevap hızınız da var. Bunlara elle bakıyorum.</p>
-      <a id="ck-wa" class="btn" data-base="${site.whatsapp}" href="${waLink("Merhaba, sitem için ücretsiz checkup istiyorum.")}" target="_blank" rel="noopener">WhatsApp'tan tam raporu iste</a>
+      <div class="ck-score">
+        <p class="ck-grade" id="ck-grade" aria-hidden="true"></p>
+        <div>
+          <p class="ck-num"><strong id="ck-num"></strong> / 100</p>
+          <p id="ck-sum" class="ck-sum"></p>
+          <button type="button" class="ck-copy" id="ck-copy">Rapor linkini kopyala</button>
+        </div>
+      </div>
+      <ul id="ck-cats" class="ck-cats"></ul>
+      <p id="ck-speed" class="ck-more" hidden></p>
+      <h2 class="ck-h">Düzeltilecekler</h2>
+      <ol id="ck-fix" class="ck-list"></ol>
+      <details class="ck-passed"><summary id="ck-pass-sum"></summary><ul id="ck-ok" class="ck-list"></ul></details>
+      <div class="ck-cta">
+        <p>Bu sayfa sitenizi ölçtü. Google Haritalar puanınız, ChatGPT'de adınızın geçip geçmediği ve WhatsApp cevap hızınız için elle bakıyorum; tam raporu ücretsiz gönderiyorum.</p>
+        <a id="ck-wa" class="btn" data-base="${site.whatsapp}" href="${waLink("Merhaba, sitem için ücretsiz checkup istiyorum.")}" target="_blank" rel="noopener">WhatsApp'tan tam raporu iste</a>
+      </div>
       <form id="ck-lead" class="ck-lead" novalidate>
         <p>ya da iletişim bilginizi bırakın:</p>
         <input name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" placeholder="Ad / Firma" aria-label="Ad veya firma adı">

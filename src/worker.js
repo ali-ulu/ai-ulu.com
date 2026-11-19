@@ -1,7 +1,7 @@
 // Cloudflare Worker: handles /api/lead only. All other routes are served
 // by the static assets binding (see wrangler.jsonc -> run_worker_first).
 
-import { parseHost, runCheckup, findings } from "./checkup.js";
+import { parseHost, collect, evaluate } from "./checkup.js";
 
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
@@ -187,12 +187,12 @@ async function handleCheckup(request, env) {
     return json({ error: "Şu anda test yapılamıyor. Lütfen biraz sonra tekrar deneyin." }, 503);
   }
   if (limited) return json({ error: "Bir saatte en fazla 10 test yapılabilir. Lütfen sonra tekrar deneyin." }, 429);
-  const result = await runCheckup(host);
+  const data = await collect(host, env);
   // Cloudflare answers 530 when the hostname does not resolve: almost always a typo.
-  if (!result.reachable && result.https.status === 530 && result.http.status === 530) {
+  if (!data.page.ok && data.https.status === 530 && data.http.status === 530) {
     return json({ error: `${host} adresi bulunamadı. Yazımı kontrol edin (örnek: siteniz.com).` }, 422);
   }
-  return json({ host, findings: findings(result) });
+  return json({ host, ...evaluate(data) });
 }
 
 const MAX_BODY_BYTES = 16 * 1024;
