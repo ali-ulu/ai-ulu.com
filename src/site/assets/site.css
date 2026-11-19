@@ -6,7 +6,7 @@
   --ink:#08090b; --ink2:#0e1013; --line:rgba(236,231,222,.12);
   --bone:#ece7de; --dim:#8f949c; --soft:#c3c0b9; --amber:#e0a458; --danger:#ff8a80; --ok:#9ad1a4;
   --serif:"Bodoni Moda",Didot,Georgia,serif;
-  --sans:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --sans:"Hanken Grotesk","Hanken fallback",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,monospace;
   --pad:clamp(1rem,4vw,3.5rem);
 }
@@ -57,7 +57,7 @@ em{font-style:normal;font-family:var(--serif);color:var(--amber)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   .nav-glass{background:rgba(14,16,20,.86)}
 }
-.logo{position:relative;z-index:1;display:inline-flex;align-items:center;font:600 1.45rem/1 var(--sans);letter-spacing:-.04em;text-decoration:none;white-space:nowrap;transition:opacity .2s,transform .3s}
+.logo{position:relative;z-index:1;display:inline-flex;align-items:center;min-height:24px;font:600 1.45rem/1 var(--sans);letter-spacing:-.04em;text-decoration:none;white-space:nowrap;transition:opacity .2s,transform .3s}
 .logo:hover{opacity:.85;transform:translateY(-1px)}
 .logo-word{color:var(--bone)}
 .nav-glass nav{position:relative;z-index:1;display:flex;gap:1.8rem;margin-left:auto;font-size:.85rem;color:var(--dim)}
@@ -145,7 +145,7 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
    the home page. Only the shared status/note/honeypot bits live here. */
 .field--hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .form__note{font-size:.85rem;color:var(--dim)}
-.form__note a{color:var(--soft)}
+.form__note a{color:var(--soft);display:inline-flex;align-items:center;min-height:24px}
 .form__status{min-height:1.5em;font-size:.95rem}
 .form__status[data-state="ok"]{color:var(--ok)}
 .form__status[data-state="error"]{color:var(--danger)}
@@ -155,8 +155,10 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .crumbs ol{list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;font:500 .72rem/1 var(--sans);letter-spacing:.02em;color:var(--dim)}
 .crumbs li{display:flex;align-items:center;gap:.5rem}
 .crumbs li+li::before{content:"/";color:var(--line)}
-.crumbs a{text-decoration:none;color:var(--dim)}
+.crumbs a{position:relative;display:inline-flex;align-items:center;min-height:24px;text-decoration:none;color:var(--dim);transition:color .25s}
+.crumbs a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
 .crumbs a:hover{color:var(--bone)}
+.crumbs a:hover::after{transform:scaleX(1)}
 .crumbs [aria-current="page"]{color:var(--soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:22ch}
 /* The trail clears the fixed header; the section that follows then needs no top
    padding of its own. */
@@ -178,7 +180,11 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .site-footer{padding:2rem var(--pad) calc(2rem + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;color:var(--dim);font-size:.85rem;border-top:1px solid var(--line)}
 .site-footer nav{display:flex;flex-wrap:wrap;gap:1.4rem}
 .site-footer a{text-decoration:none}
+.site-footer nav a{display:inline-flex;align-items:center;min-height:24px}
+.site-footer a:not(.social-btn){position:relative;transition:color .25s}
+.site-footer a:not(.social-btn)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
 .site-footer a:not(.social-btn):hover{color:var(--bone)}
+.site-footer a:not(.social-btn):hover::after{transform:scaleX(1)}
 .footer-end{display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap}
 .site-footer .footer-social{gap:.9rem}
 .footer-social svg{display:block}

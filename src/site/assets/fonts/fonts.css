@@ -1,3 +1,18 @@
+/* Metric-matched fallback for the sans (body) text. While "Hanken Grotesk" downloads the
+   local font is used; its width is matched to Hanken (size-adjust, measured against the
+   real woff2) and the line box is pinned to Hanken's own metrics, so body text does not
+   reflow on the swap. This is what keeps mobile CLS down on a slow connection.
+   No serif fallback: Bodoni Moda's wrapping could not be matched by a local serif, so a
+   serif override made things worse (it changed line counts). The serif swap is left as is. */
+@font-face {
+  font-family: 'Hanken fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Helvetica'), local('Liberation Sans'), local('Arimo'), local('Roboto'), local('Noto Sans'), local('DejaVu Sans');
+  size-adjust: 100.8%;
+  ascent-override: 100%;
+  descent-override: 30.3%;
+  line-gap-override: 0%;
+}
+
 @font-face {
   font-family: 'Bodoni Moda';
   font-style: normal;
