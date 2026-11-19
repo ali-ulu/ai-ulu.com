@@ -28,7 +28,9 @@
 }
 
 @theme inline {
-  --font-sans: "Hanken Grotesk", system-ui, sans-serif;
+  /* "Hanken fallback" is the metric-matched local face declared in /fonts/fonts.css.
+     Without it system-ui is wider than Hanken and the gallery section resizes on swap. */
+  --font-sans: "Hanken Grotesk", "Hanken fallback", system-ui, sans-serif;
   --font-serif: "Bodoni Moda", Didot, Georgia, serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

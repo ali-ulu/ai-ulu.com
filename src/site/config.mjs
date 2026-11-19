@@ -4,7 +4,7 @@ export const site = {
   url: "https://ai-ulu.com",
   email: "aliulu@ai-ulu.com",
   lang: "tr",
-  title: "ai-ulu — Müşteri getiren web siteleri",
+  title: "ai-ulu | Müşteri getiren web siteleri",
   description:
     "ai-ulu, işletmeler için müşteri getiren web siteleri kurar: özgün tasarım, Google'da ve yapay zekâ aramalarında görünürlük, WhatsApp'a bağlı iletişim.",
   phone: "+905079581642",

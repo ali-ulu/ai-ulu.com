@@ -8,7 +8,8 @@
   // Same budget as the film: the particle field is decoration, so phones, Data
   // Saver and low-memory devices keep the static backdrop (body::before in
   // site.css) instead of paying for a full-screen WebGL loop.
-  const canRun = matchMedia("(min-width: 768px)").matches
+  const canRun = !matchMedia("(prefers-reduced-motion: reduce)").matches
+    && matchMedia("(min-width: 768px)").matches
     && !(navigator.connection && navigator.connection.saveData)
     && (navigator.deviceMemory ?? 8) >= 4;
   if (!canRun) {
@@ -235,7 +236,7 @@ void main(){
   let dpr = 1, w = 0, h = 0;
   function resize() {
     const rect = canvas.getBoundingClientRect();
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5); // decoration: 1.5x is visually the same and ~45% fewer pixels than 2x
     w = Math.max(1, Math.round(rect.width));
     h = Math.max(1, Math.round(rect.height));
     canvas.width = Math.round(w * dpr);
@@ -319,9 +320,17 @@ void main(){
   // halves the GPU work on a phone.
   const MIN_FRAME = 1000 / 30;
   let last = 0;
+  // While the page scrolls the field holds still, so scrolling keeps the whole
+  // frame budget; it resumes 150 ms after the last scroll event.
+  let scrolling = false, scrollTimer = 0;
+  addEventListener("scroll", () => {
+    scrolling = true;
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => { scrolling = false; }, 150);
+  }, { passive: true });
   function loop(now) {
     requestAnimationFrame(loop);
-    if (document.hidden || !visible) return;
+    if (document.hidden || !visible || scrolling) return;
     if (now - last < MIN_FRAME) return;
     last = now;
     frame(now);

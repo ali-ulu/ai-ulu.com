@@ -38,8 +38,8 @@ ${canonicalTag}${robotsTag}<meta name="theme-color" content="#08090b">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="preload" href="/fonts/bodoni-moda-normal-latin-ext.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
 <link rel="preload" href="/fonts/bodoni-moda-normal-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
-<link rel="preload" href="/fonts/hanken-grotesk-normal-latin-ext.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
-<link rel="preload" href="/fonts/hanken-grotesk-normal-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="high">
+<link rel="preload" href="/fonts/hanken-grotesk-normal-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/hanken-grotesk-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="/print.css" media="print">
@@ -101,7 +101,7 @@ function footer(note) {
 }
 
 // before: markup placed ahead of the header (the home preloader); scripts: extra module scripts.
-export function page({ title, description = site.description, path, body, jsonLd = null, before = "", scripts = [], styles = [], footerNote = "", crumbs = [], noscript = "", canonical = true, noindex = false }) {
+export function page({ title, description = site.description, path, body, jsonLd = null, before = "", scripts = [], styles = [], footerNote = "", crumbs = [], trail = null, noscript = "", canonical = true, noindex = false }) {
   const extra = scripts.map((src) => `<script type="module" src="${src}"></script>`).join("\n");
   return `<!doctype html>
 <html lang="${site.lang}">
@@ -115,7 +115,7 @@ ${head({ title, description, path, jsonLd, styles, noscript, canonical, noindex 
 ${before}
 ${header()}
 <main id="main">
-${breadcrumbNav(crumbs)}
+${breadcrumbNav(trail ?? crumbs)}
 ${body}
 </main>
 <nav class="callbar" aria-label="Hızlı iletişim">
