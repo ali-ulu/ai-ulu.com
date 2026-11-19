@@ -19,6 +19,8 @@ permissions:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    # A hung job holds the main concurrency queue and blocks later deploys.
+    timeout-minutes: 15
     steps:
       # Actions are pinned to commit SHAs; Dependabot keeps them current.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -44,6 +46,8 @@ jobs:
   e2e:
     needs: build-and-test
     runs-on: ubuntu-latest
+    # A hung job holds the main concurrency queue and blocks later deploys.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -76,6 +80,8 @@ jobs:
     # Only deploy from main; pull requests just build and test.
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    # A hung job holds the main concurrency queue and blocks later deploys.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
