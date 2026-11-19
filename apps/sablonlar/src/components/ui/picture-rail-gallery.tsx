@@ -732,7 +732,7 @@ export function PictureRailGallery({
       {(eyebrow || heading) && (
         <header className="relative z-10 flex flex-col items-center gap-2 px-6 pt-7 text-center">
           {eyebrow && <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">{eyebrow}</p>}
-          {heading && <HeadingTag className="text-balance text-2xl font-medium tracking-tight sm:text-3xl">{heading}</HeadingTag>}
+          {heading && <HeadingTag className="text-balance font-serif text-4xl font-normal leading-none tracking-tight sm:text-5xl">{heading}</HeadingTag>}
         </header>
       )}
 

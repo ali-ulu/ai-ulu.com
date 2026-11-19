@@ -100,7 +100,7 @@ const benefits = `<section class="s" id="nasil">
 // generated draft stops and a business site starts. No invented numbers.
 const why = `<section class="s" id="neden">
   <span class="eyebrow">Dürüst cevap</span>
-  <h2>"Yapay zekâ ile <em>bedava</em> yaparım" — peki neden bize?</h2>
+  <h2>"Yapay zekâ ile <em>bedava</em> yaparım." Peki neden bize?</h2>
   <p class="lead">Araçlar artık ilk taslağı saniyeler içinde üretiyor; bunu saklamayacağız. Fark, taslağın bittiği yerde başlıyor.</p>
   <div class="grid g3">
     <div class="cell"><span class="n">01</span><h3>Doğru metin, doğru müşteri</h3><p>Yapay zekâ elindeki bilgiyi dizer; sizin işletmenizi, müşterinizi ve teklifinizi bilmez. Sizi arayan kişinin duymak istediği cümleyi biz yazarız.</p></div>
