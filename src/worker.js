@@ -157,11 +157,11 @@ async function errorRateLimited(env, ip) {
   return row && row.submissions > ERROR_MAX_PER_HOUR;
 }
 
-// Each checkup makes seven outbound requests, so it keeps its own per-IP budget,
+// Each checkup makes eight outbound requests, so it keeps its own per-IP budget,
 // separate from the lead form. Ten was too tight for the tool's own audience: a
 // single office trying three domains locks itself out, and someone comparing
 // their site with a competitor's hits the wall on the third try. Thirty still
-// bounds the outbound fan-out at 210 requests per IP per hour.
+// bounds the outbound fan-out at 240 requests per IP per hour.
 const CHECKUP_MAX_PER_HOUR = 30;
 async function checkupRateLimited(env, ip) {
   const now = Date.now();

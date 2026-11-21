@@ -90,6 +90,7 @@ const geoHtml = `<html><head>
 const geoSite = (over = {}) => site({
   https: res({ body: geoHtml, finalUrl: "https://x.com/" }),
   http: res({ body: geoHtml, finalUrl: "https://x.com/" }),
+  httpProbe: res({ ok: false, status: 301, finalUrl: "" }),
   page: res({ body: geoHtml, finalUrl: "https://x.com/" }),
   llms: res({ body: "# Afyon Diş Kliniği\n\nAfyon'da implant, ortodonti ve estetik diş tedavileri. Randevu için /iletisim/ sayfasını kullanın.\n\n- [Hizmetler](https://x.com/hizmetler/)\n- [Hakkında](https://x.com/hakkimizda/)\n" }),
   aiTxt: res({ body: "User-agent: *\nAllow: /\n" }),
@@ -137,6 +138,22 @@ test("GEO speed is unknown when the first-byte time is missing", () => {
   const r = evaluateGeo(geoSite({ page: res({ body: geoHtml, finalUrl: "https://x.com/", ttfb: undefined }) }));
   assert.equal(r.checks.find((c) => c.id === "speed").status, "unknown");
   assert.ok(r.coverage < 100);
+});
+
+test("GEO reads the redirect from the manual HTTP probe, not the followed response", () => {
+  const r = evaluateGeo(geoSite({ httpProbe: res({ ok: false, status: 301, finalUrl: "" }) }));
+  assert.equal(r.checks.find((c) => c.id === "http-redirect").status, "pass");
+});
+
+test("GEO fails an HTTP page that answers 200 without redirecting", () => {
+  const r = evaluateGeo(geoSite({ httpProbe: res({ ok: true, status: 200, finalUrl: "http://x.com/" }) }));
+  assert.equal(r.checks.find((c) => c.id === "http-redirect").status, "fail");
+});
+
+test("GEO marks our own redirect unmeasured instead of failing it", () => {
+  const r = evaluateGeo(geoSite({ httpProbe: res({ ok: true, status: 200, finalUrl: "", own: true }) }));
+  assert.equal(r.checks.find((c) => c.id === "http-redirect").status, "unknown");
+  assert.ok(!r.recommendations.some((x) => x.title.includes("HTTP")));
 });
 
 test("a complete site scores 100 / A", () => {

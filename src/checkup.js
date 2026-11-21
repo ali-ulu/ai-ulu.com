@@ -40,11 +40,11 @@ export function parseHost(input) {
 
 // The Worker cannot fetch its own hostname over the network, so our own site is
 // read straight from the static assets binding.
-async function get(url, env, ua = UA) {
+async function get(url, env, ua = UA, redirect = "follow") {
   const t0 = Date.now();
   try {
     const own = SELF_HOSTS.has(new URL(url).hostname) && env?.ASSETS;
-    const req = new Request(url, { redirect: "follow", headers: { "user-agent": ua } });
+    const req = new Request(url, { redirect, headers: { "user-agent": ua } });
     const res = own ? await env.ASSETS.fetch(req) : await fetch(req, { signal: AbortSignal.timeout(TIMEOUT_MS) });
     // Time to first byte is when the response headers land; reading the body is a
     // separate cost. Measuring only after `text()` made "fast first response"
@@ -214,7 +214,13 @@ async function pageSpeed(host, env) {
 }
 
 export async function collect(host, env) {
-  const [https, http] = await Promise.all([get(`https://${host}/`, env), get(`http://${host}/`, env)]);
+  const [https, http, httpProbe] = await Promise.all([
+    get(`https://${host}/`, env),
+    get(`http://${host}/`, env),
+    // The follow response hides the redirect that got us to HTTPS. A manual probe
+    // keeps the 301/302 status visible, so the check works in Workers too.
+    get(`http://${host}/`, env, UA, "manual"),
+  ]);
   const page = https.ok ? https : http;
   const base = https.ok ? `https://${host}` : `http://${host}`;
   const [robots, llms, aiTxt, aiTxtAlt, feed, sitemap, asOai, speed] = await Promise.all([
@@ -226,7 +232,7 @@ export async function collect(host, env) {
     // skipped entirely instead of being raced and thrown away.
     env?.withSpeed ? pageSpeed(host, env) : null,
   ]);
-  return { host, https, http, page, robots, llms, aiTxt, aiTxtAlt, feed, sitemap, asOai, speed };
+  return { host, https, http, httpProbe, page, robots, llms, aiTxt, aiTxtAlt, feed, sitemap, asOai, speed };
 }
 
 const errText = (x) => x.error || ([525, 526].includes(x.status) ? "sertifika hatası" : `HTTP ${x.status}`);
@@ -381,7 +387,7 @@ function geoBrand(value) {
 }
 
 export function evaluateGeo(d) {
-  const { page, https, http, robots, llms, aiTxt, aiTxtAlt, feed, sitemap } = d;
+  const { page, https, http, httpProbe, robots, llms, aiTxt, aiTxtAlt, feed, sitemap } = d;
   const html = page.body || "";
   const host = d.host;
   const base = https.ok ? https.finalUrl || `https://${host}/` : http.finalUrl || `http://${host}/`;
@@ -523,10 +529,13 @@ export function evaluateGeo(d) {
   checks.push(https.ok
     ? gPass("technical", "https", "HTTPS", 3, "Site HTTPS üzerinden açılıyor.", "Sertifikayı yenilemeyi unutmayın.")
     : gFail("technical", "https", "HTTPS", 3, "Site HTTPS üzerinden açılmıyor.", "Geçerli bir TLS sertifikası kurun.", "critical"));
-  const httpFinal = String(http.finalUrl || "");
-  checks.push(!http.ok || httpFinal.startsWith("https://") || [301, 302, 307, 308].includes(http.status)
-    ? gPass("technical", "http-redirect", "HTTP → HTTPS", 2, http.ok && httpFinal.startsWith("https://") ? "HTTP, HTTPS'e yönleniyor." : "HTTP kapalı veya HTTPS'e yönleniyor.", "Kalıcı 301 yönlendirmesi kullanın.")
-    : gFail("technical", "http-redirect", "HTTP → HTTPS", 2, "HTTP adresi HTTPS'e yönlenmiyor.", "Sunucuda kalıcı (301) HTTP → HTTPS yönlendirmesi açın.", "high"));
+  const probe = httpProbe || http;
+  const httpFinal = String(probe.finalUrl || "");
+  checks.push(probe.own
+    ? gUnknown("technical", "http-redirect", "HTTP → HTTPS", 2, "Kendi sitemizin yönlendirmesi bu araçla ölçülemiyor.", "Sunucuda kalıcı (301) HTTP → HTTPS yönlendirmesi açın.", "medium")
+    : !probe.ok || httpFinal.startsWith("https://") || [301, 302, 307, 308].includes(probe.status)
+      ? gPass("technical", "http-redirect", "HTTP → HTTPS", 2, httpFinal.startsWith("https://") ? "HTTP, HTTPS'e yönleniyor." : "HTTP kapalı veya HTTPS'e yönleniyor.", "Kalıcı 301 yönlendirmesi kullanın.")
+      : gFail("technical", "http-redirect", "HTTP → HTTPS", 2, "HTTP adresi HTTPS'e yönlenmiyor.", "Sunucuda kalıcı (301) HTTP → HTTPS yönlendirmesi açın.", "high"));
   checks.push(!noindex
     ? gPass("technical", "indexable", "Dizine açık", 3, "Sayfada noindex yok.", "noindex'i yalnızca özel sayfalarda kullanın.")
     : gFail("technical", "indexable", "Dizine açık", 3, "Sayfa noindex ile dizinden gizlenmiş.", "Herkese açık sayfadan noindex'i kaldırın.", "critical"));
@@ -613,7 +622,7 @@ export function evaluateGeo(d) {
   const score = nominal ? Math.round((got / nominal) * 100) : 0;
   const coverage = nominal ? Math.round(((nominal - skipped) / nominal) * 100) : 0;
   const recommendations = checks
-    .filter((c) => c.status !== "pass" && c.points < c.weight)
+    .filter((c) => (c.status === "fail" || c.status === "warn") && c.points < c.weight)
     .map((c) => ({
       severity: c.severity,
       category: GEO_CATEGORIES.find(([id]) => id === c.cat)?.[1] || c.cat,
