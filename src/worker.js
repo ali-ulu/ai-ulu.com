@@ -1,7 +1,7 @@
 // Cloudflare Worker: handles /api/lead only. All other routes are served
 // by the static assets binding (see wrangler.jsonc -> run_worker_first).
 
-import { parseHost, collect, evaluate } from "./checkup.js";
+import { parseHost, collect, evaluate, evaluateGeo } from "./checkup.js";
 
 const JSON_HEADERS = {
   "content-type": "application/json; charset=utf-8",
@@ -157,11 +157,11 @@ async function errorRateLimited(env, ip) {
   return row && row.submissions > ERROR_MAX_PER_HOUR;
 }
 
-// Each checkup makes four outbound requests, so it keeps its own per-IP budget,
+// Each checkup makes seven outbound requests, so it keeps its own per-IP budget,
 // separate from the lead form. Ten was too tight for the tool's own audience: a
 // single office trying three domains locks itself out, and someone comparing
 // their site with a competitor's hits the wall on the third try. Thirty still
-// bounds the outbound fan-out at 120 requests per IP per hour.
+// bounds the outbound fan-out at 210 requests per IP per hour.
 const CHECKUP_MAX_PER_HOUR = 30;
 async function checkupRateLimited(env, ip) {
   const now = Date.now();
@@ -195,7 +195,8 @@ async function handleCheckup(request, env) {
   if (!data.page.ok && data.https.status === 530 && data.http.status === 530) {
     return json({ error: `${host} adresi bulunamadı. Yazımı kontrol edin (örnek: siteniz.com).` }, 422);
   }
-  return json({ host, ...evaluate(data) });
+  const base = evaluate(data);
+  return json({ host, ...base, geo: base.reachable ? evaluateGeo(data) : null });
 }
 
 const MAX_BODY_BYTES = 16 * 1024;

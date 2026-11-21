@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseHost, robotsAllows, evaluate, grade, collect } from "../src/checkup.js";
+import { parseHost, robotsAllows, evaluate, evaluateGeo, grade, collect } from "../src/checkup.js";
 
 test("parseHost accepts public domains, our own site, and strips URL parts", () => {
   assert.equal(parseHost("https://www.Klinik.com.tr/iletisim?x=1"), "www.klinik.com.tr");
@@ -40,6 +40,103 @@ const site = (over = {}) => ({
   https: res({ body: goodHtml }), http: res(), page: res({ body: goodHtml }),
   robots: res({ body: "User-agent: *\nAllow: /\nSitemap: https://x.com/sitemap.xml" }),
   llms: res({ body: "# Klinik" }), sitemap: res({ body: "<urlset></urlset>" }), asOai: res(), speed: null, ...over,
+});
+
+const geoLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      name: "Afyon Diş Kliniği",
+      url: "https://x.com/",
+      logo: { "@type": "ImageObject", url: "https://x.com/logo.png" },
+      telephone: "+90 272 000 00 00",
+      sameAs: [
+        "https://www.linkedin.com/company/afyon-dis",
+        "https://github.com/afyon-dis",
+        "https://www.wikidata.org/wiki/Q1",
+      ],
+    },
+    { "@type": "WebSite", name: "Afyon Diş Kliniği", url: "https://x.com/" },
+    { "@type": "WebPage", name: "Afyon Diş Kliniği" },
+    { "@type": "Service", name: "Diş tedavisi", provider: { "@id": "https://x.com/#organization" } },
+    {
+      "@type": "FAQPage",
+      mainEntity: [{ "@type": "Question", name: "İmplant ağrılı mı?", acceptedAnswer: { "@type": "Answer", text: "İşlem lokal anestezi ile yapılır." } }],
+    },
+  ],
+};
+const geoHtml = `<html><head>
+<title>Afyon Diş Kliniği | İmplant ve Estetik Diş</title>
+<meta name="description" content="Afyon diş kliniği için implant, ortodonti ve estetik diş tedavileri. Randevu alın, gülüşünüzü birlikte planlayalım.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://x.com/">
+<meta property="og:title" content="Afyon Diş Kliniği">
+<meta property="og:image" content="https://x.com/og.png">
+<script type="application/ld+json">${JSON.stringify(geoLd)}</script>
+</head><body>
+<h1>Afyon Diş Kliniği</h1>
+<h2>İmplant, ortodonti ve estetik diş</h2>
+<p>${"Afyon diş kliniği implant, ortodonti ve estetik diş tedavileri sunar. ".repeat(35)}</p>
+<p>İmplant tedavisi ₺ 1.500 seviyesinden başlar. Ortodonti 12-18 ay sürer.</p>
+<a href="/hakkimizda/" rel="author">Ali Ulu</a>
+<time datetime="2026-11-21">21 Kasım 2026</time>
+<a href="/hizmetler/">Hizmetler</a>
+<a href="/blog/">Blog</a>
+<a href="/iletisim/">İletişim</a>
+<a href="tel:+902720000000">Ara</a>
+<form></form>
+</body></html>`;
+const geoSite = (over = {}) => site({
+  https: res({ body: geoHtml, finalUrl: "https://x.com/" }),
+  http: res({ body: geoHtml, finalUrl: "https://x.com/" }),
+  page: res({ body: geoHtml, finalUrl: "https://x.com/" }),
+  llms: res({ body: "# Afyon Diş Kliniği\n\nAfyon'da implant, ortodonti ve estetik diş tedavileri. Randevu için /iletisim/ sayfasını kullanın.\n\n- [Hizmetler](https://x.com/hizmetler/)\n- [Hakkında](https://x.com/hakkimizda/)\n" }),
+  aiTxt: res({ body: "User-agent: *\nAllow: /\n" }),
+  aiTxtAlt: res({ ok: false, status: 404 }),
+  feed: res({ body: "<rss><channel><title>Klinik</title></channel></rss>" }),
+  sitemap: res({ body: "<urlset><url><loc>https://x.com/</loc></url></urlset>" }),
+  ...over,
+});
+
+test("a complete GEO page scores 100 across the five categories", () => {
+  const r = evaluateGeo(geoSite());
+  assert.equal(r.score, 100);
+  assert.equal(r.grade, "A");
+  assert.equal(r.coverage, 100);
+  assert.deepEqual(r.categories.map((c) => c.id), ["schema", "content", "technical", "ai", "brand"]);
+  assert.equal(r.categories.reduce((s, c) => s + c.max, 0), 100);
+  assert.equal(r.recommendations.length, 0);
+});
+
+test("GEO catches missing Organization, FAQPage, Service and a blocked GPTBot", () => {
+  const html = geoHtml.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, "");
+  const r = evaluateGeo(geoSite({
+    page: res({ body: html, finalUrl: "https://x.com/" }),
+    https: res({ body: html, finalUrl: "https://x.com/" }),
+    robots: res({ body: "User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nAllow: /\nSitemap: https://x.com/sitemap.xml" }),
+  }));
+  assert.equal(r.checks.find((c) => c.id === "organization").status, "fail");
+  assert.equal(r.checks.find((c) => c.id === "faq").status, "fail");
+  assert.equal(r.checks.find((c) => c.id === "offer").status, "fail");
+  assert.equal(r.checks.find((c) => c.id === "bot-GPTBot").status, "fail");
+  assert.ok(r.score < 80, `expected a visibly lower score, got ${r.score}`);
+  assert.ok(r.recommendations.some((x) => x.title === "Organization şeması"));
+});
+
+test("GEO treats an unreadable robots.txt as unknown, not as a block", () => {
+  const r = evaluateGeo(geoSite({ robots: res({ ok: false, status: 403 }) }));
+  const bots = r.checks.filter((c) => c.cat === "ai" && c.id.startsWith("bot-"));
+  assert.ok(bots.length > 0);
+  assert.ok(bots.every((c) => c.status === "unknown"));
+  assert.ok(r.coverage < 100);
+  assert.equal(r.checks.find((c) => c.id === "llms").status, "pass");
+});
+
+test("GEO speed is unknown when the first-byte time is missing", () => {
+  const r = evaluateGeo(geoSite({ page: res({ body: geoHtml, finalUrl: "https://x.com/", ttfb: undefined }) }));
+  assert.equal(r.checks.find((c) => c.id === "speed").status, "unknown");
+  assert.ok(r.coverage < 100);
 });
 
 test("a complete site scores 100 / A", () => {

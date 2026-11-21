@@ -46,6 +46,15 @@ test("WebPage names the author and the publisher by @id", () => {
   assert.equal(wp.publisher["@id"], `${site.url}/#organization`, "publisher points at the Organization");
 });
 
+test("the home page names the service and its provider", () => {
+  const home = ldObjects(renderPage(pages.find((p) => p.path === "/")));
+  const service = home.find((o) => o["@type"] === "Service");
+  assert.ok(service, "Service JSON-LD");
+  assert.equal(service.provider["@id"], `${site.url}/#organization`, "provider points at the Organization");
+  assert.equal(service.areaServed.name, "Türkiye", "service area is explicit");
+  assert.match(service.serviceType, /Web sitesi/, "service type says what is sold");
+});
+
 test("the about page is a real page with a Person entity and a byline", () => {
   const about = pages.find((p) => p.path === "/hakkimizda/");
   assert.ok(about, "missing /hakkimizda/");

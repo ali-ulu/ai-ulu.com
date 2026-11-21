@@ -23,6 +23,7 @@ npm test           # run unit tests
 npm run dev        # build + local preview (wrangler dev)
 npm run deploy     # build + deploy to Cloudflare
 npm run ping       # submit sitemap URLs to IndexNow (Bing, Yandex)
+npm run geo:audit -- ai-ulu.com --max-pages 8 --out geo-report.html  # score a site for AI search
 ```
 
 ## Search engines and AI crawlers
@@ -45,6 +46,7 @@ src/site/          site source (content, components, pages, assets)
 apps/sablonlar/    /sablonlar/ gallery (React, components in src/components/ui)
 src/worker.js      contact form API
 scripts/build.mjs  static site generator
+scripts/geo-audit.mjs  GEO audit (AI search readiness)
 test/              unit tests
 schema.sql         D1 schema (apply once per database)
 ```
