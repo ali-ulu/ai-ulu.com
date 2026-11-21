@@ -108,6 +108,66 @@ function schemaTypes(html) {
   return [...types];
 }
 
+// JSON-LD objects, not just the type strings. The GEO score needs fields
+// (Organization name/logo/sameAs, Article dates, Service provider), so the
+// checkup keeps both views: `schemaTypes` for tolerant matching and these
+// objects for field-level checks.
+export function jsonLdObjects(html) {
+  const out = [];
+  const add = (value) => {
+    if (Array.isArray(value)) {
+      value.forEach(add);
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    out.push(value);
+    if (value["@graph"]) add(value["@graph"]);
+  };
+  for (const m of html.matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
+    try {
+      add(JSON.parse(m[1]));
+    } catch {
+      // schemaTypes() already reads malformed blocks; field checks need valid JSON.
+    }
+  }
+  return out.filter((o) => o["@type"]);
+}
+
+function typeList(obj) {
+  const raw = obj?.["@type"];
+  if (!raw) return [];
+  return (Array.isArray(raw) ? raw : [raw]).map((t) => String(t).replace(/^.*schema\.org\//, "").replace(/\/$/, ""));
+}
+
+function attrValue(tag, name) {
+  const m = tag.match(new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i"));
+  return m ? (m[1] ?? m[2] ?? m[3] ?? "").trim() : "";
+}
+
+function linkHrefs(html) {
+  return [...html.matchAll(/<a\b[^>]*href\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi)]
+    .map((m) => (m[1] ?? m[2] ?? m[3] ?? "").replace(/&amp;/g, "&").trim())
+    .filter((href) => href && !href.startsWith("#") && !/^(?:mailto|tel|javascript|data):/i.test(href));
+}
+
+function headingStats(html) {
+  const levels = [...html.matchAll(/<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi)].map((m) => Number(m[1]));
+  return {
+    h1: levels.filter((l) => l === 1).length,
+    h2: levels.filter((l) => l === 2).length,
+    skipped: levels.some((l, i) => i > 0 && l > levels[i - 1] + 1),
+  };
+}
+
+function asArray(value) {
+  if (value == null) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
+function uniqueStrings(values) {
+  return [...new Set(values.filter((v) => typeof v === "string" && v))];
+}
+
 // robots.txt per RFC 9309, for the site root only: the most specific user-agent
 // group wins over "*", the longest matching rule wins, Allow wins a tie.
 export function robotsAllows(robots, bot) {
@@ -157,14 +217,16 @@ export async function collect(host, env) {
   const [https, http] = await Promise.all([get(`https://${host}/`, env), get(`http://${host}/`, env)]);
   const page = https.ok ? https : http;
   const base = https.ok ? `https://${host}` : `http://${host}`;
-  const [robots, llms, sitemap, asOai, speed] = await Promise.all([
-    get(`${base}/robots.txt`, env), get(`${base}/llms.txt`, env), get(`${base}/sitemap.xml`, env),
+  const [robots, llms, aiTxt, aiTxtAlt, feed, sitemap, asOai, speed] = await Promise.all([
+    get(`${base}/robots.txt`, env), get(`${base}/llms.txt`, env),
+    get(`${base}/.well-known/ai.txt`, env), get(`${base}/ai.txt`, env), get(`${base}/feed.xml`, env),
+    get(`${base}/sitemap.xml`, env),
     get(`${base}/`, env, OAI_UA),
     // `withSpeed` is set by the caller; without it the 25 s Lighthouse call is
     // skipped entirely instead of being raced and thrown away.
     env?.withSpeed ? pageSpeed(host, env) : null,
   ]);
-  return { host, https, http, page, robots, llms, sitemap, asOai, speed };
+  return { host, https, http, page, robots, llms, aiTxt, aiTxtAlt, feed, sitemap, asOai, speed };
 }
 
 const errText = (x) => x.error || ([525, 526].includes(x.status) ? "sertifika hatası" : `HTTP ${x.status}`);
@@ -285,6 +347,288 @@ export function evaluate(d) {
 
 export const grade = (s) => (s >= 90 ? "A" : s >= 80 ? "B" : s >= 70 ? "C" : s >= 60 ? "D" : s >= 50 ? "E" : "F");
 
+// GEO score: a second, more technical reading of the same page. It mirrors the
+// public GeoReady categories (structured data, content, technical, AI access,
+// brand) instead of the SMB-oriented checkup categories above. The free checkup
+// reads one page; the multi-page crawl lives in scripts/geo-audit.mjs.
+export const GEO_CATEGORIES = [
+  ["schema", "Yapılandırılmış veri"],
+  ["content", "İçerik kalitesi"],
+  ["technical", "Teknik SEO"],
+  ["ai", "Yapay zekâ erişimi"],
+  ["brand", "Marka ve varlık"],
+];
+
+const GEO_BOTS = [
+  ["GPTBot", 2], ["OAI-SearchBot", 2], ["ClaudeBot", 1], ["Claude-SearchBot", 1],
+  ["PerplexityBot", 2], ["Google-Extended", 2], ["Bingbot", 1], ["CCBot", 1],
+];
+
+const GEO_SEVERITY = { critical: 0, high: 1, medium: 2, low: 3 };
+
+function geoCheck(cat, id, label, max, status, points, detail, fix, severity = "medium") {
+  const safe = status === "pass" ? max : status === "fail" || status === "unknown" ? 0 : Math.max(0, Math.min(max, points));
+  return { cat, id, label, max, weight: max, points: safe, status, detail, fix, severity };
+}
+
+const gPass = (cat, id, label, max, detail, fix, severity) => geoCheck(cat, id, label, max, "pass", max, detail, fix, severity);
+const gFail = (cat, id, label, max, detail, fix, severity) => geoCheck(cat, id, label, max, "fail", 0, detail, fix, severity);
+const gWarn = (cat, id, label, max, points, detail, fix, severity) => geoCheck(cat, id, label, max, "warn", points, detail, fix, severity);
+const gUnknown = (cat, id, label, max, detail, fix, severity) => geoCheck(cat, id, label, max, "unknown", 0, detail, fix, severity);
+
+function geoBrand(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9çğıöşü]+/gi, " ").trim();
+}
+
+export function evaluateGeo(d) {
+  const { page, https, http, robots, llms, aiTxt, aiTxtAlt, feed, sitemap } = d;
+  const html = page.body || "";
+  const host = d.host;
+  const base = https.ok ? https.finalUrl || `https://${host}/` : http.finalUrl || `http://${host}/`;
+  const meta = {
+    description: metaContent(html, "description"),
+    robots: metaContent(html, "robots"),
+    viewport: metaContent(html, "viewport"),
+  };
+  const title = visibleText((html.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1] || "");
+  const text = visibleText(html);
+  const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+  const headings = headingStats(html);
+  const types = schemaTypes(html);
+  const objects = jsonLdObjects(html);
+  const org = objects.find((o) => typeList(o).some((t) => LOCAL_TYPES.includes(t))) || null;
+  const person = objects.find((o) => typeList(o).includes("Person")) || null;
+  const article = objects.find((o) => typeList(o).some((t) => ["Article", "BlogPosting", "NewsArticle", "TechArticle"].includes(t))) || null;
+  const sameAs = uniqueStrings([...asArray(org?.sameAs), ...asArray(person?.sameAs)]);
+  const profiles = sameAs.filter((u) => /(?:linkedin\.com|github\.com|x\.com|twitter\.com|instagram\.com|facebook\.com|youtube\.com|crunchbase\.com|wikipedia\.org|wikidata\.org)/i.test(u));
+  const hasLinkedIn = sameAs.some((u) => /linkedin\.com/i.test(u));
+  const hasKg = sameAs.some((u) => /(?:wikipedia|wikidata|crunchbase)\./i.test(u));
+  const robotsTxt = robots?.ok && !/<html/i.test((robots.body || "").slice(0, 300)) ? robots.body : "";
+  const robotsMissing = robots?.status === 404 || robots?.status === 410;
+  const robotsUnreadable = !robots?.ok && !robotsMissing;
+  const sitemapCount = ((sitemap?.body || "").match(/<loc>/gi) || []).length;
+  const sitemapIndex = /<sitemapindex\b/i.test(sitemap?.body || "");
+  const sitemapOk = Boolean(sitemap?.ok) && /<urlset|<sitemapindex/i.test(sitemap?.body || "") && sitemapCount > 0;
+  const llmsOk = Boolean(llms?.ok) && (llms.body || "").length > 100 && /^#\s+/m.test(llms.body || "") && !/<html|<!doctype/i.test((llms.body || "").slice(0, 300));
+  const aiTxtOk = Boolean((aiTxt?.ok && (aiTxt.body || "").length > 20) || (aiTxtAlt?.ok && (aiTxtAlt.body || "").length > 20));
+  const feedOk = Boolean(feed?.ok && /<rss\b|<feed\b|<rdf:RDF\b/i.test(feed.body || ""));
+  const canonicalTag = [...html.matchAll(/<link\b[^>]*>/gi)].find((m) => attrValue(m[0], "rel").toLowerCase().split(/\s+/).includes("canonical"));
+  const canonicalRaw = canonicalTag ? attrValue(canonicalTag[0], "href") : "";
+  let canonical = "";
+  try { canonical = canonicalRaw ? new URL(canonicalRaw, base).href : ""; } catch { canonical = ""; }
+  const canonicalSelf = Boolean(canonical) && canonical.replace(/\/$/, "") === String(page.finalUrl || base).replace(/\/$/, "");
+  const noindex = /noindex/i.test(meta.robots) || /noindex/i.test(page.headers?.get("x-robots-tag") || "");
+  const hasAuthor = Boolean(article?.author || person?.name) || /(?:Yazan|Yazar|Author|By)\s*[:：]/i.test(text) || /\brel\s*=\s*["']author["']/i.test(html) || /\bitemprop\s*=\s*["']author["']/i.test(html);
+  const hasDate = Boolean(article?.datePublished || article?.dateModified) || /<time\b[^>]*datetime\s*=/i.test(html) ||
+    /\b\d{1,2}\s+(?:Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık)\s+\d{4}\b/i.test(text) ||
+    /\b20\d{2}-\d{2}-\d{2}\b/.test(text);
+  const hasUpdated = Boolean(article?.dateModified) || /(?:Güncellendi|Güncelleme|Son güncelleme|Updated)/i.test(text);
+  const hasFaq = types.includes("FAQPage") || /(?:Sıkça sorulan|Sıkça Sorulan|SSS|FAQ|Soru\s*[:-])/i.test(text);
+  const hasPrices = /(?:₺|TL|TRY|€|\$)\s?\d|\d\s?(?:₺|TL|TRY|€|\$)/i.test(text);
+  const hasNumbers = hasPrices || (text.match(/\b\d{2,}\b/g) || []).length >= 3;
+  const hrefs = linkHrefs(html);
+  let internal = 0;
+  let aboutLinked = false;
+  let contactLinked = false;
+  for (const href of hrefs) {
+    try {
+      const u = new URL(href, base);
+      if (u.host !== new URL(base).host) continue;
+      internal++;
+      if (/\/(?:about|hakkimizda|hakkinda|kurumsal)(?:\/|$)/i.test(u.pathname)) aboutLinked = true;
+      if (/\/(?:contact|iletisim|bize-ulasin)(?:\/|$)/i.test(u.pathname)) contactLinked = true;
+    } catch { /* ignore */ }
+  }
+  const hasTel = /href\s*=\s*["']tel:/i.test(html);
+  const hasWhatsApp = /wa\.me|api\.whatsapp\.com/i.test(html);
+  const hasForm = /<form\b/i.test(html);
+  const brandName = geoBrand(org?.name);
+  const brandConsistent = Boolean(brandName) && geoBrand(title).includes(brandName);
+  const ogOk = hasMeta(html, "og:title") && hasMeta(html, "og:image");
+  const ogPartial = hasMeta(html, "og:title") || hasMeta(html, "og:image");
+  const service = types.some((t) => ["Service", "Product", "Offer", "OfferCatalog", "ItemList"].includes(t));
+
+  const checks = [];
+  // ---- Yapılandırılmış veri (25) ----
+  checks.push(org
+    ? gPass("schema", "organization", "Organization şeması", 6, "Organization JSON-LD bulundu.", "Şemayı site şablonunda tutun.")
+    : gFail("schema", "organization", "Organization şeması", 6, "Organization JSON-LD yok.", "Ad, URL, logo, iletişim ve sosyal profilleri içeren Organization şeması ekleyin.", "critical"));
+  const orgCore = Boolean(org?.name && org?.url && (org?.logo || org?.image));
+  checks.push(orgCore
+    ? gPass("schema", "organization-core", "Organization kimlik alanları", 4, "name, url ve logo alanları var.", "Alanları güncel tutun.")
+    : gFail("schema", "organization-core", "Organization kimlik alanları", 4, org ? `Eksik alanlar: ${[!org.name && "name", !org.url && "url", !(org.logo || org.image) && "logo"].filter(Boolean).join(", ")}.` : "Organization bulunamadı.", "Organization içine name, url ve logo ekleyin.", "high"));
+  checks.push(sameAs.length >= 2
+    ? gPass("schema", "sameas", "sameAs profilleri", 3, `${sameAs.length} profil bağlı.`, "Profilleri güncel tutun.")
+    : sameAs.length === 1
+      ? gWarn("schema", "sameas", "sameAs profilleri", 3, 1, "Yalnızca 1 profil bağlı.", "En az 2 sahip olunan profil ekleyin.", "high")
+      : gFail("schema", "sameas", "sameAs profilleri", 3, "sameAs bağlantısı yok.", "Organization veya Person şemasına sameAs ekleyin.", "high"));
+  const orgContact = Boolean(org?.contactPoint || org?.telephone || org?.email);
+  checks.push(orgContact
+    ? gPass("schema", "organization-contact", "Organization iletişim bilgisi", 2, "contactPoint, telephone veya email var.", "Bilgileri güncel tutun.")
+    : gFail("schema", "organization-contact", "Organization iletişim bilgisi", 2, "Organization içinde iletişim alanı yok.", "contactPoint veya telephone/email ekleyin.", "high"));
+  checks.push(types.includes("WebSite")
+    ? gPass("schema", "website", "WebSite şeması", 2, "WebSite JSON-LD var.", "WebSite şemasını koruyun.")
+    : gFail("schema", "website", "WebSite şeması", 2, "WebSite JSON-LD yok.", "Site adı ve URL'siyle WebSite şeması ekleyin.", "medium"));
+  checks.push(types.some((t) => ["WebPage", "AboutPage", "ContactPage", "CollectionPage", "ItemPage"].includes(t))
+    ? gPass("schema", "webpage", "WebPage şeması", 2, "WebPage JSON-LD var.", "WebPage şemasını koruyun.")
+    : gFail("schema", "webpage", "WebPage şeması", 2, "WebPage JSON-LD yok.", "Her sayfaya WebPage şeması ekleyin.", "medium"));
+  checks.push(types.some((t) => ["Article", "BlogPosting", "NewsArticle", "TechArticle"].includes(t))
+    ? gPass("schema", "article", "Article / BlogPosting şeması", 2, "Article veya BlogPosting şeması var.", "Yazar ve tarih alanlarını koruyun.")
+    : gPass("schema", "article", "Article / BlogPosting şeması", 2, "Ana sayfa için uygulanmıyor; blog yazıları ayrı denetlenir.", "Blog yazılarına Article/BlogPosting şeması ekleyin."));
+  checks.push(types.includes("FAQPage")
+    ? gPass("schema", "faq", "FAQPage şeması", 2, "FAQPage JSON-LD var.", "Soruları görünür metinle birlikte tutun.")
+    : gFail("schema", "faq", "FAQPage şeması", 2, "FAQPage şeması yok.", "SSS bölümüne FAQPage JSON-LD ekleyin; yoksa 3-5 soruluk bir SSS açın.", "medium"));
+  checks.push(types.includes("BreadcrumbList")
+    ? gPass("schema", "breadcrumb", "BreadcrumbList şeması", 1, "BreadcrumbList var.", "İç sayfalarda breadcrumb'ı koruyun.")
+    : gPass("schema", "breadcrumb", "BreadcrumbList şeması", 1, "Ana sayfa için uygulanmıyor; iç sayfalarda denetlenir.", "İç sayfalara BreadcrumbList ekleyin."));
+  checks.push(service
+    ? gPass("schema", "offer", "Hizmet / ürün şeması", 1, "Service, Product, Offer veya ItemList var.", "Fiyat ve kapsam alanlarını ekleyin.")
+    : gFail("schema", "offer", "Hizmet / ürün şeması", 1, "Hizmet veya ürün şeması yok.", "Hizmetleriniz için Service, ürünler için Product/Offer JSON-LD ekleyin.", "medium"));
+
+  // ---- İçerik kalitesi (25) ----
+  checks.push(words >= 300
+    ? gPass("content", "words", "Yeterli metin", 5, `Ana sayfada ${words} kelime var.`, "İçerik derinliğini koruyun.")
+    : words >= 150
+      ? gWarn("content", "words", "Yeterli metin", 5, 2, `Ana sayfada ${words} kelime var; 300+ hedefleyin.`, "Ana sayfaya 300-600 kelime özgün açıklama ekleyin.", "high")
+      : gFail("content", "words", "Yeterli metin", 5, `Ana sayfada ${words} kelime var; içerik çok ince.`, "Ana sayfaya 300-600 kelime özgün açıklama ekleyin.", "high"));
+  checks.push(headings.h1 === 1
+    ? gPass("content", "h1", "Tek H1", 4, "Ana sayfada tek H1 var.", "Başlık yapısını koruyun.")
+    : gFail("content", "h1", "Tek H1", 4, `Ana sayfada ${headings.h1} adet H1 var.`, "Ana sayfada yalnızca bir H1 kullanın.", "high"));
+  checks.push(!headings.skipped && (headings.h2 >= 1 || words < 300)
+    ? gPass("content", "hierarchy", "Başlık hiyerarşisi", 3, "H2/H3 sırası tutarlı.", "Başlık yapısını koruyun.")
+    : gWarn("content", "hierarchy", "Başlık hiyerarşisi", 3, 1, "Başlık seviyeleri atlanıyor veya H2 yok.", "H1 → H2 → H3 sırasını atlamayın.", "medium"));
+  checks.push(title.length >= 10 && title.length <= 65
+    ? gPass("content", "title", "Sayfa başlığı", 2, `Başlık ${title.length} karakter.`, "Başlığı koruyun.")
+    : gFail("content", "title", "Sayfa başlığı", 2, title ? `Başlık ${title.length} karakter; 10-65 hedefleyin.` : "Sayfa başlığı yok.", "10-65 karakterlik benzersiz bir title yazın.", "high"));
+  checks.push(meta.description.length >= 70 && meta.description.length <= 160
+    ? gPass("content", "description", "Meta açıklama", 2, `Açıklama ${meta.description.length} karakter.`, "Açıklamayı koruyun.")
+    : gFail("content", "description", "Meta açıklama", 2, meta.description ? `Açıklama ${meta.description.length} karakter; 70-160 hedefleyin.` : "Meta açıklama yok.", "70-160 karakterlik bir meta description yazın.", "high"));
+  checks.push(hasAuthor
+    ? gPass("content", "author", "Görünür yazar", 2, "Sayfada yazar veya rel=author bağlantısı var.", "Yazar bilgisini koruyun.")
+    : gWarn("content", "author", "Görünür yazar", 2, 1, "Sayfada görünür yazar yok.", "Altbilgiye yazar adı ve /hakkimizda/ bağlantısı ekleyin.", "high"));
+  checks.push(hasDate || hasUpdated
+    ? gPass("content", "date", "Görünür tarih", 2, "Yayın veya güncelleme tarihi görünüyor.", "Tarihleri koruyun.")
+    : gWarn("content", "date", "Görünür tarih", 2, 1, "Sayfada görünür tarih yok.", "Yayın/güncelleme tarihini <time> ile gösterin.", "medium"));
+  checks.push(hasFaq
+    ? gPass("content", "faq-content", "SSS / soru-cevap", 2, "SSS veya soru-cevap bölümü var.", "Soruları güncel tutun.")
+    : gFail("content", "faq-content", "SSS / soru-cevap", 2, "SSS veya soru-cevap bölümü yok.", "3-5 soruluk bir SSS ekleyin.", "medium"));
+  checks.push(hasNumbers
+    ? gPass("content", "evidence", "Somut veri / fiyat", 2, "Sayfada sayı, fiyat veya ölçülebilir örnek var.", "Rakamları kaynaklandırın.")
+    : gFail("content", "evidence", "Somut veri / fiyat", 2, "Sayfada somut sayı, fiyat veya örnek yok.", "Fiyat aralığı, süre veya ölçülebilir sonuç ekleyin.", "medium"));
+  checks.push(internal >= 3
+    ? gPass("content", "links", "İç bağlantılar", 1, `${internal} iç bağlantı var.`, "Bağlantıları koruyun.")
+    : gFail("content", "links", "İç bağlantılar", 1, `Yalnızca ${internal} iç bağlantı var.`, "Ana sayfaya ilgili hizmet ve içerik bağlantıları ekleyin.", "low"));
+
+  // ---- Teknik SEO (20) ----
+  checks.push(https.ok
+    ? gPass("technical", "https", "HTTPS", 3, "Site HTTPS üzerinden açılıyor.", "Sertifikayı yenilemeyi unutmayın.")
+    : gFail("technical", "https", "HTTPS", 3, "Site HTTPS üzerinden açılmıyor.", "Geçerli bir TLS sertifikası kurun.", "critical"));
+  const httpFinal = String(http.finalUrl || "");
+  checks.push(!http.ok || httpFinal.startsWith("https://") || [301, 302, 307, 308].includes(http.status)
+    ? gPass("technical", "http-redirect", "HTTP → HTTPS", 2, http.ok && httpFinal.startsWith("https://") ? "HTTP, HTTPS'e yönleniyor." : "HTTP kapalı veya HTTPS'e yönleniyor.", "Kalıcı 301 yönlendirmesi kullanın.")
+    : gFail("technical", "http-redirect", "HTTP → HTTPS", 2, "HTTP adresi HTTPS'e yönlenmiyor.", "Sunucuda kalıcı (301) HTTP → HTTPS yönlendirmesi açın.", "high"));
+  checks.push(!noindex
+    ? gPass("technical", "indexable", "Dizine açık", 3, "Sayfada noindex yok.", "noindex'i yalnızca özel sayfalarda kullanın.")
+    : gFail("technical", "indexable", "Dizine açık", 3, "Sayfa noindex ile dizinden gizlenmiş.", "Herkese açık sayfadan noindex'i kaldırın.", "critical"));
+  checks.push(canonicalSelf
+    ? gPass("technical", "canonical", "Canonical", 2, "Sayfa kendine canonical veriyor.", "Canonical'ı koruyun.")
+    : gFail("technical", "canonical", "Canonical", 2, canonical ? "Canonical sayfanın kendi adresini göstermiyor." : "Canonical etiketi yok.", "Sayfaya kendi URL'sini gösteren canonical ekleyin.", "high"));
+  checks.push(/width\s*=\s*device-width/i.test(meta.viewport)
+    ? gPass("technical", "viewport", "Mobil viewport", 2, "width=device-width ayarlı.", "Viewport'u koruyun.")
+    : gFail("technical", "viewport", "Mobil viewport", 2, "Viewport etiketi eksik veya hatalı.", 'Her sayfaya <meta name="viewport" content="width=device-width, initial-scale=1"> ekleyin.', "high"));
+  checks.push(sitemapOk
+    ? gPass("technical", "sitemap", "Site haritası", 3, `sitemap.xml bulundu (${sitemapCount} ${sitemapIndex ? "alt sitemap" : "URL"}).`, "Yeni sayfaları sitemap'e ekleyin.")
+    : gFail("technical", "sitemap", "Site haritası", 3, "Geçerli sitemap.xml bulunamadı.", "sitemap.xml oluşturup robots.txt'e ekleyin.", "critical"));
+  checks.push(robotsTxt.match(/^\s*sitemap\s*:/im)
+    ? gPass("technical", "sitemap-robots", "robots.txt → sitemap", 1, "robots.txt sitemap'i gösteriyor.", "Yolu koruyun.")
+    : gFail("technical", "sitemap-robots", "robots.txt → sitemap", 1, "robots.txt'te Sitemap satırı yok.", "robots.txt'e Sitemap: https://.../sitemap.xml ekleyin.", "medium"));
+  checks.push(ogOk
+    ? gPass("technical", "og", "Paylaşım kartı", 2, "og:title ve og:image var.", "Kartı koruyun.")
+    : ogPartial
+      ? gWarn("technical", "og", "Paylaşım kartı", 2, 1, "og:title veya og:image eksik.", "og:title, og:description ve og:image ekleyin.", "medium")
+      : gFail("technical", "og", "Paylaşım kartı", 2, "Open Graph etiketleri yok.", "og:title, og:description ve og:image ekleyin.", "medium"));
+  checks.push(!Number.isFinite(page.ttfb)
+    ? gUnknown("technical", "speed", "İlk yanıt süresi", 2, "İlk bayt süresi ölçülemedi.", "Sunucunun yanıt süresini kontrol edin.", "medium")
+    : page.ttfb < 1500
+      ? gPass("technical", "speed", "İlk yanıt süresi", 2, `İlk bayt ${(page.ttfb / 1000).toFixed(2)} sn.`, "CDN ve önbellek kullanın.")
+      : page.ttfb < 3000
+        ? gWarn("technical", "speed", "İlk yanıt süresi", 2, 1, `İlk bayt ${(page.ttfb / 1000).toFixed(2)} sn; 1.5 sn altı hedefleyin.`, "CDN ve önbellek kullanın.", "medium")
+        : gFail("technical", "speed", "İlk yanıt süresi", 2, `İlk bayt ${(page.ttfb / 1000).toFixed(2)} sn; çok yavaş.`, "CDN, önbellek ve daha hızlı bir sunucu kullanın.", "medium"));
+
+  // ---- Yapay zekâ erişimi (20) ----
+  for (const [bot, points] of GEO_BOTS) {
+    if (robotsUnreadable) {
+      checks.push(gUnknown("ai", `bot-${bot}`, `${bot} erişimi`, points, "robots.txt okunamadı.", "robots.txt'nin erişilebilir olduğunu kontrol edin.", "medium"));
+      continue;
+    }
+    const allowed = robotsAllows(robotsTxt, bot);
+    checks.push(allowed
+      ? gPass("ai", `bot-${bot}`, `${bot} erişimi`, points, robotsMissing ? "robots.txt yok; varsayılan olarak izinli." : "robots.txt izin veriyor.", "Engeli kaldırmayın.")
+      : gFail("ai", `bot-${bot}`, `${bot} erişimi`, points, `robots.txt ${bot} tarayıcısını engelliyor.`, `robots.txt'te ${bot} için "Allow: /" tanımlayın.`, ["GPTBot", "OAI-SearchBot", "ClaudeBot", "Claude-SearchBot", "PerplexityBot"].includes(bot) ? "critical" : "medium"));
+  }
+  checks.push(llmsOk
+    ? gPass("ai", "llms", "llms.txt", 3, `llms.txt bulundu (${(llms.body || "").length} karakter).`, "Yeni sayfaları llms.txt'ye ekleyin.")
+    : gFail("ai", "llms", "llms.txt", 3, llms?.ok ? "llms.txt var ama başlık/bağlantı yapısı zayıf." : "llms.txt bulunamadı.", "Kök dizine H1, kısa özet ve ana sayfa bağlantıları içeren llms.txt ekleyin.", "high"));
+  checks.push(aiTxtOk
+    ? gPass("ai", "ai-txt", "ai.txt", 2, "ai.txt bulundu.", "Politikayı güncel tutun.")
+    : gFail("ai", "ai-txt", "ai.txt", 2, "ai.txt bulunamadı.", "/.well-known/ai.txt ekleyip tarayıcı izinlerini yazın.", "medium"));
+  checks.push(feedOk
+    ? gPass("ai", "feed", "RSS / Atom akışı", 1, "feed.xml bulundu.", "Yeni yazıları akışa ekleyin.")
+    : gFail("ai", "feed", "RSS / Atom akışı", 1, "RSS/Atom akışı bulunamadı.", "Blog için /feed.xml üretin.", "low"));
+  checks.push(words >= 300
+    ? gPass("ai", "ssr", "JavaScript'siz okunabilir içerik", 2, `${words} kelime sunucudan geliyor.`, "İçeriği HTML'de tutun.")
+    : words >= 100
+      ? gWarn("ai", "ssr", "JavaScript'siz okunabilir içerik", 2, 1, `${words} kelime var; içerik JavaScript'e bağımlı olabilir.`, "Ana metni SSR/statik HTML ile sunun.", "high")
+      : gFail("ai", "ssr", "JavaScript'siz okunabilir içerik", 2, `Yalnızca ${words} kelime var.`, "Ana metni SSR/statik HTML ile sunun.", "critical"));
+
+  // ---- Marka ve varlık (10) ----
+  checks.push(hasLinkedIn
+    ? gPass("brand", "linkedin", "LinkedIn profili", 2, "sameAs içinde LinkedIn var.", "Profili güncel tutun.")
+    : gFail("brand", "linkedin", "LinkedIn profili", 2, "sameAs içinde LinkedIn yok.", "Organization veya Person şemasına LinkedIn profilini ekleyin.", "medium"));
+  checks.push(profiles.length >= 2
+    ? gPass("brand", "profiles", "Sahip olunan profiller", 2, `${profiles.length} profil bağlı.`, "Profilleri güncel tutun.")
+    : gFail("brand", "profiles", "Sahip olunan profiller", 2, `Yalnızca ${profiles.length} profil bağlı.`, "En az 2 sahip olunan profil ekleyin.", "medium"));
+  checks.push(hasKg
+    ? gPass("brand", "kg", "Bilgi grafiği kaydı", 2, "Wikipedia, Wikidata veya Crunchbase bağlantısı var.", "Kaydı güncel tutun.")
+    : gFail("brand", "kg", "Bilgi grafiği kaydı", 2, "Wikipedia, Wikidata veya Crunchbase bağlantısı yok.", "Varsa Wikidata/Crunchbase kaydı oluşturup sameAs'e ekleyin; yoksa uydurmayın.", "low"));
+  checks.push(aboutLinked
+    ? gPass("brand", "about", "Hakkında sayfası", 2, "Hakkında sayfası bağlantılı.", "İçeriği güncel tutun.")
+    : gFail("brand", "about", "Hakkında sayfası", 2, "Hakkında sayfası bağlantısı yok.", "Kimin yazdığını anlatan bir /hakkimizda/ sayfası ekleyip menüye koyun.", "high"));
+  checks.push(contactLinked || hasTel || hasForm || hasWhatsApp
+    ? gPass("brand", "contact", "İletişim bilgisi", 1, "İletişim sayfası veya doğrudan iletişim bağlantısı var.", "Bilgileri güncel tutun.")
+    : gFail("brand", "contact", "İletişim bilgisi", 1, "İletişim sayfası veya tel/form bağlantısı yok.", "İletişim sayfası, tel: bağlantısı veya form ekleyin.", "medium"));
+  checks.push(brandConsistent
+    ? gPass("brand", "brand", "Marka adı tutarlılığı", 1, "Organization adı sayfa başlığıyla uyumlu.", "Tutarlılığı koruyun.")
+    : gFail("brand", "brand", "Marka adı tutarlılığı", 1, "Organization adı ile sayfa başlığı eşleşmiyor.", "Organization name ve title aynı marka adını kullansın.", "low"));
+
+  const categories = GEO_CATEGORIES.map(([id, label]) => {
+    const cs = checks.filter((c) => c.cat === id);
+    const max = cs.reduce((s, c) => s + c.weight, 0);
+    const points = cs.reduce((s, c) => s + c.points, 0);
+    return { id, label, points, max, score: max ? Math.round((points / max) * 100) : 0 };
+  });
+  const nominal = checks.reduce((s, c) => s + c.weight, 0);
+  const got = checks.reduce((s, c) => s + c.points, 0);
+  const skipped = checks.filter((c) => c.status === "unknown").reduce((s, c) => s + c.weight, 0);
+  const score = nominal ? Math.round((got / nominal) * 100) : 0;
+  const coverage = nominal ? Math.round(((nominal - skipped) / nominal) * 100) : 0;
+  const recommendations = checks
+    .filter((c) => c.status !== "pass" && c.points < c.weight)
+    .map((c) => ({
+      severity: c.severity,
+      category: GEO_CATEGORIES.find(([id]) => id === c.cat)?.[1] || c.cat,
+      title: c.label,
+      lost: c.weight - c.points,
+      evidence: c.detail,
+      fix: c.fix,
+    }))
+    .sort((a, b) => (GEO_SEVERITY[a.severity] - GEO_SEVERITY[b.severity]) || (b.lost - a.lost));
+  return { score, grade: grade(score), coverage, categories, checks, recommendations };
+}
+
+
 export async function runCheckup(host, env) {
-  return { host, ...evaluate(await collect(host, env)) };
+  const data = await collect(host, env);
+  const base = evaluate(data);
+  return { host, ...base, geo: base.reachable ? evaluateGeo(data) : null };
 }

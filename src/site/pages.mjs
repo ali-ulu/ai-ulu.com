@@ -108,6 +108,35 @@ function professionalServiceLd() {
   };
 }
 
+// The offer itself. ProfessionalService describes who sells it; a Service node
+// describes what is sold, which is the shape AI assistants quote when someone
+// asks "who builds websites in Turkey" rather than "who is ai-ulu".
+function serviceLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${site.url}/#web-service`,
+    name: "Web sitesi tasarımı ve geliştirme",
+    serviceType: "Web sitesi tasarımı ve geliştirme",
+    description: site.description,
+    url: `${site.url}/#paketler`,
+    provider: { "@id": `${site.url}/#organization` },
+    areaServed: { "@type": "Country", name: "Türkiye" },
+    availableChannel: { "@type": "ServiceChannel", serviceUrl: `${site.url}/#iletisim`, availableLanguage: ["tr"] },
+    ...(site.priceFrom
+      ? {
+          offers: {
+            "@type": "Offer",
+            price: site.priceFrom,
+            priceCurrency: "TRY",
+            availability: "https://schema.org/InStock",
+            url: `${site.url}/#paketler`,
+          },
+        }
+      : {}),
+  };
+}
+
 // Per-page freshness signals so crawlers and AI assistants can see when the
 // page last changed.
 function webPageLd(path, { title, description }) {
@@ -335,6 +364,7 @@ const checkupExplain = () => `<section class="s">
     <p><strong>Okunabilirlik.</strong> Sayfa içeriğinin JavaScript çalışmadan gelip gelmediği, başlık ve açıklama etiketleri, tek bir ana başlık (H1) ve görsellerin alt metinleri. İçerik sonradan JavaScript ile çiziliyorsa Google ve asistanlar sayfayı neredeyse boş görür.</p>
     <p><strong>Yapılandırılmış veri.</strong> İşletme bilgisini taşıyan JSON-LD, site haritası, paylaşım kartı (Open Graph) ve asıl adres (canonical) etiketi. Bunlar, sitenin ne olduğunu ve hangi sayfanın asıl sayfa olduğunu makineye söyler.</p>
     <p><strong>Dönüşüm.</strong> Telefondan tek dokunuşla arama (tel:), WhatsApp bağlantısı ve çalışan bir iletişim formu. Ziyaretçi aklındayken size ulaşabiliyor mu?</p>
+    <p><strong>GEO skoru.</strong> Aynı sayfayı GeoReady tarzı beş kategoriyle ayrıca puanlıyoruz: yapılandırılmış veri, içerik kalitesi, teknik SEO, yapay zekâ erişimi ve marka/varlık. Organization, Service, FAQPage ve BreadcrumbList; görünür yazar/tarih; llms.txt, ai.txt ve RSS; GPTBot, ClaudeBot ve PerplexityBot erişimi. Bu skor ana sayfa üzerinden hesaplanır; tam raporda iç sayfalar da taranır.</p>
     <h2>Puan nasıl okunur?</h2>
     <p>Her kontrolün bir ağırlığı vardır; puan, ölçülebilen kontrollerin toplamına göre hesaplanır. Ölçülemeyen bir kontrol sıfır puan alır ama toplamdan düşülmez; böylece "100" gerçekten her şeyin doğrulandığı anlamına gelir. 90 ve üzeri A, 80-89 B, 70-79 C, 60-69 D, 50-59 E, altı F. Düşük puan bir suçlama değil, sırayla düzeltilecek maddeler listesidir.</p>
     <h2>Neyi ölçmüyor?</h2>
@@ -372,6 +402,21 @@ const checkupBody = () => `<section class="s ck">
       </div>
       <ul id="ck-cats" class="ck-cats"></ul>
       <p id="ck-speed" class="ck-more" hidden></p>
+      <section id="ck-geo" class="ck-geo" hidden>
+        <p class="eyebrow">GEO skoru</p>
+        <h2 class="ck-h">Yapay zekâ arama görünürlüğü</h2>
+        <div class="ck-score ck-geo-score">
+          <p class="ck-grade" id="ck-geo-grade" aria-hidden="true"></p>
+          <div>
+            <p class="ck-num"><strong id="ck-geo-num"></strong> / 100</p>
+            <p id="ck-geo-sum" class="ck-sum"></p>
+            <p id="ck-geo-basis" class="ck-more" hidden></p>
+          </div>
+        </div>
+        <ul id="ck-geo-cats" class="ck-cats"></ul>
+        <h3 class="ck-h">Öncelikli GEO düzeltmeleri</h3>
+        <ol id="ck-geo-fix" class="ck-list"></ol>
+      </section>
       <h2 class="ck-h">Düzeltilecekler</h2>
       <ol id="ck-fix" class="ck-list"></ol>
       <details class="ck-passed"><summary id="ck-pass-sum"></summary><ul id="ck-ok" class="ck-list"></ul></details>
@@ -397,7 +442,7 @@ export const pages = [
   {
     path: "/",
     file: "index.html",
-    jsonLd: [webSiteLd(), professionalServiceLd(), faqLd()],
+    jsonLd: [webSiteLd(), professionalServiceLd(), serviceLd(), faqLd()],
     before: preloader,
     noscript: noJsStyles,
     scripts: ["/ora.js"],
@@ -460,8 +505,8 @@ export const pages = [
   {
     path: "/checkup/",
     file: "checkup/index.html",
-    title: "Ücretsiz site checkup",
-    description: "Siteniz açılıyor mu, Google ve ChatGPT onu okuyabiliyor mu? Adresi yazın, ücretsiz ölçelim.",
+    title: "Ücretsiz site ve GEO checkup",
+    description: "Siteniz açılıyor mu, Google ve ChatGPT onu okuyabiliyor mu? Ücretsiz site checkup'ı ve GEO skoru ile ölçün.",
     scripts: ["/checkup.js"],
     crumbs: [{ href: "/", label: "Ana sayfa" }, { href: "/checkup/", label: "Checkup" }],
     body: checkupBody,

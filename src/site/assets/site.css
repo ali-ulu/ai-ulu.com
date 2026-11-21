@@ -273,6 +273,10 @@ section.s{padding:clamp(5rem,12vw,10rem) var(--pad);border-top:1px solid var(--l
 .ck-copy{padding:0;border:0;background:none;color:var(--soft);font:inherit;font-size:.85rem;text-decoration:underline;cursor:pointer;min-height:24px}
 .ck-cats{display:grid;gap:.6rem;margin:0 0 1rem;padding:0;list-style:none}
 .ck-cats li{display:grid;grid-template-columns:minmax(8rem,12rem) 1fr 3rem;align-items:center;gap:.8rem;font-size:.92rem}
+.ck-geo{margin:2.4rem 0;padding-top:1.6rem;border-top:1px solid var(--line)}
+.ck-geo .ck-h{margin-top:0}
+.ck-geo-score{margin:1rem 0 1.2rem}
+.ck-geo-score .ck-grade{width:4.4rem;height:4.4rem;font-size:2.3rem}
 .ck-bar{height:.45rem;border-radius:999px;background:var(--line);overflow:hidden}
 .ck-bar::after{content:"";display:block;height:100%;width:var(--p);background:var(--amber)}
 .ck-pts{text-align:right;color:var(--soft)}

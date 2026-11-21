@@ -14,12 +14,58 @@ const SUMMARY = {
   E: "Siteniz ziyaretçinin ve yapay zekânın önünde engel oluyor.",
   F: "Siteniz şu haliyle müşteri getirmiyor; önce temel sorunlar çözülmeli.",
 };
+const GEO_SUMMARY = {
+  A: "Yapay zekâ aramaları için teknik temel güçlü.",
+  B: "GEO temeli iyi; birkaç şema ve içerik düzeltmesi kaldı.",
+  C: "GEO temeli var, ama yapay zekâ görünürlüğü için önemli eksikler var.",
+  D: "GEO sinyalleri zayıf; yapay zekâ sizi zor anlar.",
+  E: "GEO temeli eksik; önce şema ve erişim sorunları çözülmeli.",
+  F: "GEO sinyalleri kritik seviyede eksik.",
+};
+const SEVERITY = { critical: "Kritik", high: "Yüksek", medium: "Orta", low: "Düşük" };
 
 function checkItem(c) {
   const li = el("li", `ck-item ck-${c.status}`);
   li.append(el("strong", "", c.label), el("span", "ck-detail", c.detail));
   if (c.status === "fail" || c.status === "warn") li.append(el("span", "ck-howto", `Nasıl düzelir: ${c.fix}`));
   return li;
+}
+
+function geoItem(r) {
+  const tone = r.severity === "critical" || r.severity === "high" ? "fail" : "warn";
+  const li = el("li", `ck-item ck-${tone}`);
+  li.append(
+    el("strong", "", `${SEVERITY[r.severity] || r.severity}: ${r.title} (−${r.lost} puan)`),
+    el("span", "ck-detail", r.evidence),
+    el("span", "ck-howto", `Nasıl düzelir: ${r.fix}`),
+  );
+  return li;
+}
+
+function renderGeo(d) {
+  const geo = d.geo;
+  const box = $("ck-geo");
+  if (!geo || typeof geo.score !== "number") {
+    box.hidden = true;
+    return;
+  }
+  box.hidden = false;
+  $("ck-geo-grade").textContent = geo.grade;
+  $("ck-geo-grade").dataset.g = geo.grade;
+  $("ck-geo-num").textContent = geo.score;
+  $("ck-geo-sum").textContent = `${d.host}: ${GEO_SUMMARY[geo.grade]}`;
+  const basis = $("ck-geo-basis");
+  basis.hidden = geo.coverage >= 100;
+  if (geo.coverage < 100) basis.textContent = `GEO puanı ${geo.coverage}% kapsama üzerinden: bazı kontroller ölçülemedi.`;
+  $("ck-geo-cats").replaceChildren(...geo.categories.filter((c) => c.max).map((c) => {
+    const li = el("li");
+    const bar = el("span", "ck-bar");
+    bar.style.setProperty("--p", `${Math.round((c.points / c.max) * 100)}%`);
+    li.append(el("span", "", c.label), bar, el("span", "ck-pts", `${c.points}/${c.max}`));
+    return li;
+  }));
+  const fixes = geo.recommendations.slice(0, 6);
+  $("ck-geo-fix").replaceChildren(...(fixes.length ? fixes.map(geoItem) : [el("li", "", "GEO kontrollerinde düzeltilecek bir şey çıkmadı.")]));
 }
 
 function render(d) {
@@ -51,8 +97,10 @@ function render(d) {
   $("ck-fix").replaceChildren(...(todo.length ? todo.map(checkItem) : [el("li", "", "Otomatik kontrollerde düzeltilecek bir şey çıkmadı.")]));
   $("ck-ok").replaceChildren(...rest.map(checkItem));
   $("ck-pass-sum").textContent = `Geçen ve ölçülemeyen kontroller (${rest.length})`;
+  renderGeo(d);
+  const geoNote = d.geo && typeof d.geo.score === "number" ? `, GEO ${d.geo.score}/100` : "";
   const note = graded
-    ? `Merhaba, ${d.host} için checkup yaptım (${d.score}/100, ${todo.length} düzeltme). Tam raporu alabilir miyim?`
+    ? `Merhaba, ${d.host} için checkup yaptım (${d.score}/100${geoNote}, ${todo.length} düzeltme). Tam raporu alabilir miyim?`
     : `Merhaba, ${d.host} için otomatik checkup engellendi (bot koruması). Tam raporu elle alabilir miyim?`;
   $("ck-wa").href = `${$("ck-wa").dataset.base}?text=${encodeURIComponent(note)}`;
   $("ck-out").hidden = false;
@@ -100,9 +148,11 @@ lead.addEventListener("submit", async (e) => {
   btn.disabled = true;
   status.textContent = "Gönderiliyor…";
   const todo = last.checks.filter((c) => c.status === "fail" || c.status === "warn");
+  const geo = last.geo && typeof last.geo.score === "number" ? last.geo : null;
   const headline = typeof last.score === "number"
-    ? `Checkup: ${last.host} — ${last.score}/100 (${last.grade})`
+    ? `Checkup: ${last.host} — ${last.score}/100 (${last.grade})${geo ? ` · GEO ${geo.score}/100 (${geo.grade})` : ""}`
     : `Checkup: ${last.host} — otomatik ölçüm engellendi (bot koruması)`;
+  const geoTop = geo?.recommendations?.slice(0, 3).map((r, i) => `GEO ${i + 1}. ${r.title}: ${r.evidence}`).join("\n") || "";
   try {
     const res = await fetch("/api/lead", {
       method: "POST",
@@ -112,7 +162,7 @@ lead.addEventListener("submit", async (e) => {
         reach: lead.reach.value,
         company: lead.company.value,
         type: "checkup",
-        msg: `${headline}\n${todo.map((c, i) => `${i + 1}. ${c.label}: ${c.detail}`).join("\n")}`.slice(0, 2000),
+        msg: `${headline}\n${todo.map((c, i) => `${i + 1}. ${c.label}: ${c.detail}`).join("\n")}${geoTop ? `\n${geoTop}` : ""}`.slice(0, 2000),
         page: location.pathname,
       }),
     });

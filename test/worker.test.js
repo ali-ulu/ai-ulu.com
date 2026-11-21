@@ -592,7 +592,6 @@ test("an error-rate-limit database failure still logs the report", async () => {
   }
 });
 
-
 test("checkup reports an unresolvable host as a typo, not a broken site", async () => {
   const realFetch = globalThis.fetch;
   globalThis.fetch = async () => new Response("", { status: 530 });
@@ -600,6 +599,37 @@ test("checkup reports an unresolvable host as a typo, not a broken site", async 
     const res = await worker.fetch(new Request("https://ai-ulu.com/api/checkup?site=ai.ulu.com"), makeEnv());
     assert.equal(res.status, 422);
     assert.match((await res.json()).error, /bulunamadı/);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
+test("checkup returns the GEO score alongside the site score", async () => {
+  const realFetch = globalThis.fetch;
+  const page = `<html><head><title>Example Klinik | Diş Tedavisi</title>
+<meta name="description" content="Example Klinik'te implant, ortodonti ve estetik diş tedavileri. Randevu alın, gülüşünüzü birlikte planlayalım.">
+<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="canonical" href="https://example.com/">
+<script type="application/ld+json">{"@type":"Organization","name":"Example Klinik","url":"https://example.com/","logo":"https://example.com/logo.png"}</script>
+</head><body><h1>Example Klinik</h1><p>${"Example Klinik implant ve ortodonti hizmeti sunar. ".repeat(40)}</p></body></html>`;
+  globalThis.fetch = async (req) => {
+    const u = new URL(req.url);
+    if (u.protocol === "http:") return new Response("", { status: 301, headers: { location: "https://example.com/" } });
+    if (u.pathname === "/") return new Response(page, { status: 200 });
+    if (u.pathname === "/robots.txt") return new Response("User-agent: *\nAllow: /\nSitemap: https://example.com/sitemap.xml", { status: 200 });
+    if (u.pathname === "/llms.txt") return new Response(`# Example Klinik\n\n${"Example Klinik implant ve ortodonti hizmeti sunar. ".repeat(4)}`, { status: 200 });
+    if (u.pathname === "/.well-known/ai.txt") return new Response("User-agent: *\nAllow: /\n", { status: 200 });
+    if (u.pathname === "/feed.xml") return new Response("<rss><channel><title>Example</title></channel></rss>", { status: 200 });
+    if (u.pathname === "/sitemap.xml") return new Response("<urlset><url><loc>https://example.com/</loc></url></urlset>", { status: 200 });
+    return new Response("", { status: 404 });
+  };
+  try {
+    const res = await worker.fetch(new Request("https://ai-ulu.com/api/checkup?site=example.com"), makeEnv());
+    assert.equal(res.status, 200);
+    const data = await res.json();
+    assert.equal(typeof data.score, "number");
+    assert.equal(typeof data.geo.score, "number");
+    assert.equal(data.geo.categories.length, 5);
+    assert.ok(data.geo.checks.some((c) => c.id === "organization" && c.status === "pass"));
   } finally {
     globalThis.fetch = realFetch;
   }
