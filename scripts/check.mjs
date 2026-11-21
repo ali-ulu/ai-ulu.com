@@ -34,6 +34,8 @@ const required = [
   "robots.txt",
   "sitemap.xml",
   "llms.txt",
+  "feed.xml",
+  ".well-known/ai.txt",
   "_headers",
   "_redirects",
   `${site.indexNowKey}.txt`,

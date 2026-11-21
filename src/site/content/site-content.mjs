@@ -6,6 +6,7 @@ export const nav = [
   { href: "/sablonlar/", label: "Örnek tasarımlar", keep: true },
   { href: "/#paketler", label: "Paketler" },
   { href: "/blog/", label: "Blog", keep: true },
+  { href: "/hakkimizda/", label: "Hakkında" },
   { href: "/checkup/", label: "Ücretsiz test" },
   { href: "/#sss", label: "SSS" },
 ];
@@ -22,6 +23,11 @@ export const faq = {
       tab: "Fiyat",
       q: "Fiyatı ne belirler?",
       a: "Sayfa sayısı, içerik hazırlığı ve ek özellikler (form, randevu, çoklu dil, uygulama). Ücretsiz görüşmeden sonra 24 saat içinde yazılı teklif gönderilir.",
+    },
+    {
+      tab: "Fiyat",
+      q: "2026'da bir web sitesi ne kadar?",
+      a: "Tek sayfa 6.000-40.000 ₺, şablon temelli kurumsal site 8.000-25.000 ₺, ajans işi özel tasarım 35.000-250.000 ₺, e-ticaret 40.000-450.000 ₺ aralığında. Kuruma özel yazılım 150.000 ₺'den başlar. Kesin fiyat, kapsam görüşmesinden sonra yazılı teklifte netleşir.",
     },
     {
       tab: "Sahiplik",
@@ -101,6 +107,7 @@ export const budgets = [
 ];
 
 export const footerLinks = [
+  { href: "/hakkimizda/", label: "Hakkında" },
   { href: "/calismalar/", label: "Çalışmalar" },
   { href: "/sablonlar/", label: "Örnek tasarımlar" },
   { href: "/blog/", label: "Blog" },
@@ -115,4 +122,5 @@ export const footerLinks = [
 // belong here: a link to someone else's work under our name misleads visitors.
 export const socials = [
   { href: "https://www.linkedin.com/in/aliulu777/", label: "LinkedIn", icon: "linkedin" },
+  { href: "https://github.com/ali-ulu", label: "GitHub", icon: "github" },
 ];

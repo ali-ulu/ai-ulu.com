@@ -1,6 +1,7 @@
 import { site, waLink } from "../config.mjs";
 import { posts } from "../content/blog.mjs";
 import { escapeHtml } from "../lib/html.mjs";
+import { trDate } from "../lib/date.mjs";
 
 // Newest first; posts sharing a date keep their order in the file (stable sort).
 export const byDateDesc = [...posts].sort((a, b) =>
@@ -30,12 +31,7 @@ function block(b) {
   return `<p>${inline(b.p)}</p>`;
 }
 
-// "2026-11-11" → "11 Kasım 2026" (Turkish month names, no Intl dependency).
-const MONTHS = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
-function trDate(iso) {
-  const [y, m, d] = String(iso).split("-").map(Number);
-  return m >= 1 && m <= 12 ? `${d} ${MONTHS[m - 1]} ${y}` : iso;
-}
+// "2026-11-11" → "11 Kasım 2026" lives in lib/date.mjs so the footer can use it.
 
 export function postBody(slug) {
   const post = findPost(slug);
@@ -49,7 +45,7 @@ export function postBody(slug) {
         <p class="eyebrow">Blog</p>
         <h1>${escapeHtml(post.title)}</h1>
         <p class="lead">${escapeHtml(post.description)}</p>
-        <p class="bl-meta"><span class="bl-author">${escapeHtml(site.owner)}</span> · <time datetime="${post.published}">${trDate(post.published)}</time>${updated}</p>
+        <p class="bl-meta"><span class="bl-author">Yazan: <a href="/hakkimizda/" rel="author">${escapeHtml(site.owner)}</a></span> · <time datetime="${post.published}">${trDate(post.published)}</time>${updated}</p>
       </header>
       <article class="prose bl-post">
         ${post.body.map(block).join("\n        ")}
