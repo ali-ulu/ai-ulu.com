@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { transform } from "esbuild";
 import { pages, renderPage, notFoundPage } from "../src/site/pages.mjs";
 import { site } from "../src/site/config.mjs";
-import { robotsTxt } from "../src/site/robots.mjs";
+import { robotsTxt, aiTxt } from "../src/site/robots.mjs";
 import { faq } from "../src/site/content/site-content.mjs";
 import { byDateDesc } from "../src/site/components/blog.mjs";
 
@@ -50,24 +50,25 @@ async function build() {
   for (const rel of MINIFY_CSS) await minify(rel, "css");
   for (const rel of MINIFY_JS) await minify(rel, "js");
 
-  // Permanent redirects. There is no separate "about" page: the studio's story
-  // is the work it has shipped, so /hakkimizda/ (and its English spelling, which
-  // people guess) lands on Çalışmalar. Cloudflare's assets binding reads this.
+  // Permanent redirects. /hakkimizda/ is a real page now; the English spelling
+  // people guess lands on it, and the bare contact URLs go to the form.
   await write(
     "_redirects",
-    `# from                to            status
-/hakkimizda          /calismalar/  301
-/hakkimizda/         /calismalar/  301
-/about               /calismalar/  301
-/about/              /calismalar/  301
-/iletisim            /#iletisim    301
-/iletisim/           /#iletisim    301
-/contact             /#iletisim    301
-/contact/            /#iletisim    301
+    `# from                to              status
+/about               /hakkimizda/   301
+/about/              /hakkimizda/   301
+/ai.txt              /.well-known/ai.txt  301
+/iletisim            /#iletisim     301
+/iletisim/           /#iletisim     301
+/contact             /#iletisim     301
+/contact/            /#iletisim     301
 `,
   );
 
   await write("robots.txt", robotsTxt(site));
+  // AI access and usage policy. Some tools look under /.well-known/, so the
+  // root /ai.txt is a redirect to this canonical copy.
+  await write(".well-known/ai.txt", aiTxt(site));
 
   // Web app manifest: installable shell and the icons browsers expect.
   await write(
@@ -104,6 +105,40 @@ ${paths.map((p) => `  <url><loc>${site.url}${p}</loc><lastmod>${site.updated}</l
 </urlset>
 `);
 
+  // RSS: how aggregators and AI crawlers discover new posts without re-crawling
+  // the blog index. RSS dates are RFC 822.
+  const rfc822 = (iso) => new Date(`${iso}T00:00:00Z`).toUTCString();
+  const xml = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const feedItems = byDateDesc
+    .map(
+      (p) => `    <item>
+      <title>${xml(p.title)}</title>
+      <link>${site.url}/blog/${p.slug}/</link>
+      <guid isPermaLink="true">${site.url}/blog/${p.slug}/</guid>
+      <pubDate>${rfc822(p.published)}</pubDate>
+      <description>${xml(p.description)}</description>
+    </item>`,
+    )
+    .join("\n");
+  await write("feed.xml", `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>${xml(site.name)} Blog</title>
+    <link>${site.url}/blog/</link>
+    <description>${xml("Web sitesi fiyatı, arama görünürlüğü ve müşteri kazanma üzerine pratik yazılar.")}</description>
+    <language>${site.lang}</language>
+    <lastBuildDate>${rfc822(site.updated)}</lastBuildDate>
+    <atom:link href="${site.url}/feed.xml" rel="self" type="application/rss+xml"/>
+${feedItems}
+  </channel>
+</rss>
+`);
+
+  const profiles = [
+    ["LinkedIn", site.sameAs.find((u) => u.includes("linkedin.com"))],
+    ["GitHub", site.sameAs.find((u) => u.includes("github.com"))],
+  ].filter(([, href]) => href);
+
   // GEO: a plain summary AI assistants can quote.
   await write("llms.txt", `# ${site.name}
 
@@ -112,6 +147,7 @@ ${paths.map((p) => `  <url><loc>${site.url}${p}</loc><lastmod>${site.updated}</l
 ## Sayfalar
 - [Ana sayfa](${site.url}/): hizmetler, süreç, paketler, SSS ve iletişim formu
 - [Çalışmalar](${site.url}/calismalar/): ai-ulu'nun kendi geliştirdiği açık kaynak yazılımlar ve başka platformlarda yayınlanmış yazılar
+- [Hakkında](${site.url}/hakkimizda/): stüdyonun arkasındaki kişi, çalışma şekli ve verilmeyen garantiler
 - [Örnek tasarımlar](${site.url}/sablonlar/): sektöre göre site tarzı örnekleri
 - [Blog](${site.url}/blog/): web sitesi fiyatı, arama görünürlüğü ve müşteri kazanma üzerine yazılar
 - [Gizlilik ve KVKK](${site.url}/gizlilik/)
@@ -129,6 +165,13 @@ ${byDateDesc.map((p) => `- [${p.title}](${site.url}/blog/${p.slug}/): ${p.descri
 ## İletişim
 - E-posta: ${site.email}
 - Telefon / WhatsApp: ${site.phoneDisplay}
+
+## Künye
+- Yazan ve işleten: ${site.owner}
+- Hakkında: ${site.url}/hakkimizda/
+${profiles.map(([label, href]) => `- ${label}: ${href}`).join("\n")}
+- RSS: ${site.url}/feed.xml
+- AI erişim politikası: ${site.url}/.well-known/ai.txt
 
 ## SSS
 ${faq.items.map((f) => `- ${f.q} ${f.a}`).join("\n")}
@@ -223,6 +266,18 @@ ${week}
 
 /icon-512.png
 ${week}
+
+/feed.xml
+  Content-Type: application/rss+xml; charset=utf-8
+  Cache-Control: public, max-age=3600
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
+
+/.well-known/ai.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
 
 /manifest.webmanifest
 ${week}

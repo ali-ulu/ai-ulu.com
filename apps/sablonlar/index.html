@@ -11,6 +11,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="canonical" href="https://ai-ulu.com/sablonlar/" />
+    <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#08090b" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="ai-ulu" />
@@ -30,26 +31,93 @@
   <body>
     <div class="vignette" aria-hidden="true"></div>
     <div id="root"></div>
-    <!-- No-JS / non-rendering crawlers: the gallery is a canvas, so give them the
-         same content as readable HTML instead of an empty shell. -->
+
+    <!-- Identity block: the same Organization entity the main site emits, so
+         this standalone page is joined to ai-ulu.com rather than read as an
+         orphan. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://ai-ulu.com/#organization",
+        "name": "ai-ulu",
+        "alternateName": "ai-ulu web stüdyosu",
+        "url": "https://ai-ulu.com",
+        "logo": { "@type": "ImageObject", "url": "https://ai-ulu.com/icon-512.png", "width": 512, "height": 512 },
+        "image": "https://ai-ulu.com/og.png",
+        "email": "aliulu@ai-ulu.com",
+        "telephone": "+905079581642",
+        "founder": { "@id": "https://ai-ulu.com/hakkimizda/#ali-ulu" },
+        "sameAs": ["https://www.linkedin.com/in/aliulu777/", "https://github.com/ali-ulu"]
+      }
+    </script>
+
+    <!-- The gallery is a canvas, so the list of styles is also published as a
+         machine-readable ItemList. CreativeWork, not Product: these are style
+         references, not items for sale. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "https://ai-ulu.com/sablonlar/#webpage",
+        "name": "Örnek tasarımlar · ai-ulu",
+        "url": "https://ai-ulu.com/sablonlar/",
+        "inLanguage": "tr",
+        "isPartOf": { "@id": "https://ai-ulu.com/#website" },
+        "mainEntity": {
+          "@type": "ItemList",
+          "numberOfItems": 12,
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "item": { "@type": "CreativeWork", "name": "İç Mimarlık Stüdyosu", "description": "Sade, fotoğraf odaklı; proje galerisi, hizmetler ve süreç, keşif randevusu formu.", "image": "https://ai-ulu.com/sablonlar/stiller/interiia.webp", "url": "https://ai-ulu.com/sablonlar/#ic-mimarlik" } },
+            { "@type": "ListItem", "position": 2, "item": { "@type": "CreativeWork", "name": "Dijital Ajans", "description": "Cesur tipografi; vaka çalışmaları, hizmet paketleri, teklif formu.", "image": "https://ai-ulu.com/sablonlar/stiller/rekolet.webp", "url": "https://ai-ulu.com/sablonlar/#ajans" } },
+            { "@type": "ListItem", "position": 3, "item": { "@type": "CreativeWork", "name": "Kuaför ve Berber", "description": "Sıcak, samimi; hizmet ve fiyat listesi, ekip tanıtımı, WhatsApp randevu.", "image": "https://ai-ulu.com/sablonlar/stiller/scissor.webp", "url": "https://ai-ulu.com/sablonlar/#kuafor" } },
+            { "@type": "ListItem", "position": 4, "item": { "@type": "CreativeWork", "name": "Hukuk Bürosu", "description": "Ciddi, güven veren; uzmanlık alanları, avukat profilleri, ön görüşme formu.", "image": "https://ai-ulu.com/sablonlar/stiller/kafka.webp", "url": "https://ai-ulu.com/sablonlar/#hukuk" } },
+            { "@type": "ListItem", "position": 5, "item": { "@type": "CreativeWork", "name": "Spor Salonu", "description": "Enerjik, koyu tema; ders programı, üyelik paketleri, deneme dersi kaydı.", "image": "https://ai-ulu.com/sablonlar/stiller/flexfitness.webp", "url": "https://ai-ulu.com/sablonlar/#spor" } },
+            { "@type": "ListItem", "position": 6, "item": { "@type": "CreativeWork", "name": "Diş Kliniği", "description": "Temiz, ferah; tedaviler, hekim kadrosu, online randevu.", "image": "https://ai-ulu.com/sablonlar/stiller/eviadental.webp", "url": "https://ai-ulu.com/sablonlar/#dis" } },
+            { "@type": "ListItem", "position": 7, "item": { "@type": "CreativeWork", "name": "Butik Konaklama", "description": "İskandinav sadeliği; oda galerisi, müsaitlik ve fiyat, rezervasyon talebi.", "image": "https://ai-ulu.com/sablonlar/stiller/skandic.webp", "url": "https://ai-ulu.com/sablonlar/#konaklama" } },
+            { "@type": "ListItem", "position": 8, "item": { "@type": "CreativeWork", "name": "Restoran", "description": "Atmosferik, iştah açan; menü, şef ve hikâye, masa rezervasyonu.", "image": "https://ai-ulu.com/sablonlar/stiller/tallow.webp", "url": "https://ai-ulu.com/sablonlar/#restoran" } },
+            { "@type": "ListItem", "position": 9, "item": { "@type": "CreativeWork", "name": "Dövme Stüdyosu", "description": "Minimal, sanat odaklı; sanatçı portföyü, stil rehberi, randevu formu.", "image": "https://ai-ulu.com/sablonlar/stiller/cigi.webp", "url": "https://ai-ulu.com/sablonlar/#dovme" } },
+            { "@type": "ListItem", "position": 10, "item": { "@type": "CreativeWork", "name": "Kafe ve Kahve Dükkânı", "description": "Sıcak, davetkâr; menü ve fiyatlar, şube ve konum, rezervasyon veya sipariş.", "image": "https://ai-ulu.com/sablonlar/stiller/hanif.webp", "url": "https://ai-ulu.com/sablonlar/#kafe" } },
+            { "@type": "ListItem", "position": 11, "item": { "@type": "CreativeWork", "name": "Sadakat ve Ödül Programı", "description": "Modern, koyu tema; program tanıtımı, nasıl çalışır, üyelik başvurusu.", "image": "https://ai-ulu.com/sablonlar/stiller/bilt.webp", "url": "https://ai-ulu.com/sablonlar/#sadakat" } },
+            { "@type": "ListItem", "position": 12, "item": { "@type": "CreativeWork", "name": "Tatil Köyü ve Villa", "description": "Zarif, doğal; villa ve oda galerisi, konum ve çevre, rezervasyon talebi.", "image": "https://ai-ulu.com/sablonlar/stiller/victoria.webp", "url": "https://ai-ulu.com/sablonlar/#tatil-koyu" } }
+          ]
+        }
+      }
+    </script>
+
+    <!-- No-JS / non-rendering crawlers: the gallery is a canvas, so give them a
+         readable headline instead of an empty shell. The full list follows in
+         plain HTML below. -->
     <noscript>
       <main style="max-width:52rem;margin:0 auto;padding:3rem 1.5rem;font-family:Georgia,serif;color:#ece7de;background:#08090b">
         <p style="font:500 .72rem/1 system-ui;letter-spacing:.28em;text-transform:uppercase;color:#a8a29a">Örnek tasarımlar · Sektöre göre</p>
         <h1 style="font-weight:400;font-size:2rem;line-height:1.1;margin:1rem 0">Hangi tarz sizin işinize uyar?</h1>
-        <p style="color:#c9c4ba;line-height:1.6">Sektörünüze yakın bir örnek seçin; siteniz markanıza göre sıfırdan tasarlanır. Örneklerin görselleri için JavaScript gerekir; aşağıdaki bağlantılar her cihazda çalışır.</p>
-        <ul style="line-height:1.9;padding-left:1.1rem">
-          <li>İç mimarlık stüdyosu: proje galerisi, hizmetler, keşif formu</li>
-          <li>Dijital ajans: vaka çalışmaları, hizmet paketleri, teklif formu</li>
-          <li>Kuaför ve berber: hizmet ve fiyat listesi, WhatsApp randevu</li>
-          <li>Hukuk bürosu: uzmanlık alanları, avukat profilleri, ön görüşme</li>
-          <li>Spor salonu: ders programı, üyelik paketleri, deneme kaydı</li>
-          <li>Diş kliniği: tedaviler, hekim kadrosu, online randevu</li>
-          <li>Butik konaklama: oda galerisi, müsaitlik, rezervasyon talebi</li>
-          <li>Restoran: menü, şef ve hikâye, masa rezervasyonu</li>
-        </ul>
-        <p><a href="https://wa.me/905079581642?text=%C3%96rnek%20tasar%C4%B1mlar%C4%B1n%C4%B1z%C4%B1%20g%C3%B6rd%C3%BCm%2C%20bir%20site%20istiyorum." style="color:#e0a458">Bu tarzda bir site istiyorum</a> · <a href="/" style="color:#e0a458">ai-ulu ana sayfa</a></p>
+        <p style="color:#c9c4ba;line-height:1.6">Sektörünüze yakın bir örnek seçin; siteniz markanıza göre sıfırdan tasarlanır. Örneklerin görselleri için JavaScript gerekir; tarzların listesi aşağıda yazıyla duruyor.</p>
       </main>
     </noscript>
+
+    <!-- Static style guide. The React gallery above is a visual picker; this
+         section is the same content as headings and text, so it survives with
+         JavaScript off and gives crawlers an outline to read. -->
+    <section id="tarzlar" style="max-width:60rem;margin:0 auto;padding:3rem 1.5rem 4rem;font-family:Georgia,serif;color:#ece7de;background:#08090b">
+      <h2 style="font-weight:400;font-size:1.8rem;line-height:1.15;margin:0 0 .8rem">Tarz rehberi: sektöre göre ne var?</h2>
+      <p style="color:#c9c4ba;line-height:1.65;margin:0 0 2rem">Her örnek bir tarz referansıdır, ai-ulu'nun müşteri işi değildir. Siteniz markanıza ve içeriğinize göre sıfırdan tasarlanır; aşağıdaki başlıklar hangi sektörde hangi bölümlerin öne çıktığını anlatır.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1.5rem 2rem">
+        <article id="ic-mimarlik"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">İç Mimarlık Stüdyosu</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Sade, fotoğraf odaklı. Proje galerisi, hizmetler ve süreç, keşif randevusu formu.</p></article>
+        <article id="ajans"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Dijital Ajans</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Cesur tipografi. Vaka çalışmaları, hizmet paketleri, teklif formu.</p></article>
+        <article id="kuafor"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Kuaför ve Berber</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Sıcak, samimi. Hizmet ve fiyat listesi, ekip tanıtımı, WhatsApp randevu.</p></article>
+        <article id="hukuk"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Hukuk Bürosu</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Ciddi, güven veren. Uzmanlık alanları, avukat profilleri, ön görüşme formu.</p></article>
+        <article id="spor"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Spor Salonu</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Enerjik, koyu tema. Ders programı, üyelik paketleri, deneme dersi kaydı.</p></article>
+        <article id="dis"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Diş Kliniği</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Temiz, ferah. Tedaviler, hekim kadrosu, online randevu.</p></article>
+        <article id="konaklama"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Butik Konaklama</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">İskandinav sadeliği. Oda galerisi, müsaitlik ve fiyat, rezervasyon talebi.</p></article>
+        <article id="restoran"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Restoran</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Atmosferik, iştah açan. Menü, şef ve hikâye, masa rezervasyonu.</p></article>
+        <article id="dovme"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Dövme Stüdyosu</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Minimal, sanat odaklı. Sanatçı portföyü, stil rehberi, randevu formu.</p></article>
+        <article id="kafe"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Kafe ve Kahve Dükkânı</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Sıcak, davetkâr. Menü ve fiyatlar, şube ve konum, rezervasyon veya sipariş.</p></article>
+        <article id="sadakat"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Sadakat ve Ödül Programı</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Modern, koyu tema. Program tanıtımı, nasıl çalışır, üyelik başvurusu.</p></article>
+        <article id="tatil-koyu"><h3 style="font-weight:400;font-size:1.15rem;margin:0 0 .4rem">Tatil Köyü ve Villa</h3><p style="color:#c9c4ba;line-height:1.6;margin:0">Zarif, doğal. Villa ve oda galerisi, konum ve çevre, rezervasyon talebi.</p></article>
+      </div>
+      <p style="color:#c9c4ba;line-height:1.65;margin:2rem 0 0"><a href="https://wa.me/905079581642?text=%C3%96rnek%20tasar%C4%B1mlar%C4%B1n%C4%B1z%C4%B1%20g%C3%B6rd%C3%BCm%2C%20bir%20site%20istiyorum." style="color:#e0a458">Bu tarzda bir site istiyorum</a> · <a href="/hakkimizda/" style="color:#e0a458">ai-ulu hakkında</a> · <a href="/" style="color:#e0a458">Ana sayfa</a></p>
+    </section>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

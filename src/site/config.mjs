@@ -24,14 +24,20 @@ export const site = {
   // Left empty on purpose: a real number beats a placeholder, so nothing ships
   // until the owner fills it in.
   priceFrom: "",
-  sameAs: ["https://www.linkedin.com/in/aliulu777/"], // Google Business Profile, Instagram, LinkedIn
+  // What the owner does, in the words used on the about page and in the Person
+  // schema. Kept short so it reads the same everywhere.
+  ownerTitle: "Web sitesi tasarımcısı ve geliştiricisi",
+  knowsAbout: ["Web sitesi tasarımı", "Web uygulamaları", "Arama motoru optimizasyonu", "Yapay zekâ aramalarında görünürlük"],
+  // Only profiles the owner actually owns. LinkedIn and GitHub are the two that
+  // exist today; adding a dead or foreign profile would misrepresent the brand.
+  sameAs: ["https://www.linkedin.com/in/aliulu777/", "https://github.com/ali-ulu"],
   // Cloudflare Turnstile site key. Empty = the widget is not rendered and the CSP
   // stays 'self'-only. Set it (and the worker's TURNSTILE_SECRET) to switch on
   // the CAPTCHA on the lead form.
   turnstileSiteKey: "",
   // Bump when the site content changes; feeds dateModified in JSON-LD, the
   // og:updated_time meta tag and sitemap lastmod.
-  updated: "2026-11-12",
+  updated: "2026-11-21",
   // IndexNow key: the build writes /<key>.txt so Bing and Yandex accept our
   // submissions. Rotate by replacing this value.
   indexNowKey: "bec0a65e610429c17aa2c0cce8902c60",

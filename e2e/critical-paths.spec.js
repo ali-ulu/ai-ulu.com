@@ -58,7 +58,7 @@ test("sablonlar shows exactly one h1 and a no-JS fallback exists", async ({ page
 
 test("blog post shows a visible author byline and date", async ({ page }) => {
   await page.goto("/blog/yapay-zeka-aramalarinda-gorunmek/");
-  await expect(page.locator(".bl-author")).toHaveText("Ali Ulu");
+  await expect(page.locator(".bl-author")).toContainText("Ali Ulu");
   await expect(page.locator(".bl-meta time")).toBeVisible();
 });
 

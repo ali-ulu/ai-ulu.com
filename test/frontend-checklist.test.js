@@ -83,18 +83,20 @@ test("the built site exposes no inline event handlers", async () => {
 test("guessed about/contact URLs redirect instead of 404ing", async () => {
   if (!built) return;
   const redirects = await read("dist/_redirects");
-  // There is no separate about page: the work stands in for it. The English
-  // spelling and the bare contact URL people type must still land somewhere.
-  for (const from of ["/hakkimizda", "/hakkimizda/", "/about", "/about/"]) {
-    assert.match(redirects, new RegExp(`^${from}\\s+/calismalar/\\s+301$`, "m"), `${from} must 301 to /calismalar/`);
+  // /hakkimizda/ is a real page now. The English spelling and the bare contact
+  // URLs people type must still land somewhere useful.
+  for (const from of ["/about", "/about/"]) {
+    assert.match(redirects, new RegExp(`^${from}\\s+/hakkimizda/\\s+301$`, "m"), `${from} must 301 to /hakkimizda/`);
   }
   for (const from of ["/iletisim", "/iletisim/", "/contact", "/contact/"]) {
     assert.match(redirects, new RegExp(`^${from}\\s+/#iletisim\\s+301$`, "m"), `${from} must 301 to the contact section`);
   }
+  assert.match(redirects, /^\/ai\.txt\s+\/\.well-known\/ai\.txt\s+301$/m, "the root ai.txt points at the canonical copy");
 });
 
-test("the sitemap never lists a page that only redirects", async () => {
+test("the sitemap lists the about page and never a redirect-only URL", async () => {
   if (!built) return;
   const sitemap = await read("dist/sitemap.xml");
-  assert.doesNotMatch(sitemap, /hakkimizda|\/about\/?<|iletisim/, "redirect-only URLs stay out of the sitemap");
+  assert.match(sitemap, /<loc>https:\/\/ai-ulu\.com\/hakkimizda\/<\/loc>/, "the about page is indexable");
+  assert.doesNotMatch(sitemap, /\/about\/?<|iletisim/, "redirect-only URLs stay out of the sitemap");
 });

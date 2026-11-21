@@ -14,6 +14,7 @@ const read = (rel) => readFile(join(root, "dist", rel), "utf8");
 const PAGES = [
   "index.html",
   "404.html",
+  "hakkimizda/index.html",
   "blog/index.html",
   "blog/yapay-zeka-aramalarinda-gorunmek/index.html",
   "calismalar/index.html",
