@@ -11,7 +11,7 @@ const read = (rel) => readFile(join(root, rel), "utf8");
 
 test("the contact form is a postcard, not a stacked field list", async () => {
   const html = await read("dist/index.html");
-  assert.match(html, /<section class="s" id="iletisim">/, "the section keeps its anchor");
+  assert.match(html, /<section class="s" id="iletisim"/, "the section keeps its anchor");
   assert.match(html, /<form class="pm-card" id="lead-form" novalidate>/, "the form is the postcard");
   assert.match(html, /class="pm-body"/, "the card has a two-part body");
   assert.match(html, /class="pm-left"/, "the message half is present");

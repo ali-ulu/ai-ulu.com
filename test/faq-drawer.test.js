@@ -9,7 +9,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFile(join(root, rel), "utf8");
 
 test("the FAQ is a card-index drawer, not a plain list", async () => {
-  const html = await read("dist/index.html");
+  const html = await read("dist/sss/index.html");
   assert.match(html, /id="sss"/, "the section keeps its #sss anchor");
   assert.match(html, /class="fq"/, "the drawer root is present");
   assert.match(html, /class="fq-drawer"/, "the drawer frame is present");
@@ -23,7 +23,7 @@ test("the FAQ is a card-index drawer, not a plain list", async () => {
 });
 
 test("the first card opens by default and carries its tab, index and mark", async () => {
-  const html = await read("dist/index.html");
+  const html = await read("dist/sss/index.html");
   assert.match(html, /<details class="fq-card" name="faq-drawer" open style="--k:0;--depth:1\.000;--tab-at:0\.04"/, "the front card is open and placed");
   assert.match(html, /<span class="fq-tab" aria-hidden="true">Süre<\/span>/, "the tab names the subject");
   assert.match(html, /<span class="fq-no" aria-hidden="true">S\.01<\/span>/, "the card is indexed Q.01-style");
@@ -32,7 +32,7 @@ test("the first card opens by default and carries its tab, index and mark", asyn
 });
 
 test("tabs sit at three staggered stations along the cards", async () => {
-  const html = await read("dist/index.html");
+  const html = await read("dist/sss/index.html");
   const stations = [...html.matchAll(/--tab-at:([\d.]+)/g)].map((m) => m[1]);
   assert.deepEqual([...new Set(stations)], ["0.04", "0.37", "0.7"], "three stations, repeating");
 });
@@ -56,9 +56,13 @@ test("the drawer re-composes by width and respects reduced motion", async () => 
   assert.match(css, /prefers-reduced-motion: reduce[\s\S]*?\.fq-card:not\(\[open\]\):hover \{ transform: none; \}/, "motion is opt-out");
 });
 
-test("the home page loads the drawer stylesheet", async () => {
-  const html = await read("dist/index.html");
+test("the FAQ page loads the drawer stylesheet, the home page does not", async () => {
+  const html = await read("dist/sss/index.html");
   assert.match(html, /<link rel="stylesheet" href="\/faq-drawer\.css">/, "the page links its stylesheet");
+  assert.match(html, /"@type":"FAQPage"/, "the FAQ schema sits with the visible questions");
+  const home = await read("dist/index.html");
+  assert.doesNotMatch(home, /faq-drawer\.css/, "the home page stays short");
+  assert.doesNotMatch(home, /"@type":"FAQPage"/, "no FAQ schema without visible questions");
   const privacy = await read("dist/gizlilik/index.html");
   assert.doesNotMatch(privacy, /faq-drawer\.css/, "other pages do not load it");
 });

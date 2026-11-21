@@ -15,7 +15,7 @@
   --pm-stamp: #b4552f;
   --pm-hand: "Caveat", "Segoe Script", cursive;
   --pm-sans: var(--sans);
-  --pm-mono: var(--mono);
+  --pm-mono: var(--sans);
   --pm-rule-h: 42px;
   --pm-tilt: -0.6deg;
   container: pm / inline-size;
@@ -36,15 +36,9 @@
   gap: clamp(1rem, 2.2cqi, 1.6rem);
   padding: clamp(1.4rem, 3.2cqi, 2.4rem) clamp(1.4rem, 3.4cqi, 2.6rem) clamp(1.1rem, 2.4cqi, 1.8rem);
   border-radius: 6px;
-  background:
-    radial-gradient(120% 90% at 12% 0%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 55%),
-    linear-gradient(168deg, var(--pm-paper), var(--pm-paper-2));
+  background: var(--pm-paper);
   color: var(--pm-ink);
   transform: rotate(var(--pm-tilt));
-  box-shadow:
-    0 2px 0 rgba(0, 0, 0, 0.08),
-    0 30px 80px -20px rgba(0, 0, 0, 0.62),
-    0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 .pm-body {
   display: grid;
@@ -116,7 +110,7 @@
   position: absolute;
   top: -0.2rem;
   right: 0;
-  font: 500 0.7rem/1 var(--pm-mono);
+  font: 500 0.9375rem/1.2 var(--pm-mono);
   letter-spacing: 0.08em;
   color: rgba(35, 50, 74, 0.72);
   font-variant-numeric: tabular-nums;
@@ -129,7 +123,7 @@
 }
 .pm-sign b {
   font-weight: 600;
-  color: var(--pm-post);
+  color: var(--pm-ink);
 }
 
 /* ------------------------------------------------------------------ stamps */
@@ -148,10 +142,8 @@
   margin: 0;
 }
 .pm-stamps legend {
-  font: 500 0.62rem/1 var(--pm-mono);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(35, 50, 74, 0.72);
+  font: 500 0.9375rem/1.2 var(--pm-mono);
+      color: rgba(35, 50, 74, 0.72);
   margin-bottom: 0.5rem;
 }
 .pm-stamps label {
@@ -180,7 +172,7 @@
   color: inherit;
 }
 .pm-stamp span {
-  font: 500 0.52rem/1 var(--pm-mono);
+  font: 500 0.9375rem/1.2 var(--pm-mono);
   letter-spacing: 0.02em;
   color: var(--pm-ink-2);
   text-align: center;
@@ -196,12 +188,11 @@
   cursor: pointer;
 }
 .pm-stamps input:checked + .pm-stamp {
-  color: var(--pm-post);
+  color: var(--pm-ink);
   border-color: var(--pm-post);
   border-style: solid;
   background: rgba(255, 122, 77, 0.12);
   transform: rotate(0deg) translateY(-3px);
-  box-shadow: 0 6px 14px -6px rgba(255, 122, 77, 0.6);
 }
 .pm-stamps input:checked + .pm-stamp span {
   color: var(--pm-ink);
@@ -222,10 +213,8 @@
 }
 .pm-label {
   display: block;
-  font: 500 0.62rem/1 var(--pm-mono);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(35, 50, 74, 0.72);
+  font: 500 0.9375rem/1.2 var(--pm-mono);
+      color: rgba(35, 50, 74, 0.72);
   margin-bottom: 0.4rem;
 }
 .pm-addr {
@@ -284,7 +273,7 @@
   right: -1.1rem;
   width: 6.4rem;
   height: 6.4rem;
-  color: var(--pm-post);
+  color: var(--pm-ink);
   opacity: 0.85;
   transform: rotate(9deg);
   pointer-events: none;
@@ -297,10 +286,8 @@
 .pm-seal text {
   font-family: var(--pm-mono);
   font-size: 8.6px;
-  letter-spacing: 0.16em;
-  fill: currentColor;
-  text-transform: uppercase;
-}
+    fill: currentColor;
+  }
 .pm-seal .pm-seal-c {
   font-size: 20px;
   letter-spacing: 0;
@@ -325,8 +312,7 @@
   color: #2a1408;
   font: 600 1.02rem/1 var(--pm-sans);
   letter-spacing: 0.01em;
-  box-shadow: 0 14px 30px -12px rgba(255, 122, 77, 0.75);
-  transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+  transition: transform 0.16s ease-out, filter 0.16s ease-out;
 }
 .pm-btn span {
   display: grid;
@@ -339,7 +325,6 @@
 }
 .pm-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 38px -14px rgba(255, 122, 77, 0.85);
   filter: saturate(1.06);
 }
 .pm-btn:focus-visible {
@@ -394,10 +379,7 @@
   min-height: 16rem;
   padding: clamp(1.4rem, 3.2cqi, 2.4rem);
   border-radius: 6px;
-  background: linear-gradient(168deg, var(--pm-paper), var(--pm-paper-2));
-  box-shadow:
-    0 2px 0 rgba(0, 0, 0, 0.08),
-    0 30px 80px -20px rgba(0, 0, 0, 0.62);
+  background: var(--pm-paper);
   font-family: var(--pm-hand);
   color: var(--pm-ink);
   animation: pm-land 0.5s ease both;

@@ -117,7 +117,6 @@ ${head({ title, description, path, jsonLd, styles, noscript, canonical, noindex 
 <body>
 <a class="skip-link" href="#main">İçeriğe geç</a>
 <canvas id="vortex" aria-hidden="true"></canvas>
-<div class="vignette" aria-hidden="true"></div>
 ${before}
 ${header()}
 <main id="main">

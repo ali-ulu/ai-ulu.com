@@ -1,5 +1,6 @@
 import { page } from "./components/layout.mjs";
-import { homeBody, preloader, noJsStyles } from "./components/home.mjs";
+import { homeBody, noJsStyles } from "./components/home.mjs";
+import { faqSection } from "./components/faq.mjs";
 import { blogIndexBody, byDateDesc, postBody } from "./components/blog.mjs";
 import { workBody, workLd } from "./components/work.mjs";
 import { site, waLink } from "./config.mjs";
@@ -442,13 +443,22 @@ export const pages = [
   {
     path: "/",
     file: "index.html",
-    jsonLd: [webSiteLd(), professionalServiceLd(), serviceLd(), faqLd()],
-    before: preloader,
+    jsonLd: [webSiteLd(), professionalServiceLd(), serviceLd()],
     noscript: noJsStyles,
     scripts: ["/ora.js"],
-    styles: ["/faq-drawer.css", "/postmark-form.css", "/blog.css"],
+    styles: ["/postmark-form.css"],
     footerNote: "Ekrandaki klinik sitesi örnek tasarımdır",
     body: homeBody,
+  },
+  {
+    path: "/sss/",
+    file: "sss/index.html",
+    title: "Sık sorulan sorular",
+    description: "Web sitesi süresi, fiyatı, arama görünürlüğü ve teslim hakkında en çok sorulan sorular ve kısa cevapları.",
+    jsonLd: [faqLd()],
+    styles: ["/faq-drawer.css"],
+    crumbs: [{ href: "/", label: "Ana sayfa" }, { href: "/sss/", label: "SSS" }],
+    body: faqSection,
   },
   {
     path: "/blog/",

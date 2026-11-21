@@ -307,7 +307,7 @@ function start(THREE, RoundedBoxGeometry, RoomEnvironment, photo, renderer) {
       el.classList.toggle('on', o > .5);
     });
     ticks.forEach((t, i) => t.classList.toggle('on', i === Math.min(4, Math.floor(p * 5))));
-    hint.style.opacity = 1 - seg(p, .01, .05);
+    if (hint) hint.style.opacity = 1 - seg(p, .01, .05);
     const tagO = seg(e, .6, 1);
     tags.forEach((el, i) => {
       el.style.opacity = tagO;

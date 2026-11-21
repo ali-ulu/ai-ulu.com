@@ -7,29 +7,24 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFile(join(root, rel), "utf8");
 
-test("service cards are detached tiles, not a hairline grid", async () => {
+test("cards are flat filled tiles: no outline, gradient, glow or blur", async () => {
   const css = await read("src/site/assets/site.css");
-  const grid = css.match(/\.grid\{[^}]*\}/)[0];
-  assert.match(grid, /gap:1\.1rem/, "cards must be separated by a real gap");
-  assert.doesNotMatch(grid, /background:var\(--line\)/, "must not paint the hairline grid background");
-  const cell = css.match(/\.cell\{[^}]*\}/)[0];
-  assert.match(cell, /border-radius:18px/, "cards need rounded corners");
-  // No backdrop blur: over the moving canvas it cut desktop scroll to ~14 fps.
-  assert.doesNotMatch(cell, /backdrop-filter/, "cards must not blur the canvas behind them");
-  assert.match(cell, /rgba\(14,16,20,\.84\)/, "cards need a near-opaque fill for contrast");
-  assert.match(cell, /linear-gradient\(163deg/, "cards need the corner light wash");
+  const card = css.match(/\.cell,\.card\{[^}]*\}/)[0];
+  assert.match(card, /border-radius:18px/, "cards need rounded corners");
+  assert.match(card, /background:#141518/, "cards are one tone step above the page");
+  assert.doesNotMatch(card, /gradient|box-shadow|border:|backdrop-filter/, "no decoration on cards");
 });
 
-test("service cards glow from above on hover", async () => {
-  const css = await read("src/site/assets/site.css");
-  assert.match(css, /\.cell:hover\{[^}]*transform:translateY\(-4px\)/, "hover must lift the card");
-  assert.match(css, /\.cell:hover::before\{opacity:1\}/, "hover must reveal the top glow");
-  assert.match(css, /\.cell::before\{[^}]*radial-gradient\(130% 90% at 50% 0%/, "glow originates at the top");
+test("home cards carry no index numbers or mono labels", async () => {
+  const home = await read("dist/index.html");
+  assert.doesNotMatch(home, /class="n"/, "no number pills");
+  assert.doesNotMatch(home, /class="eyebrow"/, "no eyebrow labels");
 });
 
-test("the number label is a pill and the highlighted card is amber", async () => {
+test("the highlighted package names itself in amber text", async () => {
   const css = await read("src/site/assets/site.css");
-  assert.match(css, /\.cell \.n\{[^}]*border-radius:999px/, "number label must be a pill");
-  assert.match(css, /\.cell\.hi\{[^}]*rgba\(224,164,88/, "highlighted card must use the amber accent");
+  assert.match(css, /\.card \.flag\{[^}]*color:var\(--amber\)/, "flag text uses the accent");
+  const home = await read("dist/index.html");
+  assert.match(home, /<p class="flag">En kapsamlı<\/p>/, "the widest package is flagged");
 });
 

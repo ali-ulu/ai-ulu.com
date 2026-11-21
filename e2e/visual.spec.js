@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
 
 // Visual regression: catch a CSS change that silently breaks layout. Only the
-// stable, deterministic pages are snapshotted — the home page carries a live
-// WebGL hero and a particle canvas, so it is excluded. The first run writes the
-// baselines under e2e/__screenshots__/; commit them and later runs compare.
+// stable, deterministic pages are snapshotted — the home page scrubs a 3D film
+// on scroll, so it is excluded. The first run writes the baselines under
+// e2e/visual.spec.js-snapshots/; commit them and later runs compare.
 //
 // Update baselines on purpose with: npx playwright test --update-snapshots
 const PAGES = [
@@ -21,6 +21,10 @@ test.describe("visual regression", () => {
       // chromium project. Mobile viewports are covered by the responsive test.
       test.skip(testInfo.project.name !== "chromium", "baselines are chromium-only");
       await page.goto(path);
+      // The vortex backdrop is a time-based WebGL particle loop that runs on every
+      // page, and Playwright's `animations` option only stops CSS animations, so
+      // hide it or the raster differs on each run. body::before keeps the backdrop.
+      await page.addStyleTag({ content: "#vortex{display:none!important}" });
       // Let fonts settle so the text raster is identical between runs.
       await page.evaluate(() => document.fonts.ready);
       await expect(page).toHaveScreenshot(`${name}.png`, {

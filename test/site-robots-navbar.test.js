@@ -32,9 +32,8 @@ test("every page renders the liquid-glass navbar pill", async () => {
   }
 });
 
-test("site.css defines the glass navbar with a no-backdrop-filter fallback", async () => {
+test("site.css defines an opaque navbar that stays in place", async () => {
   const css = await read("src/site/assets/site.css");
-  assert.match(css, /\.nav-glass\{[^}]*backdrop-filter:blur\(/, "pill needs a backdrop blur");
-  assert.match(css, /\.nav-glass\{[^}]*border-radius:999px/, "pill needs a full radius");
-  assert.match(css, /@supports not \([^)]*backdrop-filter/, "needs a fallback when backdrop-filter is unsupported");
+  assert.match(css, /\.site-header\{[^}]*position:sticky[^}]*background:var\(--ink\)/, "opaque sticky bar");
+  assert.doesNotMatch(css, /backdrop-filter:blur\(/, "no glass");
 });

@@ -26,12 +26,10 @@ test("the vortex is a fixed background layer, never in front of content", async 
   assert.doesNotMatch(stage, /background:/, "stage must not paint over the vortex");
 });
 
-test("the navbar is frosted glass", async () => {
+test("the navbar is a flat, opaque bar", async () => {
   const css = await read("src/site/assets/site.css");
   const nav = css.match(/\.nav-glass\{[^}]*\}/)[0];
-  assert.match(nav, /backdrop-filter:blur\(/, "must blur what is behind it");
-  assert.match(nav, /saturate\(/, "must saturate the glass");
-  assert.doesNotMatch(nav, /background:rgba\(1[0-9],/, "must not be a flat dark fill");
+  assert.doesNotMatch(nav, /backdrop-filter|gradient|box-shadow/, "no glass effects");
 });
 
 test("vortex module degrades gracefully", async () => {
