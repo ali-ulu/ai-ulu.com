@@ -1,9 +1,11 @@
 import { site, waLink } from "../config.mjs";
-import { budgets, faq, projectTypes } from "../content/site-content.mjs";
-import { blogTeaser } from "./blog.mjs";
+import { budgets, projectTypes } from "../content/site-content.mjs";
 import { escapeHtml } from "../lib/html.mjs";
 
-const wa = `<a class="btn" href="${waLink("Merhaba, web sitem için ücretsiz görüşme istiyorum.")}" rel="noopener">`;
+// One primary action: a free call on WhatsApp. Each block that offers it uses
+// its own message so no two buttons on one screen are the same link.
+const waTalk = waLink("Merhaba, web sitem için ücretsiz görüşme istiyorum.");
+const waQuote = waLink("Merhaba, web sitesi için teklif almak istiyorum.");
 
 // Cloudflare Turnstile, rendered only when a site key is configured. Empty key
 // means no third-party script, no iframe, and the CSP stays 'self'-only.
@@ -13,175 +15,144 @@ function turnstileWidget() {
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>`;
 }
 
-export const preloader = `<div id="pre" role="status" aria-live="polite" aria-label="Yükleniyor"><div class="in">
-  <div class="mark" aria-hidden="true">ai-ulu</div>
-  <div class="bar"><i id="preBar"></i></div>
-  <div class="pct" id="prePct" aria-hidden="true">000</div>
-</div></div>`;
+// Kept for compatibility; the home page no longer covers the hero with a
+// loader, so the title is readable on the first paint.
+export const preloader = "";
 
 // Without JS the 3D film never runs, so every chapter stays at opacity:0 and the
 // page reads as empty. These rules (a static copy of the `.no-3d` fallback)
 // flatten the chapters into a plain, scrollable column.
 export const noJsStyles = `<noscript><style>
-#pre,#vortex,.vignette,#gl,.tag,.prog,.hint,.callbar{display:none}
+#vortex,#gl,.tag,.prog,.hint{display:none}
 #film{height:auto}
-.stage{position:static;height:auto;padding:8rem 0 4rem;background:none}
-.ch,#c0{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 auto 5rem;padding:0 var(--pad);text-align:left;max-width:44rem;width:auto}
+.stage{position:static;height:auto;padding:2rem 0 4rem;background:none}
+.ch{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 auto 5rem;padding:0 var(--pad);text-align:left;max-width:44rem;width:auto}
 .ch.right{left:auto;right:auto;text-align:left}
 .ch.right p,.ch.right .cta{margin-left:0;justify-content:flex-start}
 </style></noscript>`;
+
+// The hero stands alone on the first screen as a rounded stage panel: title top
+// left, services top right, one sentence and the action bottom left.
+const hero = `<section class="hero" id="c0" aria-labelledby="hero-title">
+  <div class="hero-panel">
+    <h1 id="hero-title">Müşteri getiren <em>web siteleri</em></h1>
+    <ul class="hero-list" aria-label="Neler dahil">
+      <li>Özgün tasarım</li>
+      <li>Google'da görünürlük</li>
+      <li>Yapay zekâ aramaları</li>
+      <li>Tek dokunuşla iletişim</li>
+    </ul>
+    <div class="hero-foot">
+      <p>Sıfırdan tasarlanan, aranınca bulunan, WhatsApp'a bağlı siteler kuruyoruz.</p>
+      <div class="cta">
+        <a class="btn" href="${waTalk}" rel="noopener">Ücretsiz görüşme <span class="dot" aria-hidden="true"></span></a>
+        <a class="link" href="/checkup/">Siteniz bulunuyor mu? Ücretsiz test</a>
+      </div>
+    </div>
+  </div>
+</section>`;
 
 // data-a / data-b: scroll progress (0–1) where each chapter fades in and out (read by ora.js).
 const film = `<div id="film">
   <div class="stage">
     <canvas id="gl" aria-hidden="true"></canvas>
+    <img class="poster" src="/img/laptop.webp" width="920" height="700" alt="Laptop ekranında örnek bir klinik sitesi" decoding="async" loading="lazy">
 
-    <div class="ch" id="c0" data-a="0" data-b=".085">
-      <span class="eyebrow">Web sitesi · Tasarım · Görünürlük</span>
-      <h1>Müşteri getiren bir web sitesi <em>ister misiniz?</em></h1>
-      <p>Harika tasarım, Google'da ve yapay zekâ aramalarında görünen, ziyaretçiyi müşteriye çeviren siteler kuruyoruz.</p>
-      <div class="cta">
-        ${wa}Ücretsiz görüşme <span aria-hidden="true">→</span></a>
-        <a class="btn ghost" href="tel:${site.phone}">${site.phoneDisplay}</a>
-      </div>
-      <p class="hero-test"><a href="/checkup/">Siteniz Google ve ChatGPT'de görünüyor mu? Ücretsiz test edin <span aria-hidden="true">→</span></a></p>
-    </div>
-    <img class="poster" src="/img/laptop.webp" width="920" height="700" alt="" decoding="async">
-
-    <div class="ch" id="c1" data-a=".14" data-b=".36">
-      <span class="eyebrow">01 · Kod</span>
+    <div class="ch" id="c1" data-a=".02" data-b=".3">
       <h2>Her satır <em>sizin için</em> yazılır.</h2>
-      <p>Hazır şablon yok. Siteniz sıfırdan, işletmenizin hedefine göre kodlanır: hızlı, temiz ve size ait.</p>
+      <p>Hazır şablon yok. Siteniz işletmenizin hedefine göre sıfırdan kodlanır.</p>
     </div>
 
-    <div class="ch right" id="c2" data-a=".42" data-b=".58">
-      <span class="eyebrow">02 · Tasarım</span>
-      <h2>Kod, <em>vitrininize</em> dönüşür.</h2>
-      <p>Sektörünüze özel, ilk saniyede güven veren bir tasarım. Rakiplerinizden ayrışırsınız.</p>
-    </div>
-
-    <div class="ch" id="c3" data-a=".64" data-b=".8">
-      <span class="eyebrow">03 · İçinde ne var</span>
+    <div class="ch right" id="c2" data-a=".36" data-b=".62">
       <h2>Güzel görünmesi <em>yetmez.</em></h2>
-      <p>Her katman tek bir iş için çalışır: sizi bulduran, ikna eden ve aratan bir site.</p>
+      <p>Her katman bir iş için çalışır: sizi bulduran, ikna eden ve aratan bir site.</p>
     </div>
 
-    <div class="ch right" id="c4" data-a=".88" data-b="1.01">
-      <span class="eyebrow">04 · Yayında</span>
+    <div class="ch" id="c3" data-a=".7" data-b="1.01">
       <h2>Müşteriniz sizi <em>bulsun.</em></h2>
-      <p>Telefonda kusursuz, saniyeler içinde açılan, tek dokunuşla WhatsApp'tan size ulaştıran siteniz hazır.</p>
-      <div class="cta"><a class="btn" href="#iletisim">Projeyi başlatalım <span aria-hidden="true">→</span></a></div>
+      <p>Telefonda hızlı açılan, tek dokunuşla WhatsApp'tan size ulaştıran bir site.</p>
     </div>
 
-    <div class="tag" aria-hidden="true"><b>Tasarım</b>Markanıza özel arayüz</div>
-    <div class="tag" aria-hidden="true"><b>Hız</b>Saniyeler içinde açılış</div>
-    <div class="tag" aria-hidden="true"><b>Görünürlük</b>Google + yapay zekâ aramaları</div>
-    <div class="tag" aria-hidden="true"><b>Dönüşüm</b>Tek dokunuşla WhatsApp</div>
-
-    <div class="prog" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-    <div class="hint" id="hint" aria-hidden="true">Kaydırın</div>
+    <div class="tag"><b>Tasarım</b>Markanıza özel arayüz</div>
+    <div class="tag"><b>Hız</b>Saniyeler içinde açılış</div>
+    <div class="tag"><b>Görünürlük</b>Google ve yapay zekâ aramaları</div>
+    <div class="tag"><b>Dönüşüm</b>Tek dokunuşla WhatsApp</div>
   </div>
 </div>`;
 
-const benefits = `<section class="s" id="nasil">
-  <span class="eyebrow">Ne kazanırsınız</span>
-  <h2>Ziyaretçi gelir, <em>müşteri</em> olarak kalır.</h2>
-  <p class="lead">Çoğu site ilk kaydırmada ziyaretçiyi kaybeder. Sorun marka değil, kurulum. Biz kurulumu baştan doğru yaparız.</p>
-  <p class="lead">Nereden başlayacağınızdan emin değilseniz <a href="/sablonlar/">örnek tasarımlara</a> göz atın, kapsamı <a href="/#paketler">paketlerde</a> karşılaştırın, çalışma şeklimizi <a href="/#nasil">süreçte</a> görün. "Yapay zekâ ile bedava yaparım" diyenler için dürüst cevabımız <a href="/#neden">aşağıda</a>.</p>
-  <div class="grid g-lead">
-    <div class="cell cell--lead"><span class="n">01</span><h3>Özgün tasarım</h3><p>Şablon değil; sektörünüze ve markanıza göre çizilmiş bir site. Aynı şablonu binlerce işletmeye satan araçların tersine, sizin işinizin dilini taşıyan tek bir tasarım.</p></div>
-    <div class="cell"><span class="n">02</span><h3>Google'da görünürlük</h3><p>Teknik SEO, hız ve yapılandırılmış veri ilk günden sitenin içinde.</p></div>
-    <div class="cell"><span class="n">03</span><h3>Yapay zekâ aramaları</h3><p>ChatGPT, Gemini ve Google'ın yapay zekâ yanıtlarının okuyabildiği yapı: llms.txt, şema, temiz HTML.</p></div>
-    <div class="cell"><span class="n">04</span><h3>Doğrudan iletişim</h3><p>Her sayfada tek dokunuşla WhatsApp ve arama. Ziyaretçi aklındayken size ulaşır.</p></div>
-  </div>
+const benefits = `<section class="s" id="nasil" aria-labelledby="nasil-title">
+  <h2 id="nasil-title">Ziyaretçi gelir, <em>müşteri</em> olarak kalır.</h2>
+  <ul class="cards g4" data-reveal="list">
+    <li class="card"><h3>Özgün tasarım</h3><p>Sektörünüze ve markanıza göre çizilmiş, şablon olmayan bir site.</p></li>
+    <li class="card"><h3>Google'da görünürlük</h3><p>Teknik SEO, hız ve yapılandırılmış veri ilk günden içinde.</p></li>
+    <li class="card"><h3>Yapay zekâ aramaları</h3><p>ChatGPT ve Gemini'nin okuyabildiği yapı, şema ve temiz HTML.</p></li>
+    <li class="card"><h3>Doğrudan iletişim</h3><p>Her sayfada tek dokunuşla WhatsApp ve arama.</p></li>
+  </ul>
 </section>`;
 
 // The largest objection people type into search is "can I just build it with AI
-// for free?". Answering it head-on beats ignoring it, so the site says where a
-// generated draft stops and a business site starts. No invented numbers.
-const why = `<section class="s" id="neden">
-  <span class="eyebrow">Dürüst cevap</span>
-  <h2>"Yapay zekâ ile <em>bedava</em> yaparım." Peki neden bize?</h2>
-  <p class="lead">Araçlar artık ilk taslağı saniyeler içinde üretiyor; bunu saklamayacağız. Fark, taslağın bittiği yerde başlıyor.</p>
-  <div class="grid g3">
-    <div class="cell"><span class="n">01</span><h3>Doğru metin, doğru müşteri</h3><p>Yapay zekâ elindeki bilgiyi dizer; sizin işletmenizi, müşterinizi ve teklifinizi bilmez. Sizi arayan kişinin duymak istediği cümleyi biz yazarız.</p></div>
-    <div class="cell"><span class="n">02</span><h3>Sahibi olduğunuz bir site</h3><p>Ücretsiz araçların ücretsiz planında alan adı onların, tasarım şablonun. Burada alan adı, kod ve içerik sizin adınıza teslim edilir.</p></div>
-    <div class="cell"><span class="n">03</span><h3>Yayından sonra da çalışır</h3><p>Araç siteyi kurar ve bırakır. Biz hızı, arama görünürlüğünü ve dönüşümü ölçer, gerektiğinde düzeltiriz.</p></div>
+// for free?". Answering it head-on beats ignoring it. No invented numbers.
+const why = `<section class="s split" id="neden" aria-labelledby="neden-title">
+  <div class="split-head" data-reveal="rise">
+    <h2 id="neden-title">Yapay zekâ varken <em>neden biz?</em></h2>
+    <p class="lead">"Yapay zekâ ile bedava yaparım" diyenlere <a href="/blog/yapay-zeka-ile-web-sitesi-yapmak/">kısa cevabımız</a>.</p>
   </div>
-  <p class="lead">Hangi iş için hangisinin yettiğini <a href="/blog/yapay-zeka-ile-web-sitesi-yapmak/">yazıda</a> ayrıntılı anlattık.</p>
+  <ul class="points" data-reveal="list">
+    <li><h3>Doğru metin, doğru müşteri</h3><p>Araç işinizi ve müşterinizi bilmez; arayan kişinin duymak istediği cümleyi biz yazarız.</p></li>
+    <li><h3>Siteniz sizin</h3><p>Alan adı, kod ve içerik sizin adınıza teslim edilir.</p></li>
+    <li><h3>Yayından sonra da çalışır</h3><p>Hızı, görünürlüğü ve dönüşümü ölçer, gerektiğinde düzeltiriz.</p></li>
+  </ul>
 </section>`;
 
-const process = `<section class="s">
-  <span class="eyebrow">Süreç</span>
-  <h2>Üç adımda <em>yayında.</em></h2>
-  <div class="grid g3">
-    <div class="cell"><span class="n">01 · Görüşme</span><h3>Hedefi konuşuruz</h3><p>Ücretsiz 30 dakikalık görüşme. Hedef, kapsam ve takvim netleşir.</p></div>
-    <div class="cell"><span class="n">02 · Kurulum</span><h3>Canlı izlersiniz</h3><p>Tasarım ve geliştirme açıkta ilerler; ilk haftadan tıklanabilir önizleme.</p></div>
-    <div class="cell"><span class="n">03 · Yayın</span><h3>Yanınızda kalırız</h3><p>Gerçek cihazlarda test eder, yayına alır, sonrasında da düzeltme ve değişiklikleri yaparız.</p></div>
+const process = `<section class="s" id="surec" aria-labelledby="surec-title">
+  <h2 id="surec-title">Üç adımda <em>yayında.</em></h2>
+  <ol class="cards g3" data-reveal="list">
+    <li class="card"><h3>Hedefi konuşuruz</h3><p>Ücretsiz 30 dakikalık görüşmede hedef, kapsam ve takvim netleşir.</p></li>
+    <li class="card"><h3>Canlı izlersiniz</h3><p>İlk haftadan tıklanabilir önizleme.</p></li>
+    <li class="card"><h3>Yanınızda kalırız</h3><p>Gerçek cihazlarda test, yayın ve sonrasında değişiklikler.</p></li>
+  </ol>
+</section>`;
+
+const shot = (name, alt, sizes) =>
+  `<img src="/sablonlar/stiller/${name}-960.webp" srcset="/sablonlar/stiller/${name}-480.webp 480w, /sablonlar/stiller/${name}-960.webp 960w, /sablonlar/stiller/${name}.webp 1400w" sizes="${sizes}" width="1400" height="1050" alt="${alt}" loading="lazy" decoding="async">`;
+
+const examples = `<section class="s" id="ornekler" aria-labelledby="ornekler-title">
+  <div class="ex-head" data-reveal="rise">
+    <h2 id="ornekler-title">Sektörünüze göre <em>örnekler</em></h2>
+    <p class="lead">Klinik, stüdyo ve hizmet işletmeleri için hazırladığımız örnek tasarımlar.</p>
+    <a class="link" href="/sablonlar/">Tüm örnekleri gör</a>
+  </div>
+  <div class="ex-grid" data-reveal="media">
+    <a class="ex-card" href="/sablonlar/">${shot("cigi", "Dövme stüdyosu için örnek site tasarımı", "(min-width:1024px) 23vw, 50vw")}<h3>Dövme stüdyosu</h3><p>Sanatçı portföyü ve randevu formu.</p></a>
+    <a class="ex-card" href="/sablonlar/">${shot("bilt", "Sadakat programı için örnek site tasarımı", "(min-width:1024px) 23vw, 50vw")}<h3>Sadakat programı</h3><p>Program tanıtımı ve üyelik başvurusu.</p></a>
+    <a class="ex-card ex-wide" href="/sablonlar/">${shot("eviadental", "Diş kliniği için örnek site tasarımı", "(min-width:1024px) 47vw, 100vw")}<p>Örnek tasarım: Diş kliniği</p></a>
   </div>
 </section>`;
 
-const packages = `<section class="s" id="paketler">
-  <span class="eyebrow">Paketler</span>
-  <h2>Paketi seçin, <em>net teklif</em> alın.</h2>
-  <p class="lead">${site.priceFrom ? `Tanıtım siteleri ${escapeHtml(site.priceFrom)} başlar; kalan kapsam projeye göre netleşir.` : "Fiyat listesi yok; her proje kendi kapsamıyla fiyatlanır."} Görüşmeden sonra 24 saat içinde yazılı teklif gelir. 2026 pazar aralıklarını <a href="/blog/web-sitesi-fiyatlari-2026/">fiyat yazısında</a>, fiyatı neyin belirlediğini <a href="/blog/web-sitesi-fiyatini-ne-belirler/">rehberde</a> anlattık; tarzlar için <a href="/sablonlar/">örnek tasarımlara</a> bakabilirsiniz.</p>
-  <div class="grid g3">
-    <div class="cell"><span class="n">Web sitesi</span><h3>Tanıtım sitesi</h3><ul><li>Markanıza özel tasarım</li><li>Hızlı açılış, akıcı hareket</li><li>Google ve YZ aramalarına hazır</li><li>Yayın ve sonrası destek</li></ul><a class="btn ghost" href="#iletisim">Teklif al</a></div>
-    <div class="cell"><span class="n">Uygulama</span><h3>Özel web uygulaması</h3><ul><li>Panel, portal, otomasyon</li><li>İş akışınıza göre kurulur</li><li>Randevu, sipariş, form</li><li>Yayın ve sonrası destek</li></ul><a class="btn ghost" href="#iletisim">Teklif al</a></div>
-    <div class="cell hi"><span class="n">En kapsamlı</span><h3>Site + uygulama</h3><ul><li>İkisinde tek tasarım dili</li><li>Tanıtım ve ürün bir arada</li><li>Tek ekip, tek muhatap</li><li>Yayın ve sonrası destek</li></ul><a class="btn" href="#iletisim">Teklif al</a></div>
+const packages = `<section class="s" id="paketler" aria-labelledby="paketler-title">
+  <div class="pk-head" data-reveal="rise">
+    <h2 id="paketler-title">Paketi seçin, <em>net teklif</em> alın.</h2>
+    <p class="lead">${site.priceFrom ? `Tanıtım siteleri ${escapeHtml(site.priceFrom)} başlar; kalan kapsam projeye göre netleşir.` : "Fiyat listesi yok; her proje kendi kapsamıyla fiyatlanır."} Fiyatı neyin belirlediğini <a href="/blog/web-sitesi-fiyatini-ne-belirler/">rehberde</a> anlattık.</p>
+  </div>
+  <div class="grid g3" data-reveal="list">
+    <div class="card"><h3>Tanıtım sitesi</h3><ul><li>Markanıza özel tasarım</li><li>Hızlı açılış</li><li>Google ve yapay zekâ aramalarına hazır</li><li>Yayın ve sonrası destek</li></ul></div>
+    <div class="card"><h3>Özel web uygulaması</h3><ul><li>Panel, portal, otomasyon</li><li>İş akışınıza göre kurulur</li><li>Randevu, sipariş, form</li><li>Yayın ve sonrası destek</li></ul></div>
+    <div class="card hi"><p class="flag">En kapsamlı</p><h3>Site + uygulama</h3><ul><li>İkisinde tek tasarım dili</li><li>Tanıtım ve ürün bir arada</li><li>Tek ekip, tek muhatap</li><li>Yayın ve sonrası destek</li></ul></div>
+  </div>
+  <div class="pk-band">
+    <p>Görüşmeden sonra 24 saat içinde yazılı teklif.</p>
+    <a class="btn" href="${waQuote}" rel="noopener">WhatsApp'tan teklif al <span class="dot" aria-hidden="true"></span></a>
   </div>
 </section>`;
 
-// FAQ Index drawer (adapted from the Framer "FaqDrawer" block). Each question
-// is an index card standing in a recessed drawer, typed along its top edge on
-// a staggered tab. Native <details>/<summary> carries the disclosure and the
-// shared `name` keeps one card open at a time, so this needs no JavaScript.
-const FAQ_TAB_STATIONS = [0.04, 0.37, 0.7];
-const faqCard = (f, i, n, uid) => {
-  // How far into the drawer the card stands: 0 at the front, 1 at the back.
-  const depth = n <= 1 ? 0 : (n - 1 - i) / (n - 1);
-  const no = `S.${String(i + 1).padStart(2, "0")}`;
-  return `<details class="fq-card" name="${uid}"${i === 0 ? " open" : ""} style="--k:${i};--depth:${depth.toFixed(3)};--tab-at:${FAQ_TAB_STATIONS[i % FAQ_TAB_STATIONS.length]}">
-      <summary class="fq-edge">
-        <span class="fq-tab" aria-hidden="true">${escapeHtml(f.tab)}</span>
-        <span class="fq-no" aria-hidden="true">${no}</span>
-        <span class="fq-q">${escapeHtml(f.q)}</span>
-        <span class="fq-mark" aria-hidden="true"></span>
-      </summary>
-      <div class="fq-face"><p class="fq-a">${escapeHtml(f.a)}</p><p class="fq-filed" aria-hidden="true">${escapeHtml(f.tab)} · ${no}</p></div>
-    </details>`;
-};
-
-const faqSection = () => {
-  const items = faq.items;
-  const uid = "faq-drawer";
-  return `<section class="s" id="sss" aria-labelledby="sss-title">
-  <div class="fq">
-    <div class="fq-wrap">
-      <header class="fq-head">
-        <p class="fq-label">SSS</p>
-        <h2 class="fq-title" id="sss-title">Merak <em>edilenler</em></h2>
-        <p class="fq-lead">Sitenizi kurmadan önce en çok sorulanlar, bulabileceğiniz yerde. Okumak için bir kart çekin.</p>
-      </header>
-      <div class="fq-cabinet">
-        <div class="fq-drawer">
-          <div class="fq-tray">
-            ${items.map((f, i) => faqCard(f, i, items.length, uid)).join("\n            ")}
-          </div>
-          <div class="fq-front" aria-hidden="true">
-            <span class="fq-holder"><span class="fq-holder-card">ai-ulu · SSS</span></span>
-            <span class="fq-pull"></span>
-          </div>
-        </div>
-        <div class="fq-ask">
-          <p class="fq-note">Aradığınızı bulamadınız mı? Bir kişi yanıtlar, genellikle aynı gün.</p>
-          <a class="fq-key" href="mailto:${site.email}">Bize sorun</a>
-        </div>
-      </div>
-    </div>
+const test = `<section class="s split" id="test" aria-labelledby="test-title">
+  <img class="test-shot" src="/img/checkup.png" width="900" height="1600" alt="Ücretsiz site testinin telefondaki giriş ekranı" loading="lazy" decoding="async" data-reveal="media">
+  <div class="test-copy" data-reveal="rise">
+    <h2 id="test-title">Siteniz <em>bulunuyor mu?</em></h2>
+    <p class="lead"><strong>Adresinizi girin;</strong> Google ve yapay zekâ aramalarındaki görünürlüğünüzü ve öncelikli düzeltmeleri ücretsiz gösterelim.</p>
+    <a class="btn" href="/checkup/">Ücretsiz testi başlat <span class="dot" aria-hidden="true"></span></a>
   </div>
 </section>`;
-};
 
 // Postcard contact form (adapted from the Framer "Postmark" block). The field
 // names, the ids (lead-form, form-status) and the JSON shape are the /api/lead
@@ -200,13 +171,15 @@ const postmarkSeal = `<svg class="pm-seal" viewBox="0 0 100 100" aria-hidden="tr
       <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.4"/>
       <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" stroke-width="0.8"/>
       <text><textPath href="#pm-seal-arc" startOffset="0%">AI-ULU · POSTA DAMGASI · WEB SITESI ·</textPath></text>
-      <text class="pm-seal-c" x="50" y="50" text-anchor="middle" dominant-baseline="central">✳</text>
     </svg>`;
 
-const contact = () => `<section class="s" id="iletisim">
-  <span class="eyebrow">İletişim</span>
-  <h2>Siteniz için <em>ilk adım.</em></h2>
-  <p class="lead">Ne kurmak istediğinizi birkaç cümleyle yazın; 24 saat içinde ücretsiz görüşme için dönelim.</p>
+const contact = () => `<section class="s" id="iletisim" aria-labelledby="iletisim-title">
+  <div class="close-panel" data-reveal="rise">
+    <h2 id="iletisim-title">Siteniz için <em>ilk adım.</em></h2>
+    <p class="lead">30 dakikalık ücretsiz görüşmede hedefinizi konuşalım. Ya da arayın: <a class="nowrap" href="tel:${site.phone}">${site.phoneDisplay}</a></p>
+    <a class="btn" href="${waTalk}" rel="noopener">Ücretsiz görüşme <span class="dot" aria-hidden="true"></span></a>
+    <p class="close-alt">Form doldurmayı tercih ederseniz aşağıya yazın, 24 saat içinde dönelim.</p>
+  </div>
   <div class="pm">
     <form class="pm-card" id="lead-form" novalidate>
       ${postmarkSeal}
@@ -255,22 +228,16 @@ const contact = () => `<section class="s" id="iletisim">
         </div>
       </div>
       <div class="pm-foot">
-        ${turnstileWidget()}<button class="pm-btn" type="submit">Postayı at <span aria-hidden="true">↗</span></button>
+        ${turnstileWidget()}<button class="pm-btn" type="submit">Postayı at</button>
         <p class="form__note">Bilgileriniz yalnızca size dönüş yapmak için kullanılır. Ayrıntılar: <a href="/gizlilik/">Gizlilik ve KVKK</a>.</p>
         <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
       </div>
     </form>
     <div class="pm-thanks" id="pm-thanks" hidden>
-      <b>Posta yola çıktı ✈</b>
+      <b>Posta yola çıktı</b>
       <p>Teşekkürler! Mesajınız alındı, 24 saat içinde dönüş yapacağız.</p>
     </div>
   </div>
-  <aside class="pm-aside">
-    <span>Form doldurmak istemezseniz:</span>
-    <a class="btn" href="${waLink("Merhaba, web sitem için yazıyorum.")}" rel="noopener">WhatsApp'tan yazın <span aria-hidden="true">→</span></a>
-    <a class="btn ghost" href="tel:${site.phone}">${site.phoneDisplay}</a>
-    <a href="mailto:${site.email}">${site.email}</a>
-  </aside>
 </section>`;
 
-export const homeBody = () => [film, benefits, why, process, packages, faqSection(), blogTeaser(), contact()].join("\n\n");
+export const homeBody = () => [hero, film, benefits, why, process, examples, packages, test, contact()].join("\n\n");

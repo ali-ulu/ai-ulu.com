@@ -12,14 +12,14 @@ const read = (rel) => readFile(join(root, rel), "utf8");
 test("the home page answers the 'build it with AI for free' objection", async () => {
   const home = await read("dist/index.html");
   assert.match(home, /id="neden"/, "the objection section is present");
-  assert.match(home, /Yapay zekâ ile <em>bedava<\/em> yaparım/, "it names the objection");
+  assert.match(home, /Yapay zekâ ile bedava yaparım/, "it names the objection");
   assert.match(
     home,
     /href="\/blog\/yapay-zeka-ile-web-sitesi-yapmak\/"/,
     "it links to the post that argues the point",
   );
-  // The benefits section points at it, so a skimmer finds it.
-  assert.match(home, /href="\/#neden"/, "an in-page link reaches the section");
+  // A short heading that fits two lines on a phone carries the section.
+  assert.match(home, /<h2 id="neden-title">Yapay zekâ varken <em>neden biz\?<\/em><\/h2>/, "short heading");
 });
 
 test("the packages section links to the price explainer", async () => {
@@ -33,7 +33,7 @@ test("the packages section links to the price explainer", async () => {
 
 test("no placeholder price ships while priceFrom is unset", async () => {
   const home = await read("dist/index.html");
-  const lead = home.match(/id="paketler"[\s\S]*?<div class="grid g3">/)?.[0] ?? "";
+  const lead = home.match(/id="paketler"[\s\S]*?<div class="grid g3"/)?.[0] ?? "";
   assert.match(lead, /Fiyat listesi yok/, "the honest fallback shows");
   assert.doesNotMatch(lead, /₺/, "no currency symbol appears without a real number");
 });

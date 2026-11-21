@@ -94,19 +94,17 @@ test("every post ends with a WhatsApp CTA that carries a message", () => {
   }
 });
 
-test("posts are ordered newest first and the home page teases the latest three", async () => {
+test("posts are ordered newest first and the blog is one click from every page", async () => {
   const dates = byDateDesc.map((p) => p.published);
   assert.deepEqual(dates, [...dates].sort().reverse(), "posts sorted newest first");
   const home = await read("dist/index.html");
-  assert.ok(home.includes('id="blog"'), "home carries a blog teaser");
-  for (const p of byDateDesc.slice(0, 3)) {
-    assert.ok(home.includes(`href="/blog/${p.slug}/"`), `home should link to ${p.slug}`);
-  }
+  // The home page stays short: no teaser, but the nav and footer reach the blog.
+  assert.ok(!home.includes('id="blog"'), "home carries no blog teaser");
   assert.ok(home.includes('href="/blog/"'), "home links to the blog index");
-  // The teaser keeps a plain text link to the index, not a competing button.
-  const more = home.match(/<p class="bl-more">[\s\S]*?<\/p>/)?.[0] ?? "";
-  assert.match(more, /<a href="\/blog\/">Tüm yazılar/, "teaser more link is plain text");
-  assert.doesNotMatch(more, /class="btn/, "teaser more link is not a button");
+  const blogIndex = await read("dist/blog/index.html");
+  for (const p of byDateDesc.slice(0, 3)) {
+    assert.ok(blogIndex.includes(`href="/blog/${p.slug}/"`), `blog index should link to ${p.slug}`);
+  }
 });
 
 test("the blog is reachable from the nav, the footer and the sitemap", async () => {
@@ -136,9 +134,9 @@ test("blog styles ship and the CSP stays self-only", async () => {
 // The teaser markup is on the home page but its stylesheet is per-page: without
 // the link, .bl-list falls back to display:block and the cards collide with the
 // "Tüm yazılar" button. Pin the link so the teaser cannot ship unstyled again.
-test("the home page loads blog.css for its teaser", async () => {
+test("blog.css loads where blog cards are shown, not on the home page", async () => {
   const home = await read("dist/index.html");
-  assert.match(home, /<link rel="stylesheet" href="\/blog\.css">/, "home links blog.css");
+  assert.doesNotMatch(home, /href="\/blog\.css"/, "home has no blog cards to style");
   const blogIndex = await read("dist/blog/index.html");
   assert.match(blogIndex, /<link rel="stylesheet" href="\/blog\.css">/, "blog index links blog.css");
 });

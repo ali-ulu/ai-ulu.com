@@ -8,7 +8,7 @@ export const nav = [
   { href: "/blog/", label: "Blog", keep: true },
   { href: "/hakkimizda/", label: "Hakkında" },
   { href: "/checkup/", label: "Ücretsiz test" },
-  { href: "/#sss", label: "SSS" },
+  { href: "/sss/", label: "SSS" },
 ];
 
 // tab: the subject on the card's staggered tab (the FAQ drawer's filing label).
@@ -91,7 +91,7 @@ export const faq = {
 export const projectTypes = [
   { value: "site", label: "Tanıtım sitesi", glyph: "⌂" },
   { value: "app", label: "Web uygulaması", glyph: "▤" },
-  { value: "both", label: "Site + uygulama", glyph: "✦" },
+  { value: "both", label: "Site + uygulama", glyph: "+" },
   { value: "unsure", label: "Emin değilim", glyph: "◌" },
 ];
 
@@ -112,6 +112,7 @@ export const footerLinks = [
   { href: "/sablonlar/", label: "Örnek tasarımlar" },
   { href: "/blog/", label: "Blog" },
   { href: "/checkup/", label: "Ücretsiz site testi" },
+  { href: "/sss/", label: "SSS" },
   { href: "/#iletisim", label: "İletişim" },
   { href: "/gizlilik/", label: "Gizlilik ve KVKK" },
   { href: "/kullanim-sartlari/", label: "Kullanım şartları" },

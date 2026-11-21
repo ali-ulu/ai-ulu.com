@@ -58,11 +58,12 @@ test("the hero fonts are preloaded so the swap does not shift the layout", async
   assert.match(html, /crossorigin/, "font preloads need crossorigin for the same-origin font request");
 });
 
-test("the vignette keeps the hero text legible over the WebGL field", async () => {
+test("the hero and film copy stand on solid ground, not a vignette", async () => {
   const css = await read("src/site/assets/site.css");
-  const vignette = css.match(/\.vignette\{[^}]*\}/)[0];
-  assert.match(vignette, /position:fixed/, "the vignette must cover the whole viewport");
-  assert.match(vignette, /z-index:-1/, "the vignette must sit behind the content");
+  assert.match(css, /\.vignette\{display:none\}/, "the vignette layer is gone");
+  assert.match(css, /\.hero-panel\{[^}]*background:#141518/, "the hero title sits on a flat panel");
+  assert.match(css, /\.ch\{[^}]*background:var\(--ink\)/, "film chapters sit on a solid ground");
+  assert.match(css, /\.tag\{[^}]*background:var\(--ink\)/, "laptop labels sit on a solid ground");
 });
 
 test("the env map is skipped on a software rasteriser", async () => {
