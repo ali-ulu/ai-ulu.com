@@ -321,7 +321,7 @@ html.m-enter [data-enter]{animation:hero-in .6s cubic-bezier(.16,1,.3,1) both}
 .pk-band p{font-size:1.125rem}
 
 /* Free test: tall capture left, copy right. */
-.test-shot{width:100%;max-width:22rem;height:auto;aspect-ratio:9/14;object-fit:cover;object-position:top;border-radius:18px}
+.test-shot{width:100%;max-width:22rem;height:auto;border-radius:22px;box-shadow:0 0 0 1px rgba(236,231,222,.12),0 24px 60px -30px rgba(0,0,0,.9)}
 .test-copy{align-self:center;display:grid;gap:1.4rem;justify-items:start}
 .test-copy h2{margin:0}
 .test-copy .lead strong{color:var(--bone)}
