@@ -12,5 +12,6 @@ test-results/
 .env.*
 !.env.example
 .agents/
+.claude/
 .taste-skill/
 skills-lock.json

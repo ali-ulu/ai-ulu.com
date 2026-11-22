@@ -57,7 +57,7 @@ em{font-style:italic;font-family:var(--serif);font-weight:400;color:var(--amber)
 .logo:hover{opacity:.85;transform:translateY(-1px)}
 .logo-mark{width:1.75rem;height:auto;color:var(--bone);flex:none}
 .logo-word{color:var(--bone);font-weight:400;letter-spacing:.01em}
-.nav-glass nav{position:relative;z-index:1;display:flex;gap:1.8rem;margin-left:auto;font-size:1rem;color:var(--soft)}
+.nav-glass nav{position:relative;z-index:1;display:flex;gap:clamp(.7rem,1.5vw,1.8rem);margin-left:auto;min-width:0;font-size:1rem;color:var(--soft)}
 .nav-glass nav a{display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;text-decoration:none;text-underline-offset:6px;transition:color .16s ease-out}
 .nav-glass nav a:hover{color:var(--bone);text-decoration:underline;text-decoration-color:var(--amber)}
 .nav-cta{position:relative;z-index:1;min-height:44px;padding:0 1.1rem}
@@ -107,7 +107,7 @@ em{font-style:italic;font-family:var(--serif);font-weight:400;color:var(--amber)
 }
 
 /* content sections */
-section.s{padding:clamp(6rem,16vh,11rem) var(--pad) 0;max-width:90rem;margin:0 auto}
+section.s{padding:clamp(6rem,16vh,11rem) var(--pad) clamp(4rem,10vh,7rem);max-width:90rem;margin:0 auto}
 .s h1,.s h2{font:400 clamp(1.75rem,1rem + 3vw,3.25rem)/1.04 var(--serif);letter-spacing:-.01em;max-width:22ch;margin:0 0 1.4rem;text-wrap:balance}
 .s .lead{color:var(--soft);max-width:36rem;font-size:1.125rem}
 /* Service cards: Framer "ServiceCards"-style tiles (no backdrop blur: it cut desktop scroll to ~14 fps over the moving canvas). Detached squares
@@ -148,7 +148,7 @@ section.s{padding:clamp(6rem,16vh,11rem) var(--pad) 0;max-width:90rem;margin:0 a
    the home page. Only the shared status/note/honeypot bits live here. */
 .field--hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .form__note{font-size:.9375rem;color:var(--soft)}
-.form__note a{color:var(--soft);display:inline-flex;align-items:center;min-height:24px}
+.form__note a{color:var(--soft);display:inline-flex;align-items:center;min-height:44px}
 .form__status{min-height:1.5em;font-size:.95rem}
 .form__status[data-state="ok"]{color:var(--ok)}
 .form__status[data-state="error"]{color:var(--danger)}
@@ -201,7 +201,7 @@ section.s{padding:clamp(6rem,16vh,11rem) var(--pad) 0;max-width:90rem;margin:0 a
 .callbar{display:none}
 .callbar-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;padding:0 1rem;text-decoration:none;font-weight:600;font-size:1rem;color:var(--ink)}
 .callbar-btn.tel{background:var(--bone)}
-.callbar-btn.wa{background:var(--amber)}
+.callbar-btn.wa{background:var(--bone)}
 .callbar-btn:active{opacity:.85}
 
 
@@ -211,6 +211,7 @@ section.s{padding:clamp(6rem,16vh,11rem) var(--pad) 0;max-width:90rem;margin:0 a
   .site-header nav a:not(.keep){display:none}
   .nav-glass nav{gap:1rem;margin-left:auto}
   .nav-cta{padding:.6rem .85rem}
+  .site-footer nav a{min-height:44px}
   .g3,.contact-grid{grid-template-columns:1fr}
   .g4{grid-template-columns:repeat(2,1fr)}
   .ch,.ch.right{left:var(--pad);right:var(--pad);text-align:left;bottom:2.2rem}
@@ -270,19 +271,21 @@ section.s{padding:clamp(6rem,16vh,11rem) var(--pad) 0;max-width:90rem;margin:0 a
 
 /* Home hero: one rounded stage panel that fills the first screen. */
 .hero{padding:0 var(--pad)}
-.hero-panel{position:relative;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;gap:2rem;max-width:90rem;margin:0 auto;min-height:calc(100svh - 80px);padding:clamp(2rem,6vh,4.5rem) clamp(1.5rem,4vw,4rem) clamp(2rem,5vh,3.5rem);border-radius:28px;background:#141518;overflow:hidden}
+.hero-panel{position:relative;display:grid;grid-template-columns:1fr auto;grid-template-rows:1fr auto;gap:2rem;max-width:90rem;margin:0 auto;min-height:calc(100svh - 85px);padding:clamp(2rem,6vh,4.5rem) clamp(1.5rem,4vw,4rem) clamp(2rem,5vh,3.5rem);border-radius:28px;background:#141518;overflow:hidden}
 .hero h1{grid-column:1;align-self:start;font:400 clamp(2.4rem,1rem + 6vw,5.5rem)/.98 var(--serif);letter-spacing:-.02em;max-width:12ch}
 .hero h1 em{display:block}
-.hero-list{grid-column:2;align-self:start;list-style:none;text-align:right;font-size:1.125rem;line-height:1.8;color:var(--bone);padding-top:1rem}
+.hero-list{grid-column:2;align-self:start;list-style:none;text-align:left;font-size:1.125rem;line-height:1.8;color:var(--bone);padding-top:1rem}
 .hero-foot{grid-column:1 / -1;align-self:end;max-width:34rem}
 .hero-foot p{font-size:1.25rem;color:var(--soft)}
 .hero .cta{display:flex;flex-wrap:wrap;align-items:center;gap:1.4rem;margin-top:1.6rem}
 @media (max-width:767px){
   .hero-panel{grid-template-columns:1fr;grid-template-rows:auto auto 1fr;gap:1.5rem;min-height:calc(100svh - 72px);padding-bottom:calc(5.5rem + env(safe-area-inset-bottom,0px))}
-  .hero-list{grid-column:1;text-align:right;padding-top:0;font-size:1rem}
+  .hero-list{grid-column:1;text-align:left;padding-top:0;font-size:1rem}
   .hero-foot{grid-column:1}
   .hero-foot p{font-size:1.0625rem}
 }
+html.m-enter [data-enter]{animation:hero-in .6s cubic-bezier(.16,1,.3,1) both}
+@keyframes hero-in{from{opacity:0;transform:translateY(12px)}}
 .hero-panel > *{animation:hero-rise .7s cubic-bezier(.16,1,.3,1) both}
 .hero-panel > :nth-child(2){animation-delay:.16s}
 .hero-panel > :nth-child(3){animation-delay:.08s}
