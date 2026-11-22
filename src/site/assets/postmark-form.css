@@ -38,7 +38,6 @@
   border-radius: 6px;
   background: var(--pm-paper);
   color: var(--pm-ink);
-  transform: rotate(var(--pm-tilt));
 }
 .pm-body {
   display: grid;
@@ -99,7 +98,9 @@
   color: rgba(35, 50, 74, 0.72);
 }
 .pm textarea:focus {
-  outline: none;
+  outline: 2px solid var(--pm-post);
+  outline-offset: 6px;
+  border-radius: 3px;
 }
 .pm textarea:focus-visible {
   outline: 2px solid var(--pm-post);
@@ -134,8 +135,8 @@
   min-width: 0;
 }
 .pm-stamps {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
   gap: 0.5rem;
   border: 0;
   padding: 0;
@@ -148,7 +149,8 @@
 }
 .pm-stamps label {
   position: relative;
-  display: inline-flex;
+  display: flex;
+  width: 100%;
   cursor: pointer;
 }
 .pm-stamp {
@@ -156,14 +158,14 @@
   display: grid;
   place-items: center;
   gap: 0.1rem;
-  width: 3.1rem;
+  width: 100%;
+  min-width: 0;
   min-height: 3.6rem;
-  padding: 0.35rem 0.2rem 0.3rem;
+  padding: 0.35rem 0.55rem 0.3rem;
   color: var(--pm-stamp);
   background: rgba(255, 255, 255, 0.42);
   border: 1.5px dashed rgba(35, 50, 74, 0.32);
   border-radius: 3px;
-  transform: rotate(var(--pm-tilt-stamp, 0deg));
   transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 .pm-stamp .pm-glyph {
@@ -176,6 +178,8 @@
   letter-spacing: 0.02em;
   color: var(--pm-ink-2);
   text-align: center;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 .pm-stamps input {
   position: absolute;
@@ -192,7 +196,7 @@
   border-color: var(--pm-post);
   border-style: solid;
   background: rgba(255, 122, 77, 0.12);
-  transform: rotate(0deg) translateY(-3px);
+  transform: translateY(-3px);
 }
 .pm-stamps input:checked + .pm-stamp span {
   color: var(--pm-ink);
@@ -269,13 +273,12 @@
 /* ------------------------------------------------------------------- seal */
 .pm-seal {
   position: absolute;
-  top: -1.6rem;
-  right: -1.1rem;
-  width: 6.4rem;
-  height: 6.4rem;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 5rem;
+  height: 5rem;
   color: var(--pm-ink);
   opacity: 0.85;
-  transform: rotate(9deg);
   pointer-events: none;
   mix-blend-mode: multiply;
 }
@@ -308,8 +311,8 @@
   border: 0;
   border-radius: 999px;
   cursor: pointer;
-  background: var(--pm-post);
-  color: #2a1408;
+  background: var(--bone);
+  color: var(--ink);
   font: 600 1.02rem/1 var(--pm-sans);
   letter-spacing: 0.01em;
   transition: transform 0.16s ease-out, filter 0.16s ease-out;
@@ -342,7 +345,7 @@
   max-width: 34ch;
 }
 .pm .form__note a {
-  color: var(--pm-stamp);
+  color: #8f4425;
 }
 .pm .form__status {
   min-height: 1.4em;
@@ -433,15 +436,15 @@
     order: 1;
   }
   .pm-seal {
-    width: 5rem;
-    height: 5rem;
-    top: -1.2rem;
+    width: 4rem;
+    height: 4rem;
+    top: 0.4rem;
     right: -0.6rem;
   }
 }
 @container pm (max-width: 440px) {
   .pm-stamp {
-    width: 2.8rem;
+    width: 100%;
     min-height: 3.3rem;
   }
   .pm-card {

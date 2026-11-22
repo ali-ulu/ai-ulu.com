@@ -33,7 +33,7 @@ export const noJsStyles = `<noscript><style>
 
 // The hero stands alone on the first screen as a rounded stage panel: title top
 // left, services top right, one sentence and the action bottom left.
-const hero = `<section class="hero" id="c0" aria-labelledby="hero-title">
+const hero = `<section class="hero" id="c0" data-enter aria-labelledby="hero-title">
   <div class="hero-panel">
     <h1 id="hero-title">Müşteri getiren <em>web siteleri</em></h1>
     <ul class="hero-list" aria-label="Neler dahil">
@@ -43,7 +43,7 @@ const hero = `<section class="hero" id="c0" aria-labelledby="hero-title">
       <li>Tek dokunuşla iletişim</li>
     </ul>
     <div class="hero-foot">
-      <p>Sıfırdan tasarlanan, aranınca bulunan, WhatsApp'a bağlı siteler kuruyoruz.</p>
+      <p>Sıfırdan tasarlanan, aranınca bulunan, WhatsApp'a bağlı siteler kuruyoruz. Görüşmeden sonra 24 saat içinde yazılı teklif.</p>
       <div class="cta">
         <a class="btn" href="${waTalk}" rel="noopener">Ücretsiz görüşme <span class="dot" aria-hidden="true"></span></a>
         <a class="link" href="/checkup/">Siteniz bulunuyor mu? Ücretsiz test</a>
@@ -82,7 +82,7 @@ const film = `<div id="film">
 
 const benefits = `<section class="s" id="nasil" aria-labelledby="nasil-title">
   <h2 id="nasil-title">Ziyaretçi gelir, <em>müşteri</em> olarak kalır.</h2>
-  <ul class="cards g4" data-reveal="list">
+  <ul class="cards g4">
     <li class="card"><h3>Özgün tasarım</h3><p>Sektörünüze ve markanıza göre çizilmiş, şablon olmayan bir site.</p></li>
     <li class="card"><h3>Google'da görünürlük</h3><p>Teknik SEO, hız ve yapılandırılmış veri ilk günden içinde.</p></li>
     <li class="card"><h3>Yapay zekâ aramaları</h3><p>ChatGPT ve Gemini'nin okuyabildiği yapı, şema ve temiz HTML.</p></li>
@@ -93,11 +93,11 @@ const benefits = `<section class="s" id="nasil" aria-labelledby="nasil-title">
 // The largest objection people type into search is "can I just build it with AI
 // for free?". Answering it head-on beats ignoring it. No invented numbers.
 const why = `<section class="s split" id="neden" aria-labelledby="neden-title">
-  <div class="split-head" data-reveal="rise">
+  <div class="split-head">
     <h2 id="neden-title">Yapay zekâ varken <em>neden biz?</em></h2>
     <p class="lead">"Yapay zekâ ile bedava yaparım" diyenlere <a href="/blog/yapay-zeka-ile-web-sitesi-yapmak/">kısa cevabımız</a>.</p>
   </div>
-  <ul class="points" data-reveal="list">
+  <ul class="points">
     <li><h3>Doğru metin, doğru müşteri</h3><p>Araç işinizi ve müşterinizi bilmez; arayan kişinin duymak istediği cümleyi biz yazarız.</p></li>
     <li><h3>Siteniz sizin</h3><p>Alan adı, kod ve içerik sizin adınıza teslim edilir.</p></li>
     <li><h3>Yayından sonra da çalışır</h3><p>Hızı, görünürlüğü ve dönüşümü ölçer, gerektiğinde düzeltiriz.</p></li>
@@ -106,7 +106,7 @@ const why = `<section class="s split" id="neden" aria-labelledby="neden-title">
 
 const process = `<section class="s" id="surec" aria-labelledby="surec-title">
   <h2 id="surec-title">Üç adımda <em>yayında.</em></h2>
-  <ol class="cards g3" data-reveal="list">
+  <ol class="cards g3">
     <li class="card"><h3>Hedefi konuşuruz</h3><p>Ücretsiz 30 dakikalık görüşmede hedef, kapsam ve takvim netleşir.</p></li>
     <li class="card"><h3>Canlı izlersiniz</h3><p>İlk haftadan tıklanabilir önizleme.</p></li>
     <li class="card"><h3>Yanınızda kalırız</h3><p>Gerçek cihazlarda test, yayın ve sonrasında değişiklikler.</p></li>
@@ -117,24 +117,24 @@ const shot = (name, alt, sizes) =>
   `<img src="/sablonlar/stiller/${name}-960.webp" srcset="/sablonlar/stiller/${name}-480.webp 480w, /sablonlar/stiller/${name}-960.webp 960w, /sablonlar/stiller/${name}.webp 1400w" sizes="${sizes}" width="1400" height="1050" alt="${alt}" loading="lazy" decoding="async">`;
 
 const examples = `<section class="s" id="ornekler" aria-labelledby="ornekler-title">
-  <div class="ex-head" data-reveal="rise">
+  <div class="ex-head">
     <h2 id="ornekler-title">Sektörünüze göre <em>örnekler</em></h2>
     <p class="lead">Klinik, stüdyo ve hizmet işletmeleri için hazırladığımız örnek tasarımlar.</p>
     <a class="link" href="/sablonlar/">Tüm örnekleri gör</a>
   </div>
-  <div class="ex-grid" data-reveal="media">
-    <a class="ex-card" href="/sablonlar/">${shot("cigi", "Dövme stüdyosu için örnek site tasarımı", "(min-width:1024px) 23vw, 50vw")}<h3>Dövme stüdyosu</h3><p>Sanatçı portföyü ve randevu formu.</p></a>
-    <a class="ex-card" href="/sablonlar/">${shot("bilt", "Sadakat programı için örnek site tasarımı", "(min-width:1024px) 23vw, 50vw")}<h3>Sadakat programı</h3><p>Program tanıtımı ve üyelik başvurusu.</p></a>
+  <div class="ex-grid">
+    <a class="ex-card" href="/sablonlar/">${shot("cigi", "Dövme stüdyosu için örnek site tasarımı", "(min-width:1024px) 23vw, (min-width:421px) 50vw, 100vw")}<h3>Dövme stüdyosu</h3><p>Sanatçı portföyü ve randevu formu.</p></a>
+    <a class="ex-card" href="/sablonlar/">${shot("bilt", "Sadakat programı için örnek site tasarımı", "(min-width:1024px) 23vw, (min-width:421px) 50vw, 100vw")}<h3>Sadakat programı</h3><p>Program tanıtımı ve üyelik başvurusu.</p></a>
     <a class="ex-card ex-wide" href="/sablonlar/">${shot("eviadental", "Diş kliniği için örnek site tasarımı", "(min-width:1024px) 47vw, 100vw")}<p>Örnek tasarım: Diş kliniği</p></a>
   </div>
 </section>`;
 
 const packages = `<section class="s" id="paketler" aria-labelledby="paketler-title">
-  <div class="pk-head" data-reveal="rise">
+  <div class="pk-head">
     <h2 id="paketler-title">Paketi seçin, <em>net teklif</em> alın.</h2>
     <p class="lead">${site.priceFrom ? `Tanıtım siteleri ${escapeHtml(site.priceFrom)} başlar; kalan kapsam projeye göre netleşir.` : "Fiyat listesi yok; her proje kendi kapsamıyla fiyatlanır."} Fiyatı neyin belirlediğini <a href="/blog/web-sitesi-fiyatini-ne-belirler/">rehberde</a> anlattık.</p>
   </div>
-  <div class="grid g3" data-reveal="list">
+  <div class="grid g3">
     <div class="card"><h3>Tanıtım sitesi</h3><ul><li>Markanıza özel tasarım</li><li>Hızlı açılış</li><li>Google ve yapay zekâ aramalarına hazır</li><li>Yayın ve sonrası destek</li></ul></div>
     <div class="card"><h3>Özel web uygulaması</h3><ul><li>Panel, portal, otomasyon</li><li>İş akışınıza göre kurulur</li><li>Randevu, sipariş, form</li><li>Yayın ve sonrası destek</li></ul></div>
     <div class="card hi"><p class="flag">En kapsamlı</p><h3>Site + uygulama</h3><ul><li>İkisinde tek tasarım dili</li><li>Tanıtım ve ürün bir arada</li><li>Tek ekip, tek muhatap</li><li>Yayın ve sonrası destek</li></ul></div>
@@ -146,8 +146,8 @@ const packages = `<section class="s" id="paketler" aria-labelledby="paketler-tit
 </section>`;
 
 const test = `<section class="s split" id="test" aria-labelledby="test-title">
-  <img class="test-shot" src="/img/checkup.png" width="900" height="1600" alt="Ücretsiz site testinin telefondaki giriş ekranı" loading="lazy" decoding="async" data-reveal="media">
-  <div class="test-copy" data-reveal="rise">
+  <img class="test-shot" src="/img/checkup.png" width="900" height="1600" alt="Ücretsiz site testinin telefondaki giriş ekranı" loading="lazy" decoding="async">
+  <div class="test-copy">
     <h2 id="test-title">Siteniz <em>bulunuyor mu?</em></h2>
     <p class="lead"><strong>Adresinizi girin;</strong> Google ve yapay zekâ aramalarındaki görünürlüğünüzü ve öncelikli düzeltmeleri ücretsiz gösterelim.</p>
     <a class="btn" href="/checkup/">Ücretsiz testi başlat <span class="dot" aria-hidden="true"></span></a>
@@ -174,7 +174,7 @@ const postmarkSeal = `<svg class="pm-seal" viewBox="0 0 100 100" aria-hidden="tr
     </svg>`;
 
 const contact = () => `<section class="s" id="iletisim" aria-labelledby="iletisim-title">
-  <div class="close-panel" data-reveal="rise">
+  <div class="close-panel">
     <h2 id="iletisim-title">Siteniz için <em>ilk adım.</em></h2>
     <p class="lead">30 dakikalık ücretsiz görüşmede hedefinizi konuşalım. Ya da arayın: <a class="nowrap" href="tel:${site.phone}">${site.phoneDisplay}</a></p>
     <a class="btn" href="${waTalk}" rel="noopener">Ücretsiz görüşme <span class="dot" aria-hidden="true"></span></a>
@@ -187,7 +187,7 @@ const contact = () => `<section class="s" id="iletisim" aria-labelledby="iletisi
         <div class="pm-left">
           <p class="pm-greet" aria-hidden="true">Sevgili ai-ulu,</p>
           <div class="pm-write">
-            <label class="visually-hidden" for="msg">Kısaca projeniz</label>
+            <label class="pm-label" for="msg">Kısaca projeniz</label>
             <textarea id="msg" name="msg" maxlength="280" placeholder="Sektörünüz, istediğiniz sayfalar, beğendiğiniz bir site…"></textarea>
             <span class="pm-count" id="pm-count" aria-hidden="true">0 / 280</span>
           </div>
@@ -205,9 +205,9 @@ const contact = () => `<section class="s" id="iletisim" aria-labelledby="iletisi
           <div class="pm-block">
             <p class="pm-label">Kimden</p>
             <div class="pm-fields">
-              <label class="visually-hidden" for="name">Ad Soyad / Firma</label>
+              <label class="pm-label" for="name">Ad Soyad / Firma</label>
               <input id="name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" placeholder="Ad Soyad / Firma">
-              <label class="visually-hidden" for="reach">E-posta veya telefon</label>
+              <label class="pm-label" for="reach">E-posta veya telefon</label>
               <input id="reach" name="reach" type="text" autocomplete="off" inputmode="text" required maxlength="160" placeholder="E-posta veya telefon">
             </div>
           </div>

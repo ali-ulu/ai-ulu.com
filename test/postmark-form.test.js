@@ -47,7 +47,7 @@ test("the topic stamps are radios bound to the existing type field", async () =>
 test("each field keeps an accessible label and the text limit is honest", async () => {
   const html = await read("dist/index.html");
   for (const id of ["msg", "name", "reach"]) {
-    assert.match(html, new RegExp(`<label class="visually-hidden" for="${id}">`), `${id} has a label`);
+    assert.match(html, new RegExp(`<label class="pm-label" for="${id}">`), `${id} has a visible label`);
   }
   assert.match(html, /id="msg" name="msg" maxlength="280"/, "the limit matches the counter");
   assert.match(html, /id="pm-count"[^>]*>0 \/ 280</, "the counter starts at zero");

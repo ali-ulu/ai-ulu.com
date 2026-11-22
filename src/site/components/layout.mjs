@@ -112,6 +112,7 @@ export function page({ title, description = site.description, path, body, jsonLd
   return `<!doctype html>
 <html lang="${site.lang}">
 <head>
+<script>document.documentElement.classList.add("m-enter")</script>
 ${head({ title, description, path, jsonLd, styles, noscript, canonical, noindex })}
 </head>
 <body>

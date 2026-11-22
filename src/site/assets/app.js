@@ -155,29 +155,5 @@
   });
 })();
 
-// Scroll reveals. Content is visible by default (CSS never hides it on its own):
-// only blocks that start below the fold get the .pre class, and each is revealed
-// once, just before it enters, then left alone. Reduced motion skips it all.
-(() => {
-  const els = [...document.querySelectorAll("[data-reveal]")];
-  if (!els.length || !("IntersectionObserver" in window)) return;
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  els.forEach((el) => {
-    if (el.dataset.reveal === "list") [...el.children].forEach((c, i) => c.style.setProperty("--i", Math.min(i, 3)));
-  });
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        e.target.classList.remove("pre");
-        io.unobserve(e.target);
-      }
-    },
-    { rootMargin: "0px 0px 10% 0px", threshold: 0 },
-  );
-  els.forEach((el) => {
-    if (el.getBoundingClientRect().top < innerHeight) return; // already on screen: stay visible
-    el.classList.add("pre");
-    io.observe(el);
-  });
-})();
+// Scroll reveals removed: content is visible from first paint (no scroll-triggered fades).
+

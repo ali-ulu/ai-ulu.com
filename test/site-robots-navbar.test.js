@@ -27,7 +27,7 @@ test("IndexNow key file matches the configured key", async () => {
 test("every page renders the liquid-glass navbar pill", async () => {
   for (const rel of ["dist/index.html", "dist/gizlilik/index.html"]) {
     const html = await read(rel);
-    assert.ok(html.includes('class="nav-glass"'), `${rel} should contain the glass pill`);
+    assert.ok(html.includes('class="nav-glass"'), `${rel} should contain the navbar`);
     assert.equal((html.match(/class="nav-glass"/g) ?? []).length, 1, `${rel} should have exactly one navbar`);
   }
 });
