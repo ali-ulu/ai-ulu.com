@@ -18,12 +18,15 @@ export const site = {
   // Service-area business: no shopfront, so no address to publish. List the
   // places actually served and they become areaServed in the JSON-LD. Left empty
   // on purpose — the country alone is emitted until real areas are added.
-  serviceAreas: [],
-  priceRange: "", // e.g. "₺₺" or "25.000 ₺'den başlar"
+  serviceAreas: ["İstanbul", "Ankara", "İzmir", "Bursa"],
+  priceRange: "5.000 ₺'den başlar",
   // Shown on the packages section when set ("Tanıtım siteleri X'den başlar").
   // Left empty on purpose: a real number beats a placeholder, so nothing ships
   // until the owner fills it in.
-  priceFrom: "",
+  priceFrom: "5.000 ₺'den",
+  // The same number as an integer: schema.org Offer.price must be numeric, so it
+  // cannot reuse the display string.
+  priceFromAmount: 5000,
   // What the owner does, in the words used on the about page and in the Person
   // schema. Kept short so it reads the same everywhere.
   ownerTitle: "Web sitesi tasarımcısı ve geliştiricisi",
