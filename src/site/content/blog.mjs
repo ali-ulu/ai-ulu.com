@@ -7,7 +7,7 @@ export const posts = [
   {
     slug: "web-sitesi-fiyatlari-2026",
     title: "Web sitesi fiyatları 2026: aralıklar, kim ne istiyor, siz ne ödemelisiniz?",
-    metaTitle: "Web sitesi fiyatları 2026: aralıklar ve ne ödemelisiniz?",
+    metaTitle: "Web sitesi fiyatları 2026: ne ödemelisiniz?",
     description: "2026 ajans fiyat rehberlerinden gerçek aralıklar: tek sayfa, kurumsal, e-ticaret ve özel yazılım. Aynı işe neden 8.000 de 180.000 de deniyor?",
     targetQuery: "web sitesi fiyatları 2026, web sitesi kurma maliyeti",
     published: DATE,
