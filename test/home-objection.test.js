@@ -31,9 +31,16 @@ test("the packages section links to the price explainer", async () => {
   );
 });
 
-test("no placeholder price ships while priceFrom is unset", async () => {
+test("the packages lead shows the configured starting price, or the honest fallback", async () => {
+  const { site } = await import("../src/site/config.mjs");
+  const { escapeHtml } = await import("../src/site/lib/html.mjs");
   const home = await read("dist/index.html");
   const lead = home.match(/id="paketler"[\s\S]*?<div class="grid g3"/)?.[0] ?? "";
-  assert.match(lead, /Fiyat listesi yok/, "the honest fallback shows");
-  assert.doesNotMatch(lead, /₺/, "no currency symbol appears without a real number");
+  if (site.priceFrom) {
+    assert.ok(lead.includes(escapeHtml(site.priceFrom)), `the anchor "${site.priceFrom}" shows`);
+    assert.doesNotMatch(lead, /Fiyat listesi yok/, "the fallback is gone once a price exists");
+  } else {
+    assert.match(lead, /Fiyat listesi yok/, "the honest fallback shows");
+    assert.doesNotMatch(lead, /₺/, "no currency symbol appears without a real number");
+  }
 });

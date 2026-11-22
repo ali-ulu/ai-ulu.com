@@ -111,10 +111,23 @@ test("local SEO signals are emitted only when configured", async () => {
   const ld = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
   const org = Array.isArray(ld) ? ld.find((o) => o["@type"] === "ProfessionalService") : ld;
   assert.equal(org.address, undefined, "no placeholder address ships");
-  assert.equal(org.priceRange, undefined, "no placeholder price ships");
+  // Emitted only from config, and always the configured value: no placeholder.
+  assert.equal(org.priceRange, site.priceRange || undefined, "priceRange mirrors the config");
   // A service-area business: the served places carry the local signal. With
   // nothing configured the country is the fallback, and it is structured.
-  assert.deepEqual(org.areaServed, [{ "@type": "AdministrativeArea", name: "TR" }], "the country fallback is emitted");
+  const areas = site.serviceAreas.length ? site.serviceAreas : ["TR"];
+  assert.deepEqual(
+    org.areaServed,
+    areas.map((name) => ({ "@type": "AdministrativeArea", name })),
+    "areaServed mirrors the config",
+  );
+  if (site.priceFromAmount) {
+    assert.equal(org.offers?.price, site.priceFromAmount, "Offer.price is the configured number");
+    assert.equal(typeof org.offers.price, "number", "schema.org price is numeric, not a display string");
+    assert.equal(org.offers.priceCurrency, "TRY");
+  } else {
+    assert.equal(org.offers, undefined, "no Offer without a number");
+  }
   const pages = await read("src/site/pages.mjs");
   assert.match(pages, /\.\.\.\(hasAddress \?/, "address is emitted when set");
   assert.match(pages, /\.\.\.\(site\.priceRange \?/, "priceRange is emitted when set");

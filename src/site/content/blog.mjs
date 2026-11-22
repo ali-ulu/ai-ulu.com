@@ -17,7 +17,7 @@ export const posts = [
       { p: "Kısa cevap: \"web sitesi\" tek bir ürün değil. Aynı işe 8.000 lira da deniyor, 180.000 lira da. Aradaki fark keyfi değil; işin kapsamı ve kimin yaptığı belirliyor." },
       { h: "2026 aralıkları" },
       { ul: [
-        "**Tek sayfa / landing page:** 6.000-40.000 ₺",
+        "**Tek sayfa / landing page:** 5.000-40.000 ₺",
         "**Şablon temelli kurumsal site:** 8.000-25.000 ₺",
         "**Freelancer kurumsal site (WordPress):** 20.000-60.000 ₺",
         "**Ajans, özel tasarım kurumsal:** 35.000-250.000 ₺",

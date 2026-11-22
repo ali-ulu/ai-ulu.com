@@ -27,7 +27,7 @@ export const faq = {
     {
       tab: "Fiyat",
       q: "2026'da bir web sitesi ne kadar?",
-      a: "Tek sayfa 6.000-40.000 ₺, şablon temelli kurumsal site 8.000-25.000 ₺, ajans işi özel tasarım 35.000-250.000 ₺, e-ticaret 40.000-450.000 ₺ aralığında. Kuruma özel yazılım 150.000 ₺'den başlar. Kesin fiyat, kapsam görüşmesinden sonra yazılı teklifte netleşir.",
+      a: "Tek sayfa 5.000-40.000 ₺, şablon temelli kurumsal site 8.000-25.000 ₺, ajans işi özel tasarım 35.000-250.000 ₺, e-ticaret 40.000-450.000 ₺ aralığında. Kuruma özel yazılım 150.000 ₺'den başlar. Kesin fiyat, kapsam görüşmesinden sonra yazılı teklifte netleşir.",
     },
     {
       tab: "Sahiplik",
