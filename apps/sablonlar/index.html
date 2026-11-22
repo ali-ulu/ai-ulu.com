@@ -30,6 +30,11 @@
   </head>
   <body>
     <div class="vignette" aria-hidden="true"></div>
+    <!-- Site navigation, static so it also works without JavaScript and links this
+         standalone app back into the rest of ai-ulu.com. -->
+    <header style="font-family:system-ui,sans-serif;background:#08090b">
+      <nav aria-label="Ana menü" style="display:flex;flex-wrap:wrap;gap:.2rem 1.4rem;max-width:90rem;margin:0 auto;padding:.4rem 1.5rem;font-size:.95rem"><a href="/" style="display:inline-flex;align-items:center;min-height:44px;color:#c9c4ba;text-decoration:none">Ana sayfa</a><a href="/sablonlar/" style="display:inline-flex;align-items:center;min-height:44px;color:#c9c4ba;text-decoration:none">Örnek tasarımlar</a><a href="/blog/" style="display:inline-flex;align-items:center;min-height:44px;color:#c9c4ba;text-decoration:none">Blog</a><a href="/sss/" style="display:inline-flex;align-items:center;min-height:44px;color:#c9c4ba;text-decoration:none">SSS</a><a href="/checkup/" style="display:inline-flex;align-items:center;min-height:44px;color:#c9c4ba;text-decoration:none">Ücretsiz test</a><a href="/hakkimizda/" style="display:inline-flex;align-items:center;min-height:44px;color:#c9c4ba;text-decoration:none">Hakkında</a></nav>
+    </header>
     <div id="root"></div>
 
     <!-- Identity block: the same Organization entity the main site emits, so
