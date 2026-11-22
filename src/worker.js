@@ -1,5 +1,6 @@
-// Cloudflare Worker: handles /api/lead only. All other routes are served
-// by the static assets binding (see wrangler.jsonc -> run_worker_first).
+// Cloudflare Worker: handles /api/* and redirects www to the apex host. Every
+// other request is passed to the static assets binding (wrangler.jsonc sets
+// run_worker_first so the www redirect also covers page requests).
 
 import { parseHost, collect, evaluate, evaluateGeo } from "./checkup.js";
 
@@ -433,6 +434,11 @@ async function handleError(request, env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    // Single canonical host: www is a duplicate of the apex for search engines.
+    if (url.hostname === "www.ai-ulu.com") {
+      url.hostname = "ai-ulu.com";
+      return Response.redirect(url.toString(), 301);
+    }
     if (url.pathname === "/api/lead") {
       return handleLead(request, env);
     }
@@ -445,7 +451,8 @@ export default {
     if (url.pathname === "/api/error") {
       return handleError(request, env);
     }
-    return new Response("Not found", { status: 404 });
+    if (url.pathname.startsWith("/api/")) return new Response("Not found", { status: 404 });
+    return env.ASSETS.fetch(request);
   },
 
   // Cron: drop stale rate-limit rows and leads past the retention window so the

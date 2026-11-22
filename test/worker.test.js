@@ -147,6 +147,20 @@ test("rejects non-POST", async () => {
   assert.equal(res.status, 405);
 });
 
+test("www host 301-redirects to apex keeping path and query", async () => {
+  const env = makeEnv();
+  const res = await worker.fetch(new Request("https://www.ai-ulu.com/blog/x/?a=1&b=2"), env);
+  assert.equal(res.status, 301);
+  assert.equal(res.headers.get("location"), "https://ai-ulu.com/blog/x/?a=1&b=2");
+});
+
+test("apex page request is passed to ASSETS", async () => {
+  const env = { ...makeEnv(), ASSETS: { fetch: async () => new Response("page", { status: 200 }) } };
+  const res = await worker.fetch(new Request("https://ai-ulu.com/hakkimizda/"), env);
+  assert.equal(res.status, 200);
+  assert.equal(await res.text(), "page");
+});
+
 test("unknown route returns 404", async () => {
   const env = makeEnv();
   const res = await worker.fetch(new Request("https://ai-ulu.com/api/other"), env);
