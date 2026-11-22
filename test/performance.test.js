@@ -75,3 +75,15 @@ test("the env map is skipped on a software rasteriser", async () => {
   assert.match(js, /if \(!soft\)[\s\S]*?PMREMGenerator/, "the PMREM env map must be skipped when the rasteriser is software");
   assert.match(js, /metalness: soft \?/, "software GL needs a lifted metalness so unlit metal does not go black");
 });
+
+test("the WebGL film and vortex start on first interaction, not at load", async () => {
+  // Desktop Lighthouse: vortex 1.6 s + film 0.5 s of main-thread time at load
+  // (TBT 1,240 ms, score 70). Neither may start before a person moves, scrolls or types.
+  for (const rel of ["src/site/assets/ora.js", "src/site/assets/vortex.js"]) {
+    const js = await read(rel);
+    for (const ev of ["pointermove", "scroll", "keydown", "touchstart"]) {
+      assert.ok(js.includes(`"${ev}"`) || js.includes(`'${ev}'`), `${rel} must start on ${ev}`);
+    }
+  }
+  assert.doesNotMatch(await read("src/site/assets/ora.js"), /if \(canRunFilm\) whenIdle\(loadFilm\)/, "the film must not load on idle at page load");
+});

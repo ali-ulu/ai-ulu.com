@@ -56,7 +56,14 @@ async function loadFilm() {
 }
 
 // Desktop: keep the film. Everywhere else: fall back to the static column.
-if (canRunFilm) whenIdle(loadFilm);
+// Start on the first sign of a person (move, scroll, key, touch), not at load:
+// the WebGL start-up is the page's main-thread cost, and the film is scroll-driven anyway.
+const firstInput = ['pointermove', 'pointerdown', 'wheel', 'scroll', 'keydown', 'touchstart'];
+const startFilm = () => {
+  for (const e of firstInput) removeEventListener(e, startFilm);
+  whenIdle(loadFilm);
+};
+if (canRunFilm) for (const e of firstInput) addEventListener(e, startFilm, { passive: true });
 else fallback();
 
 // A software rasteriser (SwiftShader/llvmpipe — headless Chrome, a VM or a
