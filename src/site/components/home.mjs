@@ -48,6 +48,7 @@ const hero = `<section class="hero" id="c0" data-enter aria-labelledby="hero-tit
         <a class="btn" href="${waTalk}" rel="noopener">Ücretsiz görüşme <span class="dot" aria-hidden="true"></span></a>
         <a class="link" href="/checkup/">Siteniz bulunuyor mu? Ücretsiz test</a>
       </div>
+      <p class="hero-proof">Kendi ürünlerimiz açık kaynak: <a href="/calismalar/">HUQAN, LEVH, LeadScout</a>.</p>
     </div>
   </div>
 </section>`;
@@ -132,7 +133,8 @@ const examples = `<section class="s" id="ornekler" aria-labelledby="ornekler-tit
 const packages = `<section class="s" id="paketler" aria-labelledby="paketler-title">
   <div class="pk-head">
     <h2 id="paketler-title">Paketi seçin, <em>net teklif</em> alın.</h2>
-    <p class="lead">${site.priceFrom ? `Tanıtım siteleri ${escapeHtml(site.priceFrom)} başlar; kalan kapsam projeye göre netleşir.` : "Fiyat listesi yok; her proje kendi kapsamıyla fiyatlanır."} Fiyatı neyin belirlediğini <a href="/blog/web-sitesi-fiyatini-ne-belirler/">rehberde</a> anlattık.</p>
+    <p class="lead">${site.priceFrom ? `Tanıtım siteleri ${escapeHtml(site.priceFrom)} başlar; kalan kapsam projeye göre netleşir.` : "Fiyat listesi yok; her proje kendi kapsamıyla fiyatlanır."} Fiyatı neyin belirlediğini <a href="/blog/web-sitesi-fiyatini-ne-belirler/">rehberde</a> anlattık.</p>${site.serviceAreas.length ? `
+    <p class="pk-areas">Hizmet bölgeleri: ${site.serviceAreas.map((a) => escapeHtml(a)).join(", ")}</p>` : ""}
   </div>
   <div class="grid g3">
     <div class="card"><h3>Tanıtım sitesi</h3><ul><li>Markanıza özel tasarım</li><li>Hızlı açılış</li><li>Google ve yapay zekâ aramalarına hazır</li><li>Yayın ve sonrası destek</li></ul></div>
@@ -151,6 +153,7 @@ const test = `<section class="s split" id="test" aria-labelledby="test-title">
     <h2 id="test-title">Siteniz <em>bulunuyor mu?</em></h2>
     <p class="lead"><strong>Adresinizi girin;</strong> Google ve yapay zekâ aramalarındaki görünürlüğünüzü ve öncelikli düzeltmeleri ücretsiz gösterelim.</p>
     <a class="btn" href="/checkup/">Ücretsiz testi başlat <span class="dot" aria-hidden="true"></span></a>
+    <p class="test-note">Test bitince sonucun bağlantısı adres çubuğunda kalır; istediğin kişiye gönderebilirsin.</p>
   </div>
 </section>`;
 
