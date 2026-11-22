@@ -146,7 +146,7 @@ const packages = `<section class="s" id="paketler" aria-labelledby="paketler-tit
 </section>`;
 
 const test = `<section class="s split" id="test" aria-labelledby="test-title">
-  <img class="test-shot" src="/img/checkup.png" width="900" height="1600" alt="Ücretsiz site testinin telefondaki giriş ekranı" loading="lazy" decoding="async">
+  <img class="test-shot" src="/img/checkup.webp" width="780" height="1240" alt="Ücretsiz site testinin telefondaki giriş ekranı" loading="lazy" decoding="async">
   <div class="test-copy">
     <h2 id="test-title">Siteniz <em>bulunuyor mu?</em></h2>
     <p class="lead"><strong>Adresinizi girin;</strong> Google ve yapay zekâ aramalarındaki görünürlüğünüzü ve öncelikli düzeltmeleri ücretsiz gösterelim.</p>
