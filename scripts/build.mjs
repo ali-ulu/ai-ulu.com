@@ -9,6 +9,8 @@ import { posts } from "../src/site/content/blog.mjs";
 import { robotsTxt, aiTxt } from "../src/site/robots.mjs";
 import { faq } from "../src/site/content/site-content.mjs";
 import { byDateDesc } from "../src/site/components/blog.mjs";
+import { ENTER_SCRIPT } from "../src/site/components/layout.mjs";
+import { createHash } from "node:crypto";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
@@ -207,7 +209,7 @@ ${faq.items.map((f) => `- ${f.q} ${f.a}`).join("\n")}
     "default-src 'self'",
     "img-src 'self' data:",
     "style-src 'self' 'unsafe-inline'",
-    `script-src 'self' https://static.cloudflareinsights.com${turnstile ? " https://challenges.cloudflare.com" : ""}`,
+    `script-src 'self' 'sha256-${createHash("sha256").update(ENTER_SCRIPT).digest("base64")}' https://static.cloudflareinsights.com${turnstile ? " https://challenges.cloudflare.com" : ""}`,
     "font-src 'self'",
     "connect-src 'self' https://cloudflareinsights.com",
     "form-action 'self'",
