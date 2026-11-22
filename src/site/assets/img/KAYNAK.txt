@@ -1,2 +1,3 @@
 gulus.webp — Tony Litvyak, Unsplash (https://unsplash.com/photos/glPVwPr1FKo), Unsplash Lisansı: ticari kullanım serbest, atıf zorunlu değil. Kırpıldı ve boyutlandırıldı.
 laptop.webp — ai-ulu ana sayfa 3D sahnesinden (ora.js) alınmış sabit kare; ekrandaki fotoğraf gulus.webp.
+checkup.webp — ai-ulu /checkup/ sayfasının 390x700 (2x) telefon görüntüsü; sabit ekran görüntüsü olarak üretildi.
