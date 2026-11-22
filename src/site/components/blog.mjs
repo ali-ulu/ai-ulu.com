@@ -14,7 +14,9 @@ export const findPost = (slug) => posts.find((p) => p.slug === slug);
 function inline(text) {
   return escapeHtml(text)
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-    .replace(/`([^`]+)`/g, "<code>$1</code>");
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    // Internal links only: [text](/path/). External sources go through `links` blocks.
+    .replace(/\[([^\]]+)\]\((\/[^)\s"'<>]*)\)/g, '<a href="$2">$1</a>');
 }
 
 function block(b) {

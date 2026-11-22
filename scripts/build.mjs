@@ -1,12 +1,16 @@
 import { mkdir, writeFile, rm, cp, access, readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 import { transform } from "esbuild";
 import { pages, renderPage, notFoundPage } from "../src/site/pages.mjs";
 import { site } from "../src/site/config.mjs";
+import { posts } from "../src/site/content/blog.mjs";
 import { robotsTxt, aiTxt } from "../src/site/robots.mjs";
 import { faq } from "../src/site/content/site-content.mjs";
 import { byDateDesc } from "../src/site/components/blog.mjs";
+import { ENTER_SCRIPT } from "../src/site/components/layout.mjs";
+import { createHash } from "node:crypto";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = join(root, "dist");
@@ -31,6 +35,27 @@ async function minify(rel, loader) {
   const source = await readFile(target, "utf8");
   const { code } = await transform(source, { loader, minify: true, legalComments: "none", target: "esnext" });
   await writeFile(target, code, "utf8");
+}
+
+// Source files behind each page; lastmod is the newest commit touching them.
+// shortcut: shared files (pages.mjs, site-content.mjs) bump several pages at once, split per page if that gets noisy.
+const SOURCES = {
+  "/": ["src/site/components/home.mjs", "src/site/content/site-content.mjs"],
+  "/sss/": ["src/site/components/faq.mjs", "src/site/content/site-content.mjs"],
+  "/blog/": ["src/site/components/blog.mjs", "src/site/content/blog.mjs"],
+  "/calismalar/": ["src/site/components/work.mjs", "src/site/content/work.mjs"],
+  "/checkup/": ["src/site/pages.mjs", "src/checkup.js"],
+  "/sablonlar/": ["apps/sablonlar/index.html", "apps/sablonlar/src"],
+};
+function lastmod(path) {
+  const post = posts.find((p) => path === `/blog/${p.slug}/`);
+  if (post) return post.updated;
+  try {
+    const out = execFileSync("git", ["log", "-1", "--format=%cs", "--", ...(SOURCES[path] ?? ["src/site/pages.mjs"])], { cwd: root, encoding: "utf8" });
+    return out.trim() || site.updated;
+  } catch {
+    return site.updated; // no git (tarball build): fall back to the build date
+  }
 }
 
 async function build() {
@@ -101,7 +126,7 @@ async function build() {
   const paths = [...pages.map((p) => p.path), "/sablonlar/"];
   await write("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${paths.map((p) => `  <url><loc>${site.url}${p}</loc><lastmod>${site.updated}</lastmod></url>`).join("\n")}
+${paths.map((p) => `  <url><loc>${site.url}${p}</loc><lastmod>${lastmod(p)}</lastmod></url>`).join("\n")}
 </urlset>
 `);
 
@@ -184,7 +209,7 @@ ${faq.items.map((f) => `- ${f.q} ${f.a}`).join("\n")}
     "default-src 'self'",
     "img-src 'self' data:",
     "style-src 'self' 'unsafe-inline'",
-    `script-src 'self' https://static.cloudflareinsights.com${turnstile ? " https://challenges.cloudflare.com" : ""}`,
+    `script-src 'self' 'sha256-${createHash("sha256").update(ENTER_SCRIPT).digest("base64")}' https://static.cloudflareinsights.com${turnstile ? " https://challenges.cloudflare.com" : ""}`,
     "font-src 'self'",
     "connect-src 'self' https://cloudflareinsights.com",
     "form-action 'self'",

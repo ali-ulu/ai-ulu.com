@@ -3,6 +3,10 @@ import { nav, footerLinks, socials } from "../content/site-content.mjs";
 import { escapeHtml } from "../lib/html.mjs";
 import { trDate } from "../lib/date.mjs";
 
+// Runs before first paint so the entrance animation starts hidden. The build hashes
+// this exact string into the CSP script-src, so edit it only here.
+export const ENTER_SCRIPT = 'document.documentElement.classList.add("m-enter")';
+
 function head({ title, description, path, jsonLd, styles = [], noscript = "", canonical = true, noindex = false }) {
   const fullTitle = title ? `${title} · ${site.name}` : site.title;
   const url = `${site.url}${path}`;
@@ -112,7 +116,7 @@ export function page({ title, description = site.description, path, body, jsonLd
   return `<!doctype html>
 <html lang="${site.lang}">
 <head>
-<script>document.documentElement.classList.add("m-enter")</script>
+<script>${ENTER_SCRIPT}</script>
 ${head({ title, description, path, jsonLd, styles, noscript, canonical, noindex })}
 </head>
 <body>
