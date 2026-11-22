@@ -160,7 +160,7 @@ ${byDateDesc.map((p) => `- [${p.title}](${site.url}/blog/${p.slug}/): ${p.descri
 - Tanıtım sitesi: markaya özel tasarım, hızlı açılış, Google ve yapay zekâ aramalarına hazır yapı
 - Özel web uygulaması: panel, portal, randevu, sipariş, otomasyon
 - Site + uygulama: tek tasarım dili, tek ekip
-- Fiyat listesi yok; ücretsiz görüşmeden sonra 24 saat içinde yazılı teklif
+- ${site.priceFrom ? `Tanıtım siteleri ${site.priceFrom} başlar; kesin fiyat görüşmeden sonra yazılı teklifte netleşir` : "Fiyat listesi yok; ücretsiz görüşmeden sonra 24 saat içinde yazılı teklif"}
 
 ## İletişim
 - E-posta: ${site.email}

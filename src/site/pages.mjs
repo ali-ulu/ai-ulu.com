@@ -93,11 +93,11 @@ function professionalServiceLd() {
     ...(hasAddress ? { address: { "@type": "PostalAddress", streetAddress, addressLocality, postalCode, addressCountry } } : {}),
     ...(site.priceRange ? { priceRange: site.priceRange } : {}),
     // A starting price, when the owner sets one, becomes a real Offer.
-    ...(site.priceFrom
+    ...(site.priceFromAmount
       ? {
           offers: {
             "@type": "Offer",
-            price: site.priceFrom,
+            price: site.priceFromAmount,
             priceCurrency: "TRY",
             availability: "https://schema.org/InStock",
             url: `${site.url}/#paketler`,
@@ -124,11 +124,11 @@ function serviceLd() {
     provider: { "@id": `${site.url}/#organization` },
     areaServed: { "@type": "Country", name: "Türkiye" },
     availableChannel: { "@type": "ServiceChannel", serviceUrl: `${site.url}/#iletisim`, availableLanguage: ["tr"] },
-    ...(site.priceFrom
+    ...(site.priceFromAmount
       ? {
           offers: {
             "@type": "Offer",
-            price: site.priceFrom,
+            price: site.priceFromAmount,
             priceCurrency: "TRY",
             availability: "https://schema.org/InStock",
             url: `${site.url}/#paketler`,
