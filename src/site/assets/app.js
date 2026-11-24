@@ -7,6 +7,29 @@
   addEventListener("scroll", onScroll, { passive: true });
 })();
 
+// Phone call bar: keep it off the first screen. On the home page it appears once
+// the hero has scrolled away, so it never covers the headline or the hero CTA;
+// elsewhere a short scroll is enough. It also steps aside while the contact form
+// is on screen: the form has its own button, and the bar would sit on top of it.
+(function () {
+  const bar = document.querySelector(".callbar");
+  if (!bar) return;
+  const hero = document.querySelector(".hero-panel");
+  const form = document.querySelector(".pm");
+  const update = () => {
+    const past = hero
+      ? hero.getBoundingClientRect().bottom < innerHeight * 0.5
+      : window.scrollY > 120;
+    const formOnScreen = form
+      ? form.getBoundingClientRect().top < innerHeight - 80 && form.getBoundingClientRect().bottom > 80
+      : false;
+    document.body.classList.toggle("callbar-on", past && !formOnScreen);
+  };
+  update();
+  addEventListener("scroll", update, { passive: true });
+  addEventListener("resize", update, { passive: true });
+})();
+
 // Page-view beacon: one anonymous request per page, no cookie and no stored
 // identifier. The worker records day, path, referrer host and country.
 (function () {

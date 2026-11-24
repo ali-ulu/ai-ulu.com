@@ -96,10 +96,13 @@ test("the hero falls back to a readable static column on a phone", async ({ page
   expect(box.width).toBeLessThanOrEqual(390);
 });
 
-test("the mobile call bar reaches a visitor without a hover", async ({ page }) => {
+test("the mobile call bar appears after the first screen, clear of the hero", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   const bar = page.locator(".callbar");
+  // It must not cover the hero on first paint; it shows once the visitor scrolls.
+  await expect(bar).toBeHidden();
+  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 1.5));
   await expect(bar).toBeVisible();
   await expect(bar.locator('a[href^="tel:"]')).toHaveAttribute("href", "tel:+905079581642");
 });

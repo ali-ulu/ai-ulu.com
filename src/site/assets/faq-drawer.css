@@ -298,11 +298,14 @@
 }
 @container fq (max-width: 559px) {
   .fq-drawer { padding: 8px 8px 0; }
-  .fq-tray { padding: 34px 6px 12px; }
-  .fq-card { margin-inline: calc(var(--depth, 0) * 3px); }
-  .fq-edge { grid-template-columns: minmax(0, 1fr) auto; padding: 14px 14px 20px; font-size: 14px; line-height: 21px; }
+  .fq-tray { padding: 16px 6px 12px; row-gap: 8px; }
+  /* A phone shows the drawer as a plain list: the staggered tabs and the
+     overlapping card edges read as clipped labels once the column is narrow. */
+  .fq-card { margin-inline: 0; border-radius: 6px; }
+  .fq-card[open] { margin-top: 0; transform: none; }
+  .fq-tab { display: none; }
+  .fq-edge { grid-template-columns: minmax(0, 1fr) auto; padding: 14px 14px 16px; font-size: 14px; line-height: 21px; }
   .fq-no { display: none; }
-  .fq-tab { font-size: 9.5px; padding-inline: 8px; }
   .fq-face { margin-inline: 14px; padding-left: 0; font-size: 13.5px; }
   .fq-front { margin-inline: -8px; }
   .fq-ask { flex-direction: column; align-items: stretch; }

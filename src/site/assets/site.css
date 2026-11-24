@@ -221,8 +221,17 @@ section.s{padding:clamp(6rem,16vh,11rem) var(--pad) clamp(4rem,10vh,7rem);max-wi
 
 }
 /* The callbar already carries WhatsApp on phones, so the header keeps the logo and the three kept links. */
-@media (max-width:560px){.nav-cta{display:none}.nav-glass{padding-right:1rem}.nav-glass nav{gap:.9rem;font-size:.82rem}}
-@media (max-width:360px){.nav-glass nav{gap:.6rem;font-size:.76rem}}
+@media (max-width:560px){
+  .nav-cta{display:none}
+  .nav-glass{padding-right:.5rem;gap:.4rem}
+  /* One row that scrolls sideways instead of being clipped when the phone uses a
+     larger default text size (Android font scaling). */
+  .nav-glass nav{gap:.9rem;font-size:.82rem;min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .nav-glass nav::-webkit-scrollbar{display:none}
+  .nav-glass nav a{flex:none}
+}
+@media (max-width:430px){.logo-word{display:none}}
+@media (max-width:360px){.nav-glass nav{gap:.6rem;font-size:.76rem}.callbar-btn{font-size:.9rem;padding:0 .5rem}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation-duration:0s!important}}
 
 /* /checkup/ */
@@ -261,11 +270,16 @@ section.s{padding:clamp(6rem,16vh,11rem) var(--pad) clamp(4rem,10vh,7rem);max-wi
 .ck-more,.ck-kvkk{color:var(--soft);font-size:.9rem}
 .ck-lead{display:grid;gap:.7rem;margin-top:2rem;max-width:30rem}
 
-/* Phone call bar: only where the 3D film is off, with room left for it. */
+/* Phone call bar: only where the 3D film is off, with room left for it. It
+   appears after the visitor scrolls past the first screen (body.callbar-on, set
+   by app.js) so it never sits on top of the hero copy or the first section. */
 @media (max-width:767px){
-  .callbar{display:flex;gap:.5rem;position:fixed;left:.7rem;right:.7rem;bottom:calc(.7rem + env(safe-area-inset-bottom,0px));z-index:30}
+  /* Opaque pill: the page must not show through between the two buttons, or a
+     heading passing underneath reads as a layout collision. */
+  .callbar{display:none;gap:.5rem;position:fixed;left:.7rem;right:.7rem;bottom:calc(.7rem + env(safe-area-inset-bottom,0px));z-index:30;padding:.5rem;border-radius:999px;background:var(--ink);box-shadow:0 18px 40px -18px rgba(0,0,0,.9),0 0 0 1px var(--line)}
+  body.callbar-on .callbar{display:flex}
   .callbar-btn{border-radius:999px}
-  body{padding-bottom:calc(5rem + env(safe-area-inset-bottom,0px))}
+  body{padding-bottom:calc(5.5rem + env(safe-area-inset-bottom,0px))}
   .g4{grid-template-columns:1fr}
 }
 
@@ -348,4 +362,14 @@ html.m-enter [data-enter]{animation:hero-in .6s cubic-bezier(.16,1,.3,1) both}
 [data-reveal="list"] > *{transition:opacity .5s cubic-bezier(.16,1,.3,1),transform .5s cubic-bezier(.16,1,.3,1);transition-delay:calc(var(--i,0) * 70ms)}
 [data-reveal="list"].pre > *{opacity:0;transform:translateY(12px)}
 @media (prefers-reduced-motion:reduce){.hero-panel > *{animation:none}[data-reveal].pre,[data-reveal].pre > *{opacity:1;transform:none}}
-@media (max-width:380px){.logo-word{display:none}}
+
+/* Phone rhythm: a short screen needs less air between sections, and the last
+   block must clear the fixed call bar. Kept at the end so it wins over the
+   desktop rules above. */
+@media (max-width:767px){
+  section.s{padding:clamp(3rem,7vh,4.5rem) var(--pad) clamp(2.25rem,5vh,3rem)}
+  .site-footer{padding:2.75rem var(--pad) calc(3.5rem + env(safe-area-inset-bottom,0px))}
+  html{scroll-padding-bottom:calc(5rem + env(safe-area-inset-bottom,0px))}
+  /* Keep the hero copy above the fold even when the bar is showing. */
+  .hero-panel{min-height:calc(100svh - 72px - 5rem)}
+}

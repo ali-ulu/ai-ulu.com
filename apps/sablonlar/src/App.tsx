@@ -1,6 +1,6 @@
 import PictureRailGallery from "@/components/ui/picture-rail-gallery";
 import type { PictureRailGalleryLabels, PictureRailItem } from "@/components/ui/picture-rail-gallery";
-import { ArrowLeft, ArrowUpRight, Maximize2, X } from "lucide-react";
+import { ArrowUpRight, Maximize2, X } from "lucide-react";
 import { useState } from "react";
 
 const img = (name: string) => `${import.meta.env.BASE_URL}stiller/${name}.webp`;
@@ -81,14 +81,7 @@ export default function App() {
       >
         İçeriğe geç
       </a>
-      <nav className="flex items-center justify-between px-6 py-5 sm:px-10">
-        <a href="/" className="inline-flex min-h-11 items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
-          <ArrowLeft className="size-4" aria-hidden="true" /> ai-ulu
-        </a>
-        <span className="font-serif text-xl">ai-ulu</span>
-      </nav>
-
-      <div className="flex flex-1 items-center">
+      <div className="flex items-start sm:flex-1 sm:items-center">
         <PictureRailGallery
           items={STILLER}
           labels={LABELS}
