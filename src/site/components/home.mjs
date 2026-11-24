@@ -48,7 +48,6 @@ const hero = `<section class="hero" id="c0" data-enter aria-labelledby="hero-tit
         <a class="btn" href="${waTalk}" rel="noopener">Ücretsiz görüşme <span class="dot" aria-hidden="true"></span></a>
         <a class="link" href="/checkup/">Siteniz bulunuyor mu? Ücretsiz test</a>
       </div>
-      <p class="hero-proof">Kendi ürünlerimiz açık kaynak: <a href="/calismalar/">HUQAN, LEVH, LeadScout</a>.</p>
     </div>
   </div>
 </section>`;

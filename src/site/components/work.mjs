@@ -78,7 +78,7 @@ export function workLd() {
       name: `Çalışmalar · ${site.name}`,
       url: `${site.url}/calismalar/`,
       inLanguage: site.lang,
-      isPartOf: { "@type": "WebSite", name: site.name, url: site.url },
+      isPartOf: { "@id": `${site.url}/#website` },
       about: products.map((p) => ({
         "@type": "SoftwareApplication",
         name: p.name,
@@ -86,7 +86,7 @@ export function workLd() {
         applicationCategory: "DeveloperApplication",
         operatingSystem: "Cross-platform",
         url: p.links.find((l) => l.kind === "live")?.href ?? p.links[0].href,
-        author: { "@type": "Person", name: site.owner, url: site.url },
+        author: { "@id": `${site.url}/hakkimizda/#ali-ulu` },
       })),
     },
     {
