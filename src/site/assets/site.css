@@ -371,5 +371,6 @@ html.m-enter [data-enter]{animation:hero-in .6s cubic-bezier(.16,1,.3,1) both}
   .site-footer{padding:2.75rem var(--pad) calc(3.5rem + env(safe-area-inset-bottom,0px))}
   html{scroll-padding-bottom:calc(5rem + env(safe-area-inset-bottom,0px))}
   /* Keep the hero copy above the fold even when the bar is showing. */
-  .hero-panel{min-height:calc(100svh - 72px - 5rem)}
+  /* Size the hero to its copy on phones: a full-screen panel left a dead gap under the list. */
+  .hero-panel{min-height:0;grid-template-rows:auto;padding-bottom:2.25rem}
 }

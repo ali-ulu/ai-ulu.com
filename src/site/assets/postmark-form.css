@@ -450,6 +450,13 @@
   .pm-card {
     transform: none;
   }
+  .pm-left {
+    gap: 1rem;
+  }
+  /* 34px handwriting fills a phone; cap it so the placeholder reads in one glance. */
+  .pm textarea {
+    font-size: min(var(--pm-size, 34px), 24px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
