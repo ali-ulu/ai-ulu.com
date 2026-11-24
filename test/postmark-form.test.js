@@ -122,8 +122,9 @@ test("local SEO signals are emitted only when configured", async () => {
     "areaServed mirrors the config",
   );
   if (site.priceFromAmount) {
-    assert.equal(org.offers?.price, site.priceFromAmount, "Offer.price is the configured number");
-    assert.equal(typeof org.offers.price, "number", "schema.org price is numeric, not a display string");
+    assert.equal(org.offers?.["@type"], "AggregateOffer", "a starting price is a floor");
+    assert.equal(org.offers.lowPrice, site.priceFromAmount, "AggregateOffer.lowPrice is the configured number");
+    assert.equal(typeof org.offers.lowPrice, "number", "schema.org price is numeric, not a display string");
     assert.equal(org.offers.priceCurrency, "TRY");
   } else {
     assert.equal(org.offers, undefined, "no Offer without a number");

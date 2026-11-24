@@ -96,8 +96,9 @@ function professionalServiceLd() {
     ...(site.priceFromAmount
       ? {
           offers: {
-            "@type": "Offer",
-            price: site.priceFromAmount,
+            // "from 5.000 ₺" is a floor, not one fixed price.
+            "@type": "AggregateOffer",
+            lowPrice: site.priceFromAmount,
             priceCurrency: "TRY",
             availability: "https://schema.org/InStock",
             url: `${site.url}/#paketler`,
@@ -127,8 +128,9 @@ function serviceLd() {
     ...(site.priceFromAmount
       ? {
           offers: {
-            "@type": "Offer",
-            price: site.priceFromAmount,
+            // "from 5.000 ₺" is a floor, not one fixed price.
+            "@type": "AggregateOffer",
+            lowPrice: site.priceFromAmount,
             priceCurrency: "TRY",
             availability: "https://schema.org/InStock",
             url: `${site.url}/#paketler`,
@@ -158,7 +160,8 @@ function webPageLd(path, { title, description }) {
   };
 }
 
-// The WebSite entity, emitted on the home page only. It carries no SearchAction:
+// The WebSite entity, emitted on every page so the isPartOf @id resolves in a
+// single document. It carries no SearchAction:
 // Google retired the Sitelinks Searchbox and this site has no search endpoint, so
 // pointing one at /blog/?q= would advertise a search that cannot run.
 function webSiteLd() {
@@ -179,6 +182,7 @@ function breadcrumbLd(crumbs) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
+    "@id": `${site.url}${crumbs.at(-1).href}#breadcrumb`,
     itemListElement: crumbs.map((c, i) => ({
       "@type": "ListItem",
       position: i + 1,
@@ -203,20 +207,24 @@ function faqLd() {
 // A post is a BlogPosting; the author and publisher are the site owner. The
 // target query rides along as keywords, which is what the post was written for.
 function blogPostingLd(post) {
+  const url = `${site.url}/blog/${post.slug}/`;
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
+    "@id": `${url}#article`,
     headline: post.title,
     description: post.description,
-    url: `${site.url}/blog/${post.slug}/`,
-    mainEntityOfPage: `${site.url}/blog/${post.slug}/`,
+    url,
+    mainEntityOfPage: { "@id": `${url}#webpage` },
+    isPartOf: { "@id": `${site.url}/blog/#blog` },
+    // shortcut: every post shares the site card (1200x630); swap for a per-post image when one exists.
+    image: { "@type": "ImageObject", url: `${site.url}/og.png`, width: 1200, height: 630 },
     datePublished: post.published,
     dateModified: post.updated,
     inLanguage: site.lang,
     keywords: post.targetQuery,
-    author: { "@id": `${site.url}/hakkimizda/#ali-ulu` },
+    author: personRef(),
     publisher: { "@id": `${site.url}/#organization` },
-    ...(site.sameAs.length ? { sameAs: site.sameAs } : {}),
   };
 }
 
@@ -443,7 +451,7 @@ export const pages = [
   {
     path: "/",
     file: "index.html",
-    jsonLd: [webSiteLd(), professionalServiceLd(), serviceLd()],
+    jsonLd: [professionalServiceLd(), serviceLd()],
     noscript: noJsStyles,
     scripts: ["/ora.js"],
     styles: ["/postmark-form.css"],
@@ -555,6 +563,6 @@ export function renderPage(p) {
   const bc = breadcrumbLd(p.crumbs);
   // Organization ships on every page: the identity block is what search engines
   // and assistants use to recognise the brand before they read the page.
-  const jsonLd = [organizationLd(), webPageLd(p.path, p), ...(bc ? [bc] : []), ...(p.jsonLd || [])];
+  const jsonLd = [organizationLd(), webSiteLd(), webPageLd(p.path, p), ...(bc ? [bc] : []), ...(p.jsonLd || [])];
   return page({ ...p, jsonLd, body: p.body() });
 }
