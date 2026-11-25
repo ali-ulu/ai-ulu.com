@@ -17,12 +17,12 @@ export const posts = [
       { p: "Kısa cevap: \"web sitesi\" tek bir ürün değil. Aynı işe 8.000 lira da deniyor, 180.000 lira da. Aradaki fark keyfi değil; işin kapsamı ve kimin yaptığı belirliyor." },
       { h: "2026 aralıkları" },
       { ul: [
-        "**Tek sayfa / landing page:** 5.000-40.000 ₺",
-        "**Şablon temelli kurumsal site:** 8.000-25.000 ₺",
-        "**Freelancer kurumsal site (WordPress):** 20.000-60.000 ₺",
-        "**Ajans, özel tasarım kurumsal:** 35.000-250.000 ₺",
-        "**E-ticaret sitesi:** 40.000-450.000 ₺",
-        "**Kuruma özel yazılım:** 150.000 ₺ ve üzeri",
+        "**Tek sayfa / landing page:** 5.000-40.000 ₺",
+        "**Şablon temelli kurumsal site:** 8.000-25.000 ₺",
+        "**Freelancer kurumsal site (WordPress):** 20.000-60.000 ₺",
+        "**Ajans, özel tasarım kurumsal:** 35.000-250.000 ₺",
+        "**E-ticaret sitesi:** 40.000-450.000 ₺",
+        "**Kuruma özel yazılım:** 150.000 ₺ ve üzeri",
       ] },
       { note: "Aralıklar 2026'da yayınlanan sektör rehberlerinden derlendi (Kod16, Tasarlab, Comsuite, İşinn, Piksel & Co). Bunlar tahmini bantlardır; her proje kendi kapsamıyla fiyatlanır. Sizin teklifinizin bu bandın neresinde olduğu, kapsam konuşulunca netleşir." },
       { h: "Site türüne göre: hangi aralık kime uyar?" },
@@ -75,7 +75,7 @@ export const posts = [
       { p: "Şablon kullanmayız; her site özgün tasarımla ve işinize göre yazılmış metinle kurulur. Bu yüzden şablon bandında değiliz. Kapsamı ücretsiz görüşmede konuşur, 24 saat içinde yazılı teklif göndeririz; alan adı, kod ve içerik yayında size teslim edilir." },
       { note: "**ai-ulu'da:** İlk görüşme ücretsiz. Kapsam, takvim ve teslim edilecekler teklifte yazılıdır. Belirli bir sıralama garanti edilmez." },
     ],
-    cta: { text: "Kapsamınızı konuşalım, yazılı teklif alın →", message: "Merhaba, web sitesi için fiyat ve kapsam konuşmak istiyorum." },
+    cta: { text: "Kapsamınızı konuşalım, yazılı teklif alın →", message: "Merhaba, web sitesi için fiyat ve kapsam konuşmak istiyorum." },
   },
   {
     slug: "yapay-zeka-ile-web-sitesi-yapmak",
@@ -115,7 +115,7 @@ export const posts = [
       { p: "Üçünün cevabı \"müşteri, evet, sizi\" ise bir kuruluma ihtiyacınız var. \"Var olmak, fark etmez, kimseyi\" ise ücretsiz araçla başlamanız mantıklı; bütçenizi de büyük işe saklarsınız." },
       { note: "**ai-ulu'da:** İlk görüşme ücretsiz. Kapsam, takvim ve teslim edilecekler yazılı teklifte netleşir; tasarım, kod ve içerik yayında size teslim edilir. Belirli bir sıralama garanti edilmez." },
     ],
-    cta: { text: "İşiniz için hangisi doğru, birlikte bakalım →", message: "Merhaba, yapay zekâ ile site yapmak mı yoksa özel kurulum mu bana uygun, danışmak istiyorum." },
+    cta: { text: "İşiniz için hangisi doğru, birlikte bakalım →", message: "Merhaba, yapay zekâ ile site yapmak mı yoksa özel kurulum mu bana uygun, danışmak istiyorum." },
   },
   {
     slug: "web-sitesi-fiyatini-ne-belirler",
@@ -174,7 +174,7 @@ export const posts = [
       { p: "Önce yedi sorudan hangisinin fiyatı en çok oynattığına bakın; çoğu zaman metin, özel tasarım ve özelliklerdir. Hazır temayla başlayıp ilk sürümde yalnızca sayfaları ve iletişim butonlarını yayına almak, kalan özellikleri sonraya bırakmak mümkündür. Sitenin gerçekten işinize yarayıp yaramayacağından emin değilseniz önce [Instagram varken web sitesi gerekli mi](/blog/instagram-varken-web-sitesi-gerekli-mi/) yazısına bakın." },
       { note: "**ai-ulu'da nasıl çalışıyoruz:** 30 dakikalık ücretsiz görüşmeden sonra 24 saat içinde yazılı teklif gönderiyoruz. Kapsam, takvim ve teslim edilecekler teklifte yazılıdır; tasarım, kod ve içerik yayında size teslim edilir." },
     ],
-    cta: { text: "WhatsApp'tan yazın, yedi sorunun cevabını birlikte dolduralım →", message: "Merhaba, web sitesi için teklif almak istiyorum." },
+    cta: { text: "WhatsApp'tan yazın, yedi sorunun cevabını birlikte dolduralım →", message: "Merhaba, web sitesi için teklif almak istiyorum." },
   },
   {
     slug: "instagram-varken-web-sitesi-gerekli-mi",
@@ -243,7 +243,7 @@ export const posts = [
       ] },
       { note: "**Emin değilseniz:** İşletmenizin adını ve sektörünüzü yazın, aramada şu an nasıl göründüğünüzü birlikte bakalım. Site gerekmiyorsa onu da söyleriz." },
     ],
-    cta: { text: "WhatsApp'tan yazın →", message: "Merhaba, işletmem için web sitesi gerekli mi öğrenmek istiyorum." },
+    cta: { text: "WhatsApp'tan yazın →", message: "Merhaba, işletmem için web sitesi gerekli mi öğrenmek istiyorum." },
   },
   {
     slug: "yapay-zeka-aramalarinda-gorunmek",
@@ -319,7 +319,7 @@ export const posts = [
       ] },
       { note: "**ai-ulu'da:** Kurduğumuz her site bu adımlarla birlikte teslim edilir. Mevcut sitenizi de kontrol edebiliriz." },
     ],
-    cta: { text: "Sitenizin adresini WhatsApp'tan gönderin, altı maddeyi kontrol edip sonucu yazalım →", message: "Merhaba, sitemin yapay zekâ aramalarındaki durumunu kontrol eder misiniz? Adres: " },
+    cta: { text: "Sitenizin adresini WhatsApp'tan gönderin, altı maddeyi kontrol edip sonucu yazalım →", message: "Merhaba, sitemin yapay zekâ aramalarındaki durumunu kontrol eder misiniz? Adres: " },
   },
   {
     slug: "web-sitem-var-musteri-gelmiyor",
@@ -381,7 +381,7 @@ export const posts = [
       ] },
       { note: "**İkinci bir göz isterseniz:** Sitenizin adresini gönderin, maddeleri telefonda kontrol edip hangisinin sizi en çok tuttuğunu yazalım. Ücretsiz." },
     ],
-    cta: { text: "WhatsApp'tan site adresinizi gönderin →", message: "Merhaba, sitemi kontrol eder misiniz? Adres: " },
+    cta: { text: "WhatsApp'tan site adresinizi gönderin →", message: "Merhaba, sitemi kontrol eder misiniz? Adres: " },
   },
   {
     slug: "web-sitesi-sozlesmesinde-olmasi-gerekenler",
@@ -440,7 +440,7 @@ export const posts = [
       ] },
       { note: "**ai-ulu'da:** Tasarım, kod ve içerik yayında size teslim edilir. Kapsam ve takvim teklifte yazılıdır." },
     ],
-    cta: { text: "Elinizdeki teklifi WhatsApp'tan gönderin, altı maddeye göre birlikte bakalım →", message: "Merhaba, elimdeki web sitesi teklifini birlikte değerlendirebilir miyiz?" },
+    cta: { text: "Elinizdeki teklifi WhatsApp'tan gönderin, altı maddeye göre birlikte bakalım →", message: "Merhaba, elimdeki web sitesi teklifini birlikte değerlendirebilir miyiz?" },
   },
   {
     "slug": "chatgpt-business-hub-nedir",
@@ -590,7 +590,7 @@ export const posts = [
     }
   ],
   "cta": {
-    "text": "Web sitenizin AI aramalarına uygunluğunu birlikte değerlendirelim →",
+    "text": "Web sitenizin AI aramalarına uygunluğunu birlikte değerlendirelim →",
     "message": "Merhaba, web sitemin ChatGPT ve yapay zekâ aramalarındaki görünürlüğünü değerlendirmek istiyorum."
   }
 }

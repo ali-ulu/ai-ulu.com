@@ -18,7 +18,8 @@
     "check": "node scripts/check.mjs",
     "geo:audit": "node scripts/geo-audit.mjs",
     "ping": "node scripts/indexnow.mjs",
-    "report": "node scripts/report.mjs"
+    "report": "node scripts/report.mjs",
+    "shots:mobile": "node scripts/mobile-shots.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.1",

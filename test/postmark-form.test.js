@@ -68,7 +68,7 @@ test("Caveat is self-hosted, because the CSP only allows this origin", async () 
 
 test("the postcard is one stylesheet, loaded only on the home page", async () => {
   const html = await read("dist/index.html");
-  assert.match(html, /<link rel="stylesheet" href="\/postmark-form\.css">/, "the page links it");
+  assert.match(html, /<link rel="stylesheet" href="\/postmark-form\.css(\?v=[0-9a-f]+)?">/, "the page links it");
   const privacy = await read("dist/gizlilik/index.html");
   assert.doesNotMatch(privacy, /postmark-form\.css/, "other pages do not load it");
   const css = await read("src/site/assets/postmark-form.css");

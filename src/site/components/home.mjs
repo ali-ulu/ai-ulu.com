@@ -208,9 +208,9 @@ const contact = () => `<section class="s" id="iletisim" aria-labelledby="iletisi
             <p class="pm-label">Kimden</p>
             <div class="pm-fields">
               <label class="pm-label" for="name">Ad Soyad / Firma</label>
-              <input id="name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" placeholder="Ad Soyad / Firma">
+              <input id="name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="120">
               <label class="pm-label" for="reach">E-posta veya telefon</label>
-              <input id="reach" name="reach" type="text" autocomplete="off" inputmode="text" required maxlength="160" placeholder="E-posta veya telefon">
+              <input id="reach" name="reach" type="text" autocomplete="off" inputmode="text" required maxlength="160">
             </div>
           </div>
           <div class="pm-block">

@@ -177,6 +177,9 @@ section.s{padding:clamp(6rem,16vh,11rem) var(--pad) clamp(4rem,10vh,7rem);max-wi
 .prose{max-width:46rem}
 .prose h2{font:400 1.6rem/1.2 var(--serif);margin:2.4rem 0 .6rem;max-width:none}
 .prose p{color:var(--soft);margin-top:.6rem}
+/* Lists keep their markers inside the text column (the reset zeroes list padding). */
+.prose :is(ul,ol){margin:.8rem 0 0;padding-left:1.4rem;display:grid;gap:.45rem;color:var(--soft)}
+.prose li::marker{color:var(--amber)}
 
 .site-footer{padding:clamp(4rem,10vh,7rem) var(--pad) calc(2rem + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.4rem;color:var(--soft);font-size:1rem;max-width:90rem;margin:0 auto}
 .site-footer nav{display:flex;flex-wrap:wrap;gap:1.4rem}

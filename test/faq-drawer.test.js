@@ -58,7 +58,7 @@ test("the drawer re-composes by width and respects reduced motion", async () => 
 
 test("the FAQ page loads the drawer stylesheet, the home page does not", async () => {
   const html = await read("dist/sss/index.html");
-  assert.match(html, /<link rel="stylesheet" href="\/faq-drawer\.css">/, "the page links its stylesheet");
+  assert.match(html, /<link rel="stylesheet" href="\/faq-drawer\.css(\?v=[0-9a-f]+)?">/, "the page links its stylesheet");
   assert.match(html, /"@type":"FAQPage"/, "the FAQ schema sits with the visible questions");
   const home = await read("dist/index.html");
   assert.doesNotMatch(home, /faq-drawer\.css/, "the home page stays short");

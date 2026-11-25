@@ -1,4 +1,4 @@
-import { mkdir, writeFile, rm, cp, access, readFile } from "node:fs/promises";
+import { mkdir, writeFile, rm, cp, access, readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -220,9 +220,11 @@ ${faq.items.map((f) => `- ${f.q} ${f.a}`).join("\n")}
   ].join("; ");
   const immutable = "  Cache-Control: public, max-age=31536000, immutable";
   const week = "  Cache-Control: public, max-age=604800";
-  // Root CSS/JS ship unhashed, so they get a week (not a year) plus a revalidation
-  // window: a deploy is picked up quickly without a per-request round trip.
-  const revalidate = "  Cache-Control: public, max-age=604800, stale-while-revalidate=86400";
+  // Root CSS/JS ship unhashed, so the browser must revalidate them on every load
+  // (a cheap 304 via ETag). A week-long max-age kept phones on last week's CSS
+  // against today's HTML, so every deploy looked broken on returning visitors.
+  // shortcut: hash the file names instead if the 304 round trip ever shows up in speed scores.
+  const revalidate = "  Cache-Control: public, max-age=0, must-revalidate";
   await write("_headers", `/*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
@@ -272,7 +274,7 @@ ${revalidate}
 ${week}
 
 /sablonlar/stiller/*
-${week}
+${revalidate}
 
 /og.png
 ${week}
@@ -308,7 +310,27 @@ ${week}
 ${week}
 `);
 
+  await versionAssets();
+
   console.log(`✓ build: ${pages.length} sayfa + örnek tasarımlar + assets → dist/`);
+}
+
+// Root CSS/JS keep fixed names, so each HTML reference gets ?v=<content hash>.
+// A changed file gets a new URL and no browser can pair new HTML with old CSS.
+const VERSIONED = /(href|src)="\/(site\.css|blog\.css|faq-drawer\.css|postmark-form\.css|print\.css|work\.css|app\.js|vortex\.js|ora\.js)"/g;
+async function versionAssets() {
+  const hashes = {};
+  const hashOf = async (name) =>
+    (hashes[name] ??= createHash("sha256").update(await readFile(join(dist, name))).digest("hex").slice(0, 10));
+  for (const rel of await readdir(dist, { recursive: true })) {
+    if (!rel.endsWith(".html")) continue;
+    const file = join(dist, rel);
+    const html = await readFile(file, "utf8");
+    const names = [...new Set([...html.matchAll(VERSIONED)].map((m) => m[2]))];
+    if (!names.length) continue;
+    for (const n of names) await hashOf(n);
+    await writeFile(file, html.replace(VERSIONED, (_, attr, n) => `${attr}="/${n}?v=${hashes[n]}"`), "utf8");
+  }
 }
 
 build().catch((err) => {

@@ -211,6 +211,11 @@
   border-top: 1px solid var(--pm-rule);
   padding-top: 0.5rem;
 }
+/* A field already ends in its own rule; a second rule under it read as an empty field. */
+.pm-block + .pm-block {
+  border-top: 0;
+  margin-top: 1.1rem;
+}
 .pm-block:first-of-type {
   border-top: 0;
   padding-top: 0;
@@ -311,8 +316,9 @@
   border: 0;
   border-radius: 999px;
   cursor: pointer;
-  background: var(--bone);
-  color: var(--ink);
+  /* Dark on the paper card: a bone button on bone paper read as disabled. */
+  background: var(--pm-ink);
+  color: var(--bone);
   font: 600 1.02rem/1 var(--pm-sans);
   letter-spacing: 0.01em;
   transition: transform 0.16s ease-out, filter 0.16s ease-out;

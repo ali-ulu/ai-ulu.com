@@ -136,9 +136,9 @@ test("blog styles ship and the CSP stays self-only", async () => {
 // "Tüm yazılar" button. Pin the link so the teaser cannot ship unstyled again.
 test("blog.css loads where blog cards are shown, not on the home page", async () => {
   const home = await read("dist/index.html");
-  assert.doesNotMatch(home, /href="\/blog\.css"/, "home has no blog cards to style");
+  assert.doesNotMatch(home, /href="\/blog\.css/, "home has no blog cards to style");
   const blogIndex = await read("dist/blog/index.html");
-  assert.match(blogIndex, /<link rel="stylesheet" href="\/blog\.css">/, "blog index links blog.css");
+  assert.match(blogIndex, /<link rel="stylesheet" href="\/blog\.css(\?v=[0-9a-f]+)?">/, "blog index links blog.css");
 });
 
 
