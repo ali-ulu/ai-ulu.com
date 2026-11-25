@@ -10,7 +10,7 @@ const read = (rel) => readFile(join(root, rel), "utf8");
 test("vortex background loads on every page", async () => {
   for (const rel of ["dist/index.html", "dist/gizlilik/index.html"]) {
     const html = await read(rel);
-    assert.match(html, /<script type="module" src="\/vortex\.js">/, `${rel} must load vortex.js`);
+    assert.match(html, /<script type="module" src="\/vortex\.js(\?v=[0-9a-f]+)?">/, `${rel} must load vortex.js`);
     assert.match(html, /<canvas id="vortex"/, `${rel} must contain the vortex canvas`);
   }
 });
