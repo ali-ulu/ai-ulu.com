@@ -294,7 +294,6 @@ section.s{padding:clamp(6rem,16vh,11rem) var(--pad) clamp(4rem,10vh,7rem);max-wi
 .hero-list{grid-column:2;align-self:start;list-style:none;text-align:left;font-size:1.125rem;line-height:1.8;color:var(--bone);padding-top:1rem}
 .hero-foot{grid-column:1 / -1;align-self:end;max-width:34rem}
 .hero-foot p{font-size:1.25rem;color:var(--soft)}
-.test-note{margin-top:1rem;font-size:.9375rem;color:var(--soft)}
 .pk-areas{margin-top:.6rem;font-size:.9375rem;color:var(--soft)}
 .hero .cta{display:flex;flex-wrap:wrap;align-items:center;gap:1.4rem;margin-top:1.6rem}
 @media (max-width:767px){
@@ -318,20 +317,6 @@ html.m-enter [data-enter]{animation:hero-in .6s cubic-bezier(.16,1,.3,1) both}
 @media (max-width:1023px){.split{grid-template-columns:1fr}.points{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:767px){.points{grid-template-columns:1fr}}
 
-/* Examples: two narrow cards and one wide screenshot. */
-.ex-head{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,4fr) auto;gap:1rem 2rem;align-items:end}
-.ex-head h2{margin:0}
-.ex-head .lead{margin:0}
-.ex-grid{display:grid;grid-template-columns:1fr 1fr 2fr;gap:.5rem;margin-top:2.5rem}
-.ex-card{display:flex;flex-direction:column;gap:.5rem;padding:1rem 1rem 1.4rem;border-radius:18px;background:#141518;text-decoration:none;color:var(--bone);transition:background-color .2s ease-out}
-.ex-card:hover{background:#1c1d21}
-.ex-card img{width:100%;height:auto;border-radius:10px;aspect-ratio:4/3;object-fit:cover;object-position:top left;margin-bottom:.6rem;transition:transform .2s ease-out}
-.ex-card:hover img{transform:scale(1.02)}
-.ex-card h3{font:600 1.25rem/1.2 var(--sans)}
-.ex-card p{color:var(--soft)}
-.ex-wide img{object-position:top}
-@media (max-width:1023px){.ex-head{grid-template-columns:1fr}.ex-grid{grid-template-columns:1fr 1fr}.ex-wide{grid-column:1 / -1;order:-1}}
-@media (max-width:420px){.ex-grid{grid-template-columns:1fr}}
 
 /* Packages: centered head, three cards, one action band. */
 .pk-head{text-align:center;display:grid;justify-items:center}
@@ -339,13 +324,6 @@ html.m-enter [data-enter]{animation:hero-in .6s cubic-bezier(.16,1,.3,1) both}
 .pk-band{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem 2rem;margin-top:2.5rem;padding:1.6rem 1.8rem;border-radius:18px;background:#141518}
 .pk-band p{font-size:1.125rem}
 
-/* Free test: tall capture left, copy right. */
-.test-shot{width:100%;max-width:22rem;height:auto;border-radius:22px;box-shadow:0 0 0 1px rgba(236,231,222,.12),0 24px 60px -30px rgba(0,0,0,.9)}
-.test-copy{align-self:center;display:grid;gap:1.4rem;justify-items:start}
-.test-copy h2{margin:0}
-.test-copy .lead strong{color:var(--bone)}
-@media (min-width:1024px){#test.split{grid-template-columns:minmax(0,4fr) minmax(0,8fr)}}
-@media (max-width:1023px){.test-shot{order:2;max-width:16rem}}
 
 /* Closing: centered panel, then the postcard form. */
 .close-panel{display:grid;justify-items:center;text-align:center;gap:1.2rem;padding:clamp(3rem,10vh,6rem) clamp(1.5rem,4vw,4rem);border-radius:28px;background:#141518}
@@ -381,10 +359,9 @@ html.m-enter [data-enter]{animation:hero-in .6s cubic-bezier(.16,1,.3,1) both}
   section.s{padding-top:3.5rem;padding-bottom:2.5rem}
   /* The same four points open #nasil as cards two screens later. */
   .hero-list{display:none}
-  .poster{margin-bottom:2.5rem}
-  /* A phone screenshot of this site inside this site reads as clutter on a phone. */
-  .test-shot{display:none}
-  /* The film chapters repeat the #nasil cards; on a phone the laptop still stays. */
+  /* Phones get no 3D motion, so the film is a still laptop shot: skip it. */
+  #film{display:none}
+  /* The film chapters repeat the #nasil cards. */
   .ch{display:none}
   /* Header scrolls away: the call bar already keeps call and WhatsApp in reach,
      so only one bar covers the screen while reading. */

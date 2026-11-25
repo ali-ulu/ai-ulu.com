@@ -18,7 +18,7 @@ export const site = {
   // Service-area business: no shopfront, so no address to publish. List the
   // places actually served and they become areaServed in the JSON-LD. Left empty
   // on purpose — the country alone is emitted until real areas are added.
-  serviceAreas: ["İstanbul", "Ankara", "İzmir", "Bursa"],
+  serviceAreas: [],
   priceRange: "5.000 ₺'den başlar",
   // Shown on the packages section when set ("Tanıtım siteleri X'den başlar").
   // Left empty on purpose: a real number beats a placeholder, so nothing ships

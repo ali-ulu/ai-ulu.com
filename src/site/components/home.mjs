@@ -113,21 +113,7 @@ const process = `<section class="s" id="surec" aria-labelledby="surec-title">
   </ol>
 </section>`;
 
-const shot = (name, alt, sizes) =>
-  `<img src="/sablonlar/stiller/${name}-960.webp" srcset="/sablonlar/stiller/${name}-480.webp 480w, /sablonlar/stiller/${name}-960.webp 960w, /sablonlar/stiller/${name}.webp 1400w" sizes="${sizes}" width="1400" height="1050" alt="${alt}" loading="lazy" decoding="async">`;
 
-const examples = `<section class="s" id="ornekler" aria-labelledby="ornekler-title">
-  <div class="ex-head">
-    <h2 id="ornekler-title">Sektörünüze göre <em>örnekler</em></h2>
-    <p class="lead">Klinik, stüdyo ve hizmet işletmeleri için hazırladığımız örnek tasarımlar.</p>
-    <a class="link" href="/sablonlar/">Tüm örnekleri gör</a>
-  </div>
-  <div class="ex-grid">
-    <a class="ex-card" href="/sablonlar/">${shot("cigi", "Dövme stüdyosu için örnek site tasarımı", "(min-width:1024px) 23vw, (min-width:421px) 50vw, 100vw")}<h3>Dövme stüdyosu</h3><p>Sanatçı portföyü ve randevu formu.</p></a>
-    <a class="ex-card" href="/sablonlar/">${shot("bilt", "Sadakat programı için örnek site tasarımı", "(min-width:1024px) 23vw, (min-width:421px) 50vw, 100vw")}<h3>Sadakat programı</h3><p>Program tanıtımı ve üyelik başvurusu.</p></a>
-    <a class="ex-card ex-wide" href="/sablonlar/">${shot("eviadental", "Diş kliniği için örnek site tasarımı", "(min-width:1024px) 47vw, 100vw")}<p>Örnek tasarım: Diş kliniği</p></a>
-  </div>
-</section>`;
 
 const packages = `<section class="s" id="paketler" aria-labelledby="paketler-title">
   <div class="pk-head">
@@ -146,15 +132,6 @@ const packages = `<section class="s" id="paketler" aria-labelledby="paketler-tit
   </div>
 </section>`;
 
-const test = `<section class="s split" id="test" aria-labelledby="test-title">
-  <img class="test-shot" src="/img/checkup.webp" width="780" height="1240" alt="Ücretsiz site testinin telefondaki giriş ekranı" loading="lazy" decoding="async">
-  <div class="test-copy">
-    <h2 id="test-title">Siteniz <em>bulunuyor mu?</em></h2>
-    <p class="lead"><strong>Adresinizi girin;</strong> Google ve yapay zekâ aramalarındaki görünürlüğünüzü ve öncelikli düzeltmeleri ücretsiz gösterelim.</p>
-    <a class="btn" href="/checkup/">Ücretsiz testi başlat <span class="dot" aria-hidden="true"></span></a>
-    <p class="test-note">Test bitince sonucun bağlantısı adres çubuğunda kalır; istediğin kişiye gönderebilirsin.</p>
-  </div>
-</section>`;
 
 // Postcard contact form (adapted from the Framer "Postmark" block). The field
 // names, the ids (lead-form, form-status) and the JSON shape are the /api/lead
@@ -242,6 +219,6 @@ const contact = () => `<section class="s" id="iletisim" aria-labelledby="iletisi
   </div>
 </section>`;
 
-// Proof (examples) and price (packages) come right after the first benefits block;
-// "why us" and the process follow for readers who want more.
-export const homeBody = () => [hero, film, benefits, examples, packages, why, process, test, contact()].join("\n\n");
+// Price (packages) comes right after the first benefits block; "why us" and the
+// process follow for readers who want more. The free test lives in the hero link.
+export const homeBody = () => [hero, film, benefits, packages, why, process, contact()].join("\n\n");
