@@ -4,7 +4,7 @@
 .bl-head{max-width:44rem}
 .bl-head h1{font:400 clamp(2rem,4.6vw,3.4rem)/1.05 var(--serif);letter-spacing:-.01em;margin:1rem 0 1.2rem;text-wrap:balance;text-shadow:0 2px 30px rgba(6,7,9,.85)}
 .bl-head .lead{color:var(--soft);font-size:1.08rem;text-shadow:0 1px 18px rgba(6,7,9,.8)}
-.bl-meta{margin-top:1rem;font:500 .72rem/1 var(--mono);letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.bl-meta{margin-top:1rem;font:500 .72rem/1.7 var(--mono);letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
 .bl-meta .bl-author{color:var(--soft)}
 
 /* index + teaser share one card list */
@@ -12,7 +12,7 @@
 .bl-list--teaser{margin-top:1.8rem}
 .bl-card{display:flex;flex-direction:column;gap:.55rem;padding:1.6rem 1.7rem;border-radius:18px;border:1px solid var(--line);background:linear-gradient(163deg,rgba(255,255,255,.06),rgba(255,255,255,0) 44%),rgba(14,16,20,.84);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 26px 60px -42px rgba(0,0,0,.95);text-decoration:none;transition:transform .45s cubic-bezier(.2,.7,.2,1),border-color .45s,box-shadow .45s}
 .bl-card:hover{transform:translateY(-3px);border-color:rgba(236,231,222,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 34px 70px -40px rgba(0,0,0,.95)}
-.bl-card-eyebrow{font:500 .68rem/1 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--amber)}
+.bl-card-eyebrow{font:500 .68rem/1.6 var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--amber)}
 .bl-card h2,.bl-card h3{font:400 1.5rem/1.12 var(--serif);text-wrap:balance;margin:0}
 .bl-card p{color:var(--dim);font-size:.95rem}
 .bl-card time{font:500 .68rem/1 var(--mono);letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
