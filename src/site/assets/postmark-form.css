@@ -472,9 +472,22 @@
   }
 }
 
-/* The decorative seal overlaps the stamp choices on a phone. */
+/* Phone: one typeface, no decoration, a short message box. The postcard keeps
+   its paper and stamps; the handwriting, seal, greeting, signature and the
+   fixed "Kime" address are desktop flourishes that doubled the form's height. */
 @container pm (max-width: 440px) {
-  .pm-seal {
+  .pm-card {
+    --pm-hand: var(--sans);
+  }
+  .pm-seal,
+  .pm-greet,
+  .pm-sign,
+  .pm-right > .pm-block:first-of-type {
     display: none;
+  }
+  .pm textarea {
+    --pm-rule-h: 28px;
+    min-height: 7rem;
+    font-size: 1rem;
   }
 }

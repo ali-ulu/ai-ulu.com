@@ -242,4 +242,6 @@ const contact = () => `<section class="s" id="iletisim" aria-labelledby="iletisi
   </div>
 </section>`;
 
-export const homeBody = () => [hero, film, benefits, why, process, examples, packages, test, contact()].join("\n\n");
+// Proof (examples) and price (packages) come right after the first benefits block;
+// "why us" and the process follow for readers who want more.
+export const homeBody = () => [hero, film, benefits, examples, packages, why, process, test, contact()].join("\n\n");

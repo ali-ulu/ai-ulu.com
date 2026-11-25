@@ -378,8 +378,15 @@ html.m-enter [data-enter]{animation:hero-in .6s cubic-bezier(.16,1,.3,1) both}
   section.s{padding-top:3.5rem;padding-bottom:2.5rem}
   /* The same four points open #nasil as cards two screens later. */
   .hero-list{display:none}
-  .ch{margin-bottom:2rem}
   .poster{margin-bottom:2.5rem}
   /* A phone screenshot of this site inside this site reads as clutter on a phone. */
   .test-shot{display:none}
+  /* The film chapters repeat the #nasil cards; on a phone the laptop still stays. */
+  .ch{display:none}
+  /* Header scrolls away: the call bar already keeps call and WhatsApp in reach,
+     so only one bar covers the screen while reading. */
+  .site-header{position:static}
+  .callbar{padding:.3rem;bottom:calc(.5rem + env(safe-area-inset-bottom,0px))}
+  .callbar-btn{min-height:44px}
+  body{padding-bottom:calc(4.25rem + env(safe-area-inset-bottom,0px))}
 }
