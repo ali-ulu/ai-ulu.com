@@ -4,8 +4,8 @@
      (paper), --bone the text (ink black). --amber is the text-safe deep amber
      (5.1:1 on paper); --amber-fill the brand amber for fills and the mark. */
   color-scheme:light;
-  --ink:#F4F1EA; --ink2:#FFFFFF; --line:rgba(17,17,17,.12);
-  --bone:#111111; --dim:#6F6A60; --soft:#4A4843; --amber:#9A5518; --amber-fill:#C9782B; --danger:#B3261E; --ok:#2F7D4A;
+  --ink:#F4F1EA; --ink2:#FFF; --line:rgba(17,17,17,.12);
+  --bone:#111; --dim:#6F6A60; --soft:#4A4843; --amber:#9A5518; --amber-fill:#C9782B; --danger:#B3261E; --ok:#2F7D4A;
   --serif:"Hanken Grotesk","Hanken fallback",system-ui,-apple-system,"Segoe UI",sans-serif;
   --sans:"Hanken Grotesk","Hanken fallback",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,monospace;
