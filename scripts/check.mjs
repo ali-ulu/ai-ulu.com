@@ -62,10 +62,11 @@ async function* files(dir) {
 }
 const external = /(?:src|href)=["'](https?:)?\/\/(?!ai-ulu\.com)[^"']+["']|url\((["']?)(https?:)?\/\/[^)]+\)/g;
 const allowedLink = /href=["']https:\/\/wa\.me\//;
+const allowedBeacon = /src=["']https:\/\/static\.cloudflareinsights\.com\/beacon\.min\.js["']/;
 for await (const file of files(dist)) {
   const text = await readFile(file, "utf8");
   for (const match of text.match(external) ?? []) {
-    if (allowedLink.test(match)) continue;
+    if (allowedLink.test(match) || allowedBeacon.test(match)) continue;
     const isAsset = !match.startsWith("href=") || /\.(css|js|woff2?|png|jpe?g|webp|svg)["']/.test(match);
     if (isAsset) fail(`dış kaynak (CSP bunu engeller): ${match} → ${file.slice(dist.length + 1)}`);
   }

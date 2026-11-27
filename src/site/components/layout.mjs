@@ -113,6 +113,9 @@ function footer(note) {
 // before: markup placed ahead of the header (the home preloader); scripts: extra module scripts.
 export function page({ title, description = site.description, path, body, jsonLd = null, before = "", scripts = [], styles = [], footerNote = "", crumbs = [], trail = null, noscript = "", canonical = true, noindex = false }) {
   const extra = scripts.map((src) => `<script type="module" src="${src}"></script>`).join("\n");
+  const cfAnalytics = site.cfAnalyticsToken
+    ? `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "${escapeHtml(site.cfAnalyticsToken)}"}'></script>`
+    : "";
   return `<!doctype html>
 <html lang="${site.lang}">
 <head>
@@ -136,6 +139,7 @@ ${footer(footerNote)}
 <script src="/app.js" defer></script>
 <script type="module" src="/vortex.js"></script>
 ${extra}
+${cfAnalytics}
 </body>
 </html>`;
 }

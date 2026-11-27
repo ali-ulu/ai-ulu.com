@@ -38,9 +38,13 @@ export const site = {
   // stays 'self'-only. Set it (and the worker's TURNSTILE_SECRET) to switch on
   // the CAPTCHA on the lead form.
   turnstileSiteKey: "",
+  // Cloudflare Web Analytics beacon token. Empty = no analytics script is emitted.
+  // The token is public (it appears in page source). CSP already allows
+  // static.cloudflareinsights.com; check.mjs allows this exact beacon.
+  cfAnalyticsToken: "ce3724575810445d9b48ea3e2f332804",
   // Bump when the site content changes; feeds dateModified in JSON-LD, the
   // og:updated_time meta tag and sitemap lastmod.
-  updated: "2026-11-23",
+  updated: "2026-11-28",
   // IndexNow key: the build writes /<key>.txt so Bing and Yandex accept our
   // submissions. Rotate by replacing this value.
   indexNowKey: "bec0a65e610429c17aa2c0cce8902c60",
