@@ -23,7 +23,7 @@ export const preloader = "";
 // page reads as empty. These rules (a static copy of the `.no-3d` fallback)
 // flatten the chapters into a plain, scrollable column.
 export const noJsStyles = `<noscript><style>
-#vortex,#gl,.tag,.prog,.hint{display:none}
+#gl,.tag,.prog,.hint{display:none}
 #film{height:auto}
 .stage{position:static;height:auto;padding:2rem 0 4rem;background:none}
 .ch{position:static;transform:none;opacity:1;visibility:visible;pointer-events:auto;margin:0 auto 5rem;padding:0 var(--pad);text-align:left;max-width:44rem;width:auto}
@@ -31,8 +31,11 @@ export const noJsStyles = `<noscript><style>
 .ch.right p,.ch.right .cta{margin-left:0;justify-content:flex-start}
 </style></noscript>`;
 
-// The hero stands alone on the first screen as a rounded stage panel: title top
-// left, services top right, one sentence and the action bottom left.
+
+
+// The hero is the film's first screen: it sits on the clip's opening frame and
+// fades out as the scroll starts the film. Where the film does not run (phone,
+// reduced motion, no JS) it is an ordinary panel at the top of the page.
 const hero = `<section class="hero" id="c0" data-enter aria-labelledby="hero-title">
   <div class="hero-panel">
     <h1 id="hero-title">Müşteri getiren <em>web siteleri</em></h1>
@@ -55,15 +58,16 @@ const hero = `<section class="hero" id="c0" data-enter aria-labelledby="hero-tit
 // data-a / data-b: scroll progress (0–1) where each chapter fades in and out (read by ora.js).
 const film = `<div id="film">
   <div class="stage">
-    <video id="gl" muted playsinline preload="none" aria-hidden="true"></video>
-    <img class="poster" src="/img/film.webp" width="1280" height="720" alt="Işıklı kod karakterlerinden kurulmuş minyatür bir dükkan vitrini ve yanında aynı vitrini web sitesi olarak gösteren bir telefon" decoding="async" loading="lazy">
+    <video id="gl" muted playsinline preload="none" poster="/img/film-start.webp" aria-hidden="true"></video>
+${hero}
+    <img class="poster" src="/img/film.webp" width="1280" height="720" alt="Amber ve siyah kod parçalarından kurulmuş tenteli minyatür bir dükkan vitrini ve yanında aynı vitrini web sitesi olarak gösteren bir telefon" decoding="async" loading="lazy">
 
-    <div class="ch" id="c1" data-a=".02" data-b=".3">
+    <div class="ch" id="c1" data-a=".1" data-b=".34">
       <h2>Her satır <em>sizin için</em> yazılır.</h2>
       <p>Hazır şablon yok. Siteniz işletmenizin hedefine göre sıfırdan kodlanır.</p>
     </div>
 
-    <div class="ch right" id="c2" data-a=".36" data-b=".62">
+    <div class="ch right" id="c2" data-a=".4" data-b=".64">
       <h2>Güzel görünmesi <em>yetmez.</em></h2>
       <p>Her katman bir iş için çalışır: sizi bulduran, ikna eden ve aratan bir site.</p>
     </div>
@@ -221,4 +225,4 @@ const contact = () => `<section class="s" id="iletisim" aria-labelledby="iletisi
 
 // Price (packages) comes right after the first benefits block; "why us" and the
 // process follow for readers who want more. The free test lives in the hero link.
-export const homeBody = () => [hero, film, benefits, packages, why, process, contact()].join("\n\n");
+export const homeBody = () => [film, benefits, packages, why, process, contact()].join("\n\n");

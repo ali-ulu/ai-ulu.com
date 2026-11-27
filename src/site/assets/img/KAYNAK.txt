@@ -1,2 +1,2 @@
 checkup.webp — ai-ulu /checkup/ sayfasının 390x700 (2x) telefon görüntüsü; sabit ekran görüntüsü olarak üretildi.
-film.mp4 / film.webp — Higgsfield ile üretilmiş özgün film (Seedance 2.5) ve son karesi; ai-ulu ana sayfa kaydırma filmi.
+film.mp4 / film-start.webp / film.webp — Higgsfield ile üretilmiş özgün açık zeminli film (Seedance 2.5), ilk ve son karesi; ai-ulu ana sayfa hero filmi.

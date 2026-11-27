@@ -11,7 +11,7 @@ test("cards are flat filled tiles: no outline, gradient, glow or blur", async ()
   const css = await read("src/site/assets/site.css");
   const card = css.match(/\.cell,\.card\{[^}]*\}/)[0];
   assert.match(card, /border-radius:18px/, "cards need rounded corners");
-  assert.match(card, /background:#141518/, "cards are one tone step above the page");
+  assert.match(card, /background:var\(--ink2\)/, "cards are one tone step above the page");
   assert.doesNotMatch(card, /gradient|box-shadow|border:|backdrop-filter/, "no decoration on cards");
 });
 

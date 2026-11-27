@@ -24,8 +24,8 @@ test("the loader never waits on the film clip", async () => {
   assert.ok(firstFinish < firstFetch, "the preloader must be dismissed before the film loads");
 });
 
-test("the 3D film and vortex are skipped on small screens", async () => {
-  for (const rel of ["src/site/assets/ora.js", "src/site/assets/vortex.js"]) {
+test("the film is skipped on small screens", async () => {
+  for (const rel of ["src/site/assets/ora.js"]) {
     const js = await read(rel);
     assert.match(js, /min-width:\s*768px/, `${rel} must gate the heavy scene on screen width`);
     assert.match(js, /saveData/, `${rel} must honour Data Saver`);
@@ -61,7 +61,7 @@ test("the hero fonts are preloaded so the swap does not shift the layout", async
 test("the hero and film copy stand on solid ground, not a vignette", async () => {
   const css = await read("src/site/assets/site.css");
   assert.match(css, /\.vignette\{display:none\}/, "the vignette layer is gone");
-  assert.match(css, /\.hero-panel\{[^}]*background:#141518/, "the hero title sits on a flat panel");
+  assert.match(css, /\.hero-panel\{[^}]*background:var\(--ink2\)/, "the hero title sits on a flat panel");
   assert.match(css, /\.ch\{[^}]*background:var\(--ink\)/, "film chapters sit on a solid ground");
   assert.match(css, /\.tag\{[^}]*background:var\(--ink\)/, "film labels sit on a solid ground");
 });
@@ -72,10 +72,10 @@ test("the film clip may be decoded from a Blob", async () => {
   assert.match(build, /media-src 'self' blob:/);
 });
 
-test("the WebGL film and vortex start on first interaction, not at load", async () => {
-  // Desktop Lighthouse: vortex 1.6 s + film 0.5 s of main-thread time at load
+test("the film starts on first interaction, not at load", async () => {
+  // Desktop Lighthouse: the film cost main-thread time at load
   // (TBT 1,240 ms, score 70). Neither may start before a person moves, scrolls or types.
-  for (const rel of ["src/site/assets/ora.js", "src/site/assets/vortex.js"]) {
+  for (const rel of ["src/site/assets/ora.js"]) {
     const js = await read(rel);
     for (const ev of ["pointermove", "scroll", "keydown", "touchstart"]) {
       assert.ok(js.includes(`"${ev}"`) || js.includes(`'${ev}'`), `${rel} must start on ${ev}`);

@@ -28,7 +28,7 @@ async function write(rel, content) {
 // (three.js, the Vite bundle) are left alone, as is fonts.css, whose @font-face
 // rules are tiny and read better unminified.
 const MINIFY_CSS = ["site.css", "blog.css", "faq-drawer.css", "postmark-form.css", "print.css", "work.css"];
-const MINIFY_JS = ["app.js", "vortex.js", "ora.js", "checkup.js"];
+const MINIFY_JS = ["app.js", "ora.js", "checkup.js"];
 
 async function minify(rel, loader) {
   const target = join(dist, rel);
@@ -107,8 +107,8 @@ async function build() {
         start_url: "/",
         scope: "/",
         display: "standalone",
-        background_color: "#08090b",
-        theme_color: "#08090b",
+        background_color: "#F4F1EA",
+        theme_color: "#F4F1EA",
         icons: [
           { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
           { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
@@ -262,9 +262,6 @@ ${revalidate}
 /app.js
 ${revalidate}
 
-/vortex.js
-${revalidate}
-
 /ora.js
 ${revalidate}
 
@@ -315,7 +312,7 @@ ${week}
 
 // Root CSS/JS keep fixed names, so each HTML reference gets ?v=<content hash>.
 // A changed file gets a new URL and no browser can pair new HTML with old CSS.
-const VERSIONED = /(href|src)="\/(site\.css|blog\.css|faq-drawer\.css|postmark-form\.css|print\.css|work\.css|app\.js|vortex\.js|ora\.js)"/g;
+const VERSIONED = /(href|src)="\/(site\.css|blog\.css|faq-drawer\.css|postmark-form\.css|print\.css|work\.css|app\.js|ora\.js)"/g;
 async function versionAssets() {
   const hashes = {};
   const hashOf = async (name) =>
