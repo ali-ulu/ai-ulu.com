@@ -22,6 +22,7 @@ const required = [
   "img/film.mp4",
   "img/film.webp",
   "img/film-start.webp",
+  "img/logo-mark.webp",
   "og.png",
   "favicon.svg",
   "favicon.ico",

@@ -70,11 +70,13 @@ test("the about page is a real page with a Person entity and a byline", () => {
   assert.deepEqual(person.sameAs, site.sameAs);
 });
 
-test("the footer shows the author and the last-updated date on every page", () => {
+// The visible "Son güncelleme" line was removed at the owner's request; the date
+// stays machine-readable (og:updated_time, JSON-LD dateModified).
+test("the footer shows the author, and every page keeps a machine-readable update date", () => {
   for (const p of pages) {
     const html = renderPage(p);
     assert.match(html, /<a href="\/hakkimizda\/" rel="author">Ali Ulu<\/a>/, `${p.path} author link`);
-    assert.match(html, new RegExp(`<time datetime="${site.updated}">`), `${p.path} visible date`);
+    assert.match(html, new RegExp(`<meta property="og:updated_time" content="${site.updated}">`), `${p.path} update date`);
   }
 });
 

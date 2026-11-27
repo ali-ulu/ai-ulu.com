@@ -318,7 +318,7 @@
   cursor: pointer;
   /* Dark on the paper card: a bone button on bone paper read as disabled. */
   background: var(--pm-ink);
-  color: var(--bone);
+  color: #fff;
   font: 600 1.02rem/1 var(--pm-sans);
   letter-spacing: 0.01em;
   transition: transform 0.16s ease-out, filter 0.16s ease-out;
