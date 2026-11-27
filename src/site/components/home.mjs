@@ -19,7 +19,7 @@ function turnstileWidget() {
 // loader, so the title is readable on the first paint.
 export const preloader = "";
 
-// Without JS the 3D film never runs, so every chapter stays at opacity:0 and the
+// Without JS the film never runs, so every chapter stays at opacity:0 and the
 // page reads as empty. These rules (a static copy of the `.no-3d` fallback)
 // flatten the chapters into a plain, scrollable column.
 export const noJsStyles = `<noscript><style>
@@ -55,8 +55,8 @@ const hero = `<section class="hero" id="c0" data-enter aria-labelledby="hero-tit
 // data-a / data-b: scroll progress (0–1) where each chapter fades in and out (read by ora.js).
 const film = `<div id="film">
   <div class="stage">
-    <canvas id="gl" aria-hidden="true"></canvas>
-    <img class="poster" src="/img/laptop.webp" width="920" height="700" alt="Laptop ekranında örnek bir klinik sitesi" decoding="async" loading="lazy">
+    <video id="gl" muted playsinline preload="none" aria-hidden="true"></video>
+    <img class="poster" src="/img/film.webp" width="1280" height="720" alt="Işıklı kod karakterlerinden kurulmuş minyatür bir dükkan vitrini ve yanında aynı vitrini web sitesi olarak gösteren bir telefon" decoding="async" loading="lazy">
 
     <div class="ch" id="c1" data-a=".02" data-b=".3">
       <h2>Her satır <em>sizin için</em> yazılır.</h2>

@@ -13,15 +13,15 @@ const built = existsSync(join(root, "dist/index.html"));
 // particle field run on a phone: between them they block the main thread for
 // ~20 s. These tests pin the two fixes that took it to 91 with no visual change
 // on desktop and no layout shift anywhere.
-test("the loader never waits on the 3D bundle", async () => {
+test("the loader never waits on the film clip", async () => {
   const js = await read("src/site/assets/ora.js");
-  // finishPre must run before the three.js import, otherwise the screen-covering
+  // finishPre must run before the clip fetch, otherwise the screen-covering
   // overlay delays the first paint and the hero stops being the LCP element.
   const firstFinish = js.indexOf("finishPre()");
-  const firstImport = js.indexOf("import('/vendor/three");
+  const firstFetch = js.indexOf("fetch('/img/film.mp4')");
   assert.ok(firstFinish > -1, "ora.js must hide the preloader");
-  assert.ok(firstImport > -1, "ora.js must still load the film");
-  assert.ok(firstFinish < firstImport, "the preloader must be dismissed before the 3D import");
+  assert.ok(firstFetch > -1, "ora.js must still load the film");
+  assert.ok(firstFinish < firstFetch, "the preloader must be dismissed before the film loads");
 });
 
 test("the 3D film and vortex are skipped on small screens", async () => {
@@ -63,17 +63,13 @@ test("the hero and film copy stand on solid ground, not a vignette", async () =>
   assert.match(css, /\.vignette\{display:none\}/, "the vignette layer is gone");
   assert.match(css, /\.hero-panel\{[^}]*background:#141518/, "the hero title sits on a flat panel");
   assert.match(css, /\.ch\{[^}]*background:var\(--ink\)/, "film chapters sit on a solid ground");
-  assert.match(css, /\.tag\{[^}]*background:var\(--ink\)/, "laptop labels sit on a solid ground");
+  assert.match(css, /\.tag\{[^}]*background:var\(--ink\)/, "film labels sit on a solid ground");
 });
 
-test("the env map is skipped on a software rasteriser", async () => {
-  const js = await read("src/site/assets/ora.js");
-  // SwiftShader/llvmpipe shade image-based lighting on the CPU, where the
-  // environment map alone blocks the desktop main thread for ~3 s at start-up
-  // and on every scroll frame. It must be detected and the env map dropped.
-  assert.match(js, /swiftshader\|llvmpipe/i, "ora.js must recognise a software rasteriser");
-  assert.match(js, /if \(!soft\)[\s\S]*?PMREMGenerator/, "the PMREM env map must be skipped when the rasteriser is software");
-  assert.match(js, /metalness: soft \?/, "software GL needs a lifted metalness so unlit metal does not go black");
+test("the film clip may be decoded from a Blob", async () => {
+  const build = await read("scripts/build.mjs");
+  // ora.js seeks a Blob URL for instant scrubbing; without blob: the CSP blocks it.
+  assert.match(build, /media-src 'self' blob:/);
 });
 
 test("the WebGL film and vortex start on first interaction, not at load", async () => {

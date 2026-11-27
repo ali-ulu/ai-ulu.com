@@ -455,7 +455,6 @@ export const pages = [
     noscript: noJsStyles,
     scripts: ["/ora.js"],
     styles: ["/postmark-form.css"],
-    footerNote: "Ekrandaki klinik sitesi örnek tasarımdır",
     body: homeBody,
   },
   {
