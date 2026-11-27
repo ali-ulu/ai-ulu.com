@@ -208,6 +208,7 @@ ${faq.items.map((f) => `- ${f.q} ${f.a}`).join("\n")}
   const csp = [
     "default-src 'self'",
     "img-src 'self' data:",
+    "media-src 'self' blob:",
     "style-src 'self' 'unsafe-inline'",
     `script-src 'self' 'sha256-${createHash("sha256").update(ENTER_SCRIPT).digest("base64")}' https://static.cloudflareinsights.com${turnstile ? " https://challenges.cloudflare.com" : ""}`,
     "font-src 'self'",
@@ -235,9 +236,6 @@ ${faq.items.map((f) => `- ${f.q} ${f.a}`).join("\n")}
   Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 /fonts/*
-${immutable}
-
-/vendor/*
 ${immutable}
 
 /sablonlar/assets/*
