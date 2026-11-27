@@ -211,7 +211,7 @@ const contact = () => `<section class="s" id="iletisim" aria-labelledby="iletisi
         </div>
       </div>
       <div class="pm-foot">
-        ${turnstileWidget()}<button class="pm-btn" type="submit">Postayı at</button>
+        ${turnstileWidget()}<button class="pm-btn" type="submit">Gönder</button>
         <p class="form__note">Bilgileriniz yalnızca size dönüş yapmak için kullanılır. Ayrıntılar: <a href="/gizlilik/">Gizlilik ve KVKK</a>.</p>
         <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
       </div>
