@@ -7,8 +7,8 @@
    disclosure, sharing a `name` so only one opens at a time. Nothing runs at
    rest and no JavaScript is needed — the markup is written at build time.
 
-   Adaptations for this site: the drawer is graphite (dark) to sit in the
-   vortex field while the cards stay warm-white paper; type is the site's own
+   Adaptations for this site: the drawer is graphite (dark) as a contrast
+   piece on the light page while the cards stay warm-white paper; type is the site's own
    Hanken Grotesk / JetBrains Mono (no embedded webfonts — the site's CSP is
    font-src 'self'); the one accent key wears the amber. Grain is a data-URI
    SVG, allowed by img-src 'self' data:. */
@@ -79,7 +79,7 @@
   font: 500 10.5px/1.2 var(--fq-sans);
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--fq-ink-2);
+  color: var(--soft);
 }
 .fq .fq-title {
   font: 400 clamp(32px, 4cqi, 52px)/1.02 var(--serif);
@@ -87,9 +87,8 @@
   text-wrap: balance;
   margin: 0;
   max-width: none;
-  text-shadow: 0 2px 30px rgba(6,7,9,.85);
 }
-.fq .fq-lead { margin-top: 20px; max-width: 36ch; font-size: clamp(15px, 1.3cqi, 17px); color: var(--fq-ink-2); text-wrap: pretty; }
+.fq .fq-lead { margin-top: 20px; max-width: 36ch; font-size: clamp(15px, 1.3cqi, 17px); color: var(--soft); text-wrap: pretty; }
 
 /* ------------------------------------------------------------------ the drawer */
 .fq-drawer {
@@ -266,7 +265,7 @@
   margin-top: 28px;
   padding-inline: 4px;
 }
-.fq-note { font-size: 14.5px; color: var(--fq-ink-2); max-width: 44ch; }
+.fq-note { font-size: 14.5px; color: var(--soft); max-width: 44ch; }
 /* The one contrast key on the section: the site's amber. */
 .fq-key {
   display: inline-flex;

@@ -29,7 +29,7 @@ const canRunFilm = !matchMedia('(prefers-reduced-motion: reduce)').matches
   && (navigator.deviceMemory ?? 8) >= 4;
 
 async function loadFilm() {
-  // The whole clip is fetched into memory once (~6 MB): seeking a Blob is instant,
+  // The whole clip is fetched into memory once (~3 MB): seeking a Blob is instant,
   // seeking a ranged network stream stutters on every scroll tick.
   const video = document.getElementById('gl');
   try {
@@ -68,6 +68,7 @@ function start(video) {
   const tags = [...document.querySelectorAll('.tag')];
   const ticks = [...document.querySelectorAll('.prog i')];
   const hint = document.getElementById('hint'), film = document.getElementById('film');
+  const hero = film.querySelector('.hero');
 
   let target = 0, cur = 0, lastDrawn = -1, onScreen = true, raf = 0;
   const readScroll = () => { const r = film.getBoundingClientRect(); target = clamp(-r.top / (r.height - innerHeight)); wake(); };
@@ -83,6 +84,11 @@ function start(video) {
     });
     ticks.forEach((t, i) => t.classList.toggle('on', i === Math.min(4, Math.floor(p * 5))));
     if (hint) hint.style.opacity = 1 - seg(p, .01, .05);
+    if (hero) { // the hero is the opening frame's title card: gone before the first chapter
+      const o = 1 - seg(p, .02, .08);
+      hero.style.opacity = o;
+      hero.style.visibility = o > .02 ? 'visible' : 'hidden';
+    }
     // The four labels gather in the dark top-left corner once the storefront is built
     // (the storefront itself ends right of centre).
     const tagO = seg(p, .72, .9);

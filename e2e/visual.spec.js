@@ -21,10 +21,6 @@ test.describe("visual regression", () => {
       // chromium project. Mobile viewports are covered by the responsive test.
       test.skip(testInfo.project.name !== "chromium", "baselines are chromium-only");
       await page.goto(path);
-      // The vortex backdrop is a time-based WebGL particle loop that runs on every
-      // page, and Playwright's `animations` option only stops CSS animations, so
-      // hide it or the raster differs on each run. body::before keeps the backdrop.
-      await page.addStyleTag({ content: "#vortex{display:none!important}" });
       // Let fonts settle so the text raster is identical between runs.
       await page.evaluate(() => document.fonts.ready);
       await expect(page).toHaveScreenshot(`${name}.png`, {

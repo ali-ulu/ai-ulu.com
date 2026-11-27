@@ -7,7 +7,7 @@
 
   /* Chrome: the canvas background, the vignette, the preloader, the floating
      chrome and the call bar are all screen-only. */
-  #vortex, .vignette, #pre, .callbar, .site-header, .footer-social, .nf-links { display: none !important; }
+  .vignette, #pre, .callbar, .site-header, .footer-social, .nf-links { display: none !important; }
 
   a { color: #111; text-decoration: underline; }
   /* Show where a link points, since the reader cannot click it. */
